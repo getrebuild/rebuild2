@@ -7,7 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.web;
 
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -15,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
  * @author devezhao
  * @since 2020/07/29
  */
-@SpringBootTest(classes = RebuildApplication.class)
+@SpringBootTest(classes = Application.class)
 class RebuildApplicationTests {
 
     @Test
