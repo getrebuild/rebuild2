@@ -1,33 +1,49 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Compiled class file
+*.class
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Log file
+*.log
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
+# BlueJ files
+*.ctxt
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
 
-### VS Code ###
-.vscode/
+# Package Files #
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# IDE
+/.classpath
+/.project
+/.settings/
+/.idea/
+rebuild.iml
+
+# Bin
+/target/
+/bin/
+/.production/node_modules/
+/.production/_temp/
+/.production/build/
+/a.json
+
+
+# MacOS
+
+.DS_Store
+
+node_modules
+test.*
+.gitmodules
+.deploy/temp/
+.deploy/build/
+.deploy/node_modules/
