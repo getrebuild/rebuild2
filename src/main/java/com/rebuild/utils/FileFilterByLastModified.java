@@ -44,22 +44,18 @@ public class FileFilterByLastModified implements FileFilter {
      *
      * @param indir
      * @param keepDays 保留最近N天
-     * @return
      */
-    public static int deletes(File indir, int keepDays) {
+    public static void deletes(File indir, int keepDays) {
         File[] ds = indir.listFiles(new FileFilterByLastModified(keepDays));
         if (ds == null || ds.length == 0) {
-            return 0;
+            return;
         }
 
-        int del = 0;
         for (File d : ds) {
             if (d.isFile()) {
                 FileUtils.deleteQuietly(d);
                 RebuildApplication.LOG.warn("Delete useless file : " + d);
-                del++;
             }
         }
-        return del;
     }
 }

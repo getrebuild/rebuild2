@@ -14,7 +14,6 @@ import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.service.general.ObservableService;
-import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.Set;
@@ -23,7 +22,6 @@ import java.util.Set;
  * @author devezhao
  * @since 2020/7/27
  */
-@Service
 public abstract class BaseTaskService extends ObservableService {
 
     protected BaseTaskService(PersistManagerFactory aPMFactory) {

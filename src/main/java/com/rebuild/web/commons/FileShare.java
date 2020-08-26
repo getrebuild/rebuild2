@@ -20,7 +20,7 @@ package com.rebuild.web.commons;
 
 import cn.devezhao.commons.CodecUtils;
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.QiniuCloud;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.utils.JSONUtils;
@@ -55,7 +55,7 @@ public class FileShare extends BaseController {
     // URL of share
     @RequestMapping("/filex/make-share")
     public void makeShareUrl(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Assert.isTrue(RebuildConfiguration.getBool(ConfigurableItem.FileSharable), "不允许分享文件");
+        Assert.isTrue(RebuildConfiguration.getBool(ConfigurationItem.FileSharable), "不允许分享文件");
 
         String fileUrl = getParameterNotNull(request, "url");
         int minte = getIntParameter(request, "time", 5);
@@ -71,7 +71,7 @@ public class FileShare extends BaseController {
     public ModelAndView makeShareUrl(@PathVariable String shareKey,
                                      HttpServletResponse response) throws IOException {
         String fileUrl;
-        if (!RebuildConfiguration.getBool(ConfigurableItem.FileSharable)
+        if (!RebuildConfiguration.getBool(ConfigurationItem.FileSharable)
                 || (fileUrl = RebuildApplication.getCommonsCache().get(shareKey)) == null) {
             response.sendError(403, "分享的文件已过期");
             return null;

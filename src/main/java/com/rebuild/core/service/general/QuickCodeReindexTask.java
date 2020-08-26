@@ -48,7 +48,7 @@ public class QuickCodeReindexTask extends HeavyTask<Integer> {
     }
 
     @Override
-    protected Integer exec() throws Exception {
+    protected Integer exec() {
         if (!entity.containsField(EntityHelper.QuickCode)) {
             throw new IllegalArgumentException("No QuickCode field found : " + entity);
         }

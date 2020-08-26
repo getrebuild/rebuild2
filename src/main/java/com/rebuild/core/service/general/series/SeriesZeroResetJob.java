@@ -15,7 +15,7 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.metadata.impl.FieldExtConfigProps;
-import org.quartz.JobExecutionException;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Calendar;
 
@@ -27,9 +27,9 @@ import java.util.Calendar;
  */
 public class SeriesZeroResetJob extends DistributedJobBean {
 
-    @Override
-    protected void executeInternalSafe() throws JobExecutionException {
-        LOG.info("SeriesZeroResetJob running ...");
+    @Scheduled(cron = "0 0 0 * * ?")
+    protected void executeJob() {
+        if (isRunning()) return;
 
         boolean isFirstDayOfYear = false;
         boolean isFirstDayOfMonth = false;

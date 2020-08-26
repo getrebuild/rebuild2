@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.configuration.ConfigBean;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.helper.state.StateManager;
@@ -263,7 +263,7 @@ public class FormsBuilder extends FormsManager {
     public void buildModelElements(JSONArray elements, Entity entity, Record data, ID user) {
         final User currentUser = RebuildApplication.getUserStore().getUser(user);
         final Date now = CalendarUtils.now();
-        final boolean hideUncreate = RebuildConfiguration.getBool(ConfigurableItem.FormHideUncreateField) && data == null;
+        final boolean hideUncreate = RebuildConfiguration.getBool(ConfigurationItem.FormHideUncreateField) && data == null;
 
         // Check and clean
         for (Iterator<Object> iter = elements.iterator(); iter.hasNext(); ) {

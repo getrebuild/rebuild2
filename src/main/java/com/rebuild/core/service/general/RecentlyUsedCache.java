@@ -10,7 +10,7 @@ package com.rebuild.core.service.general;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.cache.BaseCacheTemplate;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.metadata.EntityHelper;
@@ -143,6 +143,6 @@ public class RecentlyUsedCache extends BaseCacheTemplate<Serializable> {
     }
 
     private boolean isEnabled() {
-        return RebuildConfiguration.getBool(ConfigurableItem.EnableRecentlyUsed);
+        return RebuildConfiguration.getBool(ConfigurationItem.EnableRecentlyUsed);
     }
 }

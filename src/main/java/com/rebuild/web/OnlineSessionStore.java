@@ -12,7 +12,7 @@ import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.CurrentCaller;
@@ -130,7 +130,7 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
         Object loginUser = s.getAttribute(WebUtils.CURRENT_USER);
         Assert.notNull(loginUser, "No login user found in session!");
 
-        if (!RebuildConfiguration.getBool(ConfigurableItem.MultipleSessions)) {
+        if (!RebuildConfiguration.getBool(ConfigurationItem.MultipleSessions)) {
             HttpSession previous = getSession((ID) loginUser);
             if (previous != null) {
                 LOG.warn("Kill previous session : " + loginUser + " < " + previous.getId());

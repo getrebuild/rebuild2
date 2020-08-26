@@ -26,6 +26,8 @@ import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.RateLimiters;
 import es.moki.ratelimitj.core.limiter.request.RequestRateLimiter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -47,6 +49,8 @@ import java.util.TreeMap;
  */
 @org.springframework.stereotype.Controller
 public class ApiGateway extends Controller {
+
+    private static final Log LOG = LogFactory.getLog(ApiGateway.class);
 
     private static final RequestRateLimiter RRL = RateLimiters.createRateLimiter(1, 200);
 

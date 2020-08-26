@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataSorter;
@@ -128,7 +128,7 @@ public class AttachmentAwareObserver extends OperatingObserver {
         if (array.length == 0) return;
 
         // 回收站开启，不物理删除附件
-        final boolean rbEnable = RebuildConfiguration.getInt(ConfigurableItem.RecycleBinKeepingDays) > 0;
+        final boolean rbEnable = RebuildConfiguration.getInt(ConfigurationItem.RecycleBinKeepingDays) > 0;
 
         List<Record> updates = new ArrayList<>();
         List<ID> deletes = new ArrayList<>();

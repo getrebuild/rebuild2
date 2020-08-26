@@ -11,9 +11,9 @@ import cn.devezhao.persist4j.DataAccessException;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.engine.JdbcSupport;
 import cn.devezhao.persist4j.engine.StatementCallback;
+import org.springframework.stereotype.Service;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +24,7 @@ import java.util.List;
  * @author <a href="mailto:zhaofang123@gmail.com">Zhao Fangfang</a>
  * @since 0.1, Mar 31, 2010
  */
+@Service
 public class SqlExecutor {
 
     private static final int MAX_BATCH_SIZE = 100;
@@ -54,7 +55,7 @@ public class SqlExecutor {
 
             return jdbcSupport.execute(new StatementCallback() {
                 @Override
-                public Object doInParameters(PreparedStatement pstmt) throws SQLException {
+                public Object doInParameters(PreparedStatement pstmt) {
                     return null;
                 }
 

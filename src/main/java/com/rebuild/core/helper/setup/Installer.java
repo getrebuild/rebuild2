@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.core.cache.RedisDriver;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.License;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.utils.AES;
@@ -79,16 +79,16 @@ public class Installer implements InstallState {
         // Redis
         JSONObject cacheProps = this.installProps.getJSONObject("cacheProps");
         if (cacheProps != null && !cacheProps.isEmpty()) {
-            installProps.put(ConfigurableItem.CacheHost.name(), cacheProps.getString(ConfigurableItem.CacheHost.name()));
-            installProps.put(ConfigurableItem.CachePort.name(), cacheProps.getString(ConfigurableItem.CachePort.name()));
-            installProps.put(ConfigurableItem.CachePassword.name(), cacheProps.getString(ConfigurableItem.CachePassword.name()));
+            installProps.put(ConfigurationItem.CacheHost.name(), cacheProps.getString(ConfigurationItem.CacheHost.name()));
+            installProps.put(ConfigurationItem.CachePort.name(), cacheProps.getString(ConfigurationItem.CachePort.name()));
+            installProps.put(ConfigurationItem.CachePassword.name(), cacheProps.getString(ConfigurationItem.CachePassword.name()));
         }
         // 加密
         String dbPasswd = (String) installProps.remove("db.passwd");
         installProps.put("db.passwd.aes",
                 StringUtils.isBlank(dbPasswd) ? StringUtils.EMPTY : AES.encrypt(dbPasswd));
-        String cachePasswd = (String) installProps.remove(ConfigurableItem.CachePassword.name());
-        installProps.put(ConfigurableItem.CachePassword.name() + ".aes",
+        String cachePasswd = (String) installProps.remove(ConfigurationItem.CachePassword.name());
+        installProps.put(ConfigurationItem.CachePassword.name() + ".aes",
                 StringUtils.isBlank(cachePasswd) ? StringUtils.EMPTY : AES.encrypt(cachePasswd));
 
         try {

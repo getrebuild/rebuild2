@@ -105,7 +105,7 @@ public class SMSender {
             // 处理公共变量
             htmlContent = htmlContent.replace("%TO%", to);
             htmlContent = htmlContent.replace("%TIME%", CalendarUtils.getUTCDateTimeFormat().format(CalendarUtils.now()));
-            htmlContent = htmlContent.replace("%APPNAME%", RebuildConfiguration.get(ConfigurableItem.AppName));
+            htmlContent = htmlContent.replace("%APPNAME%", RebuildConfiguration.get(ConfigurationItem.AppName));
 
             params.put("html", htmlContent);
             content = htmlContent;

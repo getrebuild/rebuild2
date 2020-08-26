@@ -21,6 +21,7 @@ import com.rebuild.core.service.DataSpecificationNoRollbackException;
 import com.rebuild.core.service.general.OperatingContext;
 import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.core.service.trigger.RobotTriggerManual;
+import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
@@ -33,6 +34,7 @@ import java.util.Set;
  * @author devezhao
  * @since 07/11/2019
  */
+@Service
 public class ApprovalStepService extends BaseService {
 
     /**

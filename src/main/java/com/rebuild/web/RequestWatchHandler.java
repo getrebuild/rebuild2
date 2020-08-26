@@ -174,7 +174,7 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
             // 管理后台访问
             if (requestUrl.contains("/admin/") && !AppUtils.isAdminVerified(request)) {
                 if (ServletUtils.isAjaxRequest(request)) {
-                    ServletUtils.writeJson(response, AppUtils.formatControllMsg(403, "请验证管理员访问权限"));
+                    ServletUtils.writeJson(response, AppUtils.formatControllerMessage(403, "请验证管理员访问权限"));
                 } else {
                     response.sendRedirect(AppUtils.getContextPath() + "/user/admin-entry?nexturl=" + CodecUtils.urlEncode(requestUrl));
                 }
@@ -187,7 +187,7 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
                     + " via " + ServletUtils.getRemoteAddr(request));
 
             if (ServletUtils.isAjaxRequest(request)) {
-                ServletUtils.writeJson(response, AppUtils.formatControllMsg(403, "未授权访问"));
+                ServletUtils.writeJson(response, AppUtils.formatControllerMessage(403, "未授权访问"));
             } else {
                 response.sendRedirect(AppUtils.getContextPath() + "/user/login?nexturl=" + CodecUtils.urlEncode(requestUrl));
             }

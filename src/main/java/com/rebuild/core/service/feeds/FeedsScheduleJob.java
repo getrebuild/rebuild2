@@ -18,9 +18,7 @@ import com.rebuild.core.helper.SMSender;
 import com.rebuild.core.service.notification.Message;
 import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.utils.AppUtils;
-import org.quartz.JobExecutionException;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -28,12 +26,12 @@ import java.util.*;
  * @author devezhao
  * @since 2020/2/27
  */
-@Component
 public class FeedsScheduleJob extends DistributedJobBean {
 
     @Scheduled(cron = "0 * * * * ?")
-    @Override
-    protected void executeInternalSafe() throws JobExecutionException {
+    public void executeJob() {
+        if (isRunning()) return;
+
         Calendar time = CalendarUtils.getInstance();
         time.set(Calendar.SECOND, 0);
         time.set(Calendar.MILLISECOND, 0);

@@ -10,14 +10,12 @@ package com.rebuild.core.service.general.recyclebin;
 import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.persist4j.Entity;
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.DistributedJobBean;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
-import org.quartz.JobExecutionException;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -27,19 +25,18 @@ import java.util.Date;
  * @author devezhao
  * @since 2019/8/21
  */
-@Component
 public class RecycleBinCleanerJob extends DistributedJobBean {
 
     // 永久保留
     private static final int KEEPING_FOREVER = 9999;
 
     @Scheduled(cron = "0 0 4 * * ?")
-    @Override
-    protected void executeInternalSafe() throws JobExecutionException {
+    protected void executeJob() {
+        if (isRunning()) return;
 
         // 回收站
 
-        final int rbDays = RebuildConfiguration.getInt(ConfigurableItem.RecycleBinKeepingDays);
+        final int rbDays = RebuildConfiguration.getInt(ConfigurationItem.RecycleBinKeepingDays);
         if (rbDays < KEEPING_FOREVER) {
             LOG.info("RecycleBin clean running ... " + rbDays);
 
@@ -59,7 +56,7 @@ public class RecycleBinCleanerJob extends DistributedJobBean {
 
         // 变更历史
 
-        final int rhDays = RebuildConfiguration.getInt(ConfigurableItem.RevisionHistoryKeepingDays);
+        final int rhDays = RebuildConfiguration.getInt(ConfigurationItem.RevisionHistoryKeepingDays);
         if (rhDays < KEEPING_FOREVER) {
             LOG.info("RevisionHistory clean running ... " + rhDays);
 

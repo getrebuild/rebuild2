@@ -9,7 +9,7 @@ package com.rebuild.core.helper.setup;
 
 import cn.devezhao.commons.ObjectUtils;
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -58,7 +58,7 @@ public final class UpgradeDatabase {
             }
         } finally {
             if (dbVer != upgradeVer) {
-                RebuildConfiguration.set(ConfigurableItem.DBVer, upgradeVer);
+                RebuildConfiguration.set(ConfigurationItem.DBVer, upgradeVer);
                 LOG.info("Upgrade database version : " + upgradeVer);
             }
         }
@@ -81,7 +81,7 @@ public final class UpgradeDatabase {
      * @return
      */
     public int getDbVer() {
-        String dbVer = RebuildConfiguration.get(ConfigurableItem.DBVer, true);
+        String dbVer = RebuildConfiguration.get(ConfigurationItem.DBVer, true);
         return ObjectUtils.toInt(dbVer, 0);
     }
 

@@ -24,6 +24,8 @@ public class CommonsUtils {
 
     private static final Pattern PATT_PLAINTEXT = Pattern.compile("[A-Za-z0-9_\\-\\u4e00-\\u9fa5]+");
 
+    private static final char[] SPECIAL_CHARS = "`~!@#$%^&*()_+=-{}|[];':\",./<>?".toCharArray();
+
     /**
      * 不含特殊字符。不允许除 数字 字母 中文 及  _ - 以外的字符，包括空格
      *
@@ -58,8 +60,6 @@ public class CommonsUtils {
             return text.substring(0, 4) + "********************" + text.substring(textLen - 4);
         }
     }
-
-    private static final char[] SPECIAL_CHARS = "`~!@#$%^&*()_+=-{}|[];':\",./<>?".toCharArray();
 
     /**
      * 是否为特殊字符

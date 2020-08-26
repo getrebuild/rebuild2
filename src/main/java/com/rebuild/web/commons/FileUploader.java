@@ -69,7 +69,7 @@ public class FileUploader {
 
                 item.write(file);
                 if (!file.exists()) {
-                    ServletUtils.writeJson(response, AppUtils.formatControllMsg(1000, "上传失败"));
+                    ServletUtils.writeJson(response, AppUtils.formatControllerMessage(1000, "上传失败"));
                     return;
                 }
 
@@ -82,9 +82,9 @@ public class FileUploader {
         }
 
         if (uploadName != null) {
-            ServletUtils.writeJson(response, AppUtils.formatControllMsg(0, uploadName));
+            ServletUtils.writeJson(response, AppUtils.formatControllerMessage(0, uploadName));
         } else {
-            ServletUtils.writeJson(response, AppUtils.formatControllMsg(1000, "上传失败"));
+            ServletUtils.writeJson(response, AppUtils.formatControllerMessage(1000, "上传失败"));
         }
     }
 

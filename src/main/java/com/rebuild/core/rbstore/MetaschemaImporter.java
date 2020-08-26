@@ -108,7 +108,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
     }
 
     @Override
-    protected String exec() throws Exception {
+    protected String exec() {
         this.readyRemoteData();
         setTotal(100);
 

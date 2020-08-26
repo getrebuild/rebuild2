@@ -1,6 +1,6 @@
 package com.rebuild.core;
 
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.setup.InstallState;
 import com.rebuild.utils.AES;
 import org.apache.commons.lang.StringUtils;
@@ -54,7 +54,7 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
 
         // 解密
         Properties superlativeProperties = new Properties();
-        for (ConfigurableItem item : ConfigurableItem.values()) {
+        for (ConfigurationItem item : ConfigurationItem.values()) {
             String name = V2_PREFIX + item.name();
             String value = environment.getProperty(name);
             if (StringUtils.isNotBlank(value)) {
@@ -100,7 +100,7 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
      */
     public static String getProperty(String name, String defaultValue) {
         String value;
-        if (ENV_HOLD == null && ConfigurableItem.DataDirectory.name().equalsIgnoreCase(name)) {
+        if (ENV_HOLD == null && ConfigurationItem.DataDirectory.name().equalsIgnoreCase(name)) {
             value = System.getProperty("DataDirectory");
         } else {
             value = ENV_HOLD == null ? null : ENV_HOLD.getProperty(name);

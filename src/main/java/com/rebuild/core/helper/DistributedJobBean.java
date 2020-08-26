@@ -11,9 +11,6 @@ import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.helper.setup.Installer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -24,7 +21,7 @@ import redis.clients.jedis.JedisPool;
  * @author ZHAO
  * @since 2020/4/5
  */
-public abstract class DistributedJobBean extends QuartzJobBean {
+public abstract class DistributedJobBean {
 
     protected final Log LOG = LogFactory.getLog(getClass());
 
@@ -34,22 +31,12 @@ public abstract class DistributedJobBean extends QuartzJobBean {
     private static final String LOCK_KEY = "#RBJOBLOCK";
     private static final int LOCK_TIME = 2;  // 2s offset
 
-    protected JobExecutionContext jobExecutionContext;
-
-    @Override
-    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        if (isSafe()) {
-            this.jobExecutionContext = jobExecutionContext;
-            this.executeInternalSafe();
-        }
-    }
-
     /**
-     * 是否可安全运行，即并发判断（分布式环境）
+     * 是否已在运行中，即并发判断（分布式环境）
      *
      * @return
      */
-    protected boolean isSafe() {
+    protected boolean isRunning() {
         if (Installer.isUseRedis()) {
             JedisPool pool = RebuildApplication.getCommonsCache().getJedisPool();
             String jobKey = getClass().getName() + LOCK_KEY;
@@ -58,7 +45,7 @@ public abstract class DistributedJobBean extends QuartzJobBean {
                 String tryLock = jedis.set(jobKey, LOCK_KEY, SET_IF_NOT_EXIST, SET_WITH_EXPIRE_TIME, LOCK_TIME);
                 if (tryLock == null) {
                     LOG.info("The job has been executed by another instance : " + getClass().getName());
-                    return false;
+                    return true;
                 }
             }
         }
@@ -66,14 +53,6 @@ public abstract class DistributedJobBean extends QuartzJobBean {
         if (LOG.isDebugEnabled()) {
             LOG.error("Job " + getClass().getName() + " can be safe execution");
         }
-        return true;
+        return false;
     }
-
-    /**
-     * 执行 Job
-     *
-     * @throws JobExecutionException
-     */
-    abstract protected void executeInternalSafe() throws JobExecutionException;
-
 }

@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.*;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.RebuildException;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.task.TaskExecutors;
 import com.rebuild.core.metadata.DefaultValueHelper;
@@ -94,7 +94,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
         final ID currentUser = RebuildApplication.getCurrentUser();
 
         RecycleStore recycleBin = null;
-        if (RebuildConfiguration.getInt(ConfigurableItem.RecycleBinKeepingDays) > 0) {
+        if (RebuildConfiguration.getInt(ConfigurationItem.RecycleBinKeepingDays) > 0) {
             recycleBin = new RecycleStore(currentUser);
         } else {
             LOG.warn("RecycleBin inactivated : " + record + " by " + currentUser);

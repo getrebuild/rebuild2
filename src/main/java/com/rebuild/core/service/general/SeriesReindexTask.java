@@ -38,7 +38,7 @@ public class SeriesReindexTask extends HeavyTask<Integer> {
     }
 
     @Override
-    public Integer exec() throws Exception {
+    public Integer exec() {
         if (EasyMeta.getDisplayType(field) != DisplayType.SERIES) {
             throw new IllegalArgumentException("None SERIES field : " + field);
         }

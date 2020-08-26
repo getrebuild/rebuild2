@@ -12,7 +12,7 @@ import cn.devezhao.commons.ThrowableUtils;
 import cn.devezhao.commons.web.ServletUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.setup.InstallState;
 import com.rebuild.core.helper.setup.Installer;
@@ -53,8 +53,8 @@ public class SetupInstall extends BaseController implements InstallState {
 
         ModelAndView mv = new ModelAndView("/setup/install.jsp");
         mv.getModel().put("defaultDataDirectory", RebuildConfiguration.getFileOfData(null).getAbsolutePath().replace("\\", "/"));
-        mv.getModel().put("defaultAppName", RebuildConfiguration.get(ConfigurableItem.AppName));
-        mv.getModel().put("defaultHomeURL", RebuildConfiguration.get(ConfigurableItem.HomeURL));
+        mv.getModel().put("defaultAppName", RebuildConfiguration.get(ConfigurationItem.AppName));
+        mv.getModel().put("defaultHomeURL", RebuildConfiguration.get(ConfigurationItem.HomeURL));
         return mv;
     }
 

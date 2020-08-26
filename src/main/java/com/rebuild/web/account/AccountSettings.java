@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.helper.SMSender;
-import com.rebuild.core.helper.VCode;
+import com.rebuild.core.helper.VerfiyCode;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.web.EntityController;
@@ -49,7 +49,7 @@ public class AccountSettings extends EntityController {
             return;
         }
 
-        String vcode = VCode.generate(email);
+        String vcode = VerfiyCode.generate(email);
         String content = "<p>你的邮箱验证码是 <b>" + vcode + "</b><p>";
         String sentid = SMSender.sendMail(email, "邮箱验证码", content);
         if (sentid != null) {
@@ -65,7 +65,7 @@ public class AccountSettings extends EntityController {
         String email = getParameterNotNull(request, "email");
         String vcode = getParameterNotNull(request, "vcode");
 
-        if (!VCode.verfiy(email, vcode)) {
+        if (!VerfiyCode.verfiy(email, vcode)) {
             writeFailure(response, "验证码无效");
             return;
         }

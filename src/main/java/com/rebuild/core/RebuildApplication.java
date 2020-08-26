@@ -20,7 +20,7 @@ import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.rebuild.api.ApiGateway;
 import com.rebuild.api.BaseApi;
 import com.rebuild.core.cache.CommonsCache;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.License;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.setup.Installer;
@@ -36,6 +36,7 @@ import com.rebuild.core.service.general.EntityService;
 import com.rebuild.core.service.general.GeneralEntityService;
 import com.rebuild.core.service.notification.NotificationService;
 import com.rebuild.core.service.query.QueryFactory;
+import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.codec.RbDateCodec;
 import com.rebuild.utils.codec.RbRecordCodec;
 import com.rebuild.web.OnlineSessionStore;
@@ -116,7 +117,7 @@ public class RebuildApplication {
             } else {
                 String localUrl = String.format("http://localhost:%s%s",
                         RebuildEnvironmentPostProcessor.getProperty("server.port", "8080"),
-                        RebuildEnvironmentPostProcessor.getProperty("server.servlet.context-path", ""));
+                        AppUtils.getContextPath());
                 LOG.warn(formatBootMsg(
                         "REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
             }
@@ -140,7 +141,7 @@ public class RebuildApplication {
             UpgradeDatabase.getInstance().upgradeQuietly();
 
             // 刷新配置缓存
-            for (ConfigurableItem item : ConfigurableItem.values()) {
+            for (ConfigurationItem item : ConfigurationItem.values()) {
                 RebuildConfiguration.get(item, true);
             }
 

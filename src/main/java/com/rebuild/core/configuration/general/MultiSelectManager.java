@@ -10,7 +10,6 @@ package com.rebuild.core.configuration.general;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.utils.JSONUtils;
 
@@ -22,6 +21,7 @@ import java.util.List;
  *
  * @author ZHAO
  * @since 2019/9/27
+ * @see PickListManager
  */
 public class MultiSelectManager extends PickListManager {
 
@@ -64,21 +64,6 @@ public class MultiSelectManager extends PickListManager {
     }
 
     /**
-     * @param label
-     * @param field
-     * @return
-     */
-    public Long findByLabel(String label, Field field) {
-        Object[] o = RebuildApplication.createQueryNoFilter(
-                "select maskValue from PickList where belongEntity = ? and belongField = ? and text = ?")
-                .setParameter(1, field.getOwnEntity().getName())
-                .setParameter(2, field.getName())
-                .setParameter(3, label)
-                .unique();
-        return o == null ? null : (Long) o[0];
-    }
-
-    /**
      * 获取默认值
      *
      * @param field
@@ -97,7 +82,7 @@ public class MultiSelectManager extends PickListManager {
     @Override
     public void clean(Object idOrField) {
         if (idOrField instanceof ID) {
-            // Nothings
+            // NOOP
         } else {
             super.clean(idOrField);
         }

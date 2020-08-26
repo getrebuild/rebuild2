@@ -11,11 +11,11 @@ import cn.devezhao.commons.CodecUtils;
 import cn.devezhao.commons.ThreadPool;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.RebuildException;
+import com.rebuild.core.helper.DistributedJobBean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ import java.util.concurrent.*;
  * @see org.springframework.core.task.AsyncTaskExecutor
  * @since 09/29/2018
  */
-public class TaskExecutors extends QuartzJobBean {
+public class TaskExecutors extends DistributedJobBean {
 
     private static final Log LOG = LogFactory.getLog(TaskExecutors.class);
 
@@ -99,10 +99,21 @@ public class TaskExecutors extends QuartzJobBean {
         return task.exec();
     }
 
+    /**
+     */
+    public void shutdown() {
+        List<Runnable> runs = EXECS.shutdownNow();
+        if (!runs.isEmpty()) {
+            LOG.warn(runs.size() + " tasks interrupted");
+        }
+    }
+
     // --
 
-    @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+    @Scheduled(cron = "0 15,35,55 * * * ?")
+    public void executeJob() {
+        if (isRunning()) return;
+
         for (Map.Entry<String, HeavyTask<?>> e : TASKS.entrySet()) {
             HeavyTask<?> task = e.getValue();
             if (task.getCompletedTime() == null || !task.isCompleted()) {
@@ -114,16 +125,6 @@ public class TaskExecutors extends QuartzJobBean {
                 TASKS.remove(e.getKey());
                 LOG.info("HeavyTask self-destroying : " + e.getKey());
             }
-        }
-    }
-
-    /**
-     *
-     */
-    public void shutdown() {
-        List<Runnable> runs = EXECS.shutdownNow();
-        if (!runs.isEmpty()) {
-            LOG.warn(runs.size() + " tasks interrupted");
         }
     }
 }

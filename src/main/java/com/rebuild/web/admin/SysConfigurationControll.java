@@ -41,7 +41,7 @@ import java.util.Map;
  *
  * @author zhaofang123@gmail.com
  * @see RebuildConfiguration
- * @see ConfigurableItem
+ * @see ConfigurationItem
  * @since 09/20/2018
  */
 @Controller
@@ -51,7 +51,7 @@ public class SysConfigurationControll extends BaseController {
     @RequestMapping("systems")
     public ModelAndView pageSystems() {
         ModelAndView mv = createModelAndView("/admin/system-general.jsp");
-        for (ConfigurableItem item : ConfigurableItem.values()) {
+        for (ConfigurationItem item : ConfigurationItem.values()) {
             mv.getModel().put(item.name(), RebuildConfiguration.get(item));
         }
 
@@ -66,19 +66,19 @@ public class SysConfigurationControll extends BaseController {
     public void postSystems(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JSONObject data = (JSONObject) ServletUtils.getRequestJson(request);
 
-        String dHomeURL = defaultIfBlank(data, ConfigurableItem.HomeURL);
+        String dHomeURL = defaultIfBlank(data, ConfigurationItem.HomeURL);
         if (!RegexUtils.isUrl(dHomeURL)) {
             writeFailure(response, "无效主页地址/域名");
             return;
         }
 
         // 验证数字参数
-        ConfigurableItem[] validNumbers = new ConfigurableItem[]{
-                ConfigurableItem.RecycleBinKeepingDays,
-                ConfigurableItem.RevisionHistoryKeepingDays,
-                ConfigurableItem.DBBackupsKeepingDays
+        ConfigurationItem[] validNumbers = new ConfigurationItem[]{
+                ConfigurationItem.RecycleBinKeepingDays,
+                ConfigurationItem.RevisionHistoryKeepingDays,
+                ConfigurationItem.DBBackupsKeepingDays
         };
-        for (ConfigurableItem item : validNumbers) {
+        for (ConfigurationItem item : validNumbers) {
             String number = defaultIfBlank(data, item);
             if (!NumberUtils.isNumber(number)) {
                 data.put(item.name(), item.getDefaultValue());
@@ -108,10 +108,10 @@ public class SysConfigurationControll extends BaseController {
     public void postIntegrationStorage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JSONObject data = (JSONObject) ServletUtils.getRequestJson(request);
 
-        String dStorageURL = defaultIfBlank(data, ConfigurableItem.StorageURL);
-        String dStorageBucket = defaultIfBlank(data, ConfigurableItem.StorageBucket);
-        String dStorageApiKey = defaultIfBlank(data, ConfigurableItem.StorageApiKey);
-        String dStorageApiSecret = defaultIfBlank(data, ConfigurableItem.StorageApiSecret);
+        String dStorageURL = defaultIfBlank(data, ConfigurationItem.StorageURL);
+        String dStorageBucket = defaultIfBlank(data, ConfigurationItem.StorageBucket);
+        String dStorageApiKey = defaultIfBlank(data, ConfigurationItem.StorageApiKey);
+        String dStorageApiSecret = defaultIfBlank(data, ConfigurationItem.StorageApiSecret);
 
         if (dStorageURL.startsWith("//")) {
             dStorageURL = "https:" + dStorageURL;
@@ -151,7 +151,7 @@ public class SysConfigurationControll extends BaseController {
     public void postIntegrationSubmail(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JSONObject data = (JSONObject) ServletUtils.getRequestJson(request);
 
-        String dMailAddr = defaultIfBlank(data, ConfigurableItem.MailAddr);
+        String dMailAddr = defaultIfBlank(data, ConfigurationItem.MailAddr);
         if (!RegexUtils.isEMail(dMailAddr)) {
             writeFailure(response, "无效发件人地址");
             return;
@@ -179,7 +179,7 @@ public class SysConfigurationControll extends BaseController {
                     data.getString("SmsSign")
             };
             if (specAccount[1].contains("**********")) {
-                specAccount[1] = RebuildConfiguration.get(ConfigurableItem.SmsPassword);
+                specAccount[1] = RebuildConfiguration.get(ConfigurationItem.SmsPassword);
             }
 
             sent = SMSender.sendSMS(receiver, "收到此消息说明你的短信服务配置正确", specAccount);
@@ -194,7 +194,7 @@ public class SysConfigurationControll extends BaseController {
                     data.getString("MailAddr"), data.getString("MailName")
             };
             if (specAccount[1].contains("**********")) {
-                specAccount[1] = RebuildConfiguration.get(ConfigurableItem.MailPassword);
+                specAccount[1] = RebuildConfiguration.get(ConfigurationItem.MailPassword);
             }
 
             sent = SMSender.sendMail(receiver, "测试邮件", "收到此消息说明你的邮件服务配置正确", true, specAccount);
@@ -252,14 +252,14 @@ public class SysConfigurationControll extends BaseController {
         return account;
     }
 
-    private String defaultIfBlank(JSONObject data, ConfigurableItem item) {
+    private String defaultIfBlank(JSONObject data, ConfigurationItem item) {
         return StringUtils.defaultIfBlank(data.getString(item.name()), RebuildConfiguration.get(item));
     }
 
     private void setValues(JSONObject data) {
         for (Map.Entry<String, Object> e : data.entrySet()) {
             try {
-                ConfigurableItem item = ConfigurableItem.valueOf(e.getKey());
+                ConfigurationItem item = ConfigurationItem.valueOf(e.getKey());
                 RebuildConfiguration.set(item, e.getValue());
             } catch (Exception ex) {
                 LOG.error("Invalid item : " + e.getKey() + " = " + e.getValue());

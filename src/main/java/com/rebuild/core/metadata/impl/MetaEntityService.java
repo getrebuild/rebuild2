@@ -15,8 +15,6 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.AdminGuard;
 import com.rebuild.core.service.BaseService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,8 +23,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MetaEntityService extends BaseService implements AdminGuard {
-
-    private static final Log LOG = LogFactory.getLog(MetaEntityService.class);
 
     protected MetaEntityService(PersistManagerFactory aPMFactory) {
         super(aPMFactory);

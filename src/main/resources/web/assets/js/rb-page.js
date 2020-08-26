@@ -22,10 +22,10 @@ $(function () {
   // In top-frame
   if ($('.rb-left-sidebar').length > 0) {
     $('.sidebar-elements>li>a').each(function () {
-      var _this = $(this)
-      _this.tooltip({
+      var $this = $(this)
+      $this.tooltip({
         placement: 'right',
-        title: _this.find('span').text().trim(),
+        title: $this.find('span').text().trim(),
         delay: 200,
       })
     })
@@ -78,10 +78,7 @@ $(function () {
     if (location.href.indexOf('/admin/') > -1) $('.admin-settings').remove()
     else if (rb.isAdminVerified) {
       $('.admin-settings a>.icon').addClass('text-danger')
-      topPopover(
-        $('.admin-settings a'),
-        '<div class="p-1">当前已启用管理员访问功能，如不再使用建议你 <a href="javascript:;" onclick="__cancelAdmin()">取消访问</a></div>'
-      )
+      topPopover($('.admin-settings a'), '<div class="p-1">当前已启用管理员访问功能，如不再使用建议你 <a href="javascript:;" onclick="__cancelAdmin()">取消访问</a></div>')
     }
 
     $.get('/user/admin-dangers', function (res) {
@@ -126,6 +123,7 @@ $(function () {
   var helpLink = $('meta[name="page-help"]').attr('content')
   if (helpLink) $('.page-help>a').attr('href', helpLink)
 })
+
 // @t - trigger times
 var command_exec = function (t) {}
 
@@ -202,11 +200,7 @@ var __initNavs = function () {
   })
   $(document.body).click(function () {
     // MinNav && SubnavOpen
-    if (
-      $('.rb-collapsible-sidebar').hasClass('rb-collapsible-sidebar-collapsed') &&
-      currsntSubnav &&
-      currsntSubnav.hasClass('open')
-    ) {
+    if ($('.rb-collapsible-sidebar').hasClass('rb-collapsible-sidebar-collapsed') && currsntSubnav && currsntSubnav.hasClass('open')) {
       currsntSubnav.removeClass('open')
       currsntSubnav.find('.sub-menu').removeClass('visible')
     }
@@ -276,12 +270,8 @@ var __loadMessages = function () {
     $(res.data).each(function (idx, item) {
       var o = $('<li class="notification"></li>').appendTo(dest)
       if (item[3] === true) o.addClass('notification-unread')
-      o = $(
-        '<a class="a" href="' + rb.baseUrl + '/notifications#' + (item[3] ? 'unread=' : 'all=') + item[4] + '"></a>'
-      ).appendTo(o)
-      $(
-        '<div class="image"><img src="' + rb.baseUrl + '/account/user-avatar/' + item[0][0] + '" alt="Avatar"></div>'
-      ).appendTo(o)
+      o = $('<a class="a" href="' + rb.baseUrl + '/notifications#' + (item[3] ? 'unread=' : 'all=') + item[4] + '"></a>').appendTo(o)
+      $('<div class="image"><img src="' + rb.baseUrl + '/account/user-avatar/' + item[0][0] + '" alt="Avatar"></div>').appendTo(o)
       o = $('<div class="notification-info"></div>').appendTo(o)
       $('<div class="text text-truncate">' + item[1] + '</div>').appendTo(o)
       $('<span class="date">' + $fromNow(item[2]) + '</span>').appendTo(o)
@@ -316,9 +306,7 @@ var __globalSearch = function () {
       $('<a class="text-truncate" data-url="' + $a.attr('href') + '">' + $a.text() + '</a>').appendTo('.search-models')
     } else if ($item.hasClass('nav_entity-PROJECT') && $item.hasClass('parent')) {
       var $a = $item.find('>a')
-      $('<a class="text-truncate QUERY" data-url="' + rb.baseUrl + '/project/search">' + $a.text() + '</a>').appendTo(
-        '.search-models'
-      )
+      $('<a class="text-truncate QUERY" data-url="' + rb.baseUrl + '/project/search">' + $a.text() + '</a>').appendTo('.search-models')
     }
   })
 

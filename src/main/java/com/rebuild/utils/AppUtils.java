@@ -12,11 +12,9 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.api.login.AuthTokenManager;
 import com.rebuild.api.Controller;
-import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.privileges.PrivilegesManager;
-import com.rebuild.core.privileges.bizz.ZeroEntry;
+import com.rebuild.api.login.AuthTokenManager;
+import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.web.admin.AdminEntryController;
 import org.apache.commons.lang.StringUtils;
 
@@ -46,7 +44,7 @@ public class AppUtils {
      * @return
      */
     public static String getContextPath() {
-        return "/";
+        return RebuildEnvironmentPostProcessor.getProperty("server.servlet.context-path", "");
     }
 
     /**
@@ -98,7 +96,7 @@ public class AppUtils {
      * @return
      * @see Controller
      */
-    public static String formatControllMsg(int errorCode, String errorMsg) {
+    public static String formatControllerMessage(int errorCode, String errorMsg) {
         JSONObject map = new JSONObject();
         map.put("error_code", errorCode);
         if (errorMsg != null) {
@@ -148,11 +146,11 @@ public class AppUtils {
             } else if (state != null && state == 403) {
                 return "权限不足，访问被阻止";
             } else {
-                return "未知错误，请稍后重试";
+                return "系统繁忙，请稍后重试";
             }
         } else {
             exception = ThrowableUtils.getRootCause(exception);
-            errorMsg = StringUtils.defaultIfBlank(exception.getLocalizedMessage(), "未知错误，请稍后重试");
+            errorMsg = StringUtils.defaultIfBlank(exception.getLocalizedMessage(), "系统繁忙，请稍后重试");
             return exception.getClass().getSimpleName() + ": " + errorMsg;
         }
     }
@@ -166,17 +164,5 @@ public class AppUtils {
     public static boolean isRbMobile(HttpServletRequest request) {
         String UA = request.getHeader("user-agent");
         return UA != null && UA.toUpperCase().startsWith(MOILE_UA_PREFIX);
-    }
-
-    /**
-     * 权限判断
-     *
-     * @param request
-     * @param entry
-     * @return
-     * @see PrivilegesManager
-     */
-    public static boolean allow(HttpServletRequest request, ZeroEntry entry) {
-        return RebuildApplication.getPrivilegesManager().allow(getRequestUser(request), entry);
     }
 }

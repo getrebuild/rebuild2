@@ -17,7 +17,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.helper.BlackList;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.SMSender;
 import com.rebuild.core.helper.task.TaskExecutors;
@@ -174,7 +174,7 @@ public class UserService extends BaseServiceImpl {
             throw new DataSpecificationException("密码不能小于6位");
         }
 
-        int policy = RebuildConfiguration.getInt(ConfigurableItem.PasswordPolicy);
+        int policy = RebuildConfiguration.getInt(ConfigurationItem.PasswordPolicy);
         if (policy <= 1) {
             return;
         }
@@ -213,7 +213,7 @@ public class UserService extends BaseServiceImpl {
             return false;
         }
 
-        String appName = RebuildConfiguration.get(ConfigurableItem.AppName);
+        String appName = RebuildConfiguration.get(ConfigurationItem.AppName);
         String homeUrl = RebuildConfiguration.getHomeUrl();
 
         String subject = String.format("你的 %s 账号已就绪", appName);

@@ -6,9 +6,10 @@ module.exports = {
     es6: true,
   },
   parserOptions: {
-    parser: 'babel-eslint',
+    ecmaVersion: 2016,
     sourceType: 'script',
   },
+  parser: 'babel-eslint',
   plugins: ['react'],
   extends: ['eslint:recommended', 'plugin:react/recommended'],
 
@@ -88,7 +89,6 @@ module.exports = {
     Share2: true,
     $stopEvent: true,
     $addResizeHandler: true,
-    $lang: true,
     $empty: true,
     $mp: true,
     converEmoji: true,

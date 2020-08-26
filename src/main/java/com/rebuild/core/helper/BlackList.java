@@ -11,11 +11,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.utils.JSONUtils;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 
 /**
  * 黑名单词 src/main/resources/blacklist.json
@@ -50,13 +51,11 @@ public class BlackList {
      */
     synchronized
     private static void loadBlackListIfNeed() {
-        if (BLACKLIST != null) {
-            return;
-        }
+        if (BLACKLIST != null) return;
 
-        URL url = BlackList.class.getClassLoader().getResource("blacklist.json");
         try {
-            String s = IOUtils.toString(url, "UTF-8");
+            File file = ResourceUtils.getFile("classpath:blacklist.json");
+            String s = FileUtils.readFileToString(file, "UTF-8");
             BLACKLIST = JSON.parseArray(s);
         } catch (IOException e) {
             RebuildApplication.LOG.error("Couldn't load [blacklist.json] file! This feature is missed : " + e);

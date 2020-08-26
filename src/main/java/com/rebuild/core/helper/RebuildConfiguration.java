@@ -22,8 +22,10 @@ import java.util.List;
  * 全局系统配置
  *
  * @author devezhao
- * @see ConfigurableItem
  * @since 10/14/2018
+ *
+ * @see ConfigurationItem
+ * @see com.rebuild.core.RebuildEnvironmentPostProcessor
  */
 public class RebuildConfiguration extends KVStorage {
 
@@ -38,7 +40,7 @@ public class RebuildConfiguration extends KVStorage {
             throw new SecurityException("Attack path detected : " + filepath);
         }
 
-        String d = get(ConfigurableItem.DataDirectory);
+        String d = get(ConfigurationItem.DataDirectory);
         File data = null;
         if (d != null) {
             data = new File(d);
@@ -113,7 +115,7 @@ public class RebuildConfiguration extends KVStorage {
      */
     public static String[] getStorageAccount() {
         return getsNoUnset(false,
-                ConfigurableItem.StorageApiKey, ConfigurableItem.StorageApiSecret, ConfigurableItem.StorageBucket, ConfigurableItem.StorageURL);
+                ConfigurationItem.StorageApiKey, ConfigurationItem.StorageApiSecret, ConfigurationItem.StorageBucket, ConfigurationItem.StorageURL);
     }
 
     /**
@@ -123,7 +125,7 @@ public class RebuildConfiguration extends KVStorage {
      */
     public static String[] getMailAccount() {
         return getsNoUnset(true,
-                ConfigurableItem.MailUser, ConfigurableItem.MailPassword, ConfigurableItem.MailAddr, ConfigurableItem.MailName);
+                ConfigurationItem.MailUser, ConfigurationItem.MailPassword, ConfigurationItem.MailAddr, ConfigurationItem.MailName);
     }
 
     /**
@@ -133,7 +135,7 @@ public class RebuildConfiguration extends KVStorage {
      */
     public static String[] getSmsAccount() {
         return getsNoUnset(true,
-                ConfigurableItem.SmsUser, ConfigurableItem.SmsPassword, ConfigurableItem.SmsSign);
+                ConfigurationItem.SmsUser, ConfigurationItem.SmsPassword, ConfigurationItem.SmsSign);
     }
 
     /**
@@ -150,7 +152,7 @@ public class RebuildConfiguration extends KVStorage {
      * @return
      */
     public static String getHomeUrl(String path) {
-        String homeUrl = get(ConfigurableItem.HomeURL);
+        String homeUrl = get(ConfigurationItem.HomeURL);
         if (!homeUrl.endsWith("/")) {
             homeUrl += "/";
         }
@@ -171,9 +173,9 @@ public class RebuildConfiguration extends KVStorage {
      * @param items
      * @return
      */
-    private static String[] getsNoUnset(boolean useCache, ConfigurableItem... items) {
+    private static String[] getsNoUnset(boolean useCache, ConfigurationItem... items) {
         List<String> list = new ArrayList<>();
-        for (ConfigurableItem item : items) {
+        for (ConfigurationItem item : items) {
             String v = get(item, !useCache);
             if (v == null) {
                 return null;
@@ -187,7 +189,7 @@ public class RebuildConfiguration extends KVStorage {
      * @param name
      * @return
      */
-    public static String get(ConfigurableItem name) {
+    public static String get(ConfigurationItem name) {
         return get(name, false);
     }
 
@@ -196,7 +198,7 @@ public class RebuildConfiguration extends KVStorage {
      * @param reload
      * @return
      */
-    public static String get(ConfigurableItem name, boolean reload) {
+    public static String get(ConfigurationItem name, boolean reload) {
         return getValue(name.name(), reload, name.getDefaultValue());
     }
 
@@ -204,7 +206,7 @@ public class RebuildConfiguration extends KVStorage {
      * @param name
      * @return
      */
-    public static int getInt(ConfigurableItem name) {
+    public static int getInt(ConfigurationItem name) {
         String s = get(name);
         return s == null ? (Integer) name.getDefaultValue() : NumberUtils.toInt(s);
     }
@@ -213,7 +215,7 @@ public class RebuildConfiguration extends KVStorage {
      * @param name
      * @return
      */
-    public static boolean getBool(ConfigurableItem name) {
+    public static boolean getBool(ConfigurationItem name) {
         String s = get(name);
         return s == null ? (Boolean) name.getDefaultValue() : BooleanUtils.toBoolean(s);
     }
@@ -223,7 +225,7 @@ public class RebuildConfiguration extends KVStorage {
      * @param value
      * @return
      */
-    public static void set(ConfigurableItem name, Object value) {
+    public static void set(ConfigurationItem name, Object value) {
         setValue(name.name(), value);
     }
 }

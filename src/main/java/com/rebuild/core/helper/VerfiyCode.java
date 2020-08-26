@@ -18,7 +18,7 @@ import org.apache.commons.lang.math.RandomUtils;
  * @author devezhao
  * @since 11/05/2018
  */
-public class VCode {
+public class VerfiyCode {
 
     /**
      * @param key

@@ -137,14 +137,6 @@ public class PickListService extends BaseConfigurationService implements AdminGu
         PickListManager.instance.clean(field);
     }
 
-    /**
-     * @param field
-     * @param config
-     */
-    public void updateBatchMultiSelect(Field field, JSONObject config) {
-        this.updateBatch(field, config);
-    }
-
     @Override
     protected void cleanCache(ID cfgid) {
         PickListManager.instance.clean(cfgid);

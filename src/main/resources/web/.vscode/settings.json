@@ -12,5 +12,5 @@
   "prettier.semi": false,
   "prettier.singleQuote": true,
   "prettier.bracketSpacing": true,
-  "prettier.printWidth": 120
+  "prettier.printWidth": 200
 }

@@ -48,7 +48,7 @@ public class DataImporter extends HeavyTask<Integer> {
     }
 
     @Override
-    protected Integer exec() throws Exception {
+    protected Integer exec() {
         final List<Cell[]> rows = new DataFileParser(rule.getSourceFile()).parse();
         this.setTotal(rows.size() - 1);
 

@@ -14,7 +14,7 @@ import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.License;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.privileges.bizz.User;
@@ -90,7 +90,7 @@ public class AdminEntryController extends BaseController {
     @RequestMapping("/user/admin-dangers")
     public void adminDangers(HttpServletResponse response)
             throws IOException {
-        if (!RebuildConfiguration.getBool(ConfigurableItem.AdminDangers)) {
+        if (!RebuildConfiguration.getBool(ConfigurationItem.AdminDangers)) {
             writeSuccess(response);
             return;
         }

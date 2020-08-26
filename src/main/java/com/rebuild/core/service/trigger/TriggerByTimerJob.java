@@ -23,9 +23,7 @@ import com.rebuild.core.service.general.OperatingContext;
 import com.rebuild.core.service.query.AdvFilterParser;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
-import org.quartz.JobExecutionException;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,17 +35,14 @@ import java.util.List;
  * @author devezhao
  * @since 2020/5/27
  */
-@Component
 public class TriggerByTimerJob extends DistributedJobBean {
 
     /**
-     * @throws JobExecutionException
      * @see RobotTriggerManager#getActions(Entity, TriggerWhen...)
      */
     @Scheduled(cron = "0 * * * * ?")
-    @Override
-    public void executeInternalSafe() throws JobExecutionException {
-        if (!isSafe()) return;
+    public void executeJob() {
+        if (!isRunning()) return;
 
         final Calendar time = CalendarUtils.getInstance();
         final Object[][] timerTriggers = RebuildApplication.createQueryNoFilter(

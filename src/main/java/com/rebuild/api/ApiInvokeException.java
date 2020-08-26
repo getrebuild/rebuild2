@@ -33,7 +33,6 @@ public class ApiInvokeException extends RebuildException {
     // 违反数据约束
     public static final int ERR_DATASPEC = 420;
 
-
     private int errorCode = ERR_BIZ;
 
     public ApiInvokeException(String errorMsg) {

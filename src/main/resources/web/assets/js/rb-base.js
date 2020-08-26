@@ -60,10 +60,12 @@ See LICENSE and COMMERCIAL in the project root for license information.
     cache: false,
     complete: function (xhr) {
       if (xhr.status === 200 || xhr.status === 0) {
-        /* NOOP */
-      } else if (xhr.status === 403 || xhr.status === 401) RbHighbar.error(xhr.responseText || 'Unauthorized access')
-      else if (xhr.status === 502) RbHighbar.error('Service unavailable')
-      else {
+        // NOOP
+      } else if (xhr.status === 403 || xhr.status === 401) {
+        RbHighbar.error(xhr.responseText || '未授权访问')
+      } else if (xhr.status === 502) {
+        RbHighbar.error('服务暂不可用')
+      } else {
         var error = xhr.responseText
         if (error && error.contains('Exception:')) error = error.split('Exception:')[1]
         if (error && error.contains('Exception:')) error = error.split('Exception:')[1]
@@ -77,22 +79,14 @@ See LICENSE and COMMERCIAL in the project root for license information.
     },
   })
 
-  $.cookie.defaults = { expires: 14, path: '/', secure: location.protocol === 'https:' }
-
-  window.rb = window.rb || {}
-  $('meta[name^="rb."]').each(function (idx, item) {
-    var k = $(item).attr('name').substr(3) // remove `rb.`
-    var v = $(item).attr('content')
-    if (v === 'true') v = true
-    else if (v === 'false') v = false
-    window.rb[k] = v
-  })
   if (rb.appName && rb.appName !== document.title) document.title = document.title + ' · ' + rb.appName
-
   if (rb.env === 'dev') $('html').addClass('dev')
   setTimeout(function () {
     $(document.body).addClass('rb-animate')
   }, 1000)
+
+  // for `cookie`
+  $.cookie.defaults = { expires: 14, path: '/', secure: location.protocol === 'https:' }
 
   // for `watermark`
   if (window.watermark && self === top) {
@@ -406,22 +400,6 @@ var $stopEvent = function (e) {
   if (e && e.stopPropagation) e.stopPropagation()
   if (e && e.nativeEvent) e.nativeEvent.stopImmediatePropagation()
   return false
-}
-
-/**
- * 获取语言
- */
-var $lang = function () {
-  var lang = __getLang(arguments[0])
-  if (arguments.length < 2) return lang
-  for (var i = 1; i < arguments.length; i++) {
-    var iLang = __getLang(arguments[i])
-    lang = lang.replace('{' + (i - 1) + '}', iLang)
-  }
-  return lang
-}
-var __getLang = function (key) {
-  return (window.__LANGBUNDLE__ || {})[key] || '[' + key.toUpperCase() + ']'
 }
 
 /**

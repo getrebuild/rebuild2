@@ -17,9 +17,6 @@ import com.alibaba.fastjson.JSON;
  */
 public abstract class BaseApi extends Controller {
 
-    /**
-     * MUST!!!
-     */
     protected BaseApi() {
         super();
     }

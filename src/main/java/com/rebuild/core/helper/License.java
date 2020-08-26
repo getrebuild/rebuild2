@@ -34,12 +34,12 @@ public final class License {
      * @return
      */
     public static String SN() {
-        String SN = RebuildConfiguration.get(ConfigurableItem.SN, false);
+        String SN = RebuildConfiguration.get(ConfigurationItem.SN, false);
         if (SN != null) {
             return SN;
         }
 
-        SN = RebuildConfiguration.get(ConfigurableItem.SN, true);
+        SN = RebuildConfiguration.get(ConfigurationItem.SN, true);
         if (SN == null) {
             try {
                 String apiUrl = String.format("https://getrebuild.com/api/authority/new?ver=%s&k=%s", RebuildApplication.VER, OSA_KEY);
@@ -48,7 +48,7 @@ public final class License {
                 if (JSONUtils.wellFormat(result)) {
                     JSONObject o = JSON.parseObject(result);
                     SN = o.getString("sn");
-                    RebuildConfiguration.set(ConfigurableItem.SN, SN);
+                    RebuildConfiguration.set(ConfigurationItem.SN, SN);
                 }
 
             } catch (Exception ignored) {
@@ -62,7 +62,7 @@ public final class License {
                     StringUtils.leftPad(Locale.getDefault().getCountry(), 3, "0"),
                     UUID.randomUUID().toString().replace("-", "").substring(0, 14).toUpperCase());
             if (RebuildApplication.serversReady()) {
-                RebuildConfiguration.set(ConfigurableItem.SN, SN);
+                RebuildConfiguration.set(ConfigurationItem.SN, SN);
             }
         }
 

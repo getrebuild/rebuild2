@@ -43,7 +43,7 @@ public class SignUp extends BaseController {
 
     @GetMapping("signup")
     public ModelAndView pageSignup(HttpServletResponse response) throws IOException {
-        if (!RebuildConfiguration.getBool(ConfigurableItem.OpenSignUp)) {
+        if (!RebuildConfiguration.getBool(ConfigurationItem.OpenSignUp)) {
             response.sendError(400, "管理员未开放公开注册");
             return null;
         }
@@ -67,7 +67,7 @@ public class SignUp extends BaseController {
             return;
         }
 
-        String vcode = VCode.generate(email, 1);
+        String vcode = VerfiyCode.generate(email, 1);
         String content = "你的注册邮箱验证码是：" + vcode;
         String sentid = SMSender.sendMail(email, "注册验证码", content);
         LOG.warn(email + " >> " + content);
@@ -90,8 +90,8 @@ public class SignUp extends BaseController {
         String email = data.getString("email");
         String loginName = data.getString("loginName");
         String fullName = data.getString("fullName");
-        String passwd = VCode.generate(loginName, 2) + "!8";
-        VCode.clean(loginName);
+        String passwd = VerfiyCode.generate(loginName, 2) + "!8";
+        VerfiyCode.clean(loginName);
 
         Record userNew = EntityHelper.forNew(EntityHelper.User, UserService.SYSTEM_USER);
         userNew.setString("email", email);
@@ -149,7 +149,7 @@ public class SignUp extends BaseController {
     static String checkVCode(JSONObject data) {
         String email = data.getString("email");
         String vcode = data.getString("vcode");
-        if (!VCode.verfiy(email, vcode, true)) {
+        if (!VerfiyCode.verfiy(email, vcode, true)) {
             return "验证码无效";
         }
         return null;

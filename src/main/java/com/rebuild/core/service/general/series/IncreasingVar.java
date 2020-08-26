@@ -57,12 +57,12 @@ public class IncreasingVar extends SeriesVar {
         }
 
         final String nameKey = String.format("Series-%s.%s", field.getOwnEntity().getName(), field.getName());
-        Object keyLock = null;
+        Object keyLock;
         synchronized (LOCKs) {
             keyLock = LOCKs.computeIfAbsent(nameKey, k -> new Object());
         }
 
-        int nextValue = 1;
+        int nextValue;
         synchronized (keyLock) {
             String val = KVStorage.getCustomValue(nameKey);
             if (val != null) {
@@ -87,7 +87,7 @@ public class IncreasingVar extends SeriesVar {
         }
 
         final String nameKey = String.format("Series-%s.%s", field.getOwnEntity().getName(), field.getName());
-        Object keyLock = null;
+        Object keyLock;
         synchronized (LOCKs) {
             keyLock = LOCKs.computeIfAbsent(nameKey, k -> new Object());
         }

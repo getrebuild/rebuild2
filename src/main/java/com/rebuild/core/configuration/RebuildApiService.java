@@ -38,6 +38,6 @@ public class RebuildApiService extends BaseConfigurationService implements Admin
                 "select appId from RebuildApi where uniqueId = ?")
                 .setParameter(1, cfgid)
                 .unique();
-        RebuildApiManager.instance.clean((String) cfg[0]);
+        RebuildApiManager.instance.clean(cfg[0]);
     }
 }

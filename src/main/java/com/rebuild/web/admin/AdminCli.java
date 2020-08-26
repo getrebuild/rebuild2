@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web.admin;
 
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.setup.Installer;
 import org.apache.commons.lang.StringUtils;
@@ -112,7 +112,7 @@ public class AdminCli {
     /**
      * @return
      * @see #C_SYSCFG
-     * @see ConfigurableItem
+     * @see ConfigurationItem
      */
     protected String execSyscfg() {
         if (commands.length < 3) return "Bad arguments";
@@ -120,7 +120,7 @@ public class AdminCli {
         String name = commands[1];
         String value = commands[2];
         try {
-            ConfigurableItem item = ConfigurableItem.valueOf(name);
+            ConfigurationItem item = ConfigurationItem.valueOf(name);
             RebuildConfiguration.set(item, value);
             return "OK";
 

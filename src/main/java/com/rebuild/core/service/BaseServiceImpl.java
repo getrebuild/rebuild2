@@ -11,11 +11,13 @@ import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.general.QuickCodeReindexTask;
+import org.springframework.stereotype.Service;
 
 /**
  * @author devezhao
  * @since 01/04/2019
  */
+@Service
 public class BaseServiceImpl extends BaseService {
 
     public BaseServiceImpl(PersistManagerFactory aPMFactory) {

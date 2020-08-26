@@ -114,7 +114,7 @@ public class Login extends BaseController {
         }
 
         // 登录页
-        return createModelAndView("/signup/login.html");
+        return createModelAndView("/signup/login");
     }
 
     @PostMapping("user-login")
@@ -242,7 +242,7 @@ public class Login extends BaseController {
 
     @GetMapping("forgot-passwd")
     public ModelAndView forgotPasswd() {
-        return createModelAndView("/user/forgot-passwd.html");
+        return createModelAndView("/signup/forgot-passwd");
     }
 
     @PostMapping("user-forgot-passwd")
@@ -258,7 +258,7 @@ public class Login extends BaseController {
             return;
         }
 
-        String vcode = VCode.generate(email, 2);
+        String vcode = VerfiyCode.generate(email, 2);
         String content = "你的重置密码验证码是：" + vcode;
         String sentid = SMSender.sendMail(email, "重置密码", content);
         if (sentid != null) {
@@ -288,7 +288,7 @@ public class Login extends BaseController {
 
             RebuildApplication.getBean(UserService.class).update(record);
             writeSuccess(response);
-            VCode.clean(email);
+            VerfiyCode.clean(email);
         } catch (DataSpecificationException ex) {
             writeFailure(response, ex.getLocalizedMessage());
         } finally {
@@ -298,7 +298,7 @@ public class Login extends BaseController {
 
     @GetMapping("live-wallpaper")
     public void getLiveWallpaper(HttpServletResponse response) {
-        if (!RebuildConfiguration.getBool(ConfigurableItem.LiveWallpaper)) {
+        if (!RebuildConfiguration.getBool(ConfigurationItem.LiveWallpaper)) {
             writeFailure(response);
             return;
         }

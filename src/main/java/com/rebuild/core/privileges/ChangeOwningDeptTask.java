@@ -37,7 +37,7 @@ public class ChangeOwningDeptTask extends HeavyTask<Integer> {
     }
 
     @Override
-    protected Integer exec() throws Exception {
+    protected Integer exec() {
         LOG.info("Start modifying the `OwningDept` ... " + this.user);
         this.setTotal(MetadataHelper.getEntities().length);
 

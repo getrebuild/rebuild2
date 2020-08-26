@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -31,7 +31,7 @@ public class RevisionHistoryObserver extends OperatingObserver {
     @Override
     protected void updateByAction(OperatingContext ctx) {
         // 激活
-        if (RebuildConfiguration.getInt(ConfigurableItem.RevisionHistoryKeepingDays) > 0) {
+        if (RebuildConfiguration.getInt(ConfigurationItem.RevisionHistoryKeepingDays) > 0) {
             super.updateByAction(ctx);
         } else if (ctx.getAction() != ObservableService.DELETE_BEFORE) {
             LOG.warn("RevisionHistory inactivated : " + ctx.getAnyRecord().getPrimary() + " by " + ctx.getOperator());

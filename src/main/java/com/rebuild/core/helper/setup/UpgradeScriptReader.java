@@ -63,7 +63,7 @@ public class UpgradeScriptReader {
                 sqlBatch = new ArrayList<>();
 
             } else if (sl.startsWith(TAG_COMMENT)) {
-                // Ignore comments
+                // IGNORE COMMENTS
             } else {
                 sqlOne.append(sl).append("\n");
                 if (sl.endsWith(";")) {  // SQL end by `;`

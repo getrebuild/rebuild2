@@ -49,7 +49,6 @@ public class BatchOperatorQuery extends SetUser<BatchOperatorQuery> {
     /**
      * 查询后数据
      */
-    @SuppressWarnings("unused")
     public static final int DR_QUERYED = 3;
     /**
      * 全部数据

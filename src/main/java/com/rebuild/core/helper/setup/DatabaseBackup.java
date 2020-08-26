@@ -9,7 +9,7 @@ package com.rebuild.core.helper.setup;
 
 import cn.devezhao.commons.CalendarUtils;
 import com.rebuild.core.RebuildEnvironmentPostProcessor;
-import com.rebuild.core.helper.ConfigurableItem;
+import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.utils.FileFilterByLastModified;
 import org.apache.commons.io.FileUtils;
@@ -124,7 +124,7 @@ public class DatabaseBackup {
      * @param backups
      */
     protected void deleteOldBackups(File backups) {
-        int keepDays = RebuildConfiguration.getInt(ConfigurableItem.DBBackupsKeepingDays);
+        int keepDays = RebuildConfiguration.getInt(ConfigurationItem.DBBackupsKeepingDays);
         if (keepDays < 9999) {
             FileFilterByLastModified.deletes(backups, keepDays);
         }

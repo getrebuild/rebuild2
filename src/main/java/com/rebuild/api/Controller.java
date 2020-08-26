@@ -33,7 +33,7 @@ public abstract class Controller {
     /**
      * Logging
      */
-    protected final static Log LOG = LogFactory.getLog(Controller.class);
+    protected static final Log LOG = LogFactory.getLog(Controller.class);
 
     /**
      * @param data
