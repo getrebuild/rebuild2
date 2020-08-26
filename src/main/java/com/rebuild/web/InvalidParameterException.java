@@ -18,19 +18,7 @@ import com.rebuild.core.service.DataSpecificationException;
 public class InvalidParameterException extends DataSpecificationException {
     private static final long serialVersionUID = 1104144276994648297L;
 
-    public InvalidParameterException() {
-        this("无效请求参数");
-    }
-
     public InvalidParameterException(String msg) {
         super(msg);
-    }
-
-    public InvalidParameterException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
-
-    public InvalidParameterException(int errorCode, String msg) {
-        super(errorCode, msg);
     }
 }

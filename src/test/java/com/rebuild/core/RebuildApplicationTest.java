@@ -6,7 +6,6 @@ public class RebuildApplicationTest {
 
     @Test
     void run() {
-        System.setProperty("rbdev", "true");
-        RebuildApplication.main(new String[0]);
+        RebuildApplication.main(new String[]{"-Drbdev=true"});
     }
 }

@@ -17,6 +17,7 @@ import com.rebuild.utils.AppUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,11 +25,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Controll 请求拦截
+ * Controller 请求拦截
  *
  * @author Zhao Fangfang
  * @since 1.0, 2013-6-24
  */
+@Component
 public class RequestWatchHandler extends HandlerInterceptorAdapter implements InstallState {
 
     private static final Log LOG = LogFactory.getLog(RequestWatchHandler.class);
@@ -73,13 +75,11 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
                     response.sendRedirect(AppUtils.getContextPath() + "/gw/server-status?s=" + CodecUtils.urlEncode(requestUrl));
                     return false;
                 }
-            } else if (!(requestUrl.contains("/setup/") || requestUrl.contains("/language/bundle"))) {
+            } else if (!requestUrl.contains("/setup/")) {
                 response.sendRedirect(AppUtils.getContextPath() + "/setup/install");
                 return false;
             }
         } else {
-            // for Language
-            RebuildApplication.getSessionStore().setLocale(AppUtils.getLocale(request));
             // Last active
             if (!(isIgnoreActive(requestUrl) || ServletUtils.isAjaxRequest(request))) {
                 RebuildApplication.getSessionStore().storeLastActive(request);

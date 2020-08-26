@@ -11,7 +11,6 @@ import cn.devezhao.commons.EncryptUtils;
 import com.alibaba.fastjson.JSON;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.helper.RebuildConfiguration;
-import com.rebuild.core.helper.language.Languages;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.privileges.bizz.ZeroEntry;
 import com.rebuild.utils.JSONUtils;
@@ -59,13 +58,13 @@ public class LoginToken extends BaseApi {
      */
     public static String checkUser(String user, String password) {
         if (!RebuildApplication.getUserStore().existsUser(user)) {
-            return Languages.lang("InputWrong", "UsernameOrPassword");
+            return "用户名或密码错误";
         }
 
         User loginUser = RebuildApplication.getUserStore().getUser(user);
         if (!loginUser.isActive()
                 || !RebuildApplication.getPrivilegesManager().allow(loginUser.getId(), ZeroEntry.AllowLogin)) {
-            return Languages.lang("UnactiveUserTip");
+            return "用户未激活或不允许登录";
         }
 
         Object[] foundUser = RebuildApplication.createQueryNoFilter(
@@ -75,7 +74,7 @@ public class LoginToken extends BaseApi {
                 .unique();
         if (foundUser == null
                 || !foundUser[0].equals(EncryptUtils.toSHA256Hex(password))) {
-            return Languages.lang("InputWrong", "UsernameOrPassword");
+            return "用户名或密码错误";
         }
 
         return null;

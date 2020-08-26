@@ -23,6 +23,7 @@ import com.rebuild.core.privileges.bizz.ZeroPrivileges;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
 
 import java.security.Principal;
 import java.util.*;
@@ -34,6 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author zhaofang123@gmail.com
  * @since 09/16/2018
  */
+@Component
 public class UserStore {
 
     private static final Log LOG = LogFactory.getLog(UserStore.class);
@@ -496,11 +498,8 @@ public class UserStore {
     /**
      * 初始化
      *
-     * @throws Exception
      */
-    @SuppressWarnings("DuplicatedCode")
-    synchronized
-    protected void init() throws Exception {
+    synchronized protected void init() {
         // 用户
 
         Object[][] array = aPMFactory.createQuery("select " + USER_FS + " from User").array();

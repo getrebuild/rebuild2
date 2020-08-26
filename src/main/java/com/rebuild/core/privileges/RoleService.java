@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.BaseServiceImpl;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Map;
  * @author zhaofang123@gmail.com
  * @since 08/03/2018
  */
+@Service
 public class RoleService extends BaseServiceImpl implements AdminGuard {
 
     /**
@@ -31,7 +33,7 @@ public class RoleService extends BaseServiceImpl implements AdminGuard {
      */
     public static final ID ADMIN_ROLE = ID.valueOf("003-0000000000000001");
 
-    public RoleService(PersistManagerFactory aPMFactory) {
+    protected RoleService(PersistManagerFactory aPMFactory) {
         super(aPMFactory);
     }
 

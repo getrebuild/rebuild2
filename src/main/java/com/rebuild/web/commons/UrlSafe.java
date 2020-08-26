@@ -7,25 +7,25 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.web.commons;
 
-import com.alibaba.fastjson.JSONArray;
+import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.web.BaseController;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 外部URL监测跳转
+ * 外部 URL 监测跳转
  *
  * @author zhaofang123@gmail.com
  * @since 09/20/2018
@@ -68,19 +68,8 @@ public class UrlSafe extends BaseController {
         if (TRUSTED_URLS.isEmpty()) {
             TRUSTED_URLS.add("getrebuild.com");
 
-            try {
-                File s = ResourceUtils.getFile("classpath:trusted-url.json");
-                try (InputStream is = new FileInputStream(s)) {
-                    JSONArray array = JSONArray.parseObject(is, null);
-                    for (Object o : array) {
-                        TRUSTED_URLS.add(o.toString());
-                    }
-                } catch (IOException e) {
-                    LOG.error("Couldn't read file `trusted-url.json` in classpath.", e);
-                }
-            } catch (FileNotFoundException e) {
-                LOG.error("Couldn't read file `trusted-url.json` in classpath.", e);
-            }
+            String trustedUrls = RebuildEnvironmentPostProcessor.getProperty("rebuild.TrustedUrls", "");
+            TRUSTED_URLS.addAll(Arrays.asList(trustedUrls.split(" ")));
         }
 
         String host = url;
@@ -89,8 +78,8 @@ public class UrlSafe extends BaseController {
         } catch (MalformedURLException ignored) {
         }
 
-        for (String trusted : TRUSTED_URLS) {
-            if (host.equals(trusted) || host.contains(trusted)) {
+        for (String t : TRUSTED_URLS) {
+            if (host.equals(t) || host.contains(t)) {
                 return true;
             }
         }

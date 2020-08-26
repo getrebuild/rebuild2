@@ -12,9 +12,6 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.rebuild.api.Controller;
-import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.language.LanguageBundle;
-import com.rebuild.core.helper.language.Languages;
 import com.rebuild.utils.AppUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -46,15 +43,6 @@ public abstract class BaseController extends Controller {
             throw new InvalidParameterException("无效请求用户");
         }
         return user;
-    }
-
-    /**
-     * @param request
-     * @return
-     */
-    protected LanguageBundle getBundle(HttpServletRequest request) {
-        String locale = AppUtils.getLocale(request);
-        return Languages.instance.getBundle(locale);
     }
 
     /**
@@ -211,13 +199,6 @@ public abstract class BaseController extends Controller {
      * @return
      */
     protected ModelAndView createModelAndView(String page) {
-        ModelAndView mv = new ModelAndView(page);
-
-        // 语言包
-        String locale = RebuildApplication.getSessionStore().getLocale();
-        LanguageBundle bundle = Languages.instance.getBundle(locale);
-        mv.getModel().put("bundle", bundle);
-
-        return mv;
+        return new ModelAndView(page);
     }
 }

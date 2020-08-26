@@ -18,6 +18,7 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.service.BaseServiceImpl;
 import com.rebuild.core.service.DataSpecificationException;
+import org.springframework.stereotype.Service;
 
 /**
  * for Department
@@ -25,6 +26,7 @@ import com.rebuild.core.service.DataSpecificationException;
  * @author zhaofang123@gmail.com
  * @since 08/03/2018
  */
+@Service
 public class DepartmentService extends BaseServiceImpl {
 
     /**
@@ -32,7 +34,7 @@ public class DepartmentService extends BaseServiceImpl {
      */
     public static final ID ROOT_DEPT = ID.valueOf("002-0000000000000001");
 
-    public DepartmentService(PersistManagerFactory aPMFactory) {
+    protected DepartmentService(PersistManagerFactory aPMFactory) {
         super(aPMFactory);
     }
 

@@ -14,12 +14,10 @@ import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.helper.ConfigurableItem;
 import com.rebuild.core.helper.RebuildConfiguration;
-import com.rebuild.core.helper.language.Languages;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.CurrentCaller;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.web.signup.Login;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.NamedThreadLocal;
@@ -145,31 +143,6 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
 
         ONLINE_SESSIONS.remove(s);
         ONLINE_USERS.put((ID) loginUser, s);
-    }
-
-    /**
-     * @param locale
-     */
-    public void setLocale(String locale) {
-        LOCALE.set(locale);
-    }
-
-    /**
-     * @return Returns default if unset
-     * @see Languages
-     */
-    public String getLocale() {
-        return StringUtils.defaultIfEmpty(LOCALE.get(), RebuildConfiguration.get(ConfigurableItem.DefaultLanguage));
-    }
-
-    /**
-     * @param caller
-     * @param locale
-     * @see #set(ID)
-     */
-    public void set(ID caller, String locale) {
-        super.set(caller);
-        this.setLocale(locale);
     }
 
     @Override

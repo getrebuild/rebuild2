@@ -15,7 +15,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.api.AuthTokenManager;
 import com.rebuild.api.Controller;
 import com.rebuild.core.RebuildApplication;
-import com.rebuild.core.helper.language.Languages;
 import com.rebuild.core.privileges.PrivilegesManager;
 import com.rebuild.core.privileges.bizz.ZeroEntry;
 import com.rebuild.web.admin.AdminEntryController;
@@ -42,11 +41,6 @@ public class AppUtils {
      * 移动端 Token Header
      */
     public static final String MOBILE_HF_AUTHTOKEN = "X-AuthToken";
-
-    /**
-     * 语言
-     */
-    public static final String SK_LOCALE = WebUtils.KEY_PREFIX + ".LOCALE";
 
     /**
      * @return
@@ -131,7 +125,7 @@ public class AppUtils {
             if (know instanceof DataTruncation) {
                 return "字段长度超出限制";
             } else if (know instanceof AccessDeniedException) {
-                return Languages.lang("Error403");
+                return "权限不足，访问被阻止";
             }
         }
 
@@ -150,15 +144,15 @@ public class AppUtils {
         if (exception == null) {
             Integer state = (Integer) request.getAttribute(ServletUtils.ERROR_STATUS_CODE);
             if (state != null && state == 404) {
-                return Languages.lang("Error404");
+                return "访问的地址/资源不存在";
             } else if (state != null && state == 403) {
-                return Languages.lang("Error403");
+                return "权限不足，访问被阻止";
             } else {
-                return Languages.lang("ErrorUnknow");
+                return "未知错误，请稍后重试";
             }
         } else {
             exception = ThrowableUtils.getRootCause(exception);
-            errorMsg = StringUtils.defaultIfBlank(exception.getLocalizedMessage(), Languages.lang("ErrorUnknow"));
+            errorMsg = StringUtils.defaultIfBlank(exception.getLocalizedMessage(), "未知错误，请稍后重试");
             return exception.getClass().getSimpleName() + ": " + errorMsg;
         }
     }
@@ -184,20 +178,5 @@ public class AppUtils {
      */
     public static boolean allow(HttpServletRequest request, ZeroEntry entry) {
         return RebuildApplication.getPrivilegesManager().allow(getRequestUser(request), entry);
-    }
-
-    /**
-     * 获取客户端语言
-     *
-     * @param request
-     * @return
-     */
-    public static String getLocale(HttpServletRequest request) {
-        String locale = (String) ServletUtils.getSessionAttribute(request, SK_LOCALE);
-        if (locale == null) {
-            locale = StringUtils.defaultIfBlank(
-                    request.getHeader("X-Language"), request.getLocale().toString());
-        }
-        return locale;
     }
 }

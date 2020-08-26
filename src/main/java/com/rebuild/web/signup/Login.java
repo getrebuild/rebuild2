@@ -28,19 +28,18 @@ import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.utils.AES;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.web.BaseController;
-import com.rebuild.web.commons.LanguagesControll;
 import com.wf.captcha.utils.CaptchaUtil;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import static com.rebuild.core.helper.language.Languages.lang;
 
 /**
  * @author zhaofang123@gmail.com
@@ -58,16 +57,10 @@ public class Login extends BaseController {
 
     private static final String DEFAULT_HOME = "../dashboard/home";
 
-    @RequestMapping("login")
+    @GetMapping("login")
     public ModelAndView checkLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (AppUtils.getRequestUser(request) != null) {
             response.sendRedirect(DEFAULT_HOME);
-            return null;
-        }
-
-        // 切换语言
-        if (LanguagesControll.switchLanguage(request)) {
-            response.sendRedirect("login?locale=" + getParameter(request, "locale"));
             return null;
         }
 
@@ -121,16 +114,16 @@ public class Login extends BaseController {
         }
 
         // 登录页
-        return createModelAndView("/user/login.jsp");
+        return createModelAndView("/signup/login.html");
     }
 
-    @RequestMapping("user-login")
+    @PostMapping("user-login")
     public void userLogin(HttpServletRequest request, HttpServletResponse response) {
         String vcode = getParameter(request, "vcode");
         Boolean needVcode = (Boolean) ServletUtils.getSessionAttribute(request, NEED_VCODE);
         if (needVcode != null && needVcode
                 && (StringUtils.isBlank(vcode) || !CaptchaUtil.ver(vcode, request))) {
-            writeFailure(response, lang("InputWrong", "Captcha"));
+            writeFailure(response, "验证码错误");
             return;
         }
 
@@ -238,7 +231,7 @@ public class Login extends BaseController {
         return record.getPrimary();
     }
 
-    @RequestMapping("logout")
+    @GetMapping("logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ServletUtils.removeCookie(request, response, CK_AUTOLOGIN);
         ServletUtils.getSession(request).invalidate();
@@ -247,27 +240,27 @@ public class Login extends BaseController {
 
     // --
 
-    @RequestMapping("forgot-passwd")
+    @GetMapping("forgot-passwd")
     public ModelAndView forgotPasswd() {
-        return createModelAndView("/user/forgot-passwd.jsp");
+        return createModelAndView("/user/forgot-passwd.html");
     }
 
-    @RequestMapping("user-forgot-passwd")
+    @PostMapping("user-forgot-passwd")
     public void userForgotPasswd(HttpServletRequest request, HttpServletResponse response) {
         if (!SMSender.availableMail()) {
-            writeFailure(response, lang("EmailAccountUnset"));
+            writeFailure(response, "邮件服务账户未配置，请联系管理员配置");
             return;
         }
 
         String email = getParameterNotNull(request, "email");
         if (!RegexUtils.isEMail(email) || !RebuildApplication.getUserStore().existsEmail(email)) {
-            writeFailure(response, lang("InputInvalid", "Email"));
+            writeFailure(response, "邮箱无效");
             return;
         }
 
         String vcode = VCode.generate(email, 2);
-        String content = String.format(lang("YourVcodeForResetPassword"), vcode);
-        String sentid = SMSender.sendMail(email, lang("ResetPassword"), content);
+        String content = "你的重置密码验证码是：" + vcode;
+        String sentid = SMSender.sendMail(email, "重置密码", content);
         if (sentid != null) {
             writeSuccess(response);
         } else {
@@ -275,18 +268,18 @@ public class Login extends BaseController {
         }
     }
 
-    @SuppressWarnings("DuplicatedCode")
-    @RequestMapping("user-confirm-passwd")
-    public void userConfirmPasswd(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("user-confirm-passwd")
+    public void userConfirmPasswd(HttpServletRequest request, HttpServletResponse response) {
         JSONObject data = (JSONObject) ServletUtils.getRequestJson(request);
-        String email = data.getString("email");
-        String vcode = data.getString("vcode");
-        if (!VCode.verfiy(email, vcode, true)) {
-            writeFailure(response, lang("InputInvalid", "Vcode"));
+        String hasError = SignUp.checkVCode(data);
+        if (hasError != null) {
+            writeFailure(response, hasError);
             return;
         }
 
+        String email = data.getString("email");
         String newpwd = data.getString("newpwd");
+
         User user = RebuildApplication.getUserStore().getUserByEmail(email);
         Record record = EntityHelper.forUpdate(user.getId(), user.getId());
         record.setString("password", newpwd);
@@ -303,8 +296,8 @@ public class Login extends BaseController {
         }
     }
 
-    @RequestMapping("live-wallpaper")
-    public void getLiveWallpaper(HttpServletResponse response) throws IOException {
+    @GetMapping("live-wallpaper")
+    public void getLiveWallpaper(HttpServletResponse response) {
         if (!RebuildConfiguration.getBool(ConfigurableItem.LiveWallpaper)) {
             writeFailure(response);
             return;

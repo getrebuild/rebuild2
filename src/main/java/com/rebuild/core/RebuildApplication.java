@@ -109,7 +109,7 @@ public class RebuildApplication {
         LOG.info("Initializing SpringBoot context ...");
         SpringApplication spring = new SpringApplication(RebuildApplication.class);
         spring.setBannerMode(Banner.Mode.OFF);
-        spring.run(args);
+        APPLICATION_CONTEXT = spring.run(args);
 
         try {
             if (Installer.isInstalled()) {
@@ -117,9 +117,9 @@ public class RebuildApplication {
             } else {
                 String localUrl = String.format("http://localhost:%s%s",
                         RebuildEnvironmentPostProcessor.getProperty("server.port", "8080"),
-                        RebuildEnvironmentPostProcessor.getProperty("servlet.context-path", "/"));
+                        RebuildEnvironmentPostProcessor.getProperty("server.servlet.context-path", "/"));
                 LOG.warn(formatBootMsg(
-                        "REBUILD IS WAITING FOR INSTALL ...", null, "Install URL : " + localUrl));
+                        "REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
             }
 
         } catch (Exception ex) {

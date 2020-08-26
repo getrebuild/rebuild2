@@ -19,7 +19,9 @@ import java.util.Properties;
 @Component
 public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor, InstallState {
 
-    private static ConfigurableEnvironment ENV;
+    private static final String V2_PREFIX = "rebuild.";
+
+    private static ConfigurableEnvironment ENV_HOLD;
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
@@ -29,9 +31,20 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
             RebuildApplication.LOG.info("Loading file of install : " + file);
 
             try {
-                Properties ps = PropertiesLoaderUtils.loadProperties(new FileSystemResource(file));
+                Properties temp = PropertiesLoaderUtils.loadProperties(new FileSystemResource(file));
+                Properties ps = new Properties();
+                // 兼容 V1
+                for (String name : temp.stringPropertyNames()) {
+                    String value = temp.getProperty(name);
+                    if (name.startsWith("db.") || name.startsWith("rebuild.")) {
+                        ps.put(name, value);
+                    } else {
+                        ps.put(V2_PREFIX + name, value);
+                    }
+                }
+
                 aesDecrypt(ps);
-                PropertiesPropertySource propertySource = new PropertiesPropertySource(".rebuild", ps);
+                PropertiesPropertySource propertySource = new PropertiesPropertySource(".rebuild", temp);
                 environment.getPropertySources().addLast(propertySource);
 
             } catch (IOException ex) {
@@ -42,7 +55,7 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
         // 解密
         Properties superlativeProperties = new Properties();
         for (ConfigurableItem item : ConfigurableItem.values()) {
-            String name = item.name();
+            String name = V2_PREFIX + item.name();
             String value = environment.getProperty(name);
             if (StringUtils.isNotBlank(value)) {
                 superlativeProperties.put(name, value);
@@ -52,22 +65,22 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
         PropertiesPropertySource propertySource = new PropertiesPropertySource(".rebuild", superlativeProperties);
         environment.getPropertySources().addLast(propertySource);
 
-        ENV = environment;
+        ENV_HOLD = environment;
     }
 
     /**
      * 解密配置 `AES(xxx)`
      *
-     * @param env
+     * @param ps
      * @see AES
      */
-    private void aesDecrypt(Properties env) {
-        for (String name : env.stringPropertyNames()) {
-            String value = env.getProperty(name);
+    private void aesDecrypt(Properties ps) {
+        for (String name : ps.stringPropertyNames()) {
+            String value = ps.getProperty(name);
             if ((value.startsWith("AES(") || value.startsWith("aes(")) && value.endsWith(")")) {
                 value = value.substring(4, value.length() - 1);
                 value = AES.decryptQuietly(value);
-                env.put(name, value);
+                ps.put(name, value);
             }
         }
     }
@@ -87,10 +100,10 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
      */
     public static String getProperty(String name, String defaultValue) {
         String value;
-        if (ENV == null && ConfigurableItem.DataDirectory.name().equalsIgnoreCase(name)) {
+        if (ENV_HOLD == null && ConfigurableItem.DataDirectory.name().equalsIgnoreCase(name)) {
             value = System.getProperty("DataDirectory");
         } else {
-            value = ENV == null ? null : ENV.getProperty(name);
+            value = ENV_HOLD == null ? null : ENV_HOLD.getProperty(name);
         }
         return StringUtils.defaultIfBlank(value, defaultValue);
     }

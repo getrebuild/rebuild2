@@ -29,7 +29,6 @@ import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.configuration.general.DataListManager;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.SMSender;
-import com.rebuild.core.helper.language.Languages;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.privileges.bizz.Department;
@@ -37,14 +36,14 @@ import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.EntityController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,8 +55,8 @@ import java.util.Map;
 @RequestMapping("/admin/bizuser/")
 public class UserControll extends EntityController {
 
-    @RequestMapping("users")
-    public ModelAndView pageList(HttpServletRequest request) throws IOException {
+    @GetMapping("users")
+    public ModelAndView pageList(HttpServletRequest request) {
         ID user = getRequestUser(request);
         ModelAndView mv = createModelAndView("/admin/bizuser/user-list.jsp", "User", user);
         JSON config = DataListManager.instance.getFieldsLayout("User", user);
@@ -66,7 +65,7 @@ public class UserControll extends EntityController {
     }
 
     @RequestMapping("check-user-status")
-    public void checkUserStatus(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void checkUserStatus(HttpServletRequest request, HttpServletResponse response) {
         ID id = getIdParameterNotNull(request, "id");
         if (!RebuildApplication.getUserStore().existsUser(id)) {
             writeFailure(response);
@@ -92,8 +91,8 @@ public class UserControll extends EntityController {
         writeSuccess(response, ret);
     }
 
-    @RequestMapping("enable-user")
-    public void enableUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("enable-user")
+    public void enableUser(HttpServletRequest request, HttpServletResponse response) {
         JSONObject data = (JSONObject) ServletUtils.getRequestJson(request);
 
         ID user = ID.valueOf(data.getString("user"));
@@ -131,10 +130,10 @@ public class UserControll extends EntityController {
                     .unique();
             if (did == null) {
                 String homeUrl = RebuildConfiguration.getHomeUrl();
-                String content = Languages.defaultBundle().formatLang("NewUserAccountActive",
+                String content = String.format(
+                        "%s 你的账户已激活！现在你可以登陆并使用系统。登录地址 [%s](%s) <br>首次登陆，建议你立即修改密码！如有任何登陆或使用问题，请与系统管理员联系。",
                         u.getFullName(), homeUrl, homeUrl);
-                SMSender.sendMailAsync(u.getEmail(),
-                        Languages.defaultBundle().lang("YourAccountActive"), content);
+                SMSender.sendMailAsync(u.getEmail(), "你的账户已激活", content);
             }
         }
 
@@ -151,7 +150,7 @@ public class UserControll extends EntityController {
     }
 
     @RequestMapping("delete-checks")
-    public void deleteChecks(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void deleteChecks(HttpServletRequest request, HttpServletResponse response) {
         // 用户/部门/角色
         final ID bizz = getIdParameterNotNull(request, "id");
 
@@ -179,15 +178,15 @@ public class UserControll extends EntityController {
         writeSuccess(response, ret);
     }
 
-    @RequestMapping(value = "user-delete", method = RequestMethod.POST)
-    public void userDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("user-delete")
+    public void userDelete(HttpServletRequest request, HttpServletResponse response) {
         ID user = getIdParameterNotNull(request, "id");
         RebuildApplication.getBean(UserService.class).delete(user);
         writeSuccess(response);
     }
 
-    @RequestMapping(value = "user-resetpwd", method = RequestMethod.POST)
-    public void userResetpwd(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("user-resetpwd")
+    public void userResetpwd(HttpServletRequest request, HttpServletResponse response) {
         ID user = getIdParameterNotNull(request, "id");
         String newp = getParameterNotNull(request, "newp");
 

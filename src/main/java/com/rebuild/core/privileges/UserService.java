@@ -20,7 +20,6 @@ import com.rebuild.core.helper.BlackList;
 import com.rebuild.core.helper.ConfigurableItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.SMSender;
-import com.rebuild.core.helper.language.Languages;
 import com.rebuild.core.helper.task.TaskExecutors;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.BaseServiceImpl;
@@ -29,6 +28,7 @@ import com.rebuild.core.service.notification.Message;
 import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.CommonsUtils;
+import org.springframework.stereotype.Service;
 
 /**
  * for User
@@ -36,6 +36,7 @@ import com.rebuild.utils.CommonsUtils;
  * @author zhaofang123@gmail.com
  * @since 07/25/2018
  */
+@Service
 public class UserService extends BaseServiceImpl {
 
     // 系统用户
@@ -43,10 +44,10 @@ public class UserService extends BaseServiceImpl {
     // 管理员
     public static final ID ADMIN_USER = ID.valueOf("001-0000000000000001");
 
-    // 暂未用：全部用户（注意这是一个虚拟用户 ID，并不真实存在）
-    public static final ID _ALL_USER = ID.valueOf("001-9999999999999999");
+//    // 暂未用：全部用户（注意这是一个虚拟用户 ID，并不真实存在）
+//    public static final ID _ALL_USER = ID.valueOf("001-9999999999999999");
 
-    public UserService(PersistManagerFactory aPMFactory) {
+    protected UserService(PersistManagerFactory aPMFactory) {
         super(aPMFactory);
     }
 
@@ -113,7 +114,7 @@ public class UserService extends BaseServiceImpl {
         }
 
         if (record.hasValue("email") && RebuildApplication.getUserStore().existsUser(record.getString("email"))) {
-            throw new DataSpecificationException(Languages.lang("Repeated", "Email"));
+            throw new DataSpecificationException("邮箱重复");
         }
 
         if (record.getPrimary() == null && !record.hasValue("fullName")) {
@@ -170,7 +171,7 @@ public class UserService extends BaseServiceImpl {
      */
     protected void checkPassword(String password) throws DataSpecificationException {
         if (password.length() < 6) {
-            throw new DataSpecificationException(Languages.lang("PasswordLevel1Tip"));
+            throw new DataSpecificationException("密码不能小于6位");
         }
 
         int policy = RebuildConfiguration.getInt(ConfigurableItem.PasswordPolicy);
@@ -195,10 +196,10 @@ public class UserService extends BaseServiceImpl {
         }
 
         if (countUpper == 0 || countLower == 0 || countDigit == 0) {
-            throw new DataSpecificationException(Languages.lang("PasswordLevel2Tip"));
+            throw new DataSpecificationException("密码必须包含数字和大小写字母");
         }
         if (policy >= 3 && (countSpecial == 0 || password.length() < 8)) {
-            throw new DataSpecificationException(Languages.lang("PasswordLevel3Tip"));
+            throw new DataSpecificationException("密码不能小于8位，且必须包含特殊字符");
         }
     }
 
@@ -215,9 +216,9 @@ public class UserService extends BaseServiceImpl {
         String appName = RebuildConfiguration.get(ConfigurableItem.AppName);
         String homeUrl = RebuildConfiguration.getHomeUrl();
 
-        String subject = Languages.defaultBundle().formatLang("YourAccountReady",
-                appName);
-        String content = Languages.defaultBundle().formatLang("NewUserAddedNotify",
+        String subject = String.format("你的 %s 账号已就绪", appName);
+        String content = String.format(
+                "系统管理员已经为你开通了 %s 账号！以下为你的登录信息，请妥善保管。<br>登录账号：%s <br>登录密码：%s <br>登录地址：[%s](%s) <br><br>首次登陆，建议你立即修改登陆密码。修改方式：登陆后点击右上角头像 - 个人设置 - 安全设置 - 更改密码",
                 appName, newUser.getString("loginName"), passwd, homeUrl, homeUrl);
 
         SMSender.sendMail(newUser.getString("email"), subject, content);
@@ -280,7 +281,9 @@ public class UserService extends BaseServiceImpl {
 
         ID newUserId = record.getPrimary();
         String viewUrl = AppUtils.getContextPath() + "/app/list-and-view?id=" + newUserId;
-        String content = Languages.defaultBundle().formatLang("NewUserSignupNotify", newUserId, viewUrl);
+        String content = String.format(
+                "用户 @%s 提交了注册申请。请验证用户有效性后为其启用并指定部门和角色，以便用户登录使用。如果这是一个无效申请请忽略。[点击此处激活](%s)",
+                newUserId, viewUrl);
 
         Message message = MessageBuilder.createMessage(ADMIN_USER, content, newUserId);
         RebuildApplication.getNotifications().send(message);
