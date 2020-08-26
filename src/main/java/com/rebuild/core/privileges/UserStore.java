@@ -51,8 +51,8 @@ public class UserStore {
     final private PersistManagerFactory aPMFactory;
 
     protected UserStore(PersistManagerFactory aPMFactory) {
-        super();
         this.aPMFactory = aPMFactory;
+        this.init();
     }
 
     /**
@@ -497,9 +497,8 @@ public class UserStore {
 
     /**
      * 初始化
-     *
      */
-    synchronized protected void init() {
+    private void init() {
         // 用户
 
         Object[][] array = aPMFactory.createQuery("select " + USER_FS + " from User").array();

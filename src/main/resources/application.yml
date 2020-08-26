@@ -24,7 +24,7 @@ rebuild:
   CacheHost: 127.0.0.1
   CachePort: 16379
   CachePassword: AES(vXwBKYUosMpJRO9jeG9+IA==)
-
+  # @see UrlSafe.java
   TrustedUrls:
     .baidu.com
     qq.com
@@ -32,7 +32,11 @@ rebuild:
 # TOMCAT (Built-in)
 server:
   port: 18080
-  servlet.context-path: /rebuild/
+  servlet:
+    context-path: /rebuild
+    encoding:
+      charset: UTF-8
+      force: true
   tomcat:
     uri-encoding: UTF-8
     threads.max: 200

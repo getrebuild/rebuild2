@@ -105,7 +105,6 @@ public class RebuildApplication {
 
         long startAt = System.currentTimeMillis();
 
-
         LOG.info("Initializing SpringBoot context ...");
         SpringApplication spring = new SpringApplication(RebuildApplication.class);
         spring.setBannerMode(Banner.Mode.OFF);
@@ -117,7 +116,7 @@ public class RebuildApplication {
             } else {
                 String localUrl = String.format("http://localhost:%s%s",
                         RebuildEnvironmentPostProcessor.getProperty("server.port", "8080"),
-                        RebuildEnvironmentPostProcessor.getProperty("server.servlet.context-path", "/"));
+                        RebuildEnvironmentPostProcessor.getProperty("server.servlet.context-path", ""));
                 LOG.warn(formatBootMsg(
                         "REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
             }

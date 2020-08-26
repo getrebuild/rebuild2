@@ -77,16 +77,16 @@ public class KVStorage {
      * @return
      */
     protected static String getValue(final String key, boolean reload, Object defaultValue) {
-
         String value = null;
 
         if (RebuildApplication.serversReady()) {
+            // 0. 从缓存
             value = RebuildApplication.getCommonsCache().get(key);
             if (value != null && !reload) {
                 return value;
             }
 
-            // 1. 首先从数据库
+            // 1. 从数据库
             Object[] fromDb = RebuildApplication.createQueryNoFilter(
                     "select value from SystemConfig where item = ?")
                     .setParameter(1, key)
