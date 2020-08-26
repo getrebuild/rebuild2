@@ -1,5 +1,5 @@
 /*
-Copyright (c) REBUILD <https://getrebuild.com/> and its owners. All rights reserved.
+Copyright (c) REBUILD <https://getrebuild.com/> and/or its owners. All rights reserved.
 
 rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
@@ -23,6 +23,7 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.bizz.*;
 import com.rebuild.core.service.NoRecordFoundException;
 import com.rebuild.core.service.general.EntityService;
+import org.springframework.stereotype.Service;
 
 /**
  * 实体安全/权限 管理
@@ -33,6 +34,7 @@ import com.rebuild.core.service.general.EntityService;
  * @see BizzDepthEntry
  * @since 1.0, 2013-6-21
  */
+@Service
 public class PrivilegesManager {
 
     final private UserStore theUserStore;

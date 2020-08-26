@@ -1,5 +1,5 @@
 /*
-Copyright (c) REBUILD <https://getrebuild.com/> and its owners. All rights reserved.
+Copyright (c) REBUILD <https://getrebuild.com/> and/or its owners. All rights reserved.
 
 rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
@@ -16,6 +16,7 @@ import com.rebuild.core.cache.BaseCacheTemplate;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.NoRecordFoundException;
 import org.springframework.cache.CacheManager;
+import org.springframework.stereotype.Service;
 import redis.clients.jedis.JedisPool;
 
 /**
@@ -24,6 +25,7 @@ import redis.clients.jedis.JedisPool;
  * @author devezhao
  * @since 10/12/2018
  */
+@Service
 public class RecordOwningCache extends BaseCacheTemplate<ID> {
 
     final private PersistManagerFactory aPMFactory;

@@ -1,5 +1,5 @@
 /*
-Copyright (c) REBUILD <https://getrebuild.com/> and its owners. All rights reserved.
+Copyright (c) REBUILD <https://getrebuild.com/> and/or its owners. All rights reserved.
 
 rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
@@ -16,8 +16,8 @@ import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.api.AuthTokenManager;
-import com.rebuild.api.LoginToken;
+import com.rebuild.api.login.AuthTokenManager;
+import com.rebuild.api.login.LoginToken;
 import com.rebuild.core.RebuildApplication;
 import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.core.helper.*;
