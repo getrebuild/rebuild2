@@ -55,14 +55,6 @@ public class NavBuilder extends NavManager {
     );
 
     /**
-     * @param request
-     * @return
-     */
-    public JSONArray getNavPortal(HttpServletRequest request) {
-        return getNavPortal(AppUtils.getRequestUser(request));
-    }
-
-    /**
      * @param user
      * @return
      */
@@ -153,13 +145,28 @@ public class NavBuilder extends NavManager {
     // --
 
     /**
+     * @param request
+     * @param activeNav
+     * @return
+     */
+    public static String renderNav(HttpServletRequest request, String activeNav) {
+        JSONArray navs = NavBuilder.instance.getNavPortal(AppUtils.getRequestUser(request));
+        StringBuilder navsHtml = new StringBuilder();
+        for (Object item : navs) {
+            navsHtml.append(renderNavItem((JSONObject) item, activeNav))
+                    .append('\n');
+        }
+        return navsHtml.toString();
+    }
+
+    /**
      * 渲染导航菜單
      *
      * @param item
      * @param activeNav
      * @return
      */
-    public static String renderNavItem(JSONObject item, String activeNav) {
+    protected static String renderNavItem(JSONObject item, String activeNav) {
         final String navType = item.getString("type");
         final boolean isUrlType = "URL".equals(navType);
         String navName = item.getString("value");

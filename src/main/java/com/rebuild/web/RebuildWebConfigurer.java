@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
@@ -30,7 +31,7 @@ import java.util.Map;
  * @since 2020/8/26
  */
 @Component
-public class RebuildWebMvcConfigurer implements WebMvcConfigurer, ErrorViewResolver {
+public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver {
 
     // -- for Thymeleaf
 
@@ -60,24 +61,39 @@ public class RebuildWebMvcConfigurer implements WebMvcConfigurer, ErrorViewResol
         thymeleafViewResolverHold.addStaticVariable("fileSharable", RebuildConfiguration.get(ConfigurationItem.FileSharable));
     }
 
+    // -- for Interceptor(s)
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new RequestWatchHandler())
+                .excludePathPatterns("/gw/**")
+                .excludePathPatterns("/assets/**")
+                .excludePathPatterns("/error");
+    }
+
+
     // -- for Error(s)
 
     @Override
     public ModelAndView resolveErrorView(HttpServletRequest request, HttpStatus status, Map<String, Object> model) {
-        Map<String, Object> errorModel = new HashMap<>(model);
+        Map<String, Object> error = new HashMap<>(model);
+        error.put("error_code", status.value());
         switch (status) {
             case NOT_FOUND:
             case METHOD_NOT_ALLOWED:
-                errorModel.put("error", "访问的地址/资源不存在");
+                error.put("error_message", "访问的地址/资源不存在");
                 break;
             case FORBIDDEN:
             case UNAUTHORIZED:
-                errorModel.put("error", "权限不足，访问被阻止");
+                error.put("error_message", "权限不足，访问被阻止");
                 break;
             case INTERNAL_SERVER_ERROR:
-                errorModel.put("error", "系统繁忙，请稍后重试");
+                error.put("error_message", "系统繁忙，请稍后重试");
+                break;
+            default:
+                error.put("error_message", model.get("error"));
                 break;
         }
-        return new ModelAndView("_include/error", errorModel);
+        return new ModelAndView("_include/error", error);
     }
 }

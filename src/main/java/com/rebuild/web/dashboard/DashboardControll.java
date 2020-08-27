@@ -31,12 +31,13 @@ import com.rebuild.web.BaseController;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -48,20 +49,20 @@ import java.util.Iterator;
 @RequestMapping("/dashboard")
 public class DashboardControll extends BaseController {
 
-    @RequestMapping("/home")
-    public ModelAndView pageHome(HttpServletRequest request) {
-        return createModelAndView("/dashboard/home.jsp");
+    @GetMapping("/home")
+    public ModelAndView pageHome() {
+        return createModelAndView("/dashboard/home");
     }
 
-    @RequestMapping("/dash-gets")
-    public void dashGets(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @GetMapping("/dash-gets")
+    public void dashGets(HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         JSON dashs = DashboardManager.instance.getAvailable(user);
         writeSuccess(response, dashs);
     }
 
-    @RequestMapping("/dash-new")
-    public void dashNew(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("/dash-new")
+    public void dashNew(HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         JSONObject formJson = (JSONObject) ServletUtils.getRequestJson(request);
         JSONArray dashCopy = formJson.getJSONArray("__copy");
@@ -106,8 +107,8 @@ public class DashboardControll extends BaseController {
         writeSuccess(response, ret);
     }
 
-    @RequestMapping("/dash-config")
-    public void dashConfig(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("/dash-config")
+    public void dashConfig(HttpServletRequest request, HttpServletResponse response) {
         ID dashid = getIdParameterNotNull(request, "id");
         JSON config = ServletUtils.getRequestJson(request);
 
@@ -117,12 +118,12 @@ public class DashboardControll extends BaseController {
         writeSuccess(response);
     }
 
-    @RequestMapping("/chart-list")
-    public void chartList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @GetMapping("/chart-list")
+    public void chartList(HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         String type = request.getParameter("type");
 
-        Object[][] charts = null;
+        Object[][] charts;
         if ("builtin".equalsIgnoreCase(type)) {
             charts = new Object[0][];
         } else {

@@ -17,7 +17,6 @@ import com.rebuild.utils.AppUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,41 +29,16 @@ import java.io.IOException;
  * @author Zhao Fangfang
  * @since 1.0, 2013-6-24
  */
-@Component
 public class RequestWatchHandler extends HandlerInterceptorAdapter implements InstallState {
 
     private static final Log LOG = LogFactory.getLog(RequestWatchHandler.class);
 
-    // 设置页面无缓存
-    // 如果使用了第三方缓存策略（如 nginx），可以将此值设为 false
-    private boolean noCache = true;
-
-    /**
-     * @param noCache
-     */
-    public void setNoCache(boolean noCache) {
-        this.noCache = noCache;
-    }
-
-    /**
-     * @return
-     */
-    public boolean isNoCache() {
-        return noCache;
-    }
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
                              Object handler) throws Exception {
-        response.setCharacterEncoding("utf-8");
         request.getSession(true);
 
         final String requestUrl = request.getRequestURI();
-
-        // 无缓存
-        if (isNoCache() && !isSpecCache(requestUrl)) {
-            ServletUtils.setNoCacheHeaders(response);
-        }
 
         // If server status is not passed
         if (!RebuildApplication.serversReady()) {
@@ -79,6 +53,7 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
                 response.sendRedirect(AppUtils.getContextPath() + "/setup/install");
                 return false;
             }
+
         } else {
             // Last active
             if (!(isIgnoreActive(requestUrl) || ServletUtils.isAjaxRequest(request))) {
@@ -93,9 +68,6 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
         return false;
     }
 
-    /**
-     * @see RebuildExceptionResolver
-     */
     @Override
     public void afterCompletion(HttpServletRequest request,
                                 HttpServletResponse response, Object handler, Exception exception)
@@ -226,18 +198,5 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
      */
     private static boolean isIgnoreActive(String reqUrl) {
         return reqUrl.contains("/language/") || reqUrl.contains("/user-avatar");
-    }
-
-    /**
-     * 是否特定缓存策略
-     *
-     * @param reqUrl
-     * @return
-     */
-    private static boolean isSpecCache(String reqUrl) {
-        reqUrl = reqUrl.replaceFirst(AppUtils.getContextPath(), "");
-        return reqUrl.startsWith("/filex/img/") || reqUrl.startsWith("/account/user-avatar/")
-                || reqUrl.startsWith("/language/")
-                || reqUrl.startsWith("/commons/barcode/");
     }
 }

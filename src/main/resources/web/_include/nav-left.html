@@ -1,0 +1,22 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+  <div class="rb-left-sidebar">
+    <div class="left-sidebar-wrapper">
+      <a class="left-sidebar-toggle">导航</a>
+      <div class="left-sidebar-spacer">
+        <div class="left-sidebar-scroll rb-scroller">
+          <div class="left-sidebar-content no-divider">
+            <ul class="sidebar-elements">
+              <li th:class="${activeNav == 'dashboard-home' ? 'active' : ''}">
+                <a th:href="@{/dashboard/home}"><i class="icon zmdi zmdi-home"></i><span>首页</span></a>
+              </li>
+              <th:block th:utext="${T(com.rebuild.core.configuration.NavBuilder).renderNav(#request, #activeNav)}"></th:block>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-widget">
+        <a class="nav-settings" title="设置导航菜单"><i class="icon zmdi zmdi-apps"></i></a>
+      </div>
+    </div>
+  </div>
+</th:block>
