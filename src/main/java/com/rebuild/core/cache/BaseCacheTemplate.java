@@ -10,8 +10,8 @@ package com.rebuild.core.cache;
 import cn.devezhao.commons.ThrowableUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.util.Assert;
 import redis.clients.jedis.Jedis;
@@ -27,7 +27,7 @@ import java.io.Serializable;
  */
 public abstract class BaseCacheTemplate<V extends Serializable> implements CacheTemplate<V> {
 
-    protected final Log LOG = LogFactory.getLog(getClass());
+    protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
     /**
      * 默认缓存时间（90天）

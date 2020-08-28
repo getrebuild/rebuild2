@@ -19,8 +19,8 @@ import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  */
 public class DefaultValueHelper {
 
-    private static final Log LOG = LogFactory.getLog(DefaultValueHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultValueHelper.class);
 
     // 日期公式 {NOW + 1D}
     private static final Pattern EXPR_PATTERN = Pattern.compile("\\{NOW([-+])([0-9]{1,9})([YMDHI])}");

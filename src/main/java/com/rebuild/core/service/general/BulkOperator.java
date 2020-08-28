@@ -16,8 +16,8 @@ import com.rebuild.core.Application;
 import com.rebuild.core.helper.task.HeavyTask;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.query.AdvFilterParser;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +30,7 @@ import java.util.Set;
  */
 public abstract class BulkOperator extends HeavyTask<Integer> {
 
-    protected static final Log LOG = LogFactory.getLog(BulkOperator.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(BulkOperator.class);
 
     final protected BulkContext context;
     final protected GeneralEntityService ges;

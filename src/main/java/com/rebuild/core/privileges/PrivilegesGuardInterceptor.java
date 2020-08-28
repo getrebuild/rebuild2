@@ -24,8 +24,8 @@ import com.rebuild.core.service.general.BulkContext;
 import com.rebuild.core.service.general.EntityService;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
@@ -39,7 +39,7 @@ import java.security.Guard;
  */
 public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
 
-    private static final Log LOG = LogFactory.getLog(PrivilegesGuardInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PrivilegesGuardInterceptor.class);
 
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {

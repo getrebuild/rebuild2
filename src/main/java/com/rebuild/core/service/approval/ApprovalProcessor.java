@@ -23,8 +23,8 @@ import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.general.EntityService;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -37,7 +37,7 @@ import java.util.*;
  */
 public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
 
-    private static final Log LOG = LogFactory.getLog(ApprovalProcessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ApprovalProcessor.class);
 
     // 最大撤销次数
     private static final int MAX_REVOKED = 3;

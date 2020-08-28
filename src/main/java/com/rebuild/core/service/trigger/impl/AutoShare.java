@@ -19,8 +19,8 @@ import com.rebuild.core.service.trigger.ActionContext;
 import com.rebuild.core.service.trigger.ActionType;
 import com.rebuild.core.service.trigger.TriggerException;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -30,7 +30,7 @@ import java.util.Set;
  */
 public class AutoShare extends AutoAssign {
 
-    private static final Log LOG = LogFactory.getLog(AutoShare.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AutoShare.class);
 
     // 允许无权限共享
     final private boolean allowNoPermissionShare;

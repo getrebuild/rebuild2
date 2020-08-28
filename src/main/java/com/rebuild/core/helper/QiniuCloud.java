@@ -26,8 +26,8 @@ import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.utils.HttpUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.io.File;
@@ -43,7 +43,7 @@ import java.util.UUID;
  */
 public class QiniuCloud {
 
-    private static final Log LOG = LogFactory.getLog(QiniuCloud.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QiniuCloud.class);
 
     /**
      * 默认配置

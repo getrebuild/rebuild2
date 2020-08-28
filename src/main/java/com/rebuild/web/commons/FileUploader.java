@@ -15,8 +15,8 @@ import com.rebuild.web.BaseController;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +38,7 @@ import java.io.File;
 @RequestMapping("/filex/")
 public class FileUploader extends BaseController {
 
-    private static final Log LOG = LogFactory.getLog(FileUploader.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FileUploader.class);
 
     @PostMapping("upload")
     public void upload(HttpServletRequest request, HttpServletResponse response) {

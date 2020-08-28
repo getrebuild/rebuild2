@@ -14,8 +14,8 @@ import cn.devezhao.persist4j.engine.StandardRecord;
 import cn.devezhao.persist4j.record.JsonRecordCreator;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class RestoreRecordCreator extends JsonRecordCreator {
 
-    private static final Log LOG = LogFactory.getLog(RestoreRecordCreator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RestoreRecordCreator.class);
 
     public RestoreRecordCreator(Entity entity, JSONObject source) {
         super(entity, source);

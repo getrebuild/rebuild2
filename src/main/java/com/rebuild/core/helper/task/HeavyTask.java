@@ -11,8 +11,8 @@ import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
 import com.rebuild.core.helper.SetUser;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -27,7 +27,7 @@ import java.util.Date;
  */
 public abstract class HeavyTask<T> extends SetUser<HeavyTask<T>> implements Runnable {
 
-    protected static final Log LOG = LogFactory.getLog(HeavyTask.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(HeavyTask.class);
 
     volatile private boolean interrupt = false;
     volatile private boolean interruptState = false;

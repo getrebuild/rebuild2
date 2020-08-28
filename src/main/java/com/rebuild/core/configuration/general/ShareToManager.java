@@ -18,8 +18,8 @@ import com.rebuild.core.privileges.UserHelper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -31,7 +31,7 @@ import java.util.*;
  */
 public abstract class ShareToManager implements ConfigManager {
 
-    protected static final Log LOG = LogFactory.getLog(ShareToManager.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(ShareToManager.class);
 
     // 共享给全部
     public static final String SHARE_ALL = "ALL";

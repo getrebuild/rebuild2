@@ -15,8 +15,8 @@ import com.rebuild.utils.FileFilterByLastModified;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.zip.ZipEntry;
@@ -31,7 +31,7 @@ import java.util.zip.ZipOutputStream;
  */
 public class DatabaseBackup {
 
-    private static final Log LOG = LogFactory.getLog(DatabaseBackup.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DatabaseBackup.class);
 
     /**
      * @return

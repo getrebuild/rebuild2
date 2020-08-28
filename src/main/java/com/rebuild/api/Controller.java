@@ -8,8 +8,8 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.api;
 
 import com.alibaba.fastjson.JSON;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 请求响应
@@ -29,7 +29,7 @@ public abstract class Controller {
     /**
      * Logging
      */
-    protected static final Log LOG = LogFactory.getLog(Controller.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(Controller.class);
 
     /**
      * @param data

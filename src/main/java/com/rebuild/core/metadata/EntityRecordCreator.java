@@ -23,8 +23,8 @@ import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.service.trigger.RobotTriggerManager;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,7 +39,7 @@ import java.util.Set;
  */
 public class EntityRecordCreator extends JsonRecordCreator {
 
-    private static final Log LOG = LogFactory.getLog(EntityRecordCreator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EntityRecordCreator.class);
 
     /**
      * 更新时。是移除不允许更新的字段还是抛出异常

@@ -22,8 +22,8 @@ import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.service.TransactionManual;
 import com.rebuild.core.service.files.AttachmentAwareObserver;
 import com.rebuild.core.service.general.OperatingContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.TransactionStatus;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class RecycleRestore {
 
-    private static final Log LOG = LogFactory.getLog(RecycleRestore.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RecycleRestore.class);
 
     private ID recycleId;
 

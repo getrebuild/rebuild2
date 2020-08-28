@@ -9,8 +9,8 @@ package com.rebuild.core.service.general;
 
 import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.commons.ThreadPool;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -24,7 +24,7 @@ import java.util.Observer;
  */
 public abstract class OperatingObserver implements Observer {
 
-    protected final Log LOG = LogFactory.getLog(getClass());
+    protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
     protected OperatingObserver() {
         super();

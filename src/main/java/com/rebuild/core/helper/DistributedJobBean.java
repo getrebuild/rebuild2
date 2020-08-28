@@ -9,8 +9,8 @@ package com.rebuild.core.helper;
 
 import com.rebuild.core.Application;
 import com.rebuild.core.helper.setup.Installer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
@@ -23,7 +23,7 @@ import redis.clients.jedis.JedisPool;
  */
 public abstract class DistributedJobBean {
 
-    protected final Log LOG = LogFactory.getLog(getClass());
+    protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
     private static final String SET_IF_NOT_EXIST = "NX";
     private static final String SET_WITH_EXPIRE_TIME = "EX";

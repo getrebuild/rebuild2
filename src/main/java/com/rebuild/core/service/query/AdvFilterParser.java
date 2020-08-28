@@ -28,8 +28,8 @@ import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -46,7 +46,7 @@ import static cn.devezhao.commons.DateFormatUtils.getUTCDateFormat;
  */
 public class AdvFilterParser extends SetUser<AdvFilterParser> {
 
-    private static final Log LOG = LogFactory.getLog(AdvFilterParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AdvFilterParser.class);
 
     private JSONObject filterExp;
     private Entity rootEntity;

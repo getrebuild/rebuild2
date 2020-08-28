@@ -16,10 +16,10 @@ import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author zhaofang123@gmail.com
@@ -28,7 +28,7 @@ import org.dom4j.Element;
 public class DynamicMetadataFactory extends ConfigurationMetadataFactory {
     private static final long serialVersionUID = -5709281079615412347L;
 
-    private static final Log LOG = LogFactory.getLog(DynamicMetadataFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DynamicMetadataFactory.class);
 
     public DynamicMetadataFactory(String configLocation, Dialect dialect) {
         super(configLocation, dialect);

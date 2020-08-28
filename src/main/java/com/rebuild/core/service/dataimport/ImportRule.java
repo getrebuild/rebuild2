@@ -13,8 +13,8 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.MetadataHelper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.io.File;
@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public class ImportRule {
 
-    private static final Log LOG = LogFactory.getLog(ImportRule.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ImportRule.class);
 
     public static final int REPEAT_OPT_UPDATE = 1;
     public static final int REPEAT_OPT_SKIP = 2;

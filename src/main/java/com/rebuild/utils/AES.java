@@ -10,8 +10,8 @@ package com.rebuild.utils;
 import com.rebuild.core.RebuildException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -24,7 +24,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class AES {
 
-    private static final Log LOG = LogFactory.getLog(AES.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AES.class);
 
     /**
      * @param input

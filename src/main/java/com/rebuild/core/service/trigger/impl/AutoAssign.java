@@ -25,8 +25,8 @@ import com.rebuild.core.service.trigger.TriggerAction;
 import com.rebuild.core.service.trigger.TriggerException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -36,7 +36,7 @@ import java.util.Set;
  */
 public class AutoAssign implements TriggerAction {
 
-    private static final Log LOG = LogFactory.getLog(AutoAssign.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AutoAssign.class);
 
     final protected ActionContext context;
 

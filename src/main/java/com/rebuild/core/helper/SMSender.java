@@ -20,11 +20,11 @@ import com.rebuild.core.privileges.UserService;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.HttpUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class SMSender {
 
-    private static final Log LOG = LogFactory.getLog(SMSender.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SMSender.class);
 
     private static final String STATUS_OK = "success";
 

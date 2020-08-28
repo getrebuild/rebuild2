@@ -18,8 +18,8 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.CurrentCaller;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.web.signup.Login;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -43,7 +43,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 @Component
 public class OnlineSessionStore extends CurrentCaller implements HttpSessionListener {
 
-    private static final Log LOG = LogFactory.getLog(OnlineSessionStore.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OnlineSessionStore.class);
 
     private static final Set<HttpSession> ONLINE_SESSIONS = new CopyOnWriteArraySet<>();
     private static final Map<ID, HttpSession> ONLINE_USERS = new ConcurrentHashMap<>();

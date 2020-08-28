@@ -29,8 +29,8 @@ import com.rebuild.core.service.approval.ApprovalState;
 import org.apache.commons.lang.CharSet;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.HashSet;
@@ -44,7 +44,7 @@ import java.util.Set;
  */
 public class Field2Schema {
 
-    private static final Log LOG = LogFactory.getLog(Field2Schema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Field2Schema.class);
 
     // 小数位真实长度
     private static final int DECIMAL_SCALE = 8;

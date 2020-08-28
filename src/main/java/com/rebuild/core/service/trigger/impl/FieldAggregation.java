@@ -27,8 +27,8 @@ import com.rebuild.core.service.trigger.ActionContext;
 import com.rebuild.core.service.trigger.ActionType;
 import com.rebuild.core.service.trigger.TriggerAction;
 import com.rebuild.core.service.trigger.TriggerException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 字段归集可能存在的问题。
@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class FieldAggregation implements TriggerAction {
 
-    private static final Log LOG = LogFactory.getLog(FieldAggregation.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FieldAggregation.class);
 
     /**
      * 归集到自己

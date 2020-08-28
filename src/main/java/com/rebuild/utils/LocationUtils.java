@@ -11,8 +11,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.cache.CommonsCache;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 位置工具
@@ -22,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LocationUtils {
 
-    private static final Log LOG = LogFactory.getLog(LocationUtils.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LocationUtils.class);
 
     /**
      * 获取 IP 所在位置

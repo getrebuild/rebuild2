@@ -15,8 +15,8 @@ import cn.devezhao.persist4j.metadata.BaseMeta;
 import cn.devezhao.persist4j.metadata.MetadataException;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.EasyMeta;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class MetadataHelper {
 
-    private static final Log LOG = LogFactory.getLog(MetadataHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MetadataHelper.class);
 
     /**
      * 元数据工厂

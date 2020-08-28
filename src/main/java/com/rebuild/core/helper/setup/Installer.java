@@ -20,8 +20,8 @@ import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.utils.AES;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.ResourceUtils;
 import redis.clients.jedis.Jedis;
@@ -46,7 +46,7 @@ import java.util.Properties;
  */
 public class Installer implements InstallState {
 
-    private static final Log LOG = LogFactory.getLog(Installer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Installer.class);
 
     // 快速安装模式（H2 数据库）
     private boolean quickMode;

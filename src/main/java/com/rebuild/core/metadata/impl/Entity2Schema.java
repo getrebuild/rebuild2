@@ -21,8 +21,8 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 创建实体
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class Entity2Schema extends Field2Schema {
 
-    private static final Log LOG = LogFactory.getLog(Entity2Schema.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Entity2Schema.class);
 
     /**
      * @param user

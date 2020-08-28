@@ -22,8 +22,8 @@ import com.rebuild.core.service.trigger.ActionContext;
 import com.rebuild.core.service.trigger.ActionType;
 import com.rebuild.core.service.trigger.TriggerAction;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
@@ -33,7 +33,7 @@ import java.util.Set;
  */
 public class SendNotification implements TriggerAction {
 
-    private static final Log LOG = LogFactory.getLog(SendNotification.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SendNotification.class);
 
     // 通知
     private static final int TYPE_NOTIFICATION = 1;

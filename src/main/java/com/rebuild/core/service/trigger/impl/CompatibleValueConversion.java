@@ -16,8 +16,8 @@ import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.metadata.DefaultValueHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -29,7 +29,7 @@ import java.util.Date;
  */
 public class CompatibleValueConversion {
 
-    private static final Log LOG = LogFactory.getLog(CompatibleValueConversion.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CompatibleValueConversion.class);
 
     final private Field source;
     final private Field target;

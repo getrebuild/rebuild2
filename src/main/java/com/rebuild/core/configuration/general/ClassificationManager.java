@@ -14,8 +14,8 @@ import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.metadata.impl.FieldExtConfigProps;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 分类数据
@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ClassificationManager implements ConfigManager {
 
-    private static final Log LOG = LogFactory.getLog(ClassificationManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ClassificationManager.class);
 
     public static final ClassificationManager instance = new ClassificationManager();
 

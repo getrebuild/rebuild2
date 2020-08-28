@@ -35,8 +35,8 @@ import com.rebuild.core.service.general.recyclebin.RecycleStore;
 import com.rebuild.core.service.general.series.SeriesGeneratorFactory;
 import com.rebuild.core.service.trigger.RobotTriggerObserver;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -54,7 +54,7 @@ import java.util.*;
 @Service
 public class GeneralEntityService extends ObservableService implements EntityService {
 
-    private static final Log LOG = LogFactory.getLog(GeneralEntityService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(GeneralEntityService.class);
 
     /**
      * @param aPMFactory

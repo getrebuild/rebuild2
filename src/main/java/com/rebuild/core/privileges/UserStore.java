@@ -22,8 +22,8 @@ import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.privileges.bizz.ZeroPrivileges;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.security.Principal;
@@ -39,7 +39,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class UserStore implements Initialization {
 
-    private static final Log LOG = LogFactory.getLog(UserStore.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserStore.class);
 
     final private Map<ID, com.rebuild.core.privileges.bizz.User> USERs = new ConcurrentHashMap<>();
     final private Map<ID, Role> ROLEs = new ConcurrentHashMap<>();

@@ -125,7 +125,7 @@ public class UserService extends BaseServiceImpl {
             try {
                 UserHelper.generateAvatar(record.getString("fullName"), true);
             } catch (Exception ex) {
-                LOG.error(ex);
+                LOG.error(null, ex);
             }
         }
     }

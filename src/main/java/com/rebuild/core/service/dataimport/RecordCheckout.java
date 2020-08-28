@@ -35,8 +35,8 @@ import com.rebuild.core.metadata.impl.EasyMeta;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.Date;
@@ -50,7 +50,7 @@ import java.util.Map;
  */
 public class RecordCheckout {
 
-    private static final Log LOG = LogFactory.getLog(RecordCheckout.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RecordCheckout.class);
 
     final private Map<Field, Integer> fieldsMapping;
 

@@ -22,8 +22,8 @@ import com.rebuild.core.privileges.bizz.User;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -43,7 +43,7 @@ import java.util.*;
  */
 public class UserHelper {
 
-    private static final Log LOG = LogFactory.getLog(UserHelper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserHelper.class);
 
     /**
      * 是否管理员

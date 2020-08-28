@@ -12,8 +12,8 @@ import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public final class UpgradeDatabase {
 
-    private static final Log LOG = LogFactory.getLog(UpgradeDatabase.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UpgradeDatabase.class);
 
     /**
      * 开始升级

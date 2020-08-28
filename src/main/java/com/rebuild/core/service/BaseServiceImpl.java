@@ -11,7 +11,6 @@ import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.general.QuickCodeReindexTask;
-import org.springframework.stereotype.Service;
 
 /**
  * @author devezhao
