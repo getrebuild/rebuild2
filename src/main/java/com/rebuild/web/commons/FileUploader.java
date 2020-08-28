@@ -47,6 +47,7 @@ public class FileUploader extends BaseController {
         MultipartFile file = null;
         MultipartHttpServletRequest mp = resolver.resolveMultipart(request);
         for (MultipartFile t : mp.getFileMap().values()) {
+            // 只允许一个
             file = t;
             break;
         }
