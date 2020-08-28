@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -103,7 +103,7 @@ public class DataListManager extends BaseLayoutManager {
                     Field parentField = entityMeta.getField(fieldPath[0]);
                     if (!filter) {
                         formatted = formatField(lastField, parentField);
-                    } else if (RebuildApplication.getPrivilegesManager().allowRead(user, lastField.getOwnEntity().getEntityCode())) {
+                    } else if (Application.getPrivilegesManager().allowRead(user, lastField.getOwnEntity().getEntityCode())) {
                         formatted = formatField(lastField, parentField);
                     }
                 }

@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.DataListManager;
 import com.rebuild.core.privileges.DepartmentService;
 import com.rebuild.core.privileges.bizz.Department;
@@ -47,14 +47,14 @@ public class DepartmentControll extends EntityController {
         ID dept = getIdParameterNotNull(request, "id");
         ID transfer = getIdParameter(request, "transfer");  // TODO 转移到新部门
 
-        RebuildApplication.getBean(DepartmentService.class).deleteAndTransfer(dept, transfer);
+        Application.getBean(DepartmentService.class).deleteAndTransfer(dept, transfer);
         writeSuccess(response);
     }
 
     @RequestMapping("dept-tree")
     public void deptTreeGet(HttpServletResponse response) {
         JSONArray dtree = new JSONArray();
-        for (Department root : RebuildApplication.getUserStore().getTopDepartments()) {
+        for (Department root : Application.getUserStore().getTopDepartments()) {
             dtree.add(recursiveDeptTree(root));
         }
         writeSuccess(response, dtree);

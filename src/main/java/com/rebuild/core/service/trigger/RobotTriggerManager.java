@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -112,7 +112,7 @@ public class RobotTriggerManager implements ConfigManager {
         String sql = MessageFormat.format(
                 "select {0} from {1} where {0} = ? and {2}",
                 entity.getPrimaryField().getName(), entity.getName(), sqlWhere);
-        Object matchs = RebuildApplication.createQueryNoFilter(sql).setParameter(1, record).unique();
+        Object matchs = Application.createQueryNoFilter(sql).setParameter(1, record).unique();
         return matchs == null;
     }
 
@@ -123,12 +123,12 @@ public class RobotTriggerManager implements ConfigManager {
     @SuppressWarnings("unchecked")
     protected List<ConfigBean> getConfig(Entity entity) {
         final String cKey = "RobotTriggerManager-" + entity.getName();
-        Object cached = RebuildApplication.getCommonsCache().getx(cKey);
+        Object cached = Application.getCommonsCache().getx(cKey);
         if (cached != null) {
             return (List<ConfigBean>) cached;
         }
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select when,whenFilter,actionType,actionContent,configId from RobotTriggerConfig" +
                         " where belongEntity = ? and when > 0 and isDisabled = 'F' order by priority desc")
                 .setParameter(1, entity.getName())
@@ -145,15 +145,15 @@ public class RobotTriggerManager implements ConfigManager {
             entries.add(entry);
         }
 
-        RebuildApplication.getCommonsCache().putx(cKey, entries);
+        Application.getCommonsCache().putx(cKey, entries);
         return entries;
     }
 
     @Override
     public void clean(Object entity) {
         final String cKey = "RobotTriggerManager-" + ((Entity) entity).getName();
-        RebuildApplication.getCommonsCache().evict(cKey);
-        RebuildApplication.getCommonsCache().evict(CKEY_TARF);
+        Application.getCommonsCache().evict(cKey);
+        Application.getCommonsCache().evict(CKEY_TARF);
     }
 
     private static final String CKEY_TARF = "TriggersAutoReadonlyFields";
@@ -166,7 +166,7 @@ public class RobotTriggerManager implements ConfigManager {
      */
     public Set<String> getAutoReadonlyFields(String entity) {
         @SuppressWarnings("unchecked")
-        Map<String, Set<String>> fieldsMap = (Map<String, Set<String>>) RebuildApplication.getCommonsCache().getx(CKEY_TARF);
+        Map<String, Set<String>> fieldsMap = (Map<String, Set<String>>) Application.getCommonsCache().getx(CKEY_TARF);
         if (fieldsMap == null) {
             fieldsMap = this.initAutoReadonlyFields();
         }
@@ -177,7 +177,7 @@ public class RobotTriggerManager implements ConfigManager {
      * @return
      */
     private Map<String, Set<String>> initAutoReadonlyFields() {
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select actionContent from RobotTriggerConfig where (actionType = ? or actionType = ?) and isDisabled = 'F'")
                 .setParameter(1, ActionType.FIELDAGGREGATION.name())
                 .setParameter(2, ActionType.FIELDWRITEBACK.name())
@@ -200,7 +200,7 @@ public class RobotTriggerManager implements ConfigManager {
             }
         }
 
-        RebuildApplication.getCommonsCache().putx(CKEY_TARF, fieldsMap);
+        Application.getCommonsCache().putx(CKEY_TARF, fieldsMap);
         return fieldsMap;
     }
 }

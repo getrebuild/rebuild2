@@ -14,13 +14,12 @@
   <link rel="stylesheet" type="text/css" th:href="@{/assets/css/rb-base.css}" />
   <link rel="stylesheet" type="text/css" th:href="@{/assets/css/rb-page.css}" />
   <script>
-    window.rb = window.rb || {
+    window.rb = {
       env: '[[${env}]]',
       baseUrl: '[[${baseUrl}]]',
       appName: '[[${appName}]]',
       storageUrl: '[[${storageUrl}]]',
       fileSharable: '[[${fileSharable}]]' === 'true',
-      currentUser: '[[${currentUser}]]',
     }
   </script>
 </th:block>

@@ -9,7 +9,7 @@ package com.rebuild.api.login;
 
 import cn.devezhao.commons.CodecUtils;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -38,7 +38,7 @@ public class AuthTokenManager {
     public static String generateToken(ID user, int expires) {
         String token = String.format("%s,%d,v1", user, System.currentTimeMillis());
         token = CodecUtils.base64UrlEncode(token);
-        RebuildApplication.getCommonsCache().putx(TOKEN_PREFIX + token, user, expires);
+        Application.getCommonsCache().putx(TOKEN_PREFIX + token, user, expires);
         return token;
     }
 
@@ -55,9 +55,9 @@ public class AuthTokenManager {
         }
 
         token = TOKEN_PREFIX + token;
-        ID user = (ID) RebuildApplication.getCommonsCache().getx(token);
+        ID user = (ID) Application.getCommonsCache().getx(token);
         if (user != null && verifyAfterDestroy) {
-            RebuildApplication.getCommonsCache().evict(token);
+            Application.getCommonsCache().evict(token);
         }
         return user;
     }
@@ -75,7 +75,7 @@ public class AuthTokenManager {
             return null;
         }
 
-        RebuildApplication.getCommonsCache().putx(TOKEN_PREFIX + token, user, expires);
+        Application.getCommonsCache().putx(TOKEN_PREFIX + token, user, expires);
         return user;
     }
 }

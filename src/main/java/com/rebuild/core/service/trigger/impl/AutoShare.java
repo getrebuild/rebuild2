@@ -11,7 +11,7 @@ import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.privileges.PrivilegesGuardInterceptor;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.general.OperatingContext;
@@ -62,7 +62,7 @@ public class AutoShare extends AutoAssign {
         final ID recordId = operatingContext.getAnyRecord().getPrimary();
 
         if (!allowNoPermissionShare
-                && !RebuildApplication.getPrivilegesManager().allow(operatingContext.getOperator(), recordId, BizzPermission.SHARE)) {
+                && !Application.getPrivilegesManager().allow(operatingContext.getOperator(), recordId, BizzPermission.SHARE)) {
             LOG.warn("No privileges to share record of target: " + recordId);
             return;
         }
@@ -84,7 +84,7 @@ public class AutoShare extends AutoAssign {
                 PrivilegesGuardInterceptor.setNoPermissionPassOnce(recordId);
             }
 
-            RebuildApplication.getEntityService(context.getSourceEntity().getEntityCode()).share(recordId, toUser, cascades);
+            Application.getEntityService(context.getSourceEntity().getEntityCode()).share(recordId, toUser, cascades);
         }
     }
 }

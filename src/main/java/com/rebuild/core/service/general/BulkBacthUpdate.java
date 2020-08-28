@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.record.JsonRecordCreator;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.general.BatchOperatorQuery;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.DataSpecificationException;
@@ -67,7 +67,7 @@ public class BulkBacthUpdate extends BulkOperator {
         }
 
         for (ID id : willUpdates) {
-            if (RebuildApplication.getPrivilegesManager().allowUpdate(context.getOpUser(), id)) {
+            if (Application.getPrivilegesManager().allowUpdate(context.getOpUser(), id)) {
                 // 更新记录
                 formJson.getJSONObject(JsonRecordCreator.META_FIELD).put("id", id.toLiteral());
 

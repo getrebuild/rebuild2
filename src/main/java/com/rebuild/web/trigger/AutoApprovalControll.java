@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web.trigger;
 
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
 import org.springframework.stereotype.Controller;
@@ -28,7 +28,7 @@ public class AutoApprovalControll extends BaseController {
     @RequestMapping("auto-approval-alist")
     public void approvalList(HttpServletRequest request, HttpServletResponse response) {
         String entity = getParameterNotNull(request, "entity");
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select configId,name from RobotApprovalConfig where belongEntity = ? and isDisabled = ? order by name")
                 .setParameter(1, entity)
                 .setParameter(2, false)

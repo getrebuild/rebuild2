@@ -11,7 +11,7 @@ import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
@@ -88,7 +88,7 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
         if (loginId != null) {
             Record logout = EntityHelper.forUpdate(loginId, UserService.SYSTEM_USER);
             logout.setDate("logoutTime", CalendarUtils.now());
-            RebuildApplication.getCommonsService().update(logout);
+            Application.getCommonsService().update(logout);
         }
     }
 

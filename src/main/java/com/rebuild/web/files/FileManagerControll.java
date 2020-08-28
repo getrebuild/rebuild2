@@ -11,7 +11,7 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.feeds.FeedsHelper;
@@ -50,7 +50,7 @@ public class FileManagerControll extends BaseController {
             }
             fileRecords.add(r);
         }
-        RebuildApplication.getCommonsService().createOrUpdate(fileRecords.toArray(new Record[0]), false);
+        Application.getCommonsService().createOrUpdate(fileRecords.toArray(new Record[0]), false);
 
         writeSuccess(response);
     }
@@ -73,7 +73,7 @@ public class FileManagerControll extends BaseController {
 
             willDeletes.add(fileId);
         }
-        RebuildApplication.getCommonsService().delete(willDeletes.toArray(new ID[0]));
+        Application.getCommonsService().delete(willDeletes.toArray(new ID[0]));
 
         writeSuccess(response);
     }
@@ -103,7 +103,7 @@ public class FileManagerControll extends BaseController {
             }
             fileRecords.add(r);
         }
-        RebuildApplication.getCommonsService().createOrUpdate(fileRecords.toArray(new Record[0]), false);
+        Application.getCommonsService().createOrUpdate(fileRecords.toArray(new Record[0]), false);
         writeSuccess(response);
     }
 
@@ -119,7 +119,7 @@ public class FileManagerControll extends BaseController {
         } else if (entityCode == EntityHelper.ProjectTask || entityCode == EntityHelper.ProjectTaskComment) {
             readable = ProjectHelper.checkReadable(record, user);
         } else {
-            readable = RebuildApplication.getPrivilegesManager().allowRead(user, record);
+            readable = Application.getPrivilegesManager().allowRead(user, record);
         }
 
         writeSuccess(response, readable);
@@ -129,7 +129,7 @@ public class FileManagerControll extends BaseController {
     private boolean isAllowed(ID user, ID file) {
         if (UserHelper.isAdmin(user)) return true;
 
-        Object[] o = RebuildApplication.createQueryNoFilter(
+        Object[] o = Application.createQueryNoFilter(
                 "select createdBy from Attachment where attachmentId = ?")
                 .setParameter(1, file)
                 .unique();

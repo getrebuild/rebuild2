@@ -9,7 +9,7 @@ package com.rebuild.core.helper.task;
 
 import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.SetUser;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -170,7 +170,7 @@ public abstract class HeavyTask<T> extends SetUser<HeavyTask<T>> implements Runn
     @Override
     final public void run() {
         if (this.threadUser != null) {
-            RebuildApplication.getSessionStore().set(threadUser);
+            Application.getSessionStore().set(threadUser);
         }
 
         try {
@@ -198,7 +198,7 @@ public abstract class HeavyTask<T> extends SetUser<HeavyTask<T>> implements Runn
     protected void completedAfter() {
         this.completedTime = CalendarUtils.now();
         if (this.threadUser != null) {
-            RebuildApplication.getSessionStore().clean();
+            Application.getSessionStore().clean();
         }
     }
 }

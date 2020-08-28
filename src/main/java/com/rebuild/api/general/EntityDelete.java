@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.rebuild.api.ApiContext;
 import com.rebuild.api.ApiInvokeException;
 import com.rebuild.api.BaseApi;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.utils.JSONUtils;
 
@@ -38,7 +38,7 @@ public class EntityDelete extends BaseApi {
             throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Unsupportted operation for entity/id : " + deleteId);
         }
 
-        int deleted = RebuildApplication.getService(entity.getEntityCode()).delete(deleteId);
+        int deleted = Application.getService(entity.getEntityCode()).delete(deleteId);
 
         return formatSuccess(JSONUtils.toJSONObject("deleted", deleted));
     }

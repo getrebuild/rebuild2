@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.dialect.FieldType;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -55,7 +55,7 @@ public class RelatedListControll extends BaseController {
         int pn = NumberUtils.toInt(getParameter(request, "pageNo"), 1);
         int ps = NumberUtils.toInt(getParameter(request, "pageSize"), 200);
 
-        Object[][] array = RebuildApplication.createQuery(sql).setLimit(ps, pn * ps - ps).array();
+        Object[][] array = Application.createQuery(sql).setLimit(ps, pn * ps - ps).array();
         for (Object[] o : array) {
             Object nameValue = o[1];
             nameValue = FieldValueWrapper.instance.wrapFieldValue(nameValue, nameField, true);
@@ -81,7 +81,7 @@ public class RelatedListControll extends BaseController {
         for (String related : relateds) {
             String sql = buildMasterSql(masterId, related, true);
             if (sql != null) {
-                Object[] count = RebuildApplication.createQuery(sql).unique();
+                Object[] count = Application.createQuery(sql).unique();
                 countMap.put(related, ObjectUtils.toInt(count[0]));
             }
         }

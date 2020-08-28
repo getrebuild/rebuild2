@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Field;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.general.PickListManager;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -94,7 +94,7 @@ public class MetaSchemaGenerator {
         // 布局相关（仅管理员的）
 
         JSONObject putLayouts = new JSONObject();
-        Object[][] layouts = RebuildApplication.createQueryNoFilter(
+        Object[][] layouts = Application.createQueryNoFilter(
                 "select applyType,config from LayoutConfig where belongEntity = ? and createdBy = ?")
                 .setParameter(1, entity.getName())
                 .setParameter(2, UserService.ADMIN_USER)
@@ -111,7 +111,7 @@ public class MetaSchemaGenerator {
         // 过滤器（仅管理员的）
 
         JSONObject putFilters = new JSONObject();
-        Object[][] filters = RebuildApplication.createQueryNoFilter(
+        Object[][] filters = Application.createQueryNoFilter(
                 "select filterName,config from FilterConfig where belongEntity = ? and createdBy = ?")
                 .setParameter(1, entity.getName())
                 .setParameter(2, UserService.ADMIN_USER)

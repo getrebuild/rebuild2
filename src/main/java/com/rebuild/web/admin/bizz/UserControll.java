@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.DataListManager;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.SMSender;
@@ -56,12 +56,12 @@ public class UserControll extends EntityController {
     @RequestMapping("check-user-status")
     public void checkUserStatus(HttpServletRequest request, HttpServletResponse response) {
         ID id = getIdParameterNotNull(request, "id");
-        if (!RebuildApplication.getUserStore().existsUser(id)) {
+        if (!Application.getUserStore().existsUser(id)) {
             writeFailure(response);
             return;
         }
 
-        User checkedUser = RebuildApplication.getUserStore().getUser(id);
+        User checkedUser = Application.getUserStore().getUser(id);
 
         Map<String, Object> ret = new HashMap<>();
         ret.put("active", checkedUser.isActive());
@@ -85,7 +85,7 @@ public class UserControll extends EntityController {
         JSONObject data = (JSONObject) ServletUtils.getRequestJson(request);
 
         ID user = ID.valueOf(data.getString("user"));
-        User u = RebuildApplication.getUserStore().getUser(user);
+        User u = Application.getUserStore().getUser(user);
         final boolean beforeDisabled = u.isDisabled();
 
         ID deptNew = null;
@@ -108,12 +108,12 @@ public class UserControll extends EntityController {
             enableNew = data.getBoolean("enable");
         }
 
-        RebuildApplication.getBean(UserService.class).updateEnableUser(user, deptNew, roleNew, enableNew);
+        Application.getBean(UserService.class).updateEnableUser(user, deptNew, roleNew, enableNew);
 
         // 是否需要发送激活通知
-        u = RebuildApplication.getUserStore().getUser(user);
+        u = Application.getUserStore().getUser(user);
         if (beforeDisabled && u.isActive() && SMSender.availableMail() && u.getEmail() != null) {
-            Object did = RebuildApplication.createQuery(
+            Object did = Application.createQuery(
                     "select logId from LoginLog where user = ?")
                     .setParameter(1, u.getId())
                     .unique();
@@ -128,7 +128,7 @@ public class UserControll extends EntityController {
 
         // 登录失效
         if (!u.isActive()) {
-            HttpSession s = RebuildApplication.getSessionStore().getSession(u.getId());
+            HttpSession s = Application.getSessionStore().getSession(u.getId());
             if (s != null) {
                 LOG.warn("Force destroy user session : " + u.getId());
                 s.invalidate();
@@ -146,15 +146,15 @@ public class UserControll extends EntityController {
         int hasMember = 0;
         int hasChild = 0;
         if (bizz.getEntityCode() == EntityHelper.Department) {
-            Department dept = RebuildApplication.getUserStore().getDepartment(bizz);
+            Department dept = Application.getUserStore().getDepartment(bizz);
             hasMember = dept.getMembers().size();
             hasChild = dept.getChildren().size();
         } else if (bizz.getEntityCode() == EntityHelper.Role) {
-            Role role = RebuildApplication.getUserStore().getRole(bizz);
+            Role role = Application.getUserStore().getRole(bizz);
             hasMember = role.getMembers().size();
         } else if (bizz.getEntityCode() == EntityHelper.User) {
             // 仅检查是否登陆过。严谨些还应该检查是否有其他业务数据
-            Object[] hasLogin = RebuildApplication.createQueryNoFilter(
+            Object[] hasLogin = Application.createQueryNoFilter(
                     "select count(logId) from LoginLog where user = ?")
                     .setParameter(1, bizz)
                     .unique();
@@ -170,7 +170,7 @@ public class UserControll extends EntityController {
     @PostMapping("user-delete")
     public void userDelete(HttpServletRequest request, HttpServletResponse response) {
         ID user = getIdParameterNotNull(request, "id");
-        RebuildApplication.getBean(UserService.class).delete(user);
+        Application.getBean(UserService.class).delete(user);
         writeSuccess(response);
     }
 
@@ -181,7 +181,7 @@ public class UserControll extends EntityController {
 
         Record record = EntityHelper.forUpdate(user, user);
         record.setString("password", newp);
-        RebuildApplication.getBean(UserService.class).update(record);
+        Application.getBean(UserService.class).update(record);
         writeSuccess(response);
     }
 }

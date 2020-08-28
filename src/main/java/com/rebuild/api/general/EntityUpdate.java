@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.api.ApiContext;
 import com.rebuild.api.ApiInvokeException;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityRecordCreator;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
@@ -53,7 +53,7 @@ public class EntityUpdate extends EntityCreate {
                     ApiInvokeException.ERR_DATASPEC);
         }
 
-        recordUpdate = RebuildApplication.getService(useEntity.getEntityCode()).update(recordUpdate);
+        recordUpdate = Application.getService(useEntity.getEntityCode()).update(recordUpdate);
 
         return formatSuccess(JSONUtils.toJSONObject("id", recordUpdate.getPrimary()));
     }

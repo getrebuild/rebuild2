@@ -11,7 +11,7 @@ import cn.devezhao.commons.EncryptUtils;
 import cn.devezhao.commons.sql.SqlBuilder;
 import cn.devezhao.commons.sql.builder.UpdateBuilder;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.core.cache.RedisDriver;
 import com.rebuild.core.helper.ConfigurationItem;
@@ -104,7 +104,7 @@ public class Installer implements InstallState {
 
         // re-init
         try {
-            RebuildApplication.init(System.currentTimeMillis());
+            Application.init(System.currentTimeMillis());
         } catch (Exception ex) {
             FileUtils.deleteQuietly(dest);
             throw ex;
@@ -115,11 +115,11 @@ public class Installer implements InstallState {
 
         // Clean cached
         if (isUseRedis()) {
-            try (Jedis jedis = RebuildApplication.getCommonsCache().getJedisPool().getResource()) {
+            try (Jedis jedis = Application.getCommonsCache().getJedisPool().getResource()) {
                 jedis.flushAll();
             }
         } else {
-            RebuildApplication.getCommonsCache().getEhcacheCache().clear();
+            Application.getCommonsCache().getEhcacheCache().clear();
         }
     }
 
@@ -316,7 +316,7 @@ public class Installer implements InstallState {
      * @return
      */
     public static boolean isUseRedis() {
-        return RebuildApplication.getCommonsCache().getCacheTemplate() instanceof RedisDriver;
+        return Application.getCommonsCache().getCacheTemplate() instanceof RedisDriver;
     }
 
     /**

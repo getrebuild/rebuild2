@@ -7,7 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.helper.setup;
 
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.RebuildConfiguration;
 
 import java.io.File;
@@ -32,7 +32,7 @@ public interface InstallState {
      * @return
      */
     default boolean checkInstalled() {
-        return RebuildApplication.devMode() || getInstallFile().exists();
+        return Application.devMode() || getInstallFile().exists();
     }
 
     /**

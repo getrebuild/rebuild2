@@ -37,6 +37,7 @@ import com.rebuild.core.service.general.GeneralEntityService;
 import com.rebuild.core.service.notification.NotificationService;
 import com.rebuild.core.service.query.QueryFactory;
 import com.rebuild.utils.AppUtils;
+import com.rebuild.utils.JSONable;
 import com.rebuild.utils.codec.RbDateCodec;
 import com.rebuild.utils.codec.RbRecordCodec;
 import com.rebuild.web.OnlineSessionStore;
@@ -63,7 +64,7 @@ import java.util.*;
  */
 @SpringBootApplication(scanBasePackages = {"com.rebuild"})
 @ImportResource("classpath:application-bean.xml")
-public class RebuildApplication {
+public class Application {
 
     /**
      * Rebuild Version
@@ -76,7 +77,7 @@ public class RebuildApplication {
     /**
      * Logger for global
      */
-    public static final Log LOG = LogFactory.getLog(RebuildApplication.class);
+    public static final Log LOG = LogFactory.getLog(Application.class);
 
     static {
         // Driver for DB
@@ -88,11 +89,12 @@ public class RebuildApplication {
         }
 
         // for fastjson Serialize
+        SerializeConfig.getGlobalInstance().put(JSONable.class, ToStringSerializer.instance);
         SerializeConfig.getGlobalInstance().put(ID.class, ToStringSerializer.instance);
+        SerializeConfig.getGlobalInstance().put(Cell.class, ToStringSerializer.instance);
         SerializeConfig.getGlobalInstance().put(Date.class, RbDateCodec.instance);
         SerializeConfig.getGlobalInstance().put(StandardRecord.class, RbRecordCodec.instance);
         SerializeConfig.getGlobalInstance().put(QueryedRecord.class, RbRecordCodec.instance);
-        SerializeConfig.getGlobalInstance().put(Cell.class, ToStringSerializer.instance);
     }
 
     // SPRING
@@ -107,7 +109,7 @@ public class RebuildApplication {
         long startAt = System.currentTimeMillis();
 
         LOG.info("Initializing SpringBoot context ...");
-        SpringApplication spring = new SpringApplication(RebuildApplication.class);
+        SpringApplication spring = new SpringApplication(Application.class);
         spring.setBannerMode(Banner.Mode.OFF);
         APPLICATION_CONTEXT = spring.run(args);
 

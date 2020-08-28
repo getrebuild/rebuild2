@@ -11,7 +11,7 @@ import cn.devezhao.bizz.security.member.Team;
 import cn.devezhao.commons.CodecUtils;
 import cn.devezhao.commons.ObjectUtils;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.notification.MessageBuilder;
@@ -40,7 +40,7 @@ public class FeedsHelper {
      * @return
      */
     public static int getNumOfComment(ID feedsId) {
-        Object[] c = RebuildApplication.createQueryNoFilter(
+        Object[] c = Application.createQueryNoFilter(
                 "select count(commentId) from FeedsComment where feedsId = ?")
                 .setParameter(1, feedsId)
                 .unique();
@@ -55,7 +55,7 @@ public class FeedsHelper {
      * @return
      */
     public static int getNumOfLike(ID feedsOrComment) {
-        Object[] c = RebuildApplication.createQueryNoFilter(
+        Object[] c = Application.createQueryNoFilter(
                 "select count(likeId) from FeedsLike where source = ?")
                 .setParameter(1, feedsOrComment)
                 .unique();
@@ -70,7 +70,7 @@ public class FeedsHelper {
      * @return
      */
     public static boolean isMyLike(ID feedsOrComment, ID user) {
-        Object[] c = RebuildApplication.createQueryNoFilter(
+        Object[] c = Application.createQueryNoFilter(
                 "select likeId from FeedsLike where source = ? and createdBy = ?")
                 .setParameter(1, feedsOrComment)
                 .setParameter(2, user)
@@ -106,8 +106,8 @@ public class FeedsHelper {
             // 全名
             ID user = UserHelper.findUserByFullName(fullName);
             // 用户名
-            if (user == null && RebuildApplication.getUserStore().existsName(fullName)) {
-                user = RebuildApplication.getUserStore().getUser(fullName).getId();
+            if (user == null && Application.getUserStore().existsName(fullName)) {
+                user = Application.getUserStore().getUser(fullName).getId();
             }
 
             // 兼容全名中有1个空格
@@ -136,7 +136,7 @@ public class FeedsHelper {
             sql = "select feedsId.scope,feedsId.createdBy from FeedsComment where feedsId = ?";
         }
 
-        Object[] o = RebuildApplication.createQueryNoFilter(sql).setParameter(1, feedsOrComment).unique();
+        Object[] o = Application.createQueryNoFilter(sql).setParameter(1, feedsOrComment).unique();
         if (o == null) {
             return false;
         }
@@ -146,7 +146,7 @@ public class FeedsHelper {
 
         // 团队
         if (ID.isId(o[0])) {
-            Team team = RebuildApplication.getUserStore().getTeam(ID.valueOf((String) o[0]));
+            Team team = Application.getUserStore().getTeam(ID.valueOf((String) o[0]));
             return team.isMember(user);
         }
         return false;
@@ -192,8 +192,8 @@ public class FeedsHelper {
         while (atMatcher.find()) {
             String at = atMatcher.group();
             ID user = ID.valueOf(at.substring(1));
-            if (user.getEntityCode() == EntityHelper.User && RebuildApplication.getUserStore().existsUser(user)) {
-                String fullName = RebuildApplication.getUserStore().getUser(user).getFullName();
+            if (user.getEntityCode() == EntityHelper.User && Application.getUserStore().existsUser(user)) {
+                String fullName = Application.getUserStore().getUser(user).getFullName();
                 content = content.replace(at,
                         String.format("<a data-id=\"%s\">@%s</a>", user, fullName));
             }

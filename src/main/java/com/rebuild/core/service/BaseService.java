@@ -10,7 +10,7 @@ package com.rebuild.core.service;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -43,7 +43,7 @@ public abstract class BaseService implements ServiceSpec {
     @Override
     public int delete(ID recordId) {
         int affected = aPMFactory.createPersistManager().delete(recordId);
-        RebuildApplication.getRecordOwningCache().cleanOwningUser(recordId);
+        Application.getRecordOwningCache().cleanOwningUser(recordId);
         return affected;
     }
 

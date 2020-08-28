@@ -9,7 +9,7 @@ package com.rebuild.web.notification;
 
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.approval.ApprovalState;
@@ -47,7 +47,7 @@ public class NotificationControll extends BaseController {
 
     @RequestMapping("/notification/check-state")
     public void checkMessage(HttpServletRequest request, HttpServletResponse response) {
-        int unread = RebuildApplication.getNotifications().getUnreadMessage(getRequestUser(request));
+        int unread = Application.getNotifications().getUnreadMessage(getRequestUser(request));
         writeSuccess(response, JSONUtils.toJSONObject("unread", unread));
     }
 
@@ -57,7 +57,7 @@ public class NotificationControll extends BaseController {
         String ids = getParameter(request, "id");
 
         if ("ALL".equalsIgnoreCase(ids)) {
-            Object[][] unreads = RebuildApplication.createQueryNoFilter(
+            Object[][] unreads = Application.createQueryNoFilter(
                     "select messageId from Notification where toUser = ?")
                     .setParameter(1, user)
                     .array();
@@ -72,7 +72,7 @@ public class NotificationControll extends BaseController {
 
             Record record = EntityHelper.forUpdate(ID.valueOf(id), user);
             record.setBoolean("unread", false);
-            RebuildApplication.getNotifications().update(record);
+            Application.getNotifications().update(record);
         }
         writeSuccess(response);
     }
@@ -95,7 +95,7 @@ public class NotificationControll extends BaseController {
             sql = sql.replace("(1=1)", String.format("(type >= %d and type < %d)", type, type + 10));
         }
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(sql)
+        Object[][] array = Application.createQueryNoFilter(sql)
                 .setParameter(1, user)
                 .setLimit(ps, pn * ps - ps)
                 .array();
@@ -115,7 +115,7 @@ public class NotificationControll extends BaseController {
         int pn = getIntParameter(request, "pageNo", 1);
         int ps = getIntParameter(request, "pageSize", 40);
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select fromUser,message,createdOn,relatedRecord,messageId" +
                         " from Notification where toUser = ? and type = 20 and relatedRecord is not null order by createdOn desc")
                 .setParameter(1, user)
@@ -130,7 +130,7 @@ public class NotificationControll extends BaseController {
 
             // 审批状态
             ID approvalStep = (ID) m[3];
-            Object[] stepState = RebuildApplication.createQueryNoFilter(
+            Object[] stepState = Application.createQueryNoFilter(
                     "select isCanceled,state from RobotApprovalStep where stepId = ?")
                     .setParameter(1, approvalStep)
                     .unique();

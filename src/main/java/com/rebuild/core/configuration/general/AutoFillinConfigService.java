@@ -10,7 +10,7 @@ package com.rebuild.core.configuration.general;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.BaseConfigurationService;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -37,7 +37,7 @@ public class AutoFillinConfigService extends BaseConfigurationService implements
 
     @Override
     protected void cleanCache(ID cfgid) {
-        Object[] cfg = RebuildApplication.createQueryNoFilter(
+        Object[] cfg = Application.createQueryNoFilter(
                 "select belongEntity,belongField from AutoFillinConfig where configId = ?")
                 .setParameter(1, cfgid)
                 .unique();

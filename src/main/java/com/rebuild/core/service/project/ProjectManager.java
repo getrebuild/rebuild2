@@ -11,7 +11,7 @@ import cn.devezhao.bizz.security.AccessDeniedException;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.configuration.ConfigurationException;
@@ -67,10 +67,10 @@ public class ProjectManager implements ConfigManager {
      * @return
      */
     private ConfigBean[] getAllProjects() {
-        ConfigBean[] projects = (ConfigBean[]) RebuildApplication.getCommonsCache().getx(CKEY_PROJECTS);
+        ConfigBean[] projects = (ConfigBean[]) Application.getCommonsCache().getx(CKEY_PROJECTS);
 
         if (projects == null) {
-            Object[][] array = RebuildApplication.createQueryNoFilter(
+            Object[][] array = Application.createQueryNoFilter(
                     "select configId,projectCode,projectName,iconName,scope,members,principal,extraDefinition from ProjectConfig")
                     .array();
 
@@ -102,7 +102,7 @@ public class ProjectManager implements ConfigManager {
             }
 
             projects = alist.toArray(new ConfigBean[0]);
-            RebuildApplication.getCommonsCache().putx(CKEY_PROJECTS, projects);
+            Application.getCommonsCache().putx(CKEY_PROJECTS, projects);
         }
 
         for (ConfigBean p : projects) {
@@ -143,17 +143,17 @@ public class ProjectManager implements ConfigManager {
      */
     public ConfigBean getProjectByTask(ID taskId, ID user) throws ConfigurationException, AccessDeniedException {
         final String ckey = CKEY_TASK + taskId;
-        ID projectId = (ID) RebuildApplication.getCommonsCache().getx(ckey);
+        ID projectId = (ID) Application.getCommonsCache().getx(ckey);
 
         if (projectId == null) {
-            Object[] task = RebuildApplication.createQueryNoFilter(
+            Object[] task = Application.createQueryNoFilter(
                     "select projectId from ProjectTask where taskId = ?")
                     .setParameter(1, taskId)
                     .unique();
 
             projectId = task == null ? null : (ID) task[0];
             if (projectId != null) {
-                RebuildApplication.getCommonsCache().putx(ckey, projectId);
+                Application.getCommonsCache().putx(ckey, projectId);
             }
         }
 
@@ -178,10 +178,10 @@ public class ProjectManager implements ConfigManager {
         Assert.notNull(projectId, "[projectId] not be null");
 
         final String ckey = CKEY_PLAN + projectId;
-        ConfigBean[] cache = (ConfigBean[]) RebuildApplication.getCommonsCache().getx(ckey);
+        ConfigBean[] cache = (ConfigBean[]) Application.getCommonsCache().getx(ckey);
 
         if (cache == null) {
-            Object[][] array = RebuildApplication.createQueryNoFilter(
+            Object[][] array = Application.createQueryNoFilter(
                     "select configId,planName,flowStatus,flowNexts from ProjectPlanConfig where projectId = ? order by seq")
                     .setParameter(1, projectId)
                     .array();
@@ -204,7 +204,7 @@ public class ProjectManager implements ConfigManager {
             }
 
             cache = alist.toArray(new ConfigBean[0]);
-            RebuildApplication.getCommonsCache().putx(ckey, cache);
+            Application.getCommonsCache().putx(ckey, cache);
         }
         return cache.clone();
     }
@@ -216,7 +216,7 @@ public class ProjectManager implements ConfigManager {
      */
     public ConfigBean getPlanOfProject(ID planId, ID projectId) {
         if (projectId == null) {
-            Object[] o = RebuildApplication.getQueryFactory().uniqueNoFilter(planId, "projectId");
+            Object[] o = Application.getQueryFactory().uniqueNoFilter(planId, "projectId");
             projectId = o != null ? (ID) o[0] : null;
         }
 
@@ -232,15 +232,15 @@ public class ProjectManager implements ConfigManager {
         int ec = nullOrAnyProjectId == null ? -1 : ((ID) nullOrAnyProjectId).getEntityCode();
         // 清理项目
         if (ec == -1) {
-            RebuildApplication.getCommonsCache().evict(CKEY_PROJECTS);
+            Application.getCommonsCache().evict(CKEY_PROJECTS);
         }
         // 清理面板
         else if (ec == EntityHelper.ProjectConfig) {
-            RebuildApplication.getCommonsCache().evict(CKEY_PLAN + nullOrAnyProjectId);
+            Application.getCommonsCache().evict(CKEY_PLAN + nullOrAnyProjectId);
         }
         // 清理任务
         else if (ec == EntityHelper.ProjectTask) {
-            RebuildApplication.getCommonsCache().evict(CKEY_TASK + nullOrAnyProjectId);
+            Application.getCommonsCache().evict(CKEY_TASK + nullOrAnyProjectId);
         }
     }
 }

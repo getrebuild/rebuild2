@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.service.notification;
 
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.utils.AppUtils;
@@ -144,8 +144,8 @@ public class MessageBuilder {
 
         final ID id = ID.valueOf(atid);
         if (id.getEntityCode() == EntityHelper.User) {
-            if (RebuildApplication.getUserStore().existsUser(id)) {
-                return RebuildApplication.getUserStore().getUser(id).getFullName();
+            if (Application.getUserStore().existsUser(id)) {
+                return Application.getUserStore().getUser(id).getFullName();
             } else {
                 return "[无效用户]";
             }

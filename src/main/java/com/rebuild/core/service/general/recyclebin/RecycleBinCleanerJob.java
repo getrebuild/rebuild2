@@ -9,7 +9,7 @@ package com.rebuild.core.service.general.recyclebin;
 
 import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.persist4j.Entity;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.DistributedJobBean;
 import com.rebuild.core.helper.RebuildConfiguration;
@@ -47,7 +47,7 @@ public class RecycleBinCleanerJob extends DistributedJobBean {
                     entity.getPhysicalName(),
                     entity.getField("deletedOn").getPhysicalName(),
                     CalendarUtils.getUTCDateFormat().format(before));
-            int del = RebuildApplication.getSqlExecutor().execute(delSql, 120);
+            int del = Application.getSqlExecutor().execute(delSql, 120);
             LOG.warn("RecycleBin cleaned : " + del);
 
             // TODO 相关引用也在此时一并删除，因为记录已经彻底删除了
@@ -67,7 +67,7 @@ public class RecycleBinCleanerJob extends DistributedJobBean {
                     entity.getPhysicalName(),
                     entity.getField("revisionOn").getPhysicalName(),
                     CalendarUtils.getUTCDateFormat().format(before));
-            int del = RebuildApplication.getSqlExecutor().execute(delSql, 120);
+            int del = Application.getSqlExecutor().execute(delSql, 120);
             LOG.warn("RevisionHistory cleaned : " + del);
         }
     }

@@ -15,7 +15,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.service.CommonsService;
@@ -54,8 +54,8 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
             return;
         }
 
-        final ID caller = RebuildApplication.getSessionStore().get();
-        if (RebuildApplication.devMode()) {
+        final ID caller = Application.getSessionStore().get();
+        if (Application.devMode()) {
             LOG.info("User [ " + caller + " ] calls : " + invocation.getMethod());
         }
 
@@ -78,7 +78,7 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
 
             BulkContext context = (BulkContext) firstArgument;
             Entity entity = context.getMainEntity();
-            if (!RebuildApplication.getPrivilegesManager().allow(caller, entity.getEntityCode(), context.getAction())) {
+            if (!Application.getPrivilegesManager().allow(caller, entity.getEntityCode(), context.getAction())) {
                 LOG.error("User [ " + caller + " ] not allowed execute action [ " + context.getAction() + " ]. Entity : " + context.getMainEntity());
                 throw new AccessDeniedException(formatHumanMessage(context.getAction(), entity, null));
             }
@@ -113,18 +113,18 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
 
                 Field stmField = MetadataHelper.getSlaveToMasterField(entity);
                 ID masterId = ((Record) idOrRecord).getID(stmField.getName());
-                if (masterId == null || !RebuildApplication.getPrivilegesManager().allowUpdate(caller, masterId)) {
+                if (masterId == null || !Application.getPrivilegesManager().allowUpdate(caller, masterId)) {
                     throw new AccessDeniedException("你没有添加明细的权限");
                 }
                 allowed = true;
 
             } else {
-                allowed = RebuildApplication.getPrivilegesManager().allow(caller, entity.getEntityCode(), action);
+                allowed = Application.getPrivilegesManager().allow(caller, entity.getEntityCode(), action);
             }
 
         } else {
             Assert.notNull(recordId, "No primary in record!");
-            allowed = RebuildApplication.getPrivilegesManager().allow(caller, recordId, action);
+            allowed = Application.getPrivilegesManager().allow(caller, recordId, action);
         }
 
         // 无权限操作

@@ -12,7 +12,7 @@ import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.BaseServiceImpl;
 import com.rebuild.core.service.NoRecordFoundException;
@@ -56,7 +56,7 @@ public abstract class ObservableService extends Observable implements ServiceSpe
 
         if (countObservers() > 0) {
             setChanged();
-            notifyObservers(OperatingContext.create(RebuildApplication.getCurrentUser(), BizzPermission.CREATE, null, record));
+            notifyObservers(OperatingContext.create(Application.getCurrentUser(), BizzPermission.CREATE, null, record));
         }
         return record;
     }
@@ -69,7 +69,7 @@ public abstract class ObservableService extends Observable implements ServiceSpe
 
         if (countObservers() > 0) {
             setChanged();
-            notifyObservers(OperatingContext.create(RebuildApplication.getCurrentUser(), BizzPermission.UPDATE, before, record));
+            notifyObservers(OperatingContext.create(Application.getCurrentUser(), BizzPermission.UPDATE, before, record));
         }
         return record;
     }
@@ -78,19 +78,19 @@ public abstract class ObservableService extends Observable implements ServiceSpe
     public int delete(ID recordId) {
         Record deleted = null;
         if (countObservers() > 0) {
-            deleted = EntityHelper.forUpdate(recordId, RebuildApplication.getCurrentUser());
+            deleted = EntityHelper.forUpdate(recordId, Application.getCurrentUser());
             deleted = record(deleted);
 
             // 删除前触发，做一些状态保持
             setChanged();
-            notifyObservers(OperatingContext.create(RebuildApplication.getCurrentUser(), DELETE_BEFORE, deleted, null));
+            notifyObservers(OperatingContext.create(Application.getCurrentUser(), DELETE_BEFORE, deleted, null));
         }
 
         int affected = delegateService.delete(recordId);
 
         if (countObservers() > 0) {
             setChanged();
-            notifyObservers(OperatingContext.create(RebuildApplication.getCurrentUser(), BizzPermission.DELETE, deleted, null));
+            notifyObservers(OperatingContext.create(Application.getCurrentUser(), BizzPermission.DELETE, deleted, null));
         }
         return affected;
     }
@@ -113,7 +113,7 @@ public abstract class ObservableService extends Observable implements ServiceSpe
         sql.append(" from ").append(base.getEntity().getName());
         sql.append(" where ").append(base.getEntity().getPrimaryField().getName()).append(" = ?");
 
-        Record current = RebuildApplication.createQueryNoFilter(sql.toString()).setParameter(1, primary).record();
+        Record current = Application.createQueryNoFilter(sql.toString()).setParameter(1, primary).record();
         if (current == null) {
             throw new NoRecordFoundException("ID : " + primary);
         }

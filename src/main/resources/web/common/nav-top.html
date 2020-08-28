@@ -9,17 +9,17 @@
         <input class="form-control form-control-sm search-input-gs" type="text" name="search" maxlength="100" placeholder="搜索" autocomplete="off" />
         <div class="search-models animated fadeIn faster"></div>
       </div>
-      <div class="rb-right-navbar">
+      <div class="rb-right-navbar" th:with="user = ${T(com.rebuild.utils.AppUtils).getRequestUserBean(#request)}">
         <ul class="nav navbar-nav float-right rb-user-nav">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" th:href="@{/account/settings}" data-toggle="dropdown">
               <img th:src="@{/account/user-avatar}" alt="Avatar" />
-              <span class="user-name" th:text="${caller == null ? '' : caller.getFullName()}">姓名</span>
+              <span class="user-name" th:text="${user.getFullName()}">姓名</span>
             </a>
             <div class="dropdown-menu">
               <div class="user-info">
-                <div class="user-name" th:text="${caller == null ? '' : caller.getFullName()}">姓名</div>
-                <div class="user-id" th:text="${caller == null ? '' : caller.getEmail()}">邮箱</div>
+                <div class="user-name" th:text="${user.getFullName()}">姓名</div>
+                <div class="user-id" th:data-user="${user.getId()}" th:text="${user.getEmail()}">邮箱</div>
               </div>
               <a class="dropdown-item" th:href="@{/account/settings}"><i class="icon zmdi zmdi-account-box"></i>个人设置</a>
               <a class="dropdown-item" th:href="@{/user/logout}"><i class="icon zmdi zmdi-power"></i>退出</a>

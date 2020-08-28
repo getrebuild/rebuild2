@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Query;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.util.support.QueryHelper;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.task.HeavyTask;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.query.AdvFilterParser;
@@ -76,7 +76,7 @@ public abstract class BulkOperator extends HeavyTask<Integer> {
                 entity.getPrimaryField().getName(), entity.getName(), sqlWhere);
 
         // NOTE 注意没有分页
-        Query query = RebuildApplication.getQueryFactory().createQuery(sql, context.getOpUser());
+        Query query = Application.getQueryFactory().createQuery(sql, context.getOpUser());
         Object[][] array = QueryHelper.readArray(query);
         Set<ID> ids = new HashSet<>();
         for (Object[] o : array) {

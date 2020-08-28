@@ -12,7 +12,7 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.Record;
 import com.alibaba.fastjson.JSONObject;
 import com.hankcs.hanlp.HanLP;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.*;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
@@ -62,7 +62,7 @@ public class SignUp extends BaseController {
         if (!RegexUtils.isEMail(email)) {
             writeFailure(response, "邮箱无效");
             return;
-        } else if (RebuildApplication.getUserStore().existsEmail(email)) {
+        } else if (Application.getUserStore().existsEmail(email)) {
             writeFailure(response, "邮箱已存在");
             return;
         }
@@ -100,7 +100,7 @@ public class SignUp extends BaseController {
         userNew.setString("password", passwd);
         userNew.setBoolean("isDisabled", true);
         try {
-            RebuildApplication.getBean(UserService.class).txSignUp(userNew);
+            Application.getBean(UserService.class).txSignUp(userNew);
 
             String homeUrl = RebuildConfiguration.getHomeUrl();
             String content = String.format(
@@ -128,7 +128,7 @@ public class SignUp extends BaseController {
         }
 
         for (int i = 0; i < 100; i++) {
-            if (RebuildApplication.getUserStore().existsName(loginName)) {
+            if (Application.getUserStore().existsName(loginName)) {
                 loginName += RandomUtils.nextInt(99);
             } else {
                 break;

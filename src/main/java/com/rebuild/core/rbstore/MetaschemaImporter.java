@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Record;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.AdvFilterService;
 import com.rebuild.core.configuration.general.LayoutConfigService;
 import com.rebuild.core.configuration.general.PickListService;
@@ -132,7 +132,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
         for (Object[] picklist : picklistHolders) {
             Field refreshField = (Field) picklist[0];
             refreshField = MetadataHelper.getField(refreshField.getOwnEntity().getName(), refreshField.getName());
-            RebuildApplication.getBean(PickListService.class).updateBatch(refreshField, (JSONObject) picklist[1]);
+            Application.getBean(PickListService.class).updateBatch(refreshField, (JSONObject) picklist[1]);
         }
         setCompleted(100);
 
@@ -189,7 +189,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
             EasyMeta easyMeta = EasyMeta.valueOf(entity);
             Record updateNameField = EntityHelper.forUpdate(easyMeta.getMetaId(), this.getUser(), false);
             updateNameField.setString("nameField", nameField);
-            RebuildApplication.getCommonsService().update(updateNameField);
+            Application.getCommonsService().update(updateNameField);
         }
 
         // 布局
@@ -210,7 +210,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
             }
         }
 
-        RebuildApplication.getMetadataFactory().refresh(false);
+        Application.getMetadataFactory().refresh(false);
         return entityName;
     }
 
@@ -259,7 +259,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
         record.setString("applyType", type);
         record.setString("config", config.toJSONString());
         record.setString("shareTo", ShareToManager.SHARE_ALL);
-        RebuildApplication.getBean(LayoutConfigService.class).create(record);
+        Application.getBean(LayoutConfigService.class).create(record);
     }
 
     private void performFilter(String entity, String filterName, JSON config) {
@@ -268,6 +268,6 @@ public class MetaschemaImporter extends HeavyTask<String> {
         record.setString("filterName", filterName);
         record.setString("config", config.toJSONString());
         record.setString("shareTo", ShareToManager.SHARE_ALL);
-        RebuildApplication.getBean(AdvFilterService.class).create(record);
+        Application.getBean(AdvFilterService.class).create(record);
     }
 }

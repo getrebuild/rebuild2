@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.general.BaseLayoutManager;
 import com.rebuild.core.configuration.general.DataListManager;
@@ -59,7 +59,7 @@ public class DataListSettingsControll extends BaseController implements ShareTo 
     public void sets(@PathVariable String entity,
                      HttpServletRequest request, HttpServletResponse response) throws IOException {
         final ID user = getRequestUser(request);
-        Assert.isTrue(RebuildApplication.getPrivilegesManager().allow(user, ZeroEntry.AllowCustomDataList), "没有权限");
+        Assert.isTrue(Application.getPrivilegesManager().allow(user, ZeroEntry.AllowCustomDataList), "没有权限");
 
         ID cfgid = getIdParameter(request, "id");
         // 普通用户只能有一个
@@ -85,7 +85,7 @@ public class DataListSettingsControll extends BaseController implements ShareTo 
         }
         record.setString("config", config.toJSONString());
         putCommonsFields(request, record);
-        RebuildApplication.getBean(LayoutConfigService.class).createOrUpdate(record);
+        Application.getBean(LayoutConfigService.class).createOrUpdate(record);
 
         writeSuccess(response);
     }
@@ -115,7 +115,7 @@ public class DataListSettingsControll extends BaseController implements ShareTo 
 
             Entity refEntity = field.getReferenceEntity();
             // 无权限的不返回
-            if (!RebuildApplication.getPrivilegesManager().allowRead(user, refEntity.getEntityCode())) {
+            if (!Application.getPrivilegesManager().allowRead(user, refEntity.getEntityCode())) {
                 continue;
             }
 
@@ -167,7 +167,7 @@ public class DataListSettingsControll extends BaseController implements ShareTo 
             sql += "configId in ('" + StringUtils.join(uses, "', '") + "')";
         }
 
-        Object[][] list = RebuildApplication.createQueryNoFilter(sql).array();
+        Object[][] list = Application.createQueryNoFilter(sql).array();
         writeSuccess(response, list);
     }
 

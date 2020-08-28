@@ -11,7 +11,7 @@ import cn.devezhao.bizz.privileges.Permission;
 import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.persist4j.*;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
@@ -91,7 +91,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
 
     @Override
     public int delete(ID record, String[] cascades) {
-        final ID currentUser = RebuildApplication.getCurrentUser();
+        final ID currentUser = Application.getCurrentUser();
 
         RecycleStore recycleBin = null;
         if (RebuildConfiguration.getInt(ConfigurationItem.RecycleBinKeepingDays) > 0) {
@@ -113,7 +113,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
             }
 
             for (ID id : e.getValue()) {
-                if (RebuildApplication.getPrivilegesManager().allowDelete(currentUser, id)) {
+                if (Application.getPrivilegesManager().allowDelete(currentUser, id)) {
                     if (recycleBin != null) {
                         recycleBin.add(id, record);
                     }
@@ -149,7 +149,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
      * @throws DataSpecificationException
      */
     private int deleteInternal(ID record) throws DataSpecificationException {
-        Record delete = EntityHelper.forUpdate(record, RebuildApplication.getCurrentUser());
+        Record delete = EntityHelper.forUpdate(record, Application.getCurrentUser());
         if (!checkModifications(delete, BizzPermission.DELETE)) {
             return 0;
         }
@@ -158,7 +158,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
 
     @Override
     public int assign(ID record, ID to, String[] cascades) {
-        final User toUser = RebuildApplication.getUserStore().getUser(to);
+        final User toUser = Application.getUserStore().getUser(to);
         final Record assignAfter = EntityHelper.forUpdate(record, (ID) toUser.getIdentity(), false);
         assignAfter.setID(EntityHelper.OwningUser, (ID) toUser.getIdentity());
         assignAfter.setID(EntityHelper.OwningDept, (ID) toUser.getOwningDept().getIdentity());
@@ -167,7 +167,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
         Record assignBefore = null;
 
         int affected = 0;
-        if (to.equals(RebuildApplication.getRecordOwningCache().getOwningUser(record))) {
+        if (to.equals(Application.getRecordOwningCache().getOwningUser(record))) {
             // No need to change
             if (LOG.isDebugEnabled()) {
                 LOG.debug("记录所属人未变化，忽略 : " + record);
@@ -176,7 +176,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
             assignBefore = countObservers() > 0 ? record(assignAfter) : null;
 
             delegateService.update(assignAfter);
-            RebuildApplication.getRecordOwningCache().cleanOwningUser(record);
+            Application.getRecordOwningCache().cleanOwningUser(record);
             affected = 1;
         }
 
@@ -192,14 +192,14 @@ public class GeneralEntityService extends ObservableService implements EntitySer
 
         if (countObservers() > 0 && assignBefore != null) {
             setChanged();
-            notifyObservers(OperatingContext.create(RebuildApplication.getCurrentUser(), BizzPermission.ASSIGN, assignBefore, assignAfter));
+            notifyObservers(OperatingContext.create(Application.getCurrentUser(), BizzPermission.ASSIGN, assignBefore, assignAfter));
         }
         return affected;
     }
 
     @Override
     public int share(ID record, ID to, String[] cascades) {
-        final ID currentUser = RebuildApplication.getCurrentUser();
+        final ID currentUser = Application.getCurrentUser();
         final String entityName = MetadataHelper.getEntityName(record);
 
         final Record sharedAfter = EntityHelper.forNew(EntityHelper.ShareAccess, currentUser);
@@ -222,7 +222,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
             if (LOG.isDebugEnabled()) {
                 LOG.debug("记录已共享过，忽略 : " + record);
             }
-        } else if (to.equals(RebuildApplication.getRecordOwningCache().getOwningUser(record))) {
+        } else if (to.equals(Application.getRecordOwningCache().getOwningUser(record))) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("共享至与记录所属为同一用户，忽略 : " + record);
             }
@@ -251,7 +251,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
 
     @Override
     public int unshare(ID record, ID accessId) {
-        ID currentUser = RebuildApplication.getCurrentUser();
+        ID currentUser = Application.getCurrentUser();
 
         Record unsharedBefore = null;
         if (countObservers() > 0) {
@@ -317,8 +317,8 @@ public class GeneralEntityService extends ObservableService implements EntitySer
             // remove last ' or '
             sql.replace(sql.length() - 4, sql.length(), " )");
 
-            Filter filter = RebuildApplication.getPrivilegesManager().createQueryFilter(RebuildApplication.getCurrentUser(), action);
-            Object[][] array = RebuildApplication.getQueryFactory().createQuery(sql.toString(), filter).array();
+            Filter filter = Application.getPrivilegesManager().createQueryFilter(Application.getCurrentUser(), action);
+            Object[][] array = Application.getQueryFactory().createQuery(sql.toString(), filter).array();
 
             Set<ID> records = new HashSet<>();
             for (Object[] o : array) {
@@ -475,7 +475,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
      */
     private ID getMasterId(Entity slaveEntity, ID slaveId) throws NoRecordFoundException {
         Field stmField = MetadataHelper.getSlaveToMasterField(slaveEntity);
-        Object[] o = RebuildApplication.getQueryFactory().uniqueNoFilter(slaveId, stmField.getName());
+        Object[] o = Application.getQueryFactory().uniqueNoFilter(slaveId, stmField.getName());
         if (o == null) {
             throw new NoRecordFoundException(slaveId);
         }

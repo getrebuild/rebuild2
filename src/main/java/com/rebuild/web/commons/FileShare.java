@@ -19,7 +19,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 package com.rebuild.web.commons;
 
 import cn.devezhao.commons.CodecUtils;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.QiniuCloud;
 import com.rebuild.core.helper.RebuildConfiguration;
@@ -61,7 +61,7 @@ public class FileShare extends BaseController {
         int minte = getIntParameter(request, "time", 5);
 
         String shareKey = CodecUtils.randomCode(40);
-        RebuildApplication.getCommonsCache().put(shareKey, fileUrl, minte * 60);
+        Application.getCommonsCache().put(shareKey, fileUrl, minte * 60);
 
         String shareUrl = RebuildConfiguration.getHomeUrl("s/" + shareKey);
         writeSuccess(response, JSONUtils.toJSONObject("shareUrl", shareUrl));
@@ -72,7 +72,7 @@ public class FileShare extends BaseController {
                                      HttpServletResponse response) throws IOException {
         String fileUrl;
         if (!RebuildConfiguration.getBool(ConfigurationItem.FileSharable)
-                || (fileUrl = RebuildApplication.getCommonsCache().get(shareKey)) == null) {
+                || (fileUrl = Application.getCommonsCache().get(shareKey)) == null) {
             response.sendError(403, "分享的文件已过期");
             return null;
         }
@@ -95,7 +95,7 @@ public class FileShare extends BaseController {
         } else {
             // @see FileDownloader#download
             String e = CodecUtils.randomCode(40);
-            RebuildApplication.getCommonsCache().put(e, "rb", 60);
+            Application.getCommonsCache().put(e, "rb", 60);
 
             publicUrl = "filex/access/" + fileUrl + "?e=" + e;
             publicUrl = RebuildConfiguration.getHomeUrl(publicUrl);

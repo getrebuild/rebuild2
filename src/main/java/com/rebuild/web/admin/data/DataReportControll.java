@@ -11,7 +11,7 @@ import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigurationException;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -97,7 +97,7 @@ public class DataReportControll extends BaseController {
     @RequestMapping("/data-reports/preview")
     public void preview(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID reportId = getIdParameterNotNull(request, "id");
-        Object[] report = RebuildApplication.createQueryNoFilter(
+        Object[] report = Application.createQueryNoFilter(
                 "select belongEntity from DataReportConfig where configId = ?")
                 .setParameter(1, reportId)
                 .unique();
@@ -105,7 +105,7 @@ public class DataReportControll extends BaseController {
 
         String sql = String.format("select %s from %s order by modifiedOn desc",
                 entity.getPrimaryField().getName(), entity.getName());
-        Object[] random = RebuildApplication.createQueryNoFilter(sql).unique();
+        Object[] random = Application.createQueryNoFilter(sql).unique();
         if (random == null) {
             response.sendError(400, "无法预览。未找到可供预览的记录");
             return;
@@ -141,7 +141,7 @@ public class DataReportControll extends BaseController {
             sql = sql.replace("(2=2)", "name like '%" + StringEscapeUtils.escapeSql(q) + "%'");
         }
 
-        Object[][] array = RebuildApplication.createQuery(sql).setLimit(500).array();
+        Object[][] array = Application.createQuery(sql).setLimit(500).array();
         for (Object[] o : array) {
             o[2] = EasyMeta.getLabel(MetadataHelper.getEntity((String) o[2]));
             o[5] = CalendarUtils.getUTCDateTimeFormat().format(o[5]);

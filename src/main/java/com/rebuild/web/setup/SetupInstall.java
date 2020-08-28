@@ -11,7 +11,7 @@ import cn.devezhao.commons.ObjectUtils;
 import cn.devezhao.commons.ThrowableUtils;
 import cn.devezhao.commons.web.ServletUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.setup.InstallState;
@@ -46,7 +46,7 @@ public class SetupInstall extends BaseController implements InstallState {
 
     @RequestMapping("install")
     public ModelAndView pageIndex(HttpServletResponse response) throws IOException {
-        if (RebuildApplication.serversReady() && !RebuildApplication.devMode()) {
+        if (Application.serversReady() && !Application.devMode()) {
             response.sendError(404);
             return null;
         }

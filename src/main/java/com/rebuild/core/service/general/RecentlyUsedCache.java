@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.service.general;
 
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.cache.BaseCacheTemplate;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
@@ -77,7 +77,7 @@ public class RecentlyUsedCache extends BaseCacheTemplate<Serializable> {
         List<ID> data = new ArrayList<>();
         for (int i = 0; i < limit && i < exists.size(); i++) {
             final ID raw = exists.get(i);
-            if (!(raw.getEntityCode() == EntityHelper.ClassificationData || RebuildApplication.getPrivilegesManager().allowRead(user, raw))) {
+            if (!(raw.getEntityCode() == EntityHelper.ClassificationData || Application.getPrivilegesManager().allowRead(user, raw))) {
                 continue;
             }
 

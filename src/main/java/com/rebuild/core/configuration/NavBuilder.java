@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.project.ProjectManager;
@@ -114,7 +114,7 @@ public class NavBuilder extends NavManager {
             }
 
             Entity entityMeta = MetadataHelper.getEntity(entity);
-            return !RebuildApplication.getPrivilegesManager().allowRead(user, entityMeta.getEntityCode());
+            return !Application.getPrivilegesManager().allowRead(user, entityMeta.getEntityCode());
         }
         return false;
     }

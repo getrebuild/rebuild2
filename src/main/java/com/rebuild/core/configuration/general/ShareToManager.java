@@ -9,7 +9,7 @@ package com.rebuild.core.configuration.general;
 
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.metadata.EntityHelper;
@@ -61,9 +61,9 @@ public abstract class ShareToManager implements ConfigManager {
     protected void cleanWithBelongEntity(ID cfgid, boolean hasApplyType) {
         String ql = String.format("select belongEntity%s from %s where configId = ?",
                 (hasApplyType ? ",applyType" : ""), getConfigEntity());
-        Object[] c = RebuildApplication.createQueryNoFilter(ql).setParameter(1, cfgid).unique();
+        Object[] c = Application.createQueryNoFilter(ql).setParameter(1, cfgid).unique();
         if (c != null) {
-            RebuildApplication.getCommonsCache().evict(formatCacheKey((String) c[0], hasApplyType ? (String) c[1] : null));
+            Application.getCommonsCache().evict(formatCacheKey((String) c[0], hasApplyType ? (String) c[1] : null));
         }
     }
 
@@ -130,7 +130,7 @@ public abstract class ShareToManager implements ConfigManager {
      */
     protected Object[][] getAllConfig(String belongEntity, String applyType) {
         final String cacheKey = formatCacheKey(belongEntity, applyType);
-        Object[][] cached = (Object[][]) RebuildApplication.getCommonsCache().getx(cacheKey);
+        Object[][] cached = (Object[][]) Application.getCommonsCache().getx(cacheKey);
 
         if (cached == null) {
             List<String> sqlWhere = new ArrayList<>();
@@ -146,8 +146,8 @@ public abstract class ShareToManager implements ConfigManager {
                 ql = ql.replace("(1=1)", StringUtils.join(sqlWhere.iterator(), " and "));
             }
 
-            cached = RebuildApplication.createQueryNoFilter(ql).array();
-            RebuildApplication.getCommonsCache().putx(cacheKey, cached);
+            cached = Application.createQueryNoFilter(ql).array();
+            Application.getCommonsCache().putx(cacheKey, cached);
         }
 
         if (cached == null) {
@@ -222,7 +222,7 @@ public abstract class ShareToManager implements ConfigManager {
 
         Entity e = MetadataHelper.getEntity(cfgid.getEntityCode());
         String ql = String.format("select createdBy from %s where %s = ?", e.getName(), e.getPrimaryField().getName());
-        Object[] c = RebuildApplication.createQueryNoFilter(ql).setParameter(1, cfgid).unique();
+        Object[] c = Application.createQueryNoFilter(ql).setParameter(1, cfgid).unique();
         if (c == null) {
             throw new RebuildException("No config found : " + cfgid);
         }

@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationService;
 import com.rebuild.core.helper.task.HeavyTask;
 import com.rebuild.core.metadata.EntityHelper;
@@ -90,7 +90,7 @@ public class ClassificationImporter extends HeavyTask<Integer> {
             sql += String.format(" and parent = '%s'", parent);
         }
 
-        Object[] exists = RebuildApplication.createQueryNoFilter(sql).setParameter(1, dest).unique();
+        Object[] exists = Application.createQueryNoFilter(sql).setParameter(1, dest).unique();
         if (exists != null) {
             return (ID) exists[0];
         }
@@ -106,7 +106,7 @@ public class ClassificationImporter extends HeavyTask<Integer> {
             item.setID("parent", parent);
         }
 
-        item = RebuildApplication.getBean(ClassificationService.class).createOrUpdateItem(item);
+        item = Application.getBean(ClassificationService.class).createOrUpdateItem(item);
         this.addSucceeded();
         return item.getPrimary();
     }

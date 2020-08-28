@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.task.TaskExecutors;
 import com.rebuild.core.metadata.EntityHelper;
@@ -162,7 +162,7 @@ public class MetaEntityControll extends BaseController {
         String needReindex = null;
         String nameField = record.getString("nameField");
         if (nameField != null) {
-            Object[] nameFieldOld = RebuildApplication.createQueryNoFilter(
+            Object[] nameFieldOld = Application.createQueryNoFilter(
                     "select nameField,entityName from MetaEntity where entityId = ?")
                     .setParameter(1, record.getPrimary())
                     .unique();
@@ -171,8 +171,8 @@ public class MetaEntityControll extends BaseController {
             }
         }
 
-        RebuildApplication.getCommonsService().update(record);
-        RebuildApplication.getMetadataFactory().refresh(false);
+        Application.getCommonsService().update(record);
+        Application.getMetadataFactory().refresh(false);
 
         if (needReindex != null) {
             Entity entity = MetadataHelper.getEntity(needReindex);
@@ -222,7 +222,7 @@ public class MetaEntityControll extends BaseController {
      * @return
      */
     private Entity getEntityById(ID metaId) {
-        Object[] entityRecord = RebuildApplication.createQueryNoFilter(
+        Object[] entityRecord = Application.createQueryNoFilter(
                 "select entityName from MetaEntity where entityId = ?")
                 .setParameter(1, metaId)
                 .unique();

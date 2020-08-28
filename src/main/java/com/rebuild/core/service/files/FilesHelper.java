@@ -22,7 +22,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.collections.map.LRUMap;
@@ -104,7 +104,7 @@ public class FilesHelper {
         } else {
             sql += String.format("parent = '%s'", parent);
         }
-        Object[][] array = RebuildApplication.createQueryNoFilter(sql).setParameter(1, user).array();
+        Object[][] array = Application.createQueryNoFilter(sql).setParameter(1, user).array();
 
         JSONArray folders = new JSONArray();
         for (Object[] o : array) {
@@ -129,7 +129,7 @@ public class FilesHelper {
      * @return
      */
     public static ID[] getPrivateFolders(ID user) {
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select folderId,createdBy from AttachmentFolder where scope = '" + SCOPE_SELF + "'")
                 .array();
         Set<ID> set = new HashSet<>();
@@ -149,7 +149,7 @@ public class FilesHelper {
      * @return
      */
     private static Set<ID> getChildFolders(ID parent) {
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select folderId,createdBy from AttachmentFolder where parent = ?")
                 .setParameter(1, parent)
                 .array();
@@ -172,7 +172,7 @@ public class FilesHelper {
      * @return
      */
     public static boolean isPrivate(ID folder) {
-        Object[] o = RebuildApplication.createQueryNoFilter(
+        Object[] o = Application.createQueryNoFilter(
                 "select scope,parent from AttachmentFolder where folderId = ?")
                 .setParameter(1, folder)
                 .unique();

@@ -9,7 +9,7 @@ package com.rebuild.core.helper;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.utils.HttpUtils;
 import com.rebuild.utils.JSONUtils;
@@ -42,7 +42,7 @@ public final class License {
         SN = RebuildConfiguration.get(ConfigurationItem.SN, true);
         if (SN == null) {
             try {
-                String apiUrl = String.format("https://getrebuild.com/api/authority/new?ver=%s&k=%s", RebuildApplication.VER, OSA_KEY);
+                String apiUrl = String.format("https://getrebuild.com/api/authority/new?ver=%s&k=%s", Application.VER, OSA_KEY);
                 String result = HttpUtils.get(apiUrl);
 
                 if (JSONUtils.wellFormat(result)) {
@@ -58,10 +58,10 @@ public final class License {
 
         if (SN == null) {
             SN = String.format("ZR%d%s-%s",
-                    RebuildApplication.BUILD,
+                    Application.BUILD,
                     StringUtils.leftPad(Locale.getDefault().getCountry(), 3, "0"),
                     UUID.randomUUID().toString().replace("-", "").substring(0, 14).toUpperCase());
-            if (RebuildApplication.serversReady()) {
+            if (Application.serversReady()) {
                 RebuildConfiguration.set(ConfigurationItem.SN, SN);
             }
         }
@@ -102,7 +102,7 @@ public final class License {
      */
     public static JSONObject siteApi(String api, boolean useCache) {
         if (useCache) {
-            Object o = RebuildApplication.getCommonsCache().getx(api);
+            Object o = Application.getCommonsCache().getx(api);
             if (o != null) {
                 return (JSONObject) o;
             }
@@ -115,7 +115,7 @@ public final class License {
             String result = HttpUtils.get(apiUrl);
             if (JSONUtils.wellFormat(result)) {
                 JSONObject o = JSON.parseObject(result);
-                RebuildApplication.getCommonsCache().putx(api, o, CommonsCache.TS_DAY);
+                Application.getCommonsCache().putx(api, o, CommonsCache.TS_DAY);
                 return o;
             }
         } catch (Exception ignored) {

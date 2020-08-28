@@ -22,7 +22,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.SetUser;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.query.ParserTokens;
@@ -138,7 +138,7 @@ public class BatchOperatorQuery extends SetUser<BatchOperatorQuery> {
         int pageNo = queryData.getIntValue("pageNo");
         int pageSize = queryData.getIntValue("pageSize");
 
-        Object[][] array = RebuildApplication.getQueryFactory().createQuery(sql, getUser())
+        Object[][] array = Application.getQueryFactory().createQuery(sql, getUser())
                 .setLimit(pageSize, pageNo * pageSize - pageSize)
                 .setTimeout(60)
                 .array();

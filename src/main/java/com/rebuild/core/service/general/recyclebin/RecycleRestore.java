@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.engine.PersistManagerImpl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -65,7 +65,7 @@ public class RecycleRestore {
      * @return
      */
     public int restore(boolean cascade) {
-        Object[] main = RebuildApplication.createQueryNoFilter(
+        Object[] main = Application.createQueryNoFilter(
                 "select recordContent,recordId,recycleId from RecycleBin where recycleId = ?")
                 .setParameter(1, this.recycleId)
                 .unique();
@@ -84,7 +84,7 @@ public class RecycleRestore {
         recycleIds.add((ID) main[2]);
 
         if (cascade) {
-            Object[][] array = RebuildApplication.createQueryNoFilter(
+            Object[][] array = Application.createQueryNoFilter(
                     "select recordContent,recordId,recycleId from RecycleBin where channelWith = ?")
                     .setParameter(1, main[1])
                     .array();
@@ -101,7 +101,7 @@ public class RecycleRestore {
         final TransactionStatus status = TransactionManual.newTransaction();
 
         int restored = 0;
-        PersistManagerImpl PM = (PersistManagerImpl) RebuildApplication.getPersistManagerFactory().createPersistManager();
+        PersistManagerImpl PM = (PersistManagerImpl) Application.getPersistManagerFactory().createPersistManager();
         try {
             for (Record r : willRestores) {
                 String primaryName = r.getEntity().getPrimaryField().getName();
@@ -163,7 +163,7 @@ public class RecycleRestore {
      * @see AttachmentAwareObserver#onDelete(OperatingContext)
      */
     private void restoreAttachment(PersistManagerImpl PM, ID recordId) {
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select attachmentId from Attachment where relatedRecord = ?")
                 .setParameter(1, recordId)
                 .array();

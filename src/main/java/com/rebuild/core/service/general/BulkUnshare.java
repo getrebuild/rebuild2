@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.service.general;
 
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 
 /**
  * 取消共享
@@ -30,7 +30,7 @@ public class BulkUnshare extends BulkOperator {
         final ID realTarget = context.getTargetRecord();
 
         // 只需要验证主记录权限
-        if (!RebuildApplication.getPrivilegesManager().allowShare(context.getOpUser(), realTarget)) {
+        if (!Application.getPrivilegesManager().allowShare(context.getOpUser(), realTarget)) {
             this.setCompleted(records.length);
             return 0;
         }

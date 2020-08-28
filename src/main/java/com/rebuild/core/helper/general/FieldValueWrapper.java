@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.metadata.MetadataException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationManager;
 import com.rebuild.core.configuration.general.MultiSelectManager;
 import com.rebuild.core.configuration.general.PickListManager;
@@ -355,7 +355,7 @@ public class FieldValueWrapper {
         }
 
         Field nameField = MetadataHelper.getNameField(entity);
-        Object[] nameValue = RebuildApplication.getQueryFactory().uniqueNoFilter(id, nameField.getName());
+        Object[] nameValue = Application.getQueryFactory().uniqueNoFilter(id, nameField.getName());
         if (nameValue == null) {
             throw new NoRecordFoundException("No record found by ID : " + id);
         }

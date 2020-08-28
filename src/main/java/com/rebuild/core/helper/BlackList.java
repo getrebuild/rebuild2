@@ -9,7 +9,7 @@ package com.rebuild.core.helper;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -58,7 +58,7 @@ public class BlackList {
             String s = FileUtils.readFileToString(file, "UTF-8");
             BLACKLIST = JSON.parseArray(s);
         } catch (IOException e) {
-            RebuildApplication.LOG.error("Couldn't load [blacklist.json] file! This feature is missed : " + e);
+            Application.LOG.error("Couldn't load [blacklist.json] file! This feature is missed : " + e);
             BLACKLIST = JSONUtils.EMPTY_ARRAY;
         }
     }

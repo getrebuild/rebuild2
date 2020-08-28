@@ -10,7 +10,7 @@ package com.rebuild.core.service.query;
 import cn.devezhao.persist4j.*;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.query.NativeQuery;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.bizz.RoleBaseQueryFilter;
 import org.apache.commons.lang.StringUtils;
@@ -41,7 +41,7 @@ public class QueryFactory {
      * @return
      */
     public Query createQuery(String ajql) {
-        return createQuery(ajql, RebuildApplication.getCurrentUser());
+        return createQuery(ajql, Application.getCurrentUser());
     }
 
     /**
@@ -50,7 +50,7 @@ public class QueryFactory {
      * @return
      */
     public Query createQuery(String ajql, ID user) {
-        return createQuery(ajql, RebuildApplication.getPrivilegesManager().createQueryFilter(user));
+        return createQuery(ajql, Application.getPrivilegesManager().createQueryFilter(user));
     }
 
     /**

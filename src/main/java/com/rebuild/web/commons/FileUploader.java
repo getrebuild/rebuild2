@@ -9,10 +9,10 @@ package com.rebuild.web.commons;
 
 import cn.devezhao.commons.ObjectUtils;
 import cn.devezhao.commons.web.ServletUtils;
+import com.rebuild.api.ResultBody;
 import com.rebuild.core.helper.QiniuCloud;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.service.files.FilesHelper;
-import com.rebuild.utils.AppUtils;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
@@ -46,7 +46,7 @@ public class FileUploader {
     private static final Log LOG = LogFactory.getLog(FileUploader.class);
 
     @RequestMapping(value = "upload", method = RequestMethod.POST)
-    public void upload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void upload(HttpServletRequest request, HttpServletResponse response) {
         String uploadName = null;
         try {
             List<FileItem> fileItems = parseFileItem(request);
@@ -69,7 +69,7 @@ public class FileUploader {
 
                 item.write(file);
                 if (!file.exists()) {
-                    ServletUtils.writeJson(response, AppUtils.formatControllerMessage(1000, "上传失败"));
+                    ServletUtils.writeJson(response, ResultBody.error("上传失败", 1000).toString());
                     return;
                 }
 
@@ -82,9 +82,9 @@ public class FileUploader {
         }
 
         if (uploadName != null) {
-            ServletUtils.writeJson(response, AppUtils.formatControllerMessage(0, uploadName));
+            ServletUtils.writeJson(response, ResultBody.ok(uploadName).toString());
         } else {
-            ServletUtils.writeJson(response, AppUtils.formatControllerMessage(1000, "上传失败"));
+            ServletUtils.writeJson(response, ResultBody.error("上传失败", 1000).toString());
         }
     }
 
@@ -92,7 +92,7 @@ public class FileUploader {
      * @see FilesHelper#storeFileSize(String, int)
      */
     @RequestMapping("store-filesize")
-    public void storeFilesize(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void storeFilesize(HttpServletRequest request) {
         int fileSize = ObjectUtils.toInt(request.getParameter("fs"));
         if (fileSize < 1) {
             return;
@@ -131,11 +131,11 @@ public class FileUploader {
         }
 
         ServletFileUpload upload = new ServletFileUpload(fileItemFactory);
-        List<FileItem> files = null;
+        List<FileItem> files;
         try {
             files = upload.parseRequest(request);
         } catch (Exception ex) {
-            if (ex instanceof IOException || ex.getCause() instanceof IOException) {
+            if (ex.getCause() instanceof IOException) {
                 LOG.warn("传输意外中断", ex);
                 return Collections.emptyList();
             }

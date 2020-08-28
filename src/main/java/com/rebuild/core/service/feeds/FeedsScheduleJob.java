@@ -11,7 +11,7 @@ import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.commons.RegexUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.DistributedJobBean;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.SMSender;
@@ -36,7 +36,7 @@ public class FeedsScheduleJob extends DistributedJobBean {
         time.set(Calendar.SECOND, 0);
         time.set(Calendar.MILLISECOND, 0);
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select createdBy,feedsId,content,contentMore from Feeds where scheduleTime = ? and type = ?")
                 .setParameter(1, time.getTime())
                 .setParameter(2, FeedsType.SCHEDULE.getMask())
@@ -84,12 +84,12 @@ public class FeedsScheduleJob extends DistributedJobBean {
             if (!notifications.isEmpty()) {
                 String subject = String.format(subjectTemp, notifications.size());
                 String contents = subject + mergeContents(notifications, false);
-                RebuildApplication.getNotifications().send(
+                Application.getNotifications().send(
                         MessageBuilder.createMessage(toUser, contents, Message.TYPE_FEEDS));
             }
 
             // 邮件
-            final String emailAddr = RebuildApplication.getUserStore().getUser(toUser).getEmail();
+            final String emailAddr = Application.getUserStore().getUser(toUser).getEmail();
             if (SMSender.availableMail() && RegexUtils.isEMail(emailAddr) && !emails.isEmpty()) {
                 String subject = String.format(subjectTemp, emails.size());
                 String contents = mergeContents(emails, true);
@@ -98,7 +98,7 @@ public class FeedsScheduleJob extends DistributedJobBean {
             }
 
             // 短信（考虑短信字数，内容简化了）
-            final String mobileAddr = RebuildApplication.getUserStore().getUser(toUser).getWorkphone();
+            final String mobileAddr = Application.getUserStore().getUser(toUser).getWorkphone();
             if (SMSender.availableSMS() && RegexUtils.isCNMobile(mobileAddr) && !smss.isEmpty()) {
                 String subject = String.format(subjectTemp, smss.size());
                 SMSender.sendSMSAsync(mobileAddr, subject);

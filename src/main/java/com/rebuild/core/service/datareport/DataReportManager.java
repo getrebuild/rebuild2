@@ -10,7 +10,7 @@ package com.rebuild.core.service.datareport;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.configuration.ConfigurationException;
@@ -58,12 +58,12 @@ public class DataReportManager implements ConfigManager {
      */
     public ConfigBean[] getReportsRaw(Entity entity) {
         final String cKey = "DataReportManager-" + entity.getName();
-        ConfigBean[] cached = (ConfigBean[]) RebuildApplication.getCommonsCache().getx(cKey);
+        ConfigBean[] cached = (ConfigBean[]) Application.getCommonsCache().getx(cKey);
         if (cached != null) {
             return cached;
         }
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select configId,name,isDisabled,templateFile from DataReportConfig where belongEntity = ?")
                 .setParameter(1, entity.getName())
                 .array();
@@ -79,7 +79,7 @@ public class DataReportManager implements ConfigManager {
         }
 
         cached = list.toArray(new ConfigBean[0]);
-        RebuildApplication.getCommonsCache().putx(cKey, cached);
+        Application.getCommonsCache().putx(cKey, cached);
         return cached;
     }
 
@@ -115,7 +115,7 @@ public class DataReportManager implements ConfigManager {
      */
     @Deprecated
     public File getTemplateFile(ID reportId) {
-        Object[] report = RebuildApplication.createQueryNoFilter(
+        Object[] report = Application.createQueryNoFilter(
                 "select belongEntity from DataReportConfig where configId = ?")
                 .setParameter(1, reportId)
                 .unique();
@@ -129,6 +129,6 @@ public class DataReportManager implements ConfigManager {
     @Override
     public void clean(Object entity) {
         final String cKey = "DataReportManager-" + ((Entity) entity).getName();
-        RebuildApplication.getCommonsCache().evict(cKey);
+        Application.getCommonsCache().evict(cKey);
     }
 }

@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.service.general;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.setup.Installer;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -55,7 +55,7 @@ public class RedisQueueObserver extends OperatingObserver {
             data.put("recordData", ctx.getAfterRecord());
         }
 
-        JedisPool pool = RebuildApplication.getCommonsCache().getJedisPool();
+        JedisPool pool = Application.getCommonsCache().getJedisPool();
         try (Jedis jedis = pool.getResource()) {
             if (isUseTopic()) {
                 jedis.publish(QUEUE_NAME, data.toJSONString());

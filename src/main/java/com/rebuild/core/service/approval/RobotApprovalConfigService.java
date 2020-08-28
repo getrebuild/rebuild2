@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.BaseConfigurationService;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -40,7 +40,7 @@ public class RobotApprovalConfigService extends BaseConfigurationService impleme
     @Override
     public Record create(Record record) {
         String entity = record.getString("belongEntity");
-        new ApprovalFields2Schema(RebuildApplication.getCurrentUser())
+        new ApprovalFields2Schema(Application.getCurrentUser())
                 .createFields(MetadataHelper.getEntity(entity));
         return super.create(record);
     }
@@ -67,7 +67,7 @@ public class RobotApprovalConfigService extends BaseConfigurationService impleme
 
     @Override
     protected void cleanCache(ID cfgid) {
-        Object[] cfg = RebuildApplication.createQueryNoFilter(
+        Object[] cfg = Application.createQueryNoFilter(
                 "select belongEntity from RobotApprovalConfig where configId = ?")
                 .setParameter(1, cfgid)
                 .unique();

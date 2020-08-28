@@ -10,7 +10,7 @@ package com.rebuild.core.service.dashboard.charts;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -38,7 +38,7 @@ public class ChartsFactory {
 
         JSONObject config = (JSONObject) chart.getJSON("config");
         config.put("chartOwning", chart.getID("createdBy"));
-        return create(config, RebuildApplication.getCurrentUser());
+        return create(config, Application.getCurrentUser());
     }
 
     /**
@@ -54,7 +54,7 @@ public class ChartsFactory {
         }
 
         Entity entity = MetadataHelper.getEntity(e);
-        if (user == null || !RebuildApplication.getPrivilegesManager().allowRead(user, entity.getEntityCode())) {
+        if (user == null || !Application.getPrivilegesManager().allowRead(user, entity.getEntityCode())) {
             throw new ChartsException("没有读取 [" + EasyMeta.getLabel(entity) + "] 的权限");
         }
 

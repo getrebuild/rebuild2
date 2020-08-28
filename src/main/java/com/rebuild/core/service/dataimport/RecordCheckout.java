@@ -25,7 +25,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.Query;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationManager;
 import com.rebuild.core.configuration.general.PickListManager;
 import com.rebuild.core.helper.state.StateManager;
@@ -231,12 +231,12 @@ public class RecordCheckout {
             String sql = MessageFormat.format(
                     "select userId from User where loginName = ''{0}'' or email = ''{0}'' or fullName = ''{0}''",
                     StringEscapeUtils.escapeSql(val2Text.toString()));
-            query = RebuildApplication.createQueryNoFilter(sql);
+            query = Application.createQueryNoFilter(sql);
         } else {
             // 查找引用实体的名称字段
             String sql = String.format("select %s from %s where %s = ?",
                     refEntity.getPrimaryField().getName(), refEntity.getName(), refEntity.getNameField().getName());
-            query = RebuildApplication.createQueryNoFilter(sql).setParameter(1, val2Text);
+            query = Application.createQueryNoFilter(sql).setParameter(1, val2Text);
         }
 
         Object[] found = query.unique();

@@ -18,7 +18,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.api.login.AuthTokenManager;
 import com.rebuild.api.login.LoginToken;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.core.helper.*;
 import com.rebuild.core.metadata.EntityHelper;
@@ -101,7 +101,7 @@ public class Login extends BaseController {
                 LOG.error("Can't decode User from alt : " + alt, ex);
             }
 
-            if (altUser != null && RebuildApplication.getUserStore().existsUser(altUser)) {
+            if (altUser != null && Application.getUserStore().existsUser(altUser)) {
                 loginSuccessed(request, response, altUser, true);
 
                 String nexturl = StringUtils.defaultIfBlank(request.getParameter("nexturl"), DEFAULT_HOME);
@@ -126,6 +126,7 @@ public class Login extends BaseController {
             writeFailure(response, "验证码错误");
             return;
         }
+        needVcode.toString();
 
         final String user = getParameterNotNull(request, "user");
         final String password = ServletUtils.getRequestString(request);
@@ -143,7 +144,7 @@ public class Login extends BaseController {
             return;
         }
 
-        User loginUser = RebuildApplication.getUserStore().getUser(user);
+        User loginUser = Application.getUserStore().getUser(user);
         loginSuccessed(request, response, loginUser.getId(), getBoolParameter(request, "autoLogin", false));
 
         // 清理
@@ -161,15 +162,15 @@ public class Login extends BaseController {
     private int getLoginRetryTimes(String user, int state) {
         String key = "LoginRetry-" + user;
         if (state == -1) {
-            RebuildApplication.getCommonsCache().evict(key);
+            Application.getCommonsCache().evict(key);
             return 0;
         }
 
-        Integer retry = (Integer) RebuildApplication.getCommonsCache().getx(key);
+        Integer retry = (Integer) Application.getCommonsCache().getx(key);
         retry = retry == null ? 0 : retry;
         if (state == 1) {
             retry += 1;
-            RebuildApplication.getCommonsCache().putx(key, retry, CommonsCache.TS_HOUR);
+            Application.getCommonsCache().putx(key, retry, CommonsCache.TS_HOUR);
         }
         return retry;
     }
@@ -196,7 +197,7 @@ public class Login extends BaseController {
         ServletUtils.setSessionAttribute(request, SK_LOGINID, loginId);
 
         ServletUtils.setSessionAttribute(request, WebUtils.CURRENT_USER, user);
-        RebuildApplication.getSessionStore().storeLoginSuccessed(request);
+        Application.getSessionStore().storeLoginSuccessed(request);
     }
 
     /**
@@ -227,7 +228,7 @@ public class Login extends BaseController {
         record.setString("ipAddr", ipAddr);
         record.setString("userAgent", UA);
         record.setDate("loginTime", CalendarUtils.now());
-        record = RebuildApplication.getCommonsService().create(record);
+        record = Application.getCommonsService().create(record);
         return record.getPrimary();
     }
 
@@ -253,7 +254,7 @@ public class Login extends BaseController {
         }
 
         String email = getParameterNotNull(request, "email");
-        if (!RegexUtils.isEMail(email) || !RebuildApplication.getUserStore().existsEmail(email)) {
+        if (!RegexUtils.isEMail(email) || !Application.getUserStore().existsEmail(email)) {
             writeFailure(response, "邮箱无效");
             return;
         }
@@ -280,19 +281,19 @@ public class Login extends BaseController {
         String email = data.getString("email");
         String newpwd = data.getString("newpwd");
 
-        User user = RebuildApplication.getUserStore().getUserByEmail(email);
+        User user = Application.getUserStore().getUserByEmail(email);
         Record record = EntityHelper.forUpdate(user.getId(), user.getId());
         record.setString("password", newpwd);
         try {
-            RebuildApplication.getSessionStore().set(user.getId());
+            Application.getSessionStore().set(user.getId());
 
-            RebuildApplication.getBean(UserService.class).update(record);
+            Application.getBean(UserService.class).update(record);
             writeSuccess(response);
             VerfiyCode.clean(email);
         } catch (DataSpecificationException ex) {
             writeFailure(response, ex.getLocalizedMessage());
         } finally {
-            RebuildApplication.getSessionStore().clean();
+            Application.getSessionStore().clean();
         }
     }
 

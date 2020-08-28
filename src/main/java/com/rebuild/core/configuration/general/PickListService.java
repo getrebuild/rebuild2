@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.BaseConfigurationService;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
@@ -52,12 +52,12 @@ public class PickListService extends BaseConfigurationService implements AdminGu
      */
     public void updateBatch(Field field, JSONObject config) {
         Assert.notNull(config, "无效配置");
-        ID user = RebuildApplication.getCurrentUser();
+        ID user = Application.getCurrentUser();
 
         JSONArray showItems = config.getJSONArray("show");
         JSONArray hideItems = config.getJSONArray("hide");
 
-        Object[][] itemsHold = RebuildApplication.createQueryNoFilter(
+        Object[][] itemsHold = Application.createQueryNoFilter(
                 "select itemId from PickList where belongEntity = ? and belongField = ?")
                 .setParameter(1, field.getOwnEntity().getName())
                 .setParameter(2, field.getName())
@@ -88,7 +88,7 @@ public class PickListService extends BaseConfigurationService implements AdminGu
         // MultiSelect 专用
         long nextMaskValue = 0;
         if (EasyMeta.getDisplayType(field) == DisplayType.MULTISELECT) {
-            Object[] max = RebuildApplication.createQueryNoFilter(
+            Object[] max = Application.createQueryNoFilter(
                     "select max(maskValue) from PickList where belongEntity = ? and belongField = ?")
                     .setParameter(1, field.getOwnEntity().getName())
                     .setParameter(2, field.getName())

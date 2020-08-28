@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.api.ApiContext;
 import com.rebuild.api.ApiInvokeException;
 import com.rebuild.api.BaseApi;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationManager;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
@@ -54,7 +54,7 @@ public class ClassificationData extends BaseApi {
         }
         openLevel = ClassificationManager.instance.getOpenLevel(thatField);
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select itemId,name from ClassificationData where level = 0 and dataId = ?")
                 .setParameter(1, dataId)
                 .array();
@@ -74,7 +74,7 @@ public class ClassificationData extends BaseApi {
             return;
         }
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select itemId,name from ClassificationData where dataId = ? and parent = ?")
                 .setParameter(1, dataId)
                 .setParameter(2, itemId)

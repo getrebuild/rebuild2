@@ -9,7 +9,7 @@ package com.rebuild.core.service.files;
 
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.BaseService;
@@ -36,7 +36,7 @@ public class AttachmentFolderService extends BaseService {
 
     @Override
     public int delete(ID recordId) {
-        Object inFolder = RebuildApplication.createQueryNoFilter(
+        Object inFolder = Application.createQueryNoFilter(
                 "select inFolder from Attachment where inFolder = ?")
                 .setParameter(1, recordId)
                 .unique();
@@ -44,7 +44,7 @@ public class AttachmentFolderService extends BaseService {
             throw new DataSpecificationException("目录内有文件不能删除");
         }
 
-        Object parent = RebuildApplication.createQueryNoFilter(
+        Object parent = Application.createQueryNoFilter(
                 "select parent from AttachmentFolder where parent = ?")
                 .setParameter(1, recordId)
                 .unique();
@@ -52,9 +52,9 @@ public class AttachmentFolderService extends BaseService {
             throw new DataSpecificationException("目录内有子目录不能删除");
         }
 
-        ID user = RebuildApplication.getCurrentUser();
+        ID user = Application.getCurrentUser();
         if (!UserHelper.isAdmin(user)) {
-            Object[] createdBy = RebuildApplication.createQueryNoFilter(
+            Object[] createdBy = Application.createQueryNoFilter(
                     "select createdBy from AttachmentFolder where folderId = ?")
                     .setParameter(1, recordId)
                     .unique();

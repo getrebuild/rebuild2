@@ -10,7 +10,7 @@ package com.rebuild.core.service.approval;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
@@ -141,7 +141,7 @@ public class FlowNode {
         String userType = userDefs.getString(0);
         if (USER_SELF.equalsIgnoreCase(userType)) {
             Set<ID> users = new HashSet<>();
-            ID owning = RebuildApplication.getRecordOwningCache().getOwningUser(record);
+            ID owning = Application.getRecordOwningCache().getOwningUser(record);
             users.add(owning);
             return users;
         }

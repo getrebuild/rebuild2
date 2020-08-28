@@ -10,7 +10,7 @@ package com.rebuild.web.approval;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.approval.RobotApprovalConfigService;
@@ -44,7 +44,7 @@ public class RobotApprovalControll extends BaseController {
     public ModelAndView page(@PathVariable String id,
                              HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID configId = ID.valueOf(id);
-        Object[] config = RebuildApplication.createQuery(
+        Object[] config = Application.createQuery(
                 "select belongEntity,name,flowDefinition from RobotApprovalConfig where configId = ?")
                 .setParameter(1, configId)
                 .unique();
@@ -82,7 +82,7 @@ public class RobotApprovalControll extends BaseController {
         ID father = getIdParameterNotNull(request, "father");
         boolean disableFather = getBoolParameter(request, "disabled", true);
 
-        Object[] copy = RebuildApplication.createQueryNoFilter(
+        Object[] copy = Application.createQueryNoFilter(
                 "select belongEntity,flowDefinition,isDisabled from RobotApprovalConfig where configId = ?")
                 .setParameter(1, father)
                 .unique();
@@ -91,12 +91,12 @@ public class RobotApprovalControll extends BaseController {
         record.setString("belongEntity", (String) copy[0]);
         record.setString("flowDefinition", (String) copy[1]);
         record.setString("name", approvalName);
-        record = RebuildApplication.getBean(RobotApprovalConfigService.class).create(record);
+        record = Application.getBean(RobotApprovalConfigService.class).create(record);
 
         if (disableFather && !(Boolean) copy[2]) {
             Record update = EntityHelper.forUpdate(father, user);
             update.setBoolean("isDisabled", true);
-            RebuildApplication.getBean(RobotApprovalConfigService.class).update(update);
+            Application.getBean(RobotApprovalConfigService.class).update(update);
         }
         writeSuccess(response, JSONUtils.toJSONObject("approvalId", record.getPrimary()));
     }

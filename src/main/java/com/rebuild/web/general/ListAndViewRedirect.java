@@ -9,7 +9,7 @@ package com.rebuild.web.general;
 
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -68,16 +68,16 @@ public class ListAndViewRedirect extends BaseController {
 
     private Object[] findProjectAndTaskId(ID taskOrComment) {
         if (taskOrComment.getEntityCode() == EntityHelper.ProjectTask) {
-            return RebuildApplication.getQueryFactory().uniqueNoFilter(
+            return Application.getQueryFactory().uniqueNoFilter(
                     taskOrComment, "taskId", "projectId");
         } else {
-            return RebuildApplication.getQueryFactory().uniqueNoFilter(
+            return Application.getQueryFactory().uniqueNoFilter(
                     taskOrComment, "taskId", "taskId.projectId");
         }
     }
 
     private ID findFeedsId(ID commentId) {
-        Object[] feeds = RebuildApplication.getQueryFactory().uniqueNoFilter(
+        Object[] feeds = Application.getQueryFactory().uniqueNoFilter(
                 commentId, "feedsId");
         return feeds == null ? null : (ID) feeds[0];
     }

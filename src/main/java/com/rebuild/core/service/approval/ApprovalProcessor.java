@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.configuration.ConfigurationException;
 import com.rebuild.core.helper.SetUser;
@@ -97,7 +97,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
         mainRecord.setID(EntityHelper.ApprovalId, this.approval);
         mainRecord.setInt(EntityHelper.ApprovalState, ApprovalState.PROCESSING.getState());
         mainRecord.setString(EntityHelper.ApprovalStepNode, nextNodes.getApprovalNode().getNodeId());
-        RebuildApplication.getBean(ApprovalStepService.class).txSubmit(mainRecord, ccs, nextApprovers);
+        Application.getBean(ApprovalStepService.class).txSubmit(mainRecord, ccs, nextApprovers);
 
         // 非主事物
         shareIfNeed(this.record, ccs4share);
@@ -136,7 +136,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
             throw new ApprovalException("当前记录审批已" + currentState.getName());
         }
 
-        final Object[] stepApprover = RebuildApplication.createQueryNoFilter(
+        final Object[] stepApprover = Application.createQueryNoFilter(
                 "select stepId,state,node,approvalId from RobotApprovalStep where recordId = ? and approver = ? and node = ? and isCanceled = 'F'")
                 .setParameter(1, this.record)
                 .setParameter(2, approver)
@@ -173,7 +173,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
         Set<ID> ccs4share = nextNodes.getCcUsers4Share(this.getUser(), this.record, selectNextUsers);
 
         FlowNode currentNode = getFlowParser().getNode((String) stepApprover[2]);
-        RebuildApplication.getBean(ApprovalStepService.class)
+        Application.getBean(ApprovalStepService.class)
                 .txApprove(approvedStep, currentNode.getSignMode(), ccs, nextApprovers, nextNode, addedData, checkUseGroup);
 
         // 非主事物
@@ -192,7 +192,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
             throw new ApprovalException("已" + currentState.getName() + "审批不能撤回");
         }
 
-        RebuildApplication.getBean(ApprovalStepService.class).txCancel(
+        Application.getBean(ApprovalStepService.class).txCancel(
                 this.record, status.getApprovalId(), getCurrentNodeId(status), false);
     }
 
@@ -207,7 +207,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
             throw new ApprovalException("未完成审批无需撤销");
         }
 
-        Object[] count = RebuildApplication.createQueryNoFilter(
+        Object[] count = Application.createQueryNoFilter(
                 "select count(stepId) from RobotApprovalStep where recordId = ? and state = ?")
                 .setParameter(1, this.record)
                 .setParameter(2, ApprovalState.REVOKED.getState())
@@ -216,7 +216,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
             throw new ApprovalException("记录撤销次数已达 " + MAX_REVOKED + " 次，不能再次撤销");
         }
 
-        RebuildApplication.getBean(ApprovalStepService.class).txCancel(
+        Application.getBean(ApprovalStepService.class).txCancel(
                 this.record, status.getApprovalId(), getCurrentNodeId(status), true);
     }
 
@@ -341,7 +341,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
      */
     public JSONArray getCurrentStep() {
         final String currentNode = ApprovalHelper.getApprovalStatus(this.record).getCurrentStepNode();
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select approver,state,remark,approvedTime,createdOn from RobotApprovalStep"
                         + " where recordId = ? and approvalId = ? and node = ? and isCanceled = 'F'")
                 .setParameter(1, this.record)
@@ -365,7 +365,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
         final ApprovalStatus status = ApprovalHelper.getApprovalStatus(this.record);
         this.approval = status.getApprovalId();
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select approver,state,remark,approvedTime,createdOn,createdBy,node,prevNode from RobotApprovalStep" +
                         " where recordId = ? and isWaiting = 'F' and isCanceled = 'F' order by createdOn")
                 .setParameter(1, this.record)
@@ -451,9 +451,9 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
      * @param shareTo
      */
     private void shareIfNeed(ID recordId, Set<ID> shareTo) {
-        final EntityService es = RebuildApplication.getEntityService(recordId.getEntityCode());
+        final EntityService es = Application.getEntityService(recordId.getEntityCode());
         for (ID user : shareTo) {
-            if (!RebuildApplication.getPrivilegesManager().allowRead(user, recordId)) {
+            if (!Application.getPrivilegesManager().allowRead(user, recordId)) {
                 es.share(recordId, user, null);
             }
         }

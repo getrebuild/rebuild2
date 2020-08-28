@@ -10,7 +10,7 @@ package com.rebuild.core.service.approval;
 import cn.devezhao.commons.ObjectUtils;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.NoRecordFoundException;
@@ -29,7 +29,7 @@ public class ApprovalHelper {
      * @return
      */
     public static ID getSubmitter(ID record) {
-        Object[] approvalId = RebuildApplication.getQueryFactory().uniqueNoFilter(record, EntityHelper.ApprovalId);
+        Object[] approvalId = Application.getQueryFactory().uniqueNoFilter(record, EntityHelper.ApprovalId);
         Assert.notNull(approvalId, "Couldn't found approval of record : " + record);
         return getSubmitter(record, (ID) approvalId[0]);
     }
@@ -42,7 +42,7 @@ public class ApprovalHelper {
      * @return
      */
     public static ID getSubmitter(ID record, ID approval) {
-        return RebuildApplication.getBean(ApprovalStepService.class).getSubmitter(record, approval);
+        return Application.getBean(ApprovalStepService.class).getSubmitter(record, approval);
     }
 
     /**
@@ -51,7 +51,7 @@ public class ApprovalHelper {
      * @throws NoRecordFoundException
      */
     public static ApprovalStatus getApprovalStatus(ID recordId) throws NoRecordFoundException {
-        Object[] o = RebuildApplication.getQueryFactory().uniqueNoFilter(recordId,
+        Object[] o = Application.getQueryFactory().uniqueNoFilter(recordId,
                 EntityHelper.ApprovalId, EntityHelper.ApprovalId + ".name", EntityHelper.ApprovalState, EntityHelper.ApprovalStepNode);
         if (o == null) {
             throw new NoRecordFoundException("记录不存在或你无权查看");
@@ -76,7 +76,7 @@ public class ApprovalHelper {
      * @return
      */
     public static int checkInUsed(ID approvalId) {
-        Object[] belongEntity = RebuildApplication.createQueryNoFilter(
+        Object[] belongEntity = Application.createQueryNoFilter(
                 "select belongEntity from RobotApprovalConfig where configId = ?")
                 .setParameter(1, approvalId)
                 .unique();
@@ -85,7 +85,7 @@ public class ApprovalHelper {
         String sql = String.format(
                 "select count(%s) from %s where approvalId = ? and approvalState = ?",
                 entity.getPrimaryField().getName(), entity.getName());
-        Object[] inUsed = RebuildApplication.createQueryNoFilter(sql)
+        Object[] inUsed = Application.createQueryNoFilter(sql)
                 .setParameter(1, approvalId)
                 .setParameter(2, ApprovalState.PROCESSING.getState())
                 .unique();

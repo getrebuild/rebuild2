@@ -13,7 +13,7 @@ import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.service.BaseServiceImpl;
@@ -48,7 +48,7 @@ public class DepartmentService extends BaseServiceImpl {
         checkAdminGuard(BizzPermission.CREATE, null);
 
         record = super.create(record);
-        RebuildApplication.getUserStore().refreshDepartment(record.getPrimary());
+        Application.getUserStore().refreshDepartment(record.getPrimary());
         return record;
     }
 
@@ -63,8 +63,8 @@ public class DepartmentService extends BaseServiceImpl {
                 throw new DataSpecificationException("父级部门不能选择自己");
             }
 
-            Department parent = RebuildApplication.getUserStore().getDepartment(parentDept);
-            Department that = RebuildApplication.getUserStore().getDepartment(record.getPrimary());
+            Department parent = Application.getUserStore().getDepartment(parentDept);
+            Department that = Application.getUserStore().getDepartment(record.getPrimary());
 
             if (that.isChildren(parent, true)) {
                 throw new DataSpecificationException("子级部门不能同时作为父级部门");
@@ -72,7 +72,7 @@ public class DepartmentService extends BaseServiceImpl {
         }
 
         record = super.update(record);
-        RebuildApplication.getUserStore().refreshDepartment(record.getPrimary());
+        Application.getUserStore().refreshDepartment(record.getPrimary());
         return record;
     }
 
@@ -91,13 +91,13 @@ public class DepartmentService extends BaseServiceImpl {
     public void deleteAndTransfer(ID deptId, ID transferTo) {
         checkAdminGuard(BizzPermission.DELETE, null);
 
-        Department dept = RebuildApplication.getUserStore().getDepartment(deptId);
+        Department dept = Application.getUserStore().getDepartment(deptId);
         if (!dept.getChildren().isEmpty()) {
             throw new DataSpecificationException("Has child department");
         }
 
         super.delete(deptId);
-        RebuildApplication.getUserStore().removeDepartment(deptId, transferTo);
+        Application.getUserStore().removeDepartment(deptId, transferTo);
     }
 
     /**
@@ -106,7 +106,7 @@ public class DepartmentService extends BaseServiceImpl {
      * @see AdminGuard
      */
     private void checkAdminGuard(Permission action, ID dept) {
-        ID currentUser = RebuildApplication.getCurrentUser();
+        ID currentUser = Application.getCurrentUser();
         if (UserHelper.isAdmin(currentUser)) return;
 
         if (action == BizzPermission.CREATE || action == BizzPermission.DELETE) {
@@ -114,7 +114,7 @@ public class DepartmentService extends BaseServiceImpl {
         }
 
         // 用户可自己改自己的部门
-        ID currentDeptOfUser = (ID) RebuildApplication.getUserStore().getUser(currentUser).getOwningDept().getIdentity();
+        ID currentDeptOfUser = (ID) Application.getUserStore().getUser(currentUser).getOwningDept().getIdentity();
         if (action == BizzPermission.UPDATE && dept.equals(currentDeptOfUser)) {
             return;
         }

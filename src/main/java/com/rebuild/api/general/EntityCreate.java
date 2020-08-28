@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.api.ApiContext;
 import com.rebuild.api.ApiInvokeException;
 import com.rebuild.api.BaseApi;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityRecordCreator;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -58,7 +58,7 @@ public class EntityCreate extends BaseApi {
                     ApiInvokeException.ERR_DATASPEC);
         }
 
-        recordNew = RebuildApplication.getService(useEntity.getEntityCode()).create(recordNew);
+        recordNew = Application.getService(useEntity.getEntityCode()).create(recordNew);
 
         return formatSuccess(JSONUtils.toJSONObject("id", recordNew.getPrimary()));
     }
@@ -93,7 +93,7 @@ public class EntityCreate extends BaseApi {
      * @param record
      */
     protected Collection<String> checkRepeated(Record record) {
-        List<Record> repeated = RebuildApplication.getGeneralEntityService().getCheckRepeated(record, 1);
+        List<Record> repeated = Application.getGeneralEntityService().getCheckRepeated(record, 1);
         if (repeated.isEmpty()) return Collections.emptySet();
 
         // 重复字段

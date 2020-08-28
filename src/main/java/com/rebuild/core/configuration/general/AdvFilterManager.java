@@ -10,7 +10,7 @@ package com.rebuild.core.configuration.general;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.utils.JSONUtils;
@@ -72,7 +72,7 @@ public class AdvFilterManager extends ShareToManager {
      * @return
      */
     public ConfigBean getAdvFilter(ID cfgid) {
-        Object[] o = RebuildApplication.createQueryNoFilter(
+        Object[] o = Application.createQueryNoFilter(
                 "select belongEntity from FilterConfig where configId = ?")
                 .setParameter(1, cfgid)
                 .unique();

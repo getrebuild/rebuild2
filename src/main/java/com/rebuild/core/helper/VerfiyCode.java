@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.helper;
 
 import cn.devezhao.commons.CodecUtils;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.cache.CommonsCache;
 import org.apache.commons.lang.math.RandomUtils;
 
@@ -47,7 +47,7 @@ public class VerfiyCode {
         }
 
         // 缓存 10 分钟
-        RebuildApplication.getCommonsCache().put("VCode-" + key, vcode, CommonsCache.TS_HOUR / 6);
+        Application.getCommonsCache().put("VCode-" + key, vcode, CommonsCache.TS_HOUR / 6);
         return vcode;
     }
 
@@ -71,19 +71,19 @@ public class VerfiyCode {
      * @see #clean(String)
      */
     public static boolean verfiy(String key, String vcode, boolean keepAlive) {
-        if (RebuildApplication.devMode() && "rebuild".equalsIgnoreCase(vcode)) {
+        if (Application.devMode() && "rebuild".equalsIgnoreCase(vcode)) {
             return true;
         }
 
         final String ckey = "VCode-" + key;
-        String exists = RebuildApplication.getCommonsCache().get(ckey);
+        String exists = Application.getCommonsCache().get(ckey);
         if (exists == null) {
             return false;
         }
 
         if (exists.equalsIgnoreCase(vcode)) {
             if (!keepAlive) {
-                RebuildApplication.getCommonsCache().evict(ckey);
+                Application.getCommonsCache().evict(ckey);
             }
             return true;
         }
@@ -97,6 +97,6 @@ public class VerfiyCode {
      * @return
      */
     public static void clean(String key) {
-        RebuildApplication.getCommonsCache().evict("VCode-" + key);
+        Application.getCommonsCache().evict("VCode-" + key);
     }
 }

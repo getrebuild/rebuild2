@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Record;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigurationException;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
@@ -229,7 +229,7 @@ public class SMSender {
      * @param error
      */
     private static void createLog(String to, String content, int type, String sentid, String error) {
-        if (!RebuildApplication.serversReady()) return;
+        if (!Application.serversReady()) return;
 
         Record log = EntityHelper.forNew(EntityHelper.SmsendLog, UserService.SYSTEM_USER);
         log.setString("to", to);
@@ -242,7 +242,7 @@ public class SMSender {
             log.setString("sendResult",
                     CommonsUtils.maxstr("ERR:" + StringUtils.defaultIfBlank(error, "Unknow"), 200));
         }
-        RebuildApplication.getCommonsService().create(log);
+        Application.getCommonsService().create(log);
     }
 
     /**

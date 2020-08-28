@@ -16,7 +16,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.RebuildApiManager;
 import com.rebuild.core.metadata.EntityHelper;
@@ -64,7 +64,7 @@ public class ApiGateway extends Controller {
         final Date reuqestTime = CalendarUtils.now();
         final String remoteIp = ServletUtils.getRemoteAddr(request);
 
-        response.setHeader("X-Powered", "RB/" + RebuildApplication.VER);
+        response.setHeader("X-Powered", "RB/" + Application.VER);
 
         if (RRL.overLimitWhenIncremented("ip:" + remoteIp)) {
             JSON err = formatFailure("Request frequency exceeded", ApiInvokeException.ERR_FREQUENCY);
@@ -81,7 +81,7 @@ public class ApiGateway extends Controller {
             final BaseApi api = createApi(apiName);
             context = verfiy(request, api);
             if (context.getBindUser() != null) {
-                RebuildApplication.getSessionStore().set(context.getBindUser());
+                Application.getSessionStore().set(context.getBindUser());
             }
 
             JSON result = api.execute(context);
@@ -101,7 +101,7 @@ public class ApiGateway extends Controller {
             errorCode = ApiInvokeException.ERR_SERVER;
             errorMsg = ex.getLocalizedMessage();
         } finally {
-            RebuildApplication.getSessionStore().clean();
+            Application.getSessionStore().clean();
         }
 
         JSON error = formatFailure(StringUtils.defaultIfBlank(errorMsg, "Server Internal Error"), errorCode);
@@ -150,7 +150,7 @@ public class ApiGateway extends Controller {
         // 密文签名
         else {
             long systemTime = System.currentTimeMillis() / 1000;
-            if (Math.abs(systemTime - ObjectUtils.toLong(timestamp)) > (RebuildApplication.devMode() ? 100 : 15)) {
+            if (Math.abs(systemTime - ObjectUtils.toLong(timestamp)) > (Application.devMode() ? 100 : 15)) {
                 throw new ApiInvokeException(ApiInvokeException.ERR_BADAUTH, "Invalid [timestamp] " + appid);
             }
 
@@ -239,7 +239,7 @@ public class ApiGateway extends Controller {
             record.setString("responseBody", CommonsUtils.maxstr(result.toJSONString(), 10000));
             record.setDate("requestTime", requestTime);
             record.setDate("responseTime", CalendarUtils.now());
-            RebuildApplication.getCommonsService().create(record, false);
+            Application.getCommonsService().create(record, false);
         });
     }
 

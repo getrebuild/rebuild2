@@ -15,7 +15,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.AutoFillinConfigService;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -73,7 +73,7 @@ public class AutoFillinControll extends BaseController {
         }
         if (data.containsKey("targetField")) {
             String targetField = data.getString("targetField");
-            Object[] exists = RebuildApplication.createQuery(
+            Object[] exists = Application.createQuery(
                     "select configId from AutoFillinConfig where belongEntity = ? and belongField = ? and targetField = ?")
                     .setParameter(1, entity)
                     .setParameter(2, field)
@@ -89,7 +89,7 @@ public class AutoFillinControll extends BaseController {
         }
         record.setString("extConfig", data.getString("extConfig"));
 
-        RebuildApplication.getBean(AutoFillinConfigService.class).createOrUpdate(record);
+        Application.getBean(AutoFillinConfigService.class).createOrUpdate(record);
         writeSuccess(response);
     }
 
@@ -101,7 +101,7 @@ public class AutoFillinControll extends BaseController {
         Entity sourceEntity = field.getReferenceEntity();
         Entity targetEntity = field.getOwnEntity();
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select configId,sourceField,targetField,extConfig from AutoFillinConfig where belongEntity = ? and belongField = ? order by modifiedOn desc")
                 .setParameter(1, entity)
                 .setParameter(2, belongField)

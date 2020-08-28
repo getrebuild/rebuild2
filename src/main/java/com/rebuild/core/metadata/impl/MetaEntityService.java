@@ -10,7 +10,7 @@ package com.rebuild.core.metadata.impl;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.AdminGuard;
@@ -64,7 +64,7 @@ public class MetaEntityService extends BaseService implements AdminGuard {
             Object[][] usedArray = getPersistManagerFactory().createQuery(ql).array();
             for (Object[] used : usedArray) {
                 if ("MetaField".equalsIgnoreCase(who)) {
-                    del += RebuildApplication.getBean(MetaFieldService.class).delete((ID) used[0]);
+                    del += Application.getBean(MetaFieldService.class).delete((ID) used[0]);
                 } else {
                     del += super.delete((ID) used[0]);
                 }

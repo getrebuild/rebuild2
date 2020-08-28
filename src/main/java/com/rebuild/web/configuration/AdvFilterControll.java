@@ -12,7 +12,7 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.general.AdvFilterManager;
 import com.rebuild.core.configuration.general.AdvFilterService;
@@ -75,7 +75,7 @@ public class AdvFilterControll extends BaseController implements ShareTo {
         if (StringUtils.isNotBlank(filterName)) {
             record.setString("filterName", filterName);
         }
-        record = RebuildApplication.getBean(AdvFilterService.class).createOrUpdate(record);
+        record = Application.getBean(AdvFilterService.class).createOrUpdate(record);
 
         writeSuccess(response, JSONUtils.toJSONObject("id", record.getPrimary()));
     }

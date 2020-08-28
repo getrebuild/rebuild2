@@ -15,7 +15,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.SetUser;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.metadata.EntityHelper;
@@ -199,7 +199,7 @@ public abstract class ChartData extends SetUser<ChartData> implements ChartSpec 
         // 限制预览数据量
         if (isFromPreview() && getSourceEntity().containsField(EntityHelper.AutoId)) {
             String maxAidSql = String.format("select max(%s) from %s", EntityHelper.AutoId, getSourceEntity().getName());
-            Object[] o = RebuildApplication.createQueryNoFilter(maxAidSql).unique();
+            Object[] o = Application.createQueryNoFilter(maxAidSql).unique();
             long maxAid = ObjectUtils.toLong(o[0]);
             if (maxAid > 5000) {
                 previewFilter = String.format("(%s >= %d) and ", EntityHelper.AutoId, Math.max(maxAid - 2000, 0));
@@ -332,7 +332,7 @@ public abstract class ChartData extends SetUser<ChartData> implements ChartSpec 
      */
     protected Query createQuery(String sql) {
         if (this.fromPreview) {
-            return RebuildApplication.createQuery(sql, this.getUser());
+            return Application.createQuery(sql, this.getUser());
         }
 
         boolean noPrivileges = false;
@@ -344,10 +344,10 @@ public abstract class ChartData extends SetUser<ChartData> implements ChartSpec 
         ID chartOwning = ID.isId(co) ? ID.valueOf(co) : null;
 
         if (chartOwning == null || !noPrivileges) {
-            return RebuildApplication.createQuery(sql, this.getUser());
+            return Application.createQuery(sql, this.getUser());
         } else {
             // 管理员创建的才能使用全部数据
-            return RebuildApplication.createQuery(sql,
+            return Application.createQuery(sql,
                     UserHelper.isAdmin(chartOwning) ? UserService.SYSTEM_USER : this.getUser());
         }
     }

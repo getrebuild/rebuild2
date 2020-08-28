@@ -7,7 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.utils;
 
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.RebuildConfiguration;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -37,7 +37,7 @@ public class HttpUtils {
     private static OkHttpClient okHttpClient = null;
 
     private static final String RB_UA =
-            String.format("RB/%s (%s/%s)", RebuildApplication.VER, SystemUtils.OS_NAME, SystemUtils.JAVA_SPECIFICATION_VERSION);
+            String.format("RB/%s (%s/%s)", Application.VER, SystemUtils.OS_NAME, SystemUtils.JAVA_SPECIFICATION_VERSION);
 
     /**
      * 获取客户端，如本类提供的 GET/POST 方法无法满足需求，可以自己构建然后通过此 Client 调用。

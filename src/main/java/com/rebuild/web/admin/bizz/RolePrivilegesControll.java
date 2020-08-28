@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.MetadataSorter;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -72,7 +72,7 @@ public class RolePrivilegesControll extends EntityController {
 
     @RequestMapping("role-list")
     public void roleList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Object[][] array = RebuildApplication.createQuery("select roleId,name,isDisabled from Role").array();
+        Object[][] array = Application.createQuery("select roleId,name,isDisabled from Role").array();
         JSON retJson = JSONUtils.toJSONObjectArray(new String[]{"id", "name", "disabled"}, array);
         writeSuccess(response, retJson);
     }
@@ -85,7 +85,7 @@ public class RolePrivilegesControll extends EntityController {
             return;
         }
 
-        Object[][] array = RebuildApplication.createQuery(
+        Object[][] array = Application.createQuery(
                 "select entity,definition,zeroKey from RolePrivileges where roleId = ?")
                 .setParameter(1, roleId)
                 .array();
@@ -103,7 +103,7 @@ public class RolePrivilegesControll extends EntityController {
     public void privilegesUpdate(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JSON post = ServletUtils.getRequestJson(request);
         ID role = getIdParameterNotNull(request, "role");
-        RebuildApplication.getBean(RoleService.class).updatePrivileges(role, (JSONObject) post);
+        Application.getBean(RoleService.class).updatePrivileges(role, (JSONObject) post);
         writeSuccess(response);
     }
 
@@ -112,7 +112,7 @@ public class RolePrivilegesControll extends EntityController {
         ID role = getIdParameterNotNull(request, "id");
         ID transfer = getIdParameter(request, "transfer");  // TODO 转移到新角色
 
-        RebuildApplication.getBean(RoleService.class).deleteAndTransfer(role, transfer);
+        Application.getBean(RoleService.class).deleteAndTransfer(role, transfer);
         writeSuccess(response);
     }
 }

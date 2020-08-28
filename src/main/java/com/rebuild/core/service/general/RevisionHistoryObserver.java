@@ -11,7 +11,7 @@ import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
@@ -41,25 +41,25 @@ public class RevisionHistoryObserver extends OperatingObserver {
     @Override
     public void onCreate(OperatingContext context) {
         Record revision = newRevision(context, false);
-        RebuildApplication.getCommonsService().create(revision);
+        Application.getCommonsService().create(revision);
     }
 
     @Override
     public void onUpdate(OperatingContext context) {
         Record revision = newRevision(context, true);
-        RebuildApplication.getCommonsService().create(revision);
+        Application.getCommonsService().create(revision);
     }
 
     @Override
     public void onDelete(OperatingContext context) {
         Record revision = newRevision(context, false);
-        RebuildApplication.getCommonsService().create(revision);
+        Application.getCommonsService().create(revision);
     }
 
     @Override
     public void onAssign(OperatingContext context) {
         Record revision = newRevision(context, true);
-        RebuildApplication.getCommonsService().create(revision);
+        Application.getCommonsService().create(revision);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class RevisionHistoryObserver extends OperatingObserver {
         ID recordId = context.getAfterRecord().getID("recordId");
         revision.setID("recordId", recordId);
         revision.setString("belongEntity", MetadataHelper.getEntityName(recordId));
-        RebuildApplication.getCommonsService().create(revision);
+        Application.getCommonsService().create(revision);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class RevisionHistoryObserver extends OperatingObserver {
         ID recordId = context.getBeforeRecord().getID("recordId");
         revision.setID("recordId", recordId);
         revision.setString("belongEntity", MetadataHelper.getEntityName(recordId));
-        RebuildApplication.getCommonsService().create(revision);
+        Application.getCommonsService().create(revision);
     }
 
     /**

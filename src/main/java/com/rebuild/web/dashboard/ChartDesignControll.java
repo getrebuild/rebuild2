@@ -15,7 +15,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.MetadataSorter;
@@ -59,7 +59,7 @@ public class ChartDesignControll extends EntityController {
 
         Entity entityMeta;
         if (chartId != null) {
-            Object[] chart = RebuildApplication.createQueryNoFilter(
+            Object[] chart = Application.createQueryNoFilter(
                     "select belongEntity,title,config,createdBy from ChartConfig where chartId = ?")
                     .setParameter(1, chartId)
                     .unique();
@@ -85,7 +85,7 @@ public class ChartDesignControll extends EntityController {
             throw new InvalidParameterException("无效图表参数");
         }
 
-        if (!RebuildApplication.getPrivilegesManager().allowRead(getRequestUser(request), entityMeta.getEntityCode())) {
+        if (!Application.getPrivilegesManager().allowRead(getRequestUser(request), entityMeta.getEntityCode())) {
             response.sendError(403, "你没有读取 [" + EasyMeta.getLabel(entityMeta) + "] 的权限，因此无法设计此图表");
             return null;
         }
@@ -164,11 +164,11 @@ public class ChartDesignControll extends EntityController {
         if (record.getPrimary() == null) {
             dashid = getIdParameterNotNull(request, "dashid");
         }
-        record = RebuildApplication.getBean(ChartConfigService.class).createOrUpdate(record);
+        record = Application.getBean(ChartConfigService.class).createOrUpdate(record);
 
         // 添加到仪表盘
         if (dashid != null) {
-            Object[] dash = RebuildApplication.createQueryNoFilter(
+            Object[] dash = Application.createQueryNoFilter(
                     "select config from DashboardConfig where configId = ?")
                     .setParameter(1, dashid)
                     .unique();
@@ -181,7 +181,7 @@ public class ChartDesignControll extends EntityController {
 
             Record dashRecord = EntityHelper.forUpdate(dashid, getRequestUser(request));
             dashRecord.setString("config", config.toJSONString());
-            RebuildApplication.getBean(DashboardConfigService.class).createOrUpdate(dashRecord);
+            Application.getBean(DashboardConfigService.class).createOrUpdate(dashRecord);
         }
 
         JSONObject ret = JSONUtils.toJSONObject("id", record.getPrimary());
@@ -192,7 +192,7 @@ public class ChartDesignControll extends EntityController {
     public void chartDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // TODO 不能删除他人图表
         ID chartId = getIdParameterNotNull(request, "id");
-        RebuildApplication.getBean(ChartConfigService.class).delete(chartId);
+        Application.getBean(ChartConfigService.class).delete(chartId);
         writeSuccess(response);
     }
 }

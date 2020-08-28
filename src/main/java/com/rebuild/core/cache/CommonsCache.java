@@ -7,7 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.cache;
 
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -32,13 +32,13 @@ public class CommonsCache extends BaseCacheTemplate<Serializable> {
      * @return
      */
     public JedisPool getJedisPool() {
-        return ((RedisDriver<?>) RebuildApplication.getCommonsCache().getCacheTemplate()).getJedisPool();
+        return ((RedisDriver<?>) Application.getCommonsCache().getCacheTemplate()).getJedisPool();
     }
 
     /**
      * @return
      */
     public Cache getEhcacheCache() {
-        return ((EhcacheDriver<?>) RebuildApplication.getCommonsCache().getCacheTemplate()).cache();
+        return ((EhcacheDriver<?>) Application.getCommonsCache().getCacheTemplate()).cache();
     }
 }

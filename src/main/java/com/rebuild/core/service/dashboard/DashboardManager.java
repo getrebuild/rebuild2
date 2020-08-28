@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ShareToManager;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
@@ -57,7 +57,7 @@ public class DashboardManager extends ShareToManager {
             record.setString("config", JSONUtils.EMPTY_ARRAY_STR);
             record.setString("title", UserHelper.isAdmin(user) ? "默认仪表盘" : "我的仪表盘");
             record.setString("shareTo", UserHelper.isAdmin(user) ? SHARE_ALL : SHARE_SELF);
-            RebuildApplication.getBean(DashboardConfigService.class).create(record);
+            Application.getBean(DashboardConfigService.class).create(record);
         }
 
         Object[][] canUses = getUsesConfig(user, null, null);
@@ -75,6 +75,6 @@ public class DashboardManager extends ShareToManager {
 
     @Override
     public void clean(Object cacheKey) {
-        RebuildApplication.getCommonsCache().evict(formatCacheKey(null, null));
+        Application.getCommonsCache().evict(formatCacheKey(null, null));
     }
 }

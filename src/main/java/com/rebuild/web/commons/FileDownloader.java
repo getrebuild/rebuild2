@@ -9,7 +9,7 @@ package com.rebuild.web.commons;
 
 import cn.devezhao.commons.CodecUtils;
 import cn.devezhao.commons.web.ServletUtils;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.QiniuCloud;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.web.BaseController;
@@ -125,7 +125,7 @@ public class FileDownloader extends BaseController {
         // 共享查看
         if (request.getRequestURI().contains("/filex/access/")) {
             String e = getParameter(request, "e");
-            if (StringUtils.isBlank(e) || RebuildApplication.getCommonsCache().get(e) == null) {
+            if (StringUtils.isBlank(e) || Application.getCommonsCache().get(e) == null) {
                 response.sendError(403, "文件已过期");
                 return;
             }

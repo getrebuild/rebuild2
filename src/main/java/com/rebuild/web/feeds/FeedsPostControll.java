@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.feeds.FeedsType;
 import com.rebuild.utils.JSONUtils;
@@ -43,7 +43,7 @@ public class FeedsPostControll extends BaseController {
         String content = record.getString("content");
         record.setString("content", content);
 
-        RebuildApplication.getService(record.getEntity().getEntityCode()).createOrUpdate(record);
+        Application.getService(record.getEntity().getEntityCode()).createOrUpdate(record);
         JSON ret = JSONUtils.toJSONObject("id", record.getPrimary());
         writeSuccess(response, ret);
     }
@@ -53,7 +53,7 @@ public class FeedsPostControll extends BaseController {
         ID user = getRequestUser(request);
         ID source = getIdParameterNotNull(request, "id");
 
-        Object[] liked = RebuildApplication.createQueryNoFilter(
+        Object[] liked = Application.createQueryNoFilter(
                 "select likeId from FeedsLike where source = ? and createdBy = ?")
                 .setParameter(1, source)
                 .setParameter(2, user)
@@ -61,9 +61,9 @@ public class FeedsPostControll extends BaseController {
         if (liked == null) {
             Record record = EntityHelper.forNew(EntityHelper.FeedsLike, user);
             record.setID("source", source);
-            RebuildApplication.getCommonsService().create(record);
+            Application.getCommonsService().create(record);
         } else {
-            RebuildApplication.getCommonsService().delete((ID) liked[0]);
+            Application.getCommonsService().delete((ID) liked[0]);
         }
 
         writeSuccess(response, liked == null);
@@ -72,7 +72,7 @@ public class FeedsPostControll extends BaseController {
     @RequestMapping("delete")
     public void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID anyId = getIdParameterNotNull(request, "id");
-        RebuildApplication.getService(anyId.getEntityCode()).delete(anyId);
+        Application.getService(anyId.getEntityCode()).delete(anyId);
         writeSuccess(response);
     }
 
@@ -81,7 +81,7 @@ public class FeedsPostControll extends BaseController {
         final ID user = getRequestUser(request);
         final ID feedsId = getIdParameterNotNull(request, "id");
 
-        Object[] schedule = RebuildApplication.createQueryNoFilter(
+        Object[] schedule = Application.createQueryNoFilter(
                 "select createdBy,contentMore from Feeds where feedsId = ? and type = ?")
                 .setParameter(1, feedsId)
                 .setParameter(2, FeedsType.SCHEDULE.getMask())
@@ -98,7 +98,7 @@ public class FeedsPostControll extends BaseController {
         Record record = EntityHelper.forUpdate(feedsId, user);
         record.setString("contentMore", contentMore.toJSONString());
         record.removeValue(EntityHelper.ModifiedOn);
-        RebuildApplication.getCommonsService().update(record);
+        Application.getCommonsService().update(record);
         writeSuccess(response);
     }
 }

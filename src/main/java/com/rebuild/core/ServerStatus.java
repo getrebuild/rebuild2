@@ -145,7 +145,7 @@ public final class ServerStatus {
      * @return
      */
     protected static Status checkCacheService() {
-        CommonsCache cache = RebuildApplication.getCommonsCache();
+        CommonsCache cache = Application.getCommonsCache();
         String name = "Cache/" + (Installer.isUseRedis() ? "REDIS" : "EHCACHE");
 
         try {
@@ -181,9 +181,9 @@ public final class ServerStatus {
             this.error = error;
 
             if (success) {
-                RebuildApplication.LOG.info("Checking " + toString());
+                Application.LOG.info("Checking " + toString());
             } else {
-                RebuildApplication.LOG.error("Checking " + toString());
+                Application.LOG.error("Checking " + toString());
             }
         }
 

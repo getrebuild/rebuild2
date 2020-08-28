@@ -10,7 +10,7 @@ package com.rebuild.core.configuration;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ShareToManager;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.BaseService;
@@ -53,7 +53,7 @@ public abstract class BaseConfigurationService extends BaseService {
      * @param cfgid
      */
     protected void throwIfNotSelf(ID cfgid) {
-        ID user = RebuildApplication.getCurrentUser();
+        ID user = Application.getCurrentUser();
         if (UserHelper.isAdmin(user)) {
             return;
         }

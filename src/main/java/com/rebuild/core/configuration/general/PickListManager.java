@@ -10,7 +10,7 @@ package com.rebuild.core.configuration.general;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.utils.JSONUtils;
@@ -71,9 +71,9 @@ public class PickListManager implements ConfigManager {
      */
     public ConfigBean[] getPickListRaw(String entity, String field, boolean includeHide) {
         final String ckey = String.format("PickList-%s.%s", entity, field);
-        ConfigBean[] entries = (ConfigBean[]) RebuildApplication.getCommonsCache().getx(ckey);
+        ConfigBean[] entries = (ConfigBean[]) Application.getCommonsCache().getx(ckey);
         if (entries == null) {
-            Object[][] array = RebuildApplication.createQueryNoFilter(
+            Object[][] array = Application.createQueryNoFilter(
                     "select itemId,text,isDefault,isHide,maskValue from PickList where belongEntity = ? and belongField = ? order by seq asc")
                     .setParameter(1, entity)
                     .setParameter(2, field)
@@ -90,7 +90,7 @@ public class PickListManager implements ConfigManager {
             }
 
             entries = list.toArray(new ConfigBean[0]);
-            RebuildApplication.getCommonsCache().putx(ckey, entries);
+            Application.getCommonsCache().putx(ckey, entries);
         }
 
         List<ConfigBean> ret = new ArrayList<>();
@@ -108,12 +108,12 @@ public class PickListManager implements ConfigManager {
      */
     public String getLabel(ID itemId) {
         final String ckey = "PickListLABEL-" + itemId;
-        String cached = RebuildApplication.getCommonsCache().get(ckey);
+        String cached = Application.getCommonsCache().get(ckey);
         if (cached != null) {
             return cached.equals(DELETED_ITEM) ? null : cached;
         }
 
-        Object[] o = RebuildApplication.createQueryNoFilter(
+        Object[] o = Application.createQueryNoFilter(
                 "select text from PickList where itemId = ?")
                 .setParameter(1, itemId)
                 .unique();
@@ -121,7 +121,7 @@ public class PickListManager implements ConfigManager {
         // 可能已删除
         if (cached == null) cached = DELETED_ITEM;
 
-        RebuildApplication.getCommonsCache().put(ckey, cached);
+        Application.getCommonsCache().put(ckey, cached);
         return cached.equals(DELETED_ITEM) ? null : cached;
     }
 
@@ -131,7 +131,7 @@ public class PickListManager implements ConfigManager {
      * @return
      */
     public ID findItemByLabel(String label, Field field) {
-        Object[] o = RebuildApplication.createQueryNoFilter(
+        Object[] o = Application.createQueryNoFilter(
                 "select itemId from PickList where belongEntity = ? and belongField = ? and text = ?")
                 .setParameter(1, field.getOwnEntity().getName())
                 .setParameter(2, field.getName())
@@ -158,10 +158,10 @@ public class PickListManager implements ConfigManager {
     @Override
     public void clean(Object idOrField) {
         if (idOrField instanceof ID) {
-            RebuildApplication.getCommonsCache().evict("PickListLABEL-" + idOrField);
+            Application.getCommonsCache().evict("PickListLABEL-" + idOrField);
         } else if (idOrField instanceof Field) {
             Field field = (Field) idOrField;
-            RebuildApplication.getCommonsCache().evict(String.format("PickList-%s.%s", field.getOwnEntity().getName(), field.getName()));
+            Application.getCommonsCache().evict(String.format("PickList-%s.%s", field.getOwnEntity().getName(), field.getName()));
         }
     }
 }

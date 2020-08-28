@@ -11,7 +11,7 @@ import cn.devezhao.commons.RegexUtils;
 import cn.devezhao.commons.ThreadPool;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.SMSender;
 import com.rebuild.core.helper.general.ContentWithFieldVars;
 import com.rebuild.core.privileges.UserHelper;
@@ -94,20 +94,20 @@ public class SendNotification implements TriggerAction {
 
         for (ID user : toUsers) {
             if (type == TYPE_MAIL) {
-                String emailAddr = RebuildApplication.getUserStore().getUser(user).getEmail();
+                String emailAddr = Application.getUserStore().getUser(user).getEmail();
                 if (emailAddr != null) {
                     SMSender.sendMail(emailAddr, emailSubject, message);
                 }
 
             } else if (type == TYPE_SMS) {
-                String mobile = RebuildApplication.getUserStore().getUser(user).getWorkphone();
+                String mobile = Application.getUserStore().getUser(user).getWorkphone();
                 if (RegexUtils.isCNMobile(mobile)) {
                     SMSender.sendSMS(mobile, message);
                 }
 
             } else {  // TYPE_NOTIFICATION
                 Message m = MessageBuilder.createMessage(user, message, context.getSourceRecord());
-                RebuildApplication.getNotifications().send(m);
+                Application.getNotifications().send(m);
             }
         }
     }

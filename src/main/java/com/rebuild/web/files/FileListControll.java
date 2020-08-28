@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.MetadataSorter;
@@ -142,7 +142,7 @@ public class FileListControll extends BaseController {
             sql += " order by modifiedOn desc";
         }
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(sql)
+        Object[][] array = Application.createQueryNoFilter(sql)
                 .setParameter(1, false)
                 .setLimit(pageSize, pageNo * pageSize - pageSize)
                 .array();

@@ -15,7 +15,7 @@ import cn.devezhao.commons.EncryptUtils;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.BlackList;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
@@ -72,7 +72,7 @@ public class UserService extends BaseServiceImpl {
         final String passwd = record.getString("password");
         saveBefore(record);
         record = super.create(record);
-        RebuildApplication.getUserStore().refreshUser(record.getPrimary());
+        Application.getUserStore().refreshUser(record.getPrimary());
 
         if (notifyUser) {
             notifyNewUser(record, passwd);
@@ -86,7 +86,7 @@ public class UserService extends BaseServiceImpl {
 
         saveBefore(record);
         Record r = super.update(record);
-        RebuildApplication.getUserStore().refreshUser(record.getPrimary());
+        Application.getUserStore().refreshUser(record.getPrimary());
         return r;
     }
 
@@ -95,7 +95,7 @@ public class UserService extends BaseServiceImpl {
         checkAdminGuard(BizzPermission.DELETE, null);
 
         super.delete(record);
-        RebuildApplication.getUserStore().removeUser(record);
+        Application.getUserStore().removeUser(record);
         return 1;
     }
 
@@ -113,7 +113,7 @@ public class UserService extends BaseServiceImpl {
             record.setString("password", EncryptUtils.toSHA256Hex(password));
         }
 
-        if (record.hasValue("email") && RebuildApplication.getUserStore().existsUser(record.getString("email"))) {
+        if (record.hasValue("email") && Application.getUserStore().existsUser(record.getString("email"))) {
             throw new DataSpecificationException("邮箱重复");
         }
 
@@ -135,7 +135,7 @@ public class UserService extends BaseServiceImpl {
      * @throws DataSpecificationException
      */
     private void checkLoginName(String loginName) throws DataSpecificationException {
-        if (RebuildApplication.getUserStore().existsUser(loginName)) {
+        if (Application.getUserStore().existsUser(loginName)) {
             throw new DataSpecificationException("登陆名重复");
         }
         if (!CommonsUtils.isPlainText(loginName) || BlackList.isBlack(loginName)) {
@@ -149,7 +149,7 @@ public class UserService extends BaseServiceImpl {
      * @see AdminGuard
      */
     private void checkAdminGuard(Permission action, ID user) {
-        ID currentUser = RebuildApplication.getCurrentUser();
+        ID currentUser = Application.getCurrentUser();
         if (UserHelper.isAdmin(currentUser)) return;
 
         if (action == BizzPermission.CREATE || action == BizzPermission.DELETE) {
@@ -234,7 +234,7 @@ public class UserService extends BaseServiceImpl {
      * @param enableNew
      */
     public void updateEnableUser(ID user, ID deptNew, ID roleNew, Boolean enableNew) {
-        User u = RebuildApplication.getUserStore().getUser(user);
+        User u = Application.getUserStore().getUser(user);
         ID deptOld = null;
         // 检查是否需要更新部门
         if (deptNew != null) {
@@ -250,7 +250,7 @@ public class UserService extends BaseServiceImpl {
             roleNew = null;
         }
 
-        Record record = EntityHelper.forUpdate(user, RebuildApplication.getCurrentUser());
+        Record record = EntityHelper.forUpdate(user, Application.getCurrentUser());
         if (deptNew != null) {
             record.setID("deptId", deptNew);
         }
@@ -261,11 +261,11 @@ public class UserService extends BaseServiceImpl {
             record.setBoolean("isDisabled", !enableNew);
         }
         super.update(record);
-        RebuildApplication.getUserStore().refreshUser(user);
+        Application.getUserStore().refreshUser(user);
 
         // 改变记录的所属部门
         if (deptOld != null) {
-            TaskExecutors.submit(new ChangeOwningDeptTask(user, deptNew), RebuildApplication.getCurrentUser());
+            TaskExecutors.submit(new ChangeOwningDeptTask(user, deptNew), Application.getCurrentUser());
         }
     }
 
@@ -286,7 +286,7 @@ public class UserService extends BaseServiceImpl {
                 newUserId, viewUrl);
 
         Message message = MessageBuilder.createMessage(ADMIN_USER, content, newUserId);
-        RebuildApplication.getNotifications().send(message);
+        Application.getNotifications().send(message);
         return newUserId;
     }
 }

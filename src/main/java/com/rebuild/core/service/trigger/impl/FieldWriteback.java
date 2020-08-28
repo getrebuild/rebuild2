@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.Record;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.AutoFillinManager;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.trigger.ActionContext;
@@ -75,7 +75,7 @@ public class FieldWriteback extends FieldAggregation {
         String sql = String.format("select %s from %s where %s = ?",
                 StringUtils.join(t2sMap.values(), ","), sourceEntity.getName(), followSourceField);
 
-        final Record o = RebuildApplication.createQueryNoFilter(sql)
+        final Record o = Application.createQueryNoFilter(sql)
                 .setParameter(1, targetRecordId)
                 .record();
         if (o == null) {

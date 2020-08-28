@@ -7,7 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.web.admin;
 
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.setup.Installer;
@@ -95,11 +95,11 @@ public class AdminCli {
         String name = commands[1];
         if ("clean".equals(name)) {
             if (Installer.isUseRedis()) {
-                try (Jedis jedis = RebuildApplication.getCommonsCache().getJedisPool().getResource()) {
+                try (Jedis jedis = Application.getCommonsCache().getJedisPool().getResource()) {
                     jedis.flushAll();
                 }
             } else {
-                RebuildApplication.getCommonsCache().getEhcacheCache().clear();
+                Application.getCommonsCache().getEhcacheCache().clear();
             }
 
         } else {

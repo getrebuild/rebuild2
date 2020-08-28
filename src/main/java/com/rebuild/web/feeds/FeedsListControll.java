@@ -12,7 +12,7 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -55,7 +55,7 @@ public class FeedsListControll extends BaseController {
         ModelAndView mv = createModelAndView("/feeds/home.jsp");
         mv.getModel().put("feedsType", type);
 
-        User user = RebuildApplication.getUserStore().getUser(getRequestUser(request));
+        User user = Application.getUserStore().getUser(getRequestUser(request));
         mv.getModel().put("UserEmail", user.getEmail());
         mv.getModel().put("UserMobile", StringUtils.defaultIfBlank(user.getWorkphone(), ""));
 
@@ -88,7 +88,7 @@ public class FeedsListControll extends BaseController {
         if (type == 11) {
             sqlWhere += String.format(" and createdBy ='%s' and scope = 'SELF'", user);
         } else if (!parser.getIncludeFields().contains("scope")) {
-            Set<Team> teams = RebuildApplication.getUserStore().getUser(user).getOwningTeams();
+            Set<Team> teams = Application.getUserStore().getUser(user).getOwningTeams();
             List<String> in = new ArrayList<>();
             in.add("scope = 'ALL'");
             for (Team t : teams) {
@@ -103,7 +103,7 @@ public class FeedsListControll extends BaseController {
 
         long count = -1;
         if (pageNo == 1) {
-            count = (Long) RebuildApplication.createQueryNoFilter(
+            count = (Long) Application.createQueryNoFilter(
                     "select count(feedsId) from Feeds where " + sqlWhere).unique()[0];
             if (count == 0) {
                 writeSuccess(response);
@@ -117,7 +117,7 @@ public class FeedsListControll extends BaseController {
         ID foucs = getIdParameter(request, "foucs");
         Object[] foucsFeed = null;
         if (foucs != null) {
-            foucsFeed = RebuildApplication.createQueryNoFilter(sql + " and feedsId = ?")
+            foucsFeed = Application.createQueryNoFilter(sql + " and feedsId = ?")
                     .setParameter(1, foucs)
                     .unique();
         }
@@ -130,7 +130,7 @@ public class FeedsListControll extends BaseController {
             sql += " order by createdOn desc";
         }
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(sql)
+        Object[][] array = Application.createQueryNoFilter(sql)
                 .setLimit(pageSize, pageNo * pageSize - pageSize)
                 .array();
 
@@ -151,7 +151,7 @@ public class FeedsListControll extends BaseController {
             JSONObject item = buildBase(o, user);
             FeedsScope scope = FeedsScope.parse((String) o[7]);
             if (scope == FeedsScope.GROUP) {
-                Team team = RebuildApplication.getUserStore().getTeam(ID.valueOf((String) o[7]));
+                Team team = Application.getUserStore().getTeam(ID.valueOf((String) o[7]));
                 item.put("scope", new Object[]{team.getIdentity(), team.getName()});
             } else {
                 item.put("scope", scope.getName());
@@ -193,7 +193,7 @@ public class FeedsListControll extends BaseController {
 
         long count = -1;
         if (pageNo == 1) {
-            count = (Long) RebuildApplication.createQueryNoFilter(
+            count = (Long) Application.createQueryNoFilter(
                     "select count(commentId) from FeedsComment where " + sqlWhere).unique()[0];
             if (count == 0) {
                 writeSuccess(response);
@@ -203,7 +203,7 @@ public class FeedsListControll extends BaseController {
 
         String sql = "select commentId,createdBy,createdOn,modifiedOn,content,images,attachments from FeedsComment where " + sqlWhere;
         sql += " order by createdOn desc";
-        Object[][] array = RebuildApplication.createQueryNoFilter(sql)
+        Object[][] array = Application.createQueryNoFilter(sql)
                 .setLimit(pageSize, pageNo * pageSize - pageSize)
                 .array();
 

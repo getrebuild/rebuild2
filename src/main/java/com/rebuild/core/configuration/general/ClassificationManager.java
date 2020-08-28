@@ -9,7 +9,7 @@ package com.rebuild.core.configuration.general;
 
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -62,12 +62,12 @@ public class ClassificationManager implements ConfigManager {
      */
     private String[] getItemNames(ID itemId) {
         final String ckey = "ClassificationNAME-" + itemId;
-        String[] cached = (String[]) RebuildApplication.getCommonsCache().getx(ckey);
+        String[] cached = (String[]) Application.getCommonsCache().getx(ckey);
         if (cached != null) {
             return cached[0].equals(DELETED_ITEM) ? null : cached;
         }
 
-        Object[] o = RebuildApplication.createQueryNoFilter(
+        Object[] o = Application.createQueryNoFilter(
                 "select name,fullName from ClassificationData where itemId = ?")
                 .setParameter(1, itemId)
                 .unique();
@@ -75,7 +75,7 @@ public class ClassificationManager implements ConfigManager {
         // 可能已删除
         if (cached == null) cached = new String[]{DELETED_ITEM, DELETED_ITEM};
 
-        RebuildApplication.getCommonsCache().putx(ckey, cached);
+        Application.getCommonsCache().putx(ckey, cached);
         return cached[0].equals(DELETED_ITEM) ? null : cached;
     }
 
@@ -95,7 +95,7 @@ public class ClassificationManager implements ConfigManager {
         // 后匹配
         String ql = String.format(
                 "select itemId from ClassificationData where dataId = '%s' and fullName like '%%%s'", dataId, name);
-        Object[][] hasMany = RebuildApplication.createQueryNoFilter(ql).array();
+        Object[][] hasMany = Application.createQueryNoFilter(ql).array();
         if (hasMany.length == 0) {
             return null;
         } else if (hasMany.length == 1) {
@@ -119,12 +119,12 @@ public class ClassificationManager implements ConfigManager {
         }
 
         String ckey = "ClassificationLEVEL-" + dataId;
-        Integer cval = (Integer) RebuildApplication.getCommonsCache().getx(ckey);
+        Integer cval = (Integer) Application.getCommonsCache().getx(ckey);
         if (cval != null) {
             return cval;
         }
 
-        Object[] o = RebuildApplication.createQueryNoFilter(
+        Object[] o = Application.createQueryNoFilter(
                 "select openLevel from Classification where dataId = ?")
                 .setParameter(1, dataId)
                 .unique();
@@ -133,7 +133,7 @@ public class ClassificationManager implements ConfigManager {
         }
 
         cval = (Integer) o[0];
-        RebuildApplication.getCommonsCache().putx(ckey, cval);
+        Application.getCommonsCache().putx(ckey, cval);
         return cval;
     }
 
@@ -162,9 +162,9 @@ public class ClassificationManager implements ConfigManager {
     public void clean(Object cid) {
         ID id2 = (ID) cid;
         if (id2.getEntityCode() == EntityHelper.ClassificationData) {
-            RebuildApplication.getCommonsCache().evict("ClassificationNAME-" + cid);
+            Application.getCommonsCache().evict("ClassificationNAME-" + cid);
         } else if (id2.getEntityCode() == EntityHelper.Classification) {
-            RebuildApplication.getCommonsCache().evict("ClassificationLEVEL-" + cid);
+            Application.getCommonsCache().evict("ClassificationLEVEL-" + cid);
         }
     }
 }

@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.service.notification;
 
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.service.general.OperatingContext;
@@ -42,7 +42,7 @@ public class NotificationObserver extends OperatingObserver {
 
         String content = buildMessage(context.getAffected(), related, false);
         content = MessageFormat.format(content, from, context.getAffected().length, getLabel(related));
-        RebuildApplication.getNotifications().send(
+        Application.getNotifications().send(
                 MessageBuilder.createMessage(to, content, Message.TYPE_ASSIGN));
     }
 
@@ -59,7 +59,7 @@ public class NotificationObserver extends OperatingObserver {
 
         String content = buildMessage(context.getAffected(), related, true);
         content = MessageFormat.format(content, from, context.getAffected().length, getLabel(related));
-        RebuildApplication.getNotifications().send(
+        Application.getNotifications().send(
                 MessageBuilder.createMessage(to, content, Message.TYPE_SAHRE));
     }
 

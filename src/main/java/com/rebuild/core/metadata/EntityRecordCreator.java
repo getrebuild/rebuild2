@@ -16,7 +16,7 @@ import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.engine.NullValue;
 import cn.devezhao.persist4j.record.JsonRecordCreator;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.bizz.User;
@@ -81,7 +81,7 @@ public class EntityRecordCreator extends JsonRecordCreator {
     protected static void bindCommonsFieldsValue(Record r, boolean isNew) {
         final Date now = CalendarUtils.now();
         final Entity entity = r.getEntity();
-        final User editor = RebuildApplication.getUserStore().getUser(r.getEditor());
+        final User editor = Application.getUserStore().getUser(r.getEditor());
 
         if (entity.containsField(EntityHelper.ModifiedOn)) {
             r.setDate(EntityHelper.ModifiedOn, now);

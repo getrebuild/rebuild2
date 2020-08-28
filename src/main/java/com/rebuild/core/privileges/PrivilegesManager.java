@@ -18,7 +18,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.Filter;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.bizz.*;
 import com.rebuild.core.service.NoRecordFoundException;
@@ -358,7 +358,7 @@ public class PrivilegesManager {
             entity = entity.getMasterEntity();
         }
 
-        Object[] rights = RebuildApplication.createQueryNoFilter(
+        Object[] rights = Application.createQueryNoFilter(
                 "select rights from ShareAccess where belongEntity = ? and recordId = ? and shareTo = ?")
                 .setParameter(1, entity.getName())
                 .setParameter(2, target)
@@ -402,7 +402,7 @@ public class PrivilegesManager {
         Entity entity = MetadataHelper.getEntity(slaveId.getEntityCode());
         Field stmField = MetadataHelper.getSlaveToMasterField(entity);
 
-        Object[] primary = RebuildApplication.getQueryFactory().uniqueNoFilter(slaveId, stmField.getName());
+        Object[] primary = Application.getQueryFactory().uniqueNoFilter(slaveId, stmField.getName());
         return primary == null ? null : (ID) primary[0];
     }
 

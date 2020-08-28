@@ -24,5 +24,7 @@ public interface JSONable {
      * @param special
      * @return
      */
-    JSON toJSON(String... special);
+    default JSON toJSON(String... special) {
+        return toJSON();
+    }
 }

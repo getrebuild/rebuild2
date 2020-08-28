@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.privileges.UserService;
@@ -37,12 +37,12 @@ public class ChartManager implements ConfigManager {
      */
     public ConfigBean getChart(ID chartid) {
         final String ckey = "Chart-" + chartid;
-        ConfigBean entry = (ConfigBean) RebuildApplication.getCommonsCache().getx(ckey);
+        ConfigBean entry = (ConfigBean) Application.getCommonsCache().getx(ckey);
         if (entry != null) {
             return entry.clone();
         }
 
-        Object[] o = RebuildApplication.createQueryNoFilter(
+        Object[] o = Application.createQueryNoFilter(
                 "select title,chartType,config,createdBy from ChartConfig where chartId = ?")
                 .setParameter(1, chartid)
                 .unique();
@@ -63,7 +63,7 @@ public class ChartManager implements ConfigManager {
                 .set("type", o[1])
                 .set("config", o[2] instanceof JSON ? (JSON) o[2] : JSON.parse((String) o[2]))
                 .set("createdBy", o[3]);
-        RebuildApplication.getCommonsCache().putx(ckey, entry);
+        Application.getCommonsCache().putx(ckey, entry);
         return entry.clone();
     }
 
@@ -89,6 +89,6 @@ public class ChartManager implements ConfigManager {
 
     @Override
     public void clean(Object chartId) {
-        RebuildApplication.getCommonsCache().evict("Chart-" + chartId);
+        Application.getCommonsCache().evict("Chart-" + chartId);
     }
 }

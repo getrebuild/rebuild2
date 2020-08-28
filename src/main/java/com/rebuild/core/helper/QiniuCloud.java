@@ -20,7 +20,7 @@ import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.utils.HttpUtils;
@@ -309,7 +309,7 @@ public class QiniuCloud {
      * @return
      */
     public static long storageSize() {
-        Long size = (Long) RebuildApplication.getCommonsCache().getx("_StorageSize");
+        Long size = (Long) Application.getCommonsCache().getx("_StorageSize");
         if (size != null) {
             return size;
         }
@@ -325,7 +325,7 @@ public class QiniuCloud {
 
         if (size == null) size = 0L;
 
-        RebuildApplication.getCommonsCache().putx("_StorageSize", size, CommonsCache.TS_HOUR);
+        Application.getCommonsCache().putx("_StorageSize", size, CommonsCache.TS_HOUR);
         return size;
     }
 }

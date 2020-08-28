@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserHelper;
@@ -218,7 +218,7 @@ public class ApprovalControll extends BaseController {
     public void getFlowDefinition(HttpServletRequest request, HttpServletResponse response) {
         final ID approvalId = getIdParameterNotNull(request, "id");
 
-        Object[] belongEntity = RebuildApplication.createQueryNoFilter(
+        Object[] belongEntity = Application.createQueryNoFilter(
                 "select belongEntity from RobotApprovalConfig where configId = ?")
                 .setParameter(1, approvalId)
                 .unique();

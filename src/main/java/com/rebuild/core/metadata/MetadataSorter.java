@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.metadata.BaseMeta;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import org.apache.commons.lang.ArrayUtils;
@@ -76,7 +76,7 @@ public class MetadataSorter {
 
             if (user == null) {
                 sorted.add(e);
-            } else if (RebuildApplication.getPrivilegesManager().allowRead(user, e.getEntityCode())) {
+            } else if (Application.getPrivilegesManager().allowRead(user, e.getEntityCode())) {
                 sorted.add(e);
             }
         }

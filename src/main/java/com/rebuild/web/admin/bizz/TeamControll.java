@@ -23,7 +23,7 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.DataListManager;
 import com.rebuild.core.privileges.TeamService;
 import com.rebuild.core.privileges.UserHelper;
@@ -63,7 +63,7 @@ public class TeamControll extends EntityController {
     @RequestMapping(value = "team-members", method = RequestMethod.GET)
     public void getMembers(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID teamId = getIdParameterNotNull(request, "team");
-        Team team = RebuildApplication.getUserStore().getTeam(teamId);
+        Team team = Application.getUserStore().getTeam(teamId);
 
         List<Object[]> members = new ArrayList<>();
         for (Principal p : team.getMembers()) {
@@ -85,7 +85,7 @@ public class TeamControll extends EntityController {
         Set<ID> users = UserHelper.parseUsers((JSONArray) usersDef, null);
 
         if (!users.isEmpty()) {
-            RebuildApplication.getBean(TeamService.class).createMembers(teamId, users);
+            Application.getBean(TeamService.class).createMembers(teamId, users);
         }
         writeSuccess(response);
     }
@@ -95,7 +95,7 @@ public class TeamControll extends EntityController {
         ID teamId = getIdParameterNotNull(request, "team");
         ID userId = getIdParameterNotNull(request, "user");
 
-        RebuildApplication.getBean(TeamService.class).deleteMembers(teamId, Arrays.asList(userId));
+        Application.getBean(TeamService.class).deleteMembers(teamId, Arrays.asList(userId));
         writeSuccess(response);
     }
 }

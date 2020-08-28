@@ -15,7 +15,7 @@ import cn.devezhao.persist4j.dialect.Dialect;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.metadata.CascadeModel;
 import cn.devezhao.persist4j.util.support.Table;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserService;
@@ -83,7 +83,7 @@ public class Entity2Schema extends Field2Schema {
 
         String physicalName = "T__" + entityName.toUpperCase();
 
-        Object[] maxTypeCode = RebuildApplication.createQueryNoFilter(
+        Object[] maxTypeCode = Application.createQueryNoFilter(
                 "select min(typeCode) from MetaEntity").unique();
         int typeCode = maxTypeCode == null || ObjectUtils.toInt(maxTypeCode[0]) == 0
                 ? 999 : (ObjectUtils.toInt(maxTypeCode[0]) - 1);
@@ -109,7 +109,7 @@ public class Entity2Schema extends Field2Schema {
             record.setString("masterEntity", masterEntity);
         }
         record.setString("nameField", nameFiled);
-        record = RebuildApplication.getCommonsService().create(record);
+        record = Application.getCommonsService().create(record);
         tempMetaId.add(record.getPrimary());
 
         Entity tempEntity = new UnsafeEntity(entityName, physicalName, entityLabel, typeCode, nameFiled);
@@ -145,17 +145,17 @@ public class Entity2Schema extends Field2Schema {
             }
         } catch (Throwable ex) {
             LOG.error(null, ex);
-            RebuildApplication.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
+            Application.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
             throw new MetadataException("元数据初始化失败 : " + ex.getLocalizedMessage());
         }
 
         boolean schemaReady = schema2Database(tempEntity);
         if (!schemaReady) {
-            RebuildApplication.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
+            Application.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
             throw new MetadataException("无法创建表到数据库");
         }
 
-        RebuildApplication.getMetadataFactory().refresh(false);
+        Application.getMetadataFactory().refresh(false);
         return entityName;
     }
 
@@ -215,24 +215,24 @@ public class Entity2Schema extends Field2Schema {
 
         String ddl = String.format("drop table if exists `%s`", entity.getPhysicalName());
         try {
-            RebuildApplication.getSqlExecutor().execute(ddl, 10 * 60);
+            Application.getSqlExecutor().execute(ddl, 10 * 60);
         } catch (Throwable ex) {
             LOG.error("DDL ERROR : \n" + ddl, ex);
             return false;
         }
 
-        final ID sessionUser = RebuildApplication.getSessionStore().get(true);
+        final ID sessionUser = Application.getSessionStore().get(true);
         if (sessionUser == null) {
-            RebuildApplication.getSessionStore().set(user);
+            Application.getSessionStore().set(user);
         }
         try {
-            RebuildApplication.getBean(MetaEntityService.class).delete(metaRecordId);
+            Application.getBean(MetaEntityService.class).delete(metaRecordId);
         } finally {
             if (sessionUser == null) {
-                RebuildApplication.getSessionStore().clean();
+                Application.getSessionStore().clean();
             }
         }
-        RebuildApplication.getMetadataFactory().refresh(false);
+        Application.getMetadataFactory().refresh(false);
         return true;
     }
 
@@ -258,11 +258,11 @@ public class Entity2Schema extends Field2Schema {
      * @return
      */
     private boolean schema2Database(Entity entity) {
-        Dialect dialect = RebuildApplication.getPersistManagerFactory().getDialect();
+        Dialect dialect = Application.getPersistManagerFactory().getDialect();
         Table table = new Table(entity, dialect);
         String[] ddls = table.generateDDL(false, false, false);
         try {
-            RebuildApplication.getSqlExecutor().executeBatch(ddls);
+            Application.getSqlExecutor().executeBatch(ddls);
         } catch (Throwable ex) {
             LOG.error("DDL Error : \n" + StringUtils.join(ddls, "\n"), ex);
             return false;

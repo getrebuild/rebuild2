@@ -10,7 +10,7 @@ package com.rebuild.web.general;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.service.general.RecentlyUsedCache;
 import com.rebuild.utils.JSONUtils;
@@ -89,6 +89,6 @@ public class RecentlyUsedSearch extends BaseController {
      * @return
      */
     protected static RecentlyUsedCache cache() {
-        return RebuildApplication.getBean(RecentlyUsedCache.class);
+        return Application.getBean(RecentlyUsedCache.class);
     }
 }

@@ -15,7 +15,7 @@ import cn.devezhao.persist4j.engine.NullValue;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -81,7 +81,7 @@ public class AutoFillinManager implements ConfigManager {
                 StringUtils.join(sourceFields, ","),
                 sourceEntity.getName(),
                 sourceEntity.getPrimaryField().getName());
-        Record sourceRecord = RebuildApplication.createQueryNoFilter(ql).setParameter(1, source).record();
+        Record sourceRecord = Application.createQueryNoFilter(ql).setParameter(1, source).record();
         if (sourceRecord == null) {
             return JSONUtils.EMPTY_ARRAY;
         }
@@ -132,12 +132,12 @@ public class AutoFillinManager implements ConfigManager {
     @SuppressWarnings("unchecked")
     private List<ConfigBean> getConfig(Field field) {
         final String cKey = "AutoFillinManager-" + field.getOwnEntity().getName() + "." + field.getName();
-        Object cached = RebuildApplication.getCommonsCache().getx(cKey);
+        Object cached = Application.getCommonsCache().getx(cKey);
         if (cached != null) {
             return (List<ConfigBean>) cached;
         }
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select sourceField,targetField,extConfig from AutoFillinConfig where belongEntity = ? and belongField = ?")
                 .setParameter(1, field.getOwnEntity().getName())
                 .setParameter(2, field.getName())
@@ -155,7 +155,7 @@ public class AutoFillinManager implements ConfigManager {
             entries.add(entry);
         }
 
-        RebuildApplication.getCommonsCache().putx(cKey, entries);
+        Application.getCommonsCache().putx(cKey, entries);
         return entries;
     }
 
@@ -163,6 +163,6 @@ public class AutoFillinManager implements ConfigManager {
     public void clean(Object field) {
         Field field2 = (Field) field;
         final String cKey = "AutoFillinManager-" + field2.getOwnEntity().getName() + "." + field2.getName();
-        RebuildApplication.getCommonsCache().evict(cKey);
+        Application.getCommonsCache().evict(cKey);
     }
 }

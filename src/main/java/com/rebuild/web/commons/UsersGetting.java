@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserHelper;
@@ -48,13 +48,13 @@ public class UsersGetting extends BaseController {
 
         Member[] members;
         if ("User".equalsIgnoreCase(type)) {
-            members = RebuildApplication.getUserStore().getAllUsers();
+            members = Application.getUserStore().getAllUsers();
         } else if ("Department".equalsIgnoreCase(type)) {
-            members = RebuildApplication.getUserStore().getAllDepartments();
+            members = Application.getUserStore().getAllDepartments();
         } else if ("Role".equalsIgnoreCase(type)) {
-            members = RebuildApplication.getUserStore().getAllRoles();
+            members = Application.getUserStore().getAllRoles();
         } else if ("Team".equalsIgnoreCase(type)) {
-            members = RebuildApplication.getUserStore().getAllTeams();
+            members = Application.getUserStore().getAllTeams();
         } else {
             throw new InvalidParameterException("Unknow type of bizz : " + type);
         }

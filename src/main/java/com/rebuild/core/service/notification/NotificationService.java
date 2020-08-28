@@ -11,7 +11,7 @@ import cn.devezhao.commons.ObjectUtils;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.BaseService;
 import org.springframework.stereotype.Service;
@@ -56,13 +56,13 @@ public class NotificationService extends BaseService {
 
     // 清理缓存
     private void cleanCache(ID messageId) {
-        Object[] m = RebuildApplication.createQueryNoFilter(
+        Object[] m = Application.createQueryNoFilter(
                 "select toUser from Notification where messageId = ?")
                 .setParameter(1, messageId)
                 .unique();
         if (m != null) {
             final String ckey = "UnreadNotification-" + m[0];
-            RebuildApplication.getCommonsCache().evict(ckey);
+            Application.getCommonsCache().evict(ckey);
         }
     }
 
@@ -91,17 +91,17 @@ public class NotificationService extends BaseService {
      */
     public int getUnreadMessage(ID user) {
         final String ckey = "UnreadNotification-" + user;
-        Object cval = RebuildApplication.getCommonsCache().getx(ckey);
+        Object cval = Application.getCommonsCache().getx(ckey);
         if (cval != null) {
             return (Integer) cval;
         }
 
-        Object[] unread = RebuildApplication.createQueryNoFilter(
+        Object[] unread = Application.createQueryNoFilter(
                 "select count(messageId) from Notification where toUser = ? and unread = 'T'")
                 .setParameter(1, user)
                 .unique();
         int count = unread == null ? 0 : ObjectUtils.toInt(unread[0]);
-        RebuildApplication.getCommonsCache().putx(ckey, count);
+        Application.getCommonsCache().putx(ckey, count);
         return count;
     }
 }

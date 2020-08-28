@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.FormsBuilder;
 import com.rebuild.core.configuration.general.ViewAddonsManager;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -42,7 +42,7 @@ public class GeneralModelControll extends EntityController {
         final ID user = getRequestUser(request);
         final Entity thatEntity = MetadataHelper.getEntity(entity);
 
-        if (!RebuildApplication.getPrivilegesManager().allowRead(user, thatEntity.getEntityCode())) {
+        if (!Application.getPrivilegesManager().allowRead(user, thatEntity.getEntityCode())) {
             response.sendError(403, "你没有访问此实体的权限");
             return null;
         }

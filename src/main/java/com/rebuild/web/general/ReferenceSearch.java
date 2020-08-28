@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.dialect.FieldType;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationManager;
 import com.rebuild.core.configuration.general.DataListManager;
 import com.rebuild.core.helper.general.FieldValueWrapper;
@@ -83,7 +83,7 @@ public class ReferenceSearch extends EntityController {
             ID[] recently = null;
             if (protocolFilter == null) {
                 String type = getParameter(request, "type");
-                recently = RebuildApplication.getBean(RecentlyUsedCache.class).gets(user, referenceEntity.getName(), type);
+                recently = Application.getBean(RecentlyUsedCache.class).gets(user, referenceEntity.getName(), type);
             }
 
             if (recently == null || recently.length == 0) {
@@ -255,7 +255,7 @@ public class ReferenceSearch extends EntityController {
      * @return
      */
     private List<Object> resultSearch(String sql, Entity entity, Field nameField) {
-        Object[][] array = (entity == null ? RebuildApplication.createQueryNoFilter(sql) : RebuildApplication.createQuery(sql))
+        Object[][] array = (entity == null ? Application.createQueryNoFilter(sql) : Application.createQuery(sql))
                 .setLimit(10)
                 .array();
 

@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.DistributedJobBean;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -45,7 +45,7 @@ public class TriggerByTimerJob extends DistributedJobBean {
         if (!isRunning()) return;
 
         final Calendar time = CalendarUtils.getInstance();
-        final Object[][] timerTriggers = RebuildApplication.createQueryNoFilter(
+        final Object[][] timerTriggers = Application.createQueryNoFilter(
                 "select when,whenTimer,whenFilter,belongEntity,actionType,actionContent,configId from RobotTriggerConfig" +
                         " where when >= 512 and whenTimer is not null and isDisabled = 'F' order by priority desc")
                 .array();
@@ -61,7 +61,7 @@ public class TriggerByTimerJob extends DistributedJobBean {
                 continue;
             }
 
-            RebuildApplication.getSessionStore().set(UserService.SYSTEM_USER);
+            Application.getSessionStore().set(UserService.SYSTEM_USER);
             try {
                 LOG.info("Trigger [ " + trigger[6] + " ] timer run at : " + time.getTime());
                 int a = triggerOne(trigger);
@@ -70,7 +70,7 @@ public class TriggerByTimerJob extends DistributedJobBean {
             } catch (Exception ex) {
                 LOG.error("Timer trigger error : " + trigger[6], ex);
             } finally {
-                RebuildApplication.getSessionStore().clean();
+                Application.getSessionStore().clean();
             }
         }
     }
@@ -102,7 +102,7 @@ public class TriggerByTimerJob extends DistributedJobBean {
 
         int affected = 0;
         while (true) {
-            Object[][] array = RebuildApplication.createQueryNoFilter(sql)
+            Object[][] array = Application.createQueryNoFilter(sql)
                     .setLimit(pageSize, pageNo * pageSize - pageSize)
                     .array();
 

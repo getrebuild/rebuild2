@@ -56,20 +56,12 @@ See LICENSE and COMMERCIAL in the project root for license information.
   $.ajaxSetup({
     headers: {
       'Content-Type': 'text/plain;charset=utf-8',
+      'X-Client': 'RB/WEB-2.0'
     },
     cache: false,
     complete: function (xhr) {
-      if (xhr.status === 200 || xhr.status === 0) {
-        // NOOP
-      } else if (xhr.status === 403 || xhr.status === 401) {
-        RbHighbar.error(xhr.responseText || '未授权访问')
-      } else if (xhr.status === 502) {
-        RbHighbar.error('服务暂不可用')
-      } else {
-        var error = xhr.responseText
-        if (error && error.contains('Exception:')) error = error.split('Exception:')[1]
-        if (error && error.contains('Exception:')) error = error.split('Exception:')[1]
-        RbHighbar.error(error)
+      if (!(xhr.status === 200 || xhr.status === 0)) {
+        RbHighbar.error(xhr.responseText || '系统繁忙，请稍后重试')
       }
     },
     beforeSend: function (xhr, settings) {

@@ -13,7 +13,7 @@ import cn.devezhao.bizz.security.member.NoMemberFoundException;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -53,7 +53,7 @@ public class UserHelper {
      */
     public static boolean isAdmin(ID userId) {
         try {
-            return RebuildApplication.getUserStore().getUser(userId).isAdmin();
+            return Application.getUserStore().getUser(userId).isAdmin();
         } catch (NoMemberFoundException ex) {
             LOG.error("No User found : " + userId);
         }
@@ -80,13 +80,13 @@ public class UserHelper {
         try {
             switch (bizzId.getEntityCode()) {
                 case EntityHelper.User:
-                    return RebuildApplication.getUserStore().getUser(bizzId).isActive();
+                    return Application.getUserStore().getUser(bizzId).isActive();
                 case EntityHelper.Department:
-                    return !RebuildApplication.getUserStore().getDepartment(bizzId).isDisabled();
+                    return !Application.getUserStore().getDepartment(bizzId).isDisabled();
                 case EntityHelper.Role:
-                    return !RebuildApplication.getUserStore().getRole(bizzId).isDisabled();
+                    return !Application.getUserStore().getRole(bizzId).isDisabled();
                 case EntityHelper.Team:
-                    return !RebuildApplication.getUserStore().getTeam(bizzId).isDisabled();
+                    return !Application.getUserStore().getTeam(bizzId).isDisabled();
             }
 
         } catch (NoMemberFoundException ex) {
@@ -103,7 +103,7 @@ public class UserHelper {
      */
     public static Department getDepartment(ID userId) {
         try {
-            User u = RebuildApplication.getUserStore().getUser(userId);
+            User u = Application.getUserStore().getUser(userId);
             return u.getOwningDept();
         } catch (NoMemberFoundException ex) {
             LOG.error("No User found : " + userId);
@@ -136,13 +136,13 @@ public class UserHelper {
         try {
             switch (bizzId.getEntityCode()) {
                 case EntityHelper.User:
-                    return RebuildApplication.getUserStore().getUser(bizzId).getFullName();
+                    return Application.getUserStore().getUser(bizzId).getFullName();
                 case EntityHelper.Department:
-                    return RebuildApplication.getUserStore().getDepartment(bizzId).getName();
+                    return Application.getUserStore().getDepartment(bizzId).getName();
                 case EntityHelper.Role:
-                    return RebuildApplication.getUserStore().getRole(bizzId).getName();
+                    return Application.getUserStore().getRole(bizzId).getName();
                 case EntityHelper.Team:
-                    return RebuildApplication.getUserStore().getTeam(bizzId).getName();
+                    return Application.getUserStore().getTeam(bizzId).getName();
             }
 
         } catch (NoMemberFoundException ex) {
@@ -162,13 +162,13 @@ public class UserHelper {
         try {
             switch (groupId.getEntityCode()) {
                 case EntityHelper.Department:
-                    ms = RebuildApplication.getUserStore().getDepartment(groupId).getMembers();
+                    ms = Application.getUserStore().getDepartment(groupId).getMembers();
                     break;
                 case EntityHelper.Role:
-                    ms = RebuildApplication.getUserStore().getRole(groupId).getMembers();
+                    ms = Application.getUserStore().getRole(groupId).getMembers();
                     break;
                 case EntityHelper.Team:
-                    ms = RebuildApplication.getUserStore().getTeam(groupId).getMembers();
+                    ms = Application.getUserStore().getTeam(groupId).getMembers();
                     break;
             }
 
@@ -243,7 +243,7 @@ public class UserHelper {
         if (!fromFields.isEmpty()) {
             String sql = String.format("select %s from %s where %s = ?",
                     StringUtils.join(fromFields.iterator(), ","), entity.getName(), entity.getPrimaryField().getName());
-            Object[] bizzValues = RebuildApplication.createQueryNoFilter(sql).setParameter(1, record).unique();
+            Object[] bizzValues = Application.createQueryNoFilter(sql).setParameter(1, record).unique();
             for (Object bizz : bizzValues) {
                 if (bizz != null) {
                     bizzs.add((ID) bizz);
@@ -267,7 +267,7 @@ public class UserHelper {
         // 过滤禁用用户
         if (filterDisabled) {
             for (Iterator<ID> iter = users.iterator(); iter.hasNext(); ) {
-                User u = RebuildApplication.getUserStore().getUser(iter.next());
+                User u = Application.getUserStore().getUser(iter.next());
                 if (!u.isActive()) iter.remove();
             }
         }
@@ -354,7 +354,7 @@ public class UserHelper {
      * @return
      */
     public static ID findUserByFullName(String fullName) {
-        for (User u : RebuildApplication.getUserStore().getAllUsers()) {
+        for (User u : Application.getUserStore().getAllUsers()) {
             if (fullName.equalsIgnoreCase(u.getFullName())) {
                 return u.getId();
             }
@@ -378,7 +378,7 @@ public class UserHelper {
      * @see UserStore#getAllUsers()
      */
     public static User[] sortUsers(boolean isAll) {
-        User[] users = RebuildApplication.getUserStore().getAllUsers();
+        User[] users = Application.getUserStore().getAllUsers();
         // 排除未激活
         if (!isAll) {
             List<User> list = new ArrayList<>();

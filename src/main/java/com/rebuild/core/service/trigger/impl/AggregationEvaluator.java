@@ -14,7 +14,7 @@ import com.googlecode.aviator.AviatorEvaluator;
 import com.googlecode.aviator.AviatorEvaluatorInstance;
 import com.googlecode.aviator.Options;
 import com.googlecode.aviator.exception.ExpressionSyntaxErrorException;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -89,7 +89,7 @@ public class AggregationEvaluator {
             sql += " and " + filterSql;
         }
 
-        Object[] o = RebuildApplication.createQueryNoFilter(sql)
+        Object[] o = Application.createQueryNoFilter(sql)
                 .setParameter(1, triggerRecord)
                 .unique();
         return o == null || o[0] == null ? 0 : o[0];
@@ -130,7 +130,7 @@ public class AggregationEvaluator {
             sql.append(" and ").append(filterSql);
         }
 
-        Object[] o = RebuildApplication.createQueryNoFilter(sql.toString())
+        Object[] o = Application.createQueryNoFilter(sql.toString())
                 .setParameter(1, triggerRecord)
                 .unique();
         if (o == null) {

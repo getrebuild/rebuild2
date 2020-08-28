@@ -8,10 +8,10 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web;
 
 import cn.devezhao.commons.CodecUtils;
-import cn.devezhao.commons.ThrowableUtils;
 import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.api.ResultBody;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.setup.InstallState;
 import com.rebuild.utils.AppUtils;
 import org.apache.commons.lang.StringUtils;
@@ -24,31 +24,33 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * Controller 请求拦截
+ * 请求拦截
  *
  * @author Zhao Fangfang
  * @since 1.0, 2013-6-24
  */
-public class RequestWatchHandler extends HandlerInterceptorAdapter implements InstallState {
+public class RebuildAuthHandler extends HandlerInterceptorAdapter implements InstallState {
 
-    private static final Log LOG = LogFactory.getLog(RequestWatchHandler.class);
+    private static final Log LOG = LogFactory.getLog(RebuildAuthHandler.class);
+
+    private static final String TIMEOUT_KEY = "ErrorHandler_TIMEOUT";
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
-                             Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         request.getSession(true);
 
         final String requestUrl = request.getRequestURI();
 
         // If server status is not passed
-        if (!RebuildApplication.serversReady()) {
+        if (!Application.serversReady()) {
             if (checkInstalled()) {
                 LOG.error("Server Unavailable : " + requestUrl);
-
                 if (!requestUrl.contains("/gw/server-status")) {
                     response.sendRedirect(AppUtils.getContextPath() + "/gw/server-status?s=" + CodecUtils.urlEncode(requestUrl));
                     return false;
                 }
+
             } else if (!requestUrl.contains("/setup/")) {
                 response.sendRedirect(AppUtils.getContextPath() + "/setup/install");
                 return false;
@@ -57,51 +59,23 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
         } else {
             // Last active
             if (!(isIgnoreActive(requestUrl) || ServletUtils.isAjaxRequest(request))) {
-                RebuildApplication.getSessionStore().storeLastActive(request);
+                Application.getSessionStore().storeLastActive(request);
             }
         }
 
-        boolean chain = super.preHandle(request, response, handler);
-        if (chain) {
-            return verfiyPass(request, response);
-        }
-        return false;
+        request.setAttribute(TIMEOUT_KEY, System.currentTimeMillis());
+
+        return verfiyPass(request, response);
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request,
-                                HttpServletResponse response, Object handler, Exception exception)
-            throws Exception {
-        super.afterCompletion(request, response, handler, exception);
-
-        final ID caller = RebuildApplication.serversReady() ? RebuildApplication.getSessionStore().get(true) : null;
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        ID caller = Application.serversReady() ? Application.getSessionStore().get(true) : null;
         if (caller != null) {
-            RebuildApplication.getSessionStore().clean();
+            Application.getSessionStore().clean();
         }
 
-        logProgressTime(request);
-
-        if (exception != null) {
-            Throwable rootCause = ThrowableUtils.getRootCause(exception);
-            StringBuffer sb = new StringBuffer()
-                    .append("\n++ EXECUTE REQUEST ERROR(s) TRACE +++++++++++++++++++++++++++++++++++++++++++++")
-                    .append("\nUser      : ").append(caller == null ? "-" : caller)
-                    .append("\nHandler   : ").append(request.getRequestURI()).append(" [ ").append(handler).append(" ]")
-                    .append("\nIP        : ").append(ServletUtils.getRemoteAddr(request))
-                    .append("\nReferer   : ").append(StringUtils.defaultIfEmpty(ServletUtils.getReferer(request), "-"))
-                    .append("\nUserAgent : ").append(StringUtils.defaultIfEmpty(request.getHeader("user-agent"), "-"))
-                    .append("\nCause     : ").append(rootCause.getClass().getName())
-                    .append("\nMessage   : ").append(StringUtils.defaultIfBlank(rootCause.getLocalizedMessage(), "-"));
-            LOG.error(sb, rootCause);
-        }
-    }
-
-    /**
-     * 打印处理时间
-     *
-     * @param request
-     */
-    private void logProgressTime(HttpServletRequest request) {
+        // 打印处理时间
         Long startTime = (Long) request.getAttribute(TIMEOUT_KEY);
         startTime = System.currentTimeMillis() - startTime;
         if (startTime > 500) {
@@ -110,13 +84,12 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
             if (qstr != null) {
                 url += '?' + qstr;
             }
-            LOG.warn("Method handle time " + startTime + " ms. Request URL [ " + url + " ] from [ " + StringUtils.defaultIfEmpty(ServletUtils.getReferer(request), "-") + " ]");
+            LOG.warn("Method handle time " + startTime + " ms. Request URL [ " + url + " ] from [ "
+                    + StringUtils.defaultIfEmpty(ServletUtils.getReferer(request), "-") + " ]");
         }
     }
 
     // --
-
-    private static final String TIMEOUT_KEY = "ErrorHandler_TIMEOUT";
 
     /**
      * 用户验证
@@ -127,8 +100,6 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
      * @throws IOException
      */
     public static boolean verfiyPass(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        request.setAttribute(TIMEOUT_KEY, System.currentTimeMillis());
-
         String requestUrl = request.getRequestURI();
         String qstr = request.getQueryString();
         if (StringUtils.isNotBlank(qstr)) {
@@ -141,25 +112,25 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
         }
 
         if (user != null) {
-            RebuildApplication.getSessionStore().set(user);
+            Application.getSessionStore().set(user);
 
             // 管理后台访问
             if (requestUrl.contains("/admin/") && !AppUtils.isAdminVerified(request)) {
                 if (ServletUtils.isAjaxRequest(request)) {
-                    ServletUtils.writeJson(response, AppUtils.formatControllerMessage(403, "请验证管理员访问权限"));
+                    ServletUtils.writeJson(response, ResultBody.error("请验证管理员访问权限", 403).toString());
                 } else {
                     response.sendRedirect(AppUtils.getContextPath() + "/user/admin-entry?nexturl=" + CodecUtils.urlEncode(requestUrl));
                 }
                 return false;
             }
 
-        } else if (!inIgnoreRes(requestUrl)) {
+        } else if (!isIgnoreAuth(requestUrl)) {
             LOG.warn("Unauthorized access [ " + requestUrl + " ] from "
                     + StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "<unknow>")
                     + " via " + ServletUtils.getRemoteAddr(request));
 
             if (ServletUtils.isAjaxRequest(request)) {
-                ServletUtils.writeJson(response, AppUtils.formatControllerMessage(403, "未授权访问"));
+                ServletUtils.writeJson(response, ResultBody.error("未授权访问", 403).toString());
             } else {
                 response.sendRedirect(AppUtils.getContextPath() + "/user/login?nexturl=" + CodecUtils.urlEncode(requestUrl));
             }
@@ -172,22 +143,22 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
     /**
      * 是否忽略用户验证
      *
-     * @param reqUrl
+     * @param requestUrl
      * @return
      */
-    private static boolean inIgnoreRes(String reqUrl) {
-        if (reqUrl.contains("/user/") && !reqUrl.contains("/user/admin")) {
+    static boolean isIgnoreAuth(String requestUrl) {
+        if (requestUrl.contains("/user/") && !requestUrl.contains("/user/admin")) {
             return true;
         }
 
-        reqUrl = reqUrl.replaceFirst(AppUtils.getContextPath(), "");
-        return reqUrl.startsWith("/gw/") || reqUrl.startsWith("/assets/") || reqUrl.startsWith("/error/")
-                || reqUrl.startsWith("/t/") || reqUrl.startsWith("/s/") || reqUrl.startsWith("/public/")
-                || reqUrl.startsWith("/setup/") || reqUrl.startsWith("/language/")
-                || reqUrl.startsWith("/commons/announcements")
-                || reqUrl.startsWith("/commons/url-safe")
-                || reqUrl.startsWith("/filex/access/")
-                || reqUrl.startsWith("/commons/barcode/render");
+        requestUrl = requestUrl.replaceFirst(AppUtils.getContextPath(), "");
+        return requestUrl.startsWith("/gw/") || requestUrl.startsWith("/assets/") || requestUrl.startsWith("/error/")
+                || requestUrl.startsWith("/t/") || requestUrl.startsWith("/s/") || requestUrl.startsWith("/public/")
+                || requestUrl.startsWith("/setup/") || requestUrl.startsWith("/language/")
+                || requestUrl.startsWith("/commons/announcements")
+                || requestUrl.startsWith("/commons/url-safe")
+                || requestUrl.startsWith("/filex/access/")
+                || requestUrl.startsWith("/commons/barcode/render");
     }
 
     /**
@@ -196,7 +167,7 @@ public class RequestWatchHandler extends HandlerInterceptorAdapter implements In
      * @param reqUrl
      * @return
      */
-    private static boolean isIgnoreActive(String reqUrl) {
+    static boolean isIgnoreActive(String reqUrl) {
         return reqUrl.contains("/language/") || reqUrl.contains("/user-avatar");
     }
 }

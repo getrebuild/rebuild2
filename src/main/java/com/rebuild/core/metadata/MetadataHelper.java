@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.dialect.FieldType;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.metadata.BaseMeta;
 import cn.devezhao.persist4j.metadata.MetadataException;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +38,7 @@ public class MetadataHelper {
      * @return
      */
     public static DynamicMetadataFactory getMetadataFactory() {
-        return (DynamicMetadataFactory) RebuildApplication.getPersistManagerFactory().getMetadataFactory();
+        return (DynamicMetadataFactory) Application.getPersistManagerFactory().getMetadataFactory();
     }
 
     /**

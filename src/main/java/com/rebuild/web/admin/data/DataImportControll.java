@@ -15,7 +15,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.task.TaskExecutors;
 import com.rebuild.core.metadata.EntityHelper;
@@ -87,8 +87,8 @@ public class DataImportControll extends BaseController {
         String entity = getParameterNotNull(request, "entity");
 
         Entity entityMeta = MetadataHelper.getEntity(entity);
-        boolean canCreated = RebuildApplication.getPrivilegesManager().allowCreate(user, entityMeta.getEntityCode());
-        boolean canUpdated = RebuildApplication.getPrivilegesManager().allowUpdate(user, entityMeta.getEntityCode());
+        boolean canCreated = Application.getPrivilegesManager().allowCreate(user, entityMeta.getEntityCode());
+        boolean canUpdated = Application.getPrivilegesManager().allowUpdate(user, entityMeta.getEntityCode());
 
         JSON ret = JSONUtils.toJSONObject(
                 new String[]{"canCreate", "canUpdate"}, new Object[]{canCreated, canUpdated});

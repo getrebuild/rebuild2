@@ -11,7 +11,7 @@ import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -57,7 +57,7 @@ public class ApprovalStepService extends BaseService {
      * @param nextApprovers
      */
     public void txSubmit(Record recordOfMain, Set<ID> cc, Set<ID> nextApprovers) {
-        final ID submitter = RebuildApplication.getCurrentUser();
+        final ID submitter = Application.getCurrentUser();
         final ID recordId = recordOfMain.getPrimary();
         final ID approvalId = recordOfMain.getID(EntityHelper.ApprovalId);
 
@@ -79,20 +79,20 @@ public class ApprovalStepService extends BaseService {
             Record clone = step.clone();
             clone.setID("approver", a);
             clone = super.create(clone);
-            RebuildApplication.getNotifications().send(MessageBuilder.createApproval(submitter, a, approvalMsg, clone.getPrimary()));
+            Application.getNotifications().send(MessageBuilder.createApproval(submitter, a, approvalMsg, clone.getPrimary()));
         }
 
         // 抄送人
         if (cc != null && !cc.isEmpty()) {
             String ccMsg = String.format("用户 @%s 提交了一条%s审批，请知晓 @%s", submitter, entityLabel, recordId);
             for (ID c : cc) {
-                RebuildApplication.getNotifications().send(MessageBuilder.createApproval(c, ccMsg));
+                Application.getNotifications().send(MessageBuilder.createApproval(c, ccMsg));
             }
         }
 
         // see #getSubmitter
         String ckey = "ApprovalSubmitter" + recordId + approvalId;
-        RebuildApplication.getCommonsCache().evict(ckey);
+        Application.getCommonsCache().evict(ckey);
     }
 
     /**
@@ -109,14 +109,14 @@ public class ApprovalStepService extends BaseService {
         if (addedData != null) {
             ADDED_MODE.set(true);
             try {
-                RebuildApplication.getService(addedData.getEntity().getEntityCode()).update(addedData);
+                Application.getService(addedData.getEntity().getEntityCode()).update(addedData);
             } finally {
                 ADDED_MODE.remove();
             }
 
             // 检查数据修改后的步骤对不对 GitHub#208
             if (checkUseGroup != null) {
-                Object[] stepObject = RebuildApplication.createQueryNoFilter(
+                Object[] stepObject = Application.createQueryNoFilter(
                         "select recordId,approvalId from RobotApprovalStep where stepId = ?")
                         .setParameter(1, stepRecord.getPrimary())
                         .unique();
@@ -132,7 +132,7 @@ public class ApprovalStepService extends BaseService {
         super.update(stepRecord);
         final ID stepRecordId = stepRecord.getPrimary();
 
-        Object[] stepObject = RebuildApplication.createQueryNoFilter(
+        Object[] stepObject = Application.createQueryNoFilter(
                 "select recordId,approvalId,node from RobotApprovalStep where stepId = ?")
                 .setParameter(1, stepRecordId)
                 .unique();
@@ -140,7 +140,7 @@ public class ApprovalStepService extends BaseService {
         final ID recordId = (ID) stepObject[0];
         final ID approvalId = (ID) stepObject[1];
         final String currentNode = (String) stepObject[2];
-        final ID approver = RebuildApplication.getCurrentUser();
+        final ID approver = Application.getCurrentUser();
 
         String entityLabel = EasyMeta.getLabel(MetadataHelper.getEntity(recordId.getEntityCode()));
         ApprovalState state = (ApprovalState) ApprovalState.valueOf(stepRecord.getInt("state"));
@@ -150,7 +150,7 @@ public class ApprovalStepService extends BaseService {
             String ccMsg = String.format("用户 @%s 提交的%s审批由 @%s 已%s，请知晓 @%s",
                     submitter, entityLabel, approver, state.getName(), recordId);
             for (ID c : cc) {
-                RebuildApplication.getNotifications().send(MessageBuilder.createApproval(c, ccMsg));
+                Application.getNotifications().send(MessageBuilder.createApproval(c, ccMsg));
             }
         }
 
@@ -165,7 +165,7 @@ public class ApprovalStepService extends BaseService {
             super.update(recordOfMain);
 
             String rejectedMsg = String.format("@%s 驳回了你的%s审批 @%s", approver, entityLabel, recordId);
-            RebuildApplication.getNotifications().send(MessageBuilder.createApproval(submitter, rejectedMsg));
+            Application.getNotifications().send(MessageBuilder.createApproval(submitter, rejectedMsg));
             return;
         }
 
@@ -180,7 +180,7 @@ public class ApprovalStepService extends BaseService {
         }
         // 会签。检查是否都签了
         else {
-            Object[][] currentNodeApprovers = RebuildApplication.createQueryNoFilter(
+            Object[][] currentNodeApprovers = Application.createQueryNoFilter(
                     "select state,isWaiting,stepId from RobotApprovalStep where recordId = ? and approvalId = ? and node = ? and isCanceled = 'F'")
                     .setParameter(1, recordId)
                     .setParameter(2, approvalId)
@@ -195,7 +195,7 @@ public class ApprovalStepService extends BaseService {
 
             // 更新下一步审批人可以开始了（若有）
             if (goNextNode && nextNode != null) {
-                Object[][] nextNodeApprovers = RebuildApplication.createQueryNoFilter(
+                Object[][] nextNodeApprovers = Application.createQueryNoFilter(
                         "select stepId,approver from RobotApprovalStep where recordId = ? and approvalId = ? and node = ? and isWaiting = 'T'")
                         .setParameter(1, recordId)
                         .setParameter(2, approvalId)
@@ -205,7 +205,7 @@ public class ApprovalStepService extends BaseService {
                     Record r = EntityHelper.forUpdate((ID) o[0], approver);
                     r.setBoolean("isWaiting", false);
                     super.update(r);
-                    RebuildApplication.getNotifications().send(MessageBuilder.createApproval(submitter, (ID) o[1], approvalMsg, r.getPrimary()));
+                    Application.getNotifications().send(MessageBuilder.createApproval(submitter, (ID) o[1], approvalMsg, r.getPrimary()));
                 }
             }
         }
@@ -218,7 +218,7 @@ public class ApprovalStepService extends BaseService {
 
         // 进入下一步
         if (goNextNode) {
-            Record recordOfMain = EntityHelper.forUpdate(recordId, RebuildApplication.getCurrentUser(), false);
+            Record recordOfMain = EntityHelper.forUpdate(recordId, Application.getCurrentUser(), false);
             recordOfMain.setString(EntityHelper.ApprovalStepNode, nextNode);
             super.update(recordOfMain);
         }
@@ -230,7 +230,7 @@ public class ApprovalStepService extends BaseService {
 
                 // 非会签通知审批
                 if (goNextNode && created != null) {
-                    RebuildApplication.getNotifications().send(MessageBuilder.createApproval(submitter, a, approvalMsg, created));
+                    Application.getNotifications().send(MessageBuilder.createApproval(submitter, a, approvalMsg, created));
                 }
             }
         }
@@ -245,7 +245,7 @@ public class ApprovalStepService extends BaseService {
      * @param isRevoke    是否撤销，这是针对审批完成的
      */
     public void txCancel(ID recordId, ID approvalId, String currentNode, boolean isRevoke) {
-        final ID opUser = RebuildApplication.getCurrentUser();
+        final ID opUser = Application.getCurrentUser();
         final ApprovalState useState = isRevoke ? ApprovalState.REVOKED : ApprovalState.CANCELED;
 
         Record step = EntityHelper.forNew(EntityHelper.RobotApprovalStep, opUser);
@@ -278,7 +278,7 @@ public class ApprovalStepService extends BaseService {
      * @return
      */
     private ID createStepIfNeed(ID recordId, ID approvalId, String node, ID approver, boolean isWaiting, String prevNode) {
-        Object[] hadApprover = RebuildApplication.createQueryNoFilter(
+        Object[] hadApprover = Application.createQueryNoFilter(
                 "select stepId from RobotApprovalStep where recordId = ? and approvalId = ? and node = ? and approver = ? and isCanceled = 'F'")
                 .setParameter(1, recordId)
                 .setParameter(2, approvalId)
@@ -289,7 +289,7 @@ public class ApprovalStepService extends BaseService {
             return null;
         }
 
-        Record step = EntityHelper.forNew(EntityHelper.RobotApprovalStep, RebuildApplication.getCurrentUser());
+        Record step = EntityHelper.forNew(EntityHelper.RobotApprovalStep, Application.getCurrentUser());
         step.setID("recordId", recordId);
         step.setID("approvalId", approvalId);
         step.setString("node", node);
@@ -325,7 +325,7 @@ public class ApprovalStepService extends BaseService {
             sql += " and state = " + ApprovalState.DRAFT.getState();
         }
 
-        Object[][] cancelled = RebuildApplication.createQueryNoFilter(sql)
+        Object[][] cancelled = Application.createQueryNoFilter(sql)
                 .setParameter(1, recordId)
                 .array();
 
@@ -333,7 +333,7 @@ public class ApprovalStepService extends BaseService {
             if (excludeStep != null && excludeStep.equals(o[0])) {
                 continue;
             }
-            Record step = EntityHelper.forUpdate((ID) o[0], RebuildApplication.getCurrentUser());
+            Record step = EntityHelper.forUpdate((ID) o[0], Application.getCurrentUser());
             step.setBoolean("isCanceled", true);
             super.update(step);
         }
@@ -348,20 +348,20 @@ public class ApprovalStepService extends BaseService {
      */
     public ID getSubmitter(ID recordId, ID approvalId) {
         final String ckey = "ApprovalSubmitter" + recordId + approvalId;
-        ID submitter = (ID) RebuildApplication.getCommonsCache().getx(ckey);
+        ID submitter = (ID) Application.getCommonsCache().getx(ckey);
         if (submitter != null) {
             return submitter;
         }
 
         // 第一个创建步骤的人为提交人
-        Object[] firstStep = RebuildApplication.createQueryNoFilter(
+        Object[] firstStep = Application.createQueryNoFilter(
                 "select createdBy from RobotApprovalStep where recordId = ? and approvalId = ? and isCanceled = 'F' order by createdOn asc")
                 .setParameter(1, recordId)
                 .setParameter(2, approvalId)
                 .unique();
 
         submitter = (ID) firstStep[0];
-        RebuildApplication.getCommonsCache().putx(ckey, submitter);
+        Application.getCommonsCache().putx(ckey, submitter);
         return submitter;
     }
 

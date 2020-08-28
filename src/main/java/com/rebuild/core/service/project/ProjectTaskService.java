@@ -12,7 +12,7 @@ import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.notification.Message;
@@ -42,7 +42,7 @@ public class ProjectTaskService extends BaseTaskService {
 
     @Override
     public Record create(Record record) {
-        final ID user = RebuildApplication.getCurrentUser();
+        final ID user = Application.getCurrentUser();
         checkInMembers(user, record.getID("projectId"));
 
         record.setLong("taskNumber", getNextTaskNumber(record.getID("projectId")));
@@ -59,7 +59,7 @@ public class ProjectTaskService extends BaseTaskService {
 
     @Override
     public Record update(Record record) {
-        final ID user = RebuildApplication.getCurrentUser();
+        final ID user = Application.getCurrentUser();
         checkInMembers(user, record.getPrimary());
 
         // 自动完成
@@ -95,7 +95,7 @@ public class ProjectTaskService extends BaseTaskService {
 
     @Override
     public int delete(ID taskId) {
-        final ID user = RebuildApplication.getCurrentUser();
+        final ID user = Application.getCurrentUser();
         if (!ProjectHelper.isManageable(taskId, user)) {
             throw new PrivilegesException("不能删除他人任务");
         }
@@ -111,7 +111,7 @@ public class ProjectTaskService extends BaseTaskService {
      */
     synchronized
     private long getNextTaskNumber(ID projectId) {
-        Object[] max = RebuildApplication.createQueryNoFilter(
+        Object[] max = Application.createQueryNoFilter(
                 "select max(taskNumber) from ProjectTask where projectId = ?")
                 .setParameter(1, projectId)
                 .unique();
@@ -124,7 +124,7 @@ public class ProjectTaskService extends BaseTaskService {
      */
     synchronized
     private int getNextSeqViaMidValue(ID projectPlanId) {
-        Object[] seqMax = RebuildApplication.createQueryNoFilter(
+        Object[] seqMax = Application.createQueryNoFilter(
                 "select max(seq) from ProjectTask where projectPlanId = ?")
                 .setParameter(1, projectPlanId)
                 .unique();
@@ -138,13 +138,13 @@ public class ProjectTaskService extends BaseTaskService {
      */
     synchronized
     private int getSeqInStatus(ID taskId, boolean desc) {
-        Object[] taskStatus = RebuildApplication.createQuery(
+        Object[] taskStatus = Application.createQuery(
                 "select status,projectPlanId from ProjectTask where taskId = ?")
                 .setParameter(1, taskId)
                 .unique();
         if (taskStatus == null) return 1;
 
-        Object[] seq = RebuildApplication.createQuery(
+        Object[] seq = Application.createQuery(
                 "select " + (desc ? "max" : "min") + "(seq) from ProjectTask where status = ? and projectPlanId = ?")
                 .setParameter(1, taskStatus[0])
                 .setParameter(2, taskStatus[1])
@@ -179,9 +179,9 @@ public class ProjectTaskService extends BaseTaskService {
      * @param taskId
      */
     private void sendNotification(ID taskId) {
-        Object[] task = RebuildApplication.getQueryFactory().uniqueNoFilter(taskId, "executor", "taskName");
+        Object[] task = Application.getQueryFactory().uniqueNoFilter(taskId, "executor", "taskName");
         String msg = "有一个新任务分派给你 \n> " + task[1];
-        RebuildApplication.getNotifications().send(
+        Application.getNotifications().send(
                 MessageBuilder.createMessage((ID) task[0], msg, Message.TYPE_PROJECT, taskId));
     }
 }

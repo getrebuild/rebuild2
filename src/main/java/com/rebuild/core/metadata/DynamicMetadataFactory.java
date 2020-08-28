@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.metadata.impl.ConfigurationMetadataFactory;
 import cn.devezhao.persist4j.util.XmlHelper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +51,7 @@ public class DynamicMetadataFactory extends ConfigurationMetadataFactory {
     private void appendConfig4Db(Document config) {
         final Element rootElement = config.getRootElement();
 
-        Object[][] customEntities = RebuildApplication.createQueryNoFilter(
+        Object[][] customEntities = Application.createQueryNoFilter(
                 "select typeCode,entityName,physicalName,entityLabel,entityId,comments,icon,nameField,masterEntity from MetaEntity")
                 .array();
         for (Object[] c : customEntities) {
@@ -75,7 +75,7 @@ public class DynamicMetadataFactory extends ConfigurationMetadataFactory {
             entity.addAttribute("extra-attrs", extraAttrs.toJSONString());
         }
 
-        Object[][] customFields = RebuildApplication.createQueryNoFilter(
+        Object[][] customFields = Application.createQueryNoFilter(
                 "select belongEntity,fieldName,physicalName,fieldLabel,displayType,nullable,creatable,updatable,"
                         + "maxLength,defaultValue,refEntity,cascade,fieldId,comments,extConfig,repeatable from MetaField")
                 .array();

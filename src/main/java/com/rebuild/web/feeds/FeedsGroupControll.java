@@ -11,7 +11,7 @@ import cn.devezhao.bizz.security.member.Team;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.utils.JSONUtils;
@@ -40,7 +40,7 @@ public class FeedsGroupControll extends BaseController {
     public void groupList(HttpServletRequest request, HttpServletResponse response) throws IOException {
         final ID user = getRequestUser(request);
         final String query = getParameter(request, "q");
-        Set<Team> teams = RebuildApplication.getUserStore().getUser(user).getOwningTeams();
+        Set<Team> teams = Application.getUserStore().getUser(user).getOwningTeams();
 
         JSONArray ret = new JSONArray();
         for (Team t : teams) {

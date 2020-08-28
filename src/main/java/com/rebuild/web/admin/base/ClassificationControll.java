@@ -9,7 +9,7 @@ package com.rebuild.web.admin.base;
 
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationService;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.utils.JSONUtils;
@@ -43,7 +43,7 @@ public class ClassificationControll extends BaseController {
     @RequestMapping("classification/{id}")
     public ModelAndView page(@PathVariable String id,
                              HttpServletResponse resp) throws IOException {
-        Object[] data = RebuildApplication.createQuery(
+        Object[] data = Application.createQuery(
                 "select name,openLevel from Classification where dataId = ?")
                 .setParameter(1, ID.valueOf(id))
                 .unique();
@@ -63,7 +63,7 @@ public class ClassificationControll extends BaseController {
 
     @RequestMapping("classification/list")
     public void list(HttpServletResponse resp) throws IOException {
-        Object[][] array = RebuildApplication.createQuery(
+        Object[][] array = Application.createQuery(
                 "select dataId,name,isDisabled,openLevel from Classification order by name")
                 .array();
         for (Object[] o : array) {
@@ -78,7 +78,7 @@ public class ClassificationControll extends BaseController {
     @RequestMapping("classification/info")
     public void info(HttpServletRequest request, HttpServletResponse resp) throws IOException {
         ID dataId = getIdParameterNotNull(request, "id");
-        Object[] data = RebuildApplication.createQuery(
+        Object[] data = Application.createQuery(
                 "select name from Classification where dataId = ?")
                 .setParameter(1, dataId)
                 .unique();
@@ -125,14 +125,14 @@ public class ClassificationControll extends BaseController {
         if (StringUtils.isNotBlank(hide)) {
             item.setBoolean("isHide", BooleanUtils.toBooleanObject(hide));
         }
-        item = RebuildApplication.getBean(ClassificationService.class).createOrUpdateItem(item);
+        item = Application.getBean(ClassificationService.class).createOrUpdateItem(item);
         writeSuccess(response, item.getPrimary());
     }
 
     @RequestMapping("classification/delete-data-item")
     public void deleteDataItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID itemId = getIdParameter(request, "item_id");
-        RebuildApplication.getBean(ClassificationService.class).deleteItem(itemId);
+        Application.getBean(ClassificationService.class).deleteItem(itemId);
         writeSuccess(response);
     }
 
@@ -143,13 +143,13 @@ public class ClassificationControll extends BaseController {
 
         Object[][] child;
         if (parent != null) {
-            child = RebuildApplication.createQuery(
+            child = Application.createQuery(
                     "select itemId,name,code,isHide from ClassificationData where dataId = ? and parent = ? order by code,name")
                     .setParameter(1, dataId)
                     .setParameter(2, parent)
                     .array();
         } else if (dataId != null) {
-            child = RebuildApplication.createQuery(
+            child = Application.createQuery(
                     "select itemId,name,code,isHide from ClassificationData where dataId = ? and parent is null order by code,name")
                     .setParameter(1, dataId)
                     .array();

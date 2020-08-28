@@ -13,13 +13,13 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.License;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.web.BaseController;
-import com.rebuild.web.RequestWatchHandler;
+import com.rebuild.web.RebuildAuthHandler;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,13 +46,13 @@ public class AdminEntryController extends BaseController {
     @RequestMapping("/user/admin-entry")
     public ModelAndView pageAdminEntry(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        boolean pass = RequestWatchHandler.verfiyPass(request, response);
+        boolean pass = RebuildAuthHandler.verfiyPass(request, response);
         if (!pass) {
             return null;
         }
 
         ID adminId = getRequestUser(request);
-        User admin = RebuildApplication.getUserStore().getUser(adminId);
+        User admin = Application.getUserStore().getUser(adminId);
         if (admin.isAdmin()) {
             return createModelAndView("/admin/admin-entry.jsp");
         } else {
@@ -67,7 +67,7 @@ public class AdminEntryController extends BaseController {
         ID adminId = getRequestUser(request);
         String passwd = getParameterNotNull(request, "passwd");
 
-        Object[] foundUser = RebuildApplication.createQueryNoFilter(
+        Object[] foundUser = Application.createQueryNoFilter(
                 "select password from User where userId = ?")
                 .setParameter(1, adminId)
                 .unique();
@@ -98,7 +98,7 @@ public class AdminEntryController extends BaseController {
         List<String> dangers = new ArrayList<>();
 
         JSONObject ret = License.siteApi("api/authority/check-build", true);
-        if (ret != null && ret.getIntValue("build") > RebuildApplication.BUILD) {
+        if (ret != null && ret.getIntValue("build") > Application.BUILD) {
             String buildUpdate = String.format(
                     "有新版的 REBUILD (%s) 更新可用 <a target='_blank' href='%s' class='link'>(查看详情)</a>",
                     ret.getString("version"), ret.getString("releaseUrl"));

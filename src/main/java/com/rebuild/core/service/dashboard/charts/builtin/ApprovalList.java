@@ -12,7 +12,7 @@ import cn.devezhao.momentjava.Moment;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -56,7 +56,7 @@ public class ApprovalList extends ChartData implements BuiltinChart {
         final String baseWhere = "where isCanceled = 'F' and isWaiting = 'F' and approver = ?" +
                 " and approvalId <> '' and recordId <> '' and ";
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select createdBy,modifiedOn,recordId,approvalId from RobotApprovalStep " +
                         baseWhere + " state = ? order by modifiedOn desc")
                 .setParameter(1, this.getUser())
@@ -96,7 +96,7 @@ public class ApprovalList extends ChartData implements BuiltinChart {
             });
         }
 
-        Object[][] stats = RebuildApplication.createQueryNoFilter(
+        Object[][] stats = Application.createQueryNoFilter(
                 "select state,count(state) from RobotApprovalStep " + baseWhere + " state <> ? group by state")
                 .setParameter(1, this.getUser())
                 .setParameter(2, ApprovalState.CANCELED.getState())

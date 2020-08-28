@@ -15,7 +15,7 @@ import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.privileges.bizz.User;
@@ -244,7 +244,7 @@ public class UserStore {
      * @param userId
      */
     public void refreshUser(ID userId) {
-        Object[] o = RebuildApplication.createQueryNoFilter("select " + USER_FS + " from User where userId = ?")
+        Object[] o = Application.createQueryNoFilter("select " + USER_FS + " from User where userId = ?")
                 .setParameter(1, userId)
                 .unique();
         final com.rebuild.core.privileges.bizz.User newUser = new com.rebuild.core.privileges.bizz.User(

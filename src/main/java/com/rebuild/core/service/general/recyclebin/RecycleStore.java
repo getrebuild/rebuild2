@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserService;
@@ -36,7 +36,7 @@ public class RecycleStore {
      * @param user
      */
     public RecycleStore(ID user) {
-        this.user = user == null ? RebuildApplication.getCurrentUser() : user;
+        this.user = user == null ? Application.getCurrentUser() : user;
         this.data = new LinkedList<>();
     }
 
@@ -96,7 +96,7 @@ public class RecycleStore {
             if (o[2] != null) {
                 clone.setID("channelWith", (ID) o[2]);
             }
-            RebuildApplication.getCommonsService().create(clone);
+            Application.getCommonsService().create(clone);
             affected++;
         }
 

@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
@@ -106,7 +106,7 @@ public class FieldAggregation implements TriggerAction {
 
         // 如果当前用户对目标记录无修改权限
         if (!allowNoPermissionUpdate
-                && !RebuildApplication.getPrivilegesManager().allow(operatingContext.getOperator(), targetRecordId, BizzPermission.UPDATE)) {
+                && !Application.getPrivilegesManager().allow(operatingContext.getOperator(), targetRecordId, BizzPermission.UPDATE)) {
             LOG.warn("No privileges to update record of target: " + this.targetRecordId);
             return;
         }
@@ -130,9 +130,9 @@ public class FieldAggregation implements TriggerAction {
             // 会关联触发下一触发器（如有）
             TRIGGER_CHAIN_DEPTH.set(depth + 1);
             if (MetadataHelper.hasPrivilegesField(targetEntity)) {
-                RebuildApplication.getEntityService(targetEntity.getEntityCode()).update(targetRecord);
+                Application.getEntityService(targetEntity.getEntityCode()).update(targetRecord);
             } else {
-                RebuildApplication.getService(targetEntity.getEntityCode()).update(targetRecord);
+                Application.getService(targetEntity.getEntityCode()).update(targetRecord);
             }
         }
     }
@@ -191,7 +191,7 @@ public class FieldAggregation implements TriggerAction {
             }
 
             // 找到主记录
-            Object[] o = RebuildApplication.getQueryFactory().uniqueNoFilter(
+            Object[] o = Application.getQueryFactory().uniqueNoFilter(
                     context.getSourceRecord(), followSourceField, followSourceField + "." + EntityHelper.CreatedBy);
             // o[1] 为空说明记录不存在
             if (o != null && o[0] != null && o[1] != null) {

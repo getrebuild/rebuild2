@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import org.apache.commons.lang.StringUtils;
 
@@ -52,7 +52,7 @@ public class RecycleBean implements Serializable {
                 .append(entity.getPrimaryField().getName())
                 .append(" = ?")
                 .toString();
-        Record queryed = RebuildApplication.createQueryNoFilter(sql).setParameter(1, this.recordId).record();
+        Record queryed = Application.createQueryNoFilter(sql).setParameter(1, this.recordId).record();
         JSONObject s = (JSONObject) queryed.serialize();
 
         Entity slaveEntity = entity.getSlaveEntity();
@@ -65,7 +65,7 @@ public class RecycleBean implements Serializable {
                 .append(MetadataHelper.getSlaveToMasterField(slaveEntity).getName())
                 .append(" = ?")
                 .toString();
-        List<Record> slaveQueryed = RebuildApplication.createQueryNoFilter(slaveSql).setParameter(1, this.recordId).list();
+        List<Record> slaveQueryed = Application.createQueryNoFilter(slaveSql).setParameter(1, this.recordId).list();
         JSONArray slaveList = new JSONArray();
         for (Record r : slaveQueryed) {
             slaveList.add(r.serialize());

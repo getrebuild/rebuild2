@@ -11,7 +11,7 @@ import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.feeds.FeedsHelper;
 import com.rebuild.core.service.feeds.FeedsScope;
@@ -57,7 +57,7 @@ public class AnnouncementControll extends BaseController {
             return;
         }
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select content,contentMore,scope,createdBy,createdOn,feedsId from Feeds where type = 3")
                 .array();
 
@@ -92,8 +92,8 @@ public class AnnouncementControll extends BaseController {
                 allow = true;
             } else if (ID.isId(scope) && user != null) {
                 ID teamId = ID.valueOf(scope);
-                if (RebuildApplication.getUserStore().existsAny(teamId)) {
-                    allow = RebuildApplication.getUserStore().getTeam(teamId).isMember(user);
+                if (Application.getUserStore().existsAny(teamId)) {
+                    allow = Application.getUserStore().getTeam(teamId).isMember(user);
                 }
             }
 

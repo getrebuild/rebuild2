@@ -10,7 +10,7 @@ package com.rebuild.core.service.general;
 import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.notification.NotificationObserver;
 import com.rebuild.core.service.notification.NotificationOnce;
@@ -37,7 +37,7 @@ public class BulkShare extends BulkOperator {
         ID firstShared = null;
         NotificationOnce.begin();
         for (ID id : records) {
-            if (RebuildApplication.getPrivilegesManager().allowShare(context.getOpUser(), id)) {
+            if (Application.getPrivilegesManager().allowShare(context.getOpUser(), id)) {
                 int a = ges.share(id, context.getToUser(), context.getCascades());
                 if (a > 0) {
                     this.addSucceeded();

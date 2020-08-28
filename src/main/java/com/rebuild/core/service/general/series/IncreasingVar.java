@@ -10,7 +10,7 @@ package com.rebuild.core.service.general.series;
 import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.commons.ObjectUtils;
 import cn.devezhao.persist4j.Field;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.KVStorage;
 import org.apache.commons.lang.StringUtils;
 
@@ -119,7 +119,7 @@ public class IncreasingVar extends SeriesVar {
         }
 
         String sql = String.format("select count(%s) from %s where %s", field.getName(), field.getOwnEntity().getName(), dateLimit);
-        Object[] count = RebuildApplication.createQueryNoFilter(sql).unique();
+        Object[] count = Application.createQueryNoFilter(sql).unique();
         return ObjectUtils.toInt(count[0]);
     }
 }

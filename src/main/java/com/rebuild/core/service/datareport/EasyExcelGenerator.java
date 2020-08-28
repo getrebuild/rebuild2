@@ -14,7 +14,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.fill.FillConfig;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.SetUser;
 import com.rebuild.core.helper.general.FieldValueWrapper;
@@ -141,7 +141,7 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
         if (!fieldsOfMaster.isEmpty()) {
             String sql = String.format(baseSql,
                     StringUtils.join(fieldsOfMaster, ","), entity.getName(), entity.getPrimaryField().getName());
-            Record record = RebuildApplication.createQuery(sql, this.getUser())
+            Record record = Application.createQuery(sql, this.getUser())
                     .setParameter(1, this.recordId)
                     .record();
             Assert.notNull(record, "No record found : " + this.recordId);
@@ -160,7 +160,7 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
                 StringUtils.join(fieldsOfSlave, ","),
                 entity.getSlaveEntity().getName(),
                 MetadataHelper.getSlaveToMasterField(entity.getSlaveEntity()).getName());
-        List<Record> list = RebuildApplication.createQuery(sql, this.getUser())
+        List<Record> list = Application.createQuery(sql, this.getUser())
                 .setParameter(1, this.recordId)
                 .list();
 

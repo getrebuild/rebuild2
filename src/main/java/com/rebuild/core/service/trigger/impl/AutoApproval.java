@@ -9,7 +9,7 @@ package com.rebuild.core.service.trigger.impl;
 
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.approval.ApprovalStepService;
 import com.rebuild.core.service.general.OperatingContext;
@@ -49,7 +49,7 @@ public class AutoApproval implements TriggerAction {
         String useApprover = ((JSONObject) context.getActionContent()).getString("useApprover");
         String useApproval = ((JSONObject) context.getActionContent()).getString("useApproval");
 
-        RebuildApplication.getBean(ApprovalStepService.class).txAutoApproved(
+        Application.getBean(ApprovalStepService.class).txAutoApproved(
                 recordId,
                 ID.isId(useApprover) ? ID.valueOf(useApprover) : null,
                 ID.isId(useApproval) ? ID.valueOf(useApproval) : null);

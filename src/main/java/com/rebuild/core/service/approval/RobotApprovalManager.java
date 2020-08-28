@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.configuration.ConfigurationException;
 import com.rebuild.core.metadata.EntityHelper;
@@ -49,7 +49,7 @@ public class RobotApprovalManager implements ConfigManager {
         }
 
         if (record != null) {
-            Object[] o = RebuildApplication.getQueryFactory().unique(
+            Object[] o = Application.getQueryFactory().unique(
                     record, EntityHelper.ApprovalId, EntityHelper.ApprovalState);
             if (o != null && o[0] != null) {
                 return (ApprovalState) ApprovalState.valueOf((Integer) o[1]);
@@ -93,7 +93,7 @@ public class RobotApprovalManager implements ConfigManager {
             return new FlowDefinition[0];
         }
 
-        ID owning = RebuildApplication.getRecordOwningCache().getOwningUser(record);
+        ID owning = Application.getRecordOwningCache().getOwningUser(record);
         // 过滤可用的
         List<FlowDefinition> workable = new ArrayList<>();
         for (FlowDefinition def : defs) {
@@ -126,12 +126,12 @@ public class RobotApprovalManager implements ConfigManager {
      */
     public FlowDefinition[] getFlowDefinitions(Entity entity) {
         final String cKey = CKEY_PREFIX + entity.getName();
-        FlowDefinition[] defs = (FlowDefinition[]) RebuildApplication.getCommonsCache().getx(cKey);
+        FlowDefinition[] defs = (FlowDefinition[]) Application.getCommonsCache().getx(cKey);
         if (defs != null) {
             return defs;
         }
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select flowDefinition,isDisabled,name,configId,modifiedOn from RobotApprovalConfig where belongEntity = ?")
                 .setParameter(1, entity.getName())
                 .array();
@@ -147,13 +147,13 @@ public class RobotApprovalManager implements ConfigManager {
         }
 
         defs = list.toArray(new FlowDefinition[0]);
-        RebuildApplication.getCommonsCache().putx(cKey, defs);
+        Application.getCommonsCache().putx(cKey, defs);
         return defs;
     }
 
     @Override
     public void clean(Object entity) {
         final String cKey = CKEY_PREFIX + ((Entity) entity).getName();
-        RebuildApplication.getCommonsCache().evict(cKey);
+        Application.getCommonsCache().evict(cKey);
     }
 }

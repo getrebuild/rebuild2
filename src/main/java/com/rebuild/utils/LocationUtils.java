@@ -9,7 +9,7 @@ package com.rebuild.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.cache.CommonsCache;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -44,7 +44,7 @@ public class LocationUtils {
     public static JSON getLocation(String ip, boolean useCache) {
         JSONObject result;
         if (useCache) {
-            result = (JSONObject) RebuildApplication.getCommonsCache().getx("IPLocation2" + ip);
+            result = (JSONObject) Application.getCommonsCache().getx("IPLocation2" + ip);
             if (result != null) {
                 return result;
             }
@@ -84,7 +84,7 @@ public class LocationUtils {
             result.put("country", "N");
         }
 
-        RebuildApplication.getCommonsCache().putx("IPLocation2" + ip, result, CommonsCache.TS_WEEK);
+        Application.getCommonsCache().putx("IPLocation2" + ip, result, CommonsCache.TS_WEEK);
         return result;
     }
 

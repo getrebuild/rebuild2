@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.service.approval;
 
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -56,7 +56,7 @@ public class ApprovalStatus {
             return StringUtils.defaultIfBlank(lastComment, null);
         }
 
-        Object[] last = RebuildApplication.createQueryNoFilter(
+        Object[] last = Application.createQueryNoFilter(
                 "select remark from RobotApprovalStep where recordId = ? and node = ? order by modifiedOn desc")
                 .setParameter(1, this.recordId)
                 .setParameter(2, this.currentStepNode)

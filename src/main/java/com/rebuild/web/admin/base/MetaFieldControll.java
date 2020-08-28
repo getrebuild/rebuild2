@@ -16,7 +16,7 @@ import cn.devezhao.persist4j.dialect.Type;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.state.StateHelper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -174,9 +174,9 @@ public class MetaFieldControll extends BaseController {
         ID user = getRequestUser(request);
         JSON formJson = ServletUtils.getRequestJson(request);
         Record record = EntityHelper.parse((JSONObject) formJson, user);
-        RebuildApplication.getCommonsService().update(record);
+        Application.getCommonsService().update(record);
 
-        RebuildApplication.getMetadataFactory().refresh(false);
+        Application.getMetadataFactory().refresh(false);
         writeSuccess(response);
     }
 
@@ -185,7 +185,7 @@ public class MetaFieldControll extends BaseController {
         ID user = getRequestUser(request);
         ID fieldId = getIdParameterNotNull(request, "id");
 
-        Object[] fieldRecord = RebuildApplication.createQueryNoFilter(
+        Object[] fieldRecord = Application.createQueryNoFilter(
                 "select belongEntity,fieldName from MetaField where fieldId = ?")
                 .setParameter(1, fieldId)
                 .unique();

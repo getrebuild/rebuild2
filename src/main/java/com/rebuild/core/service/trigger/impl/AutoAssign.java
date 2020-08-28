@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.KVStorage;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -76,7 +76,7 @@ public class AutoAssign implements TriggerAction {
         final ID recordId = operatingContext.getAnyRecord().getPrimary();
 
         if (!allowNoPermissionAssign
-                && !RebuildApplication.getPrivilegesManager().allow(operatingContext.getOperator(), recordId, BizzPermission.ASSIGN)) {
+                && !Application.getPrivilegesManager().allow(operatingContext.getOperator(), recordId, BizzPermission.ASSIGN)) {
             LOG.warn("No privileges to assign record of target: " + recordId);
             return;
         }
@@ -133,7 +133,7 @@ public class AutoAssign implements TriggerAction {
         if (allowNoPermissionAssign) {
             PrivilegesGuardInterceptor.setNoPermissionPassOnce(recordId);
         }
-        RebuildApplication.getEntityService(context.getSourceEntity().getEntityCode()).assign(recordId, toUser, cascades);
+        Application.getEntityService(context.getSourceEntity().getEntityCode()).assign(recordId, toUser, cascades);
 
         // 当前分派人
         if (orderedAssign) {

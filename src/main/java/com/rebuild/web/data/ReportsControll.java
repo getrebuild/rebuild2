@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.FormsBuilder;
 import com.rebuild.core.helper.general.BatchOperatorQuery;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -100,7 +100,7 @@ public class ReportsControll extends BaseController {
     public void export(@PathVariable String entity,
                        HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
-        Assert.isTrue(RebuildApplication.getPrivilegesManager().allow(user, ZeroEntry.AllowDataExport), "没有权限");
+        Assert.isTrue(Application.getPrivilegesManager().allow(user, ZeroEntry.AllowDataExport), "没有权限");
 
         int dataRange = getIntParameter(request, "dr", BatchOperatorQuery.DR_PAGED);
         JSONObject queryData = (JSONObject) ServletUtils.getRequestJson(request);

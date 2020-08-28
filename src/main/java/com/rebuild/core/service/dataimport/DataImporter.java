@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.Query;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.task.HeavyTask;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.EntityRecordCreator;
@@ -69,7 +69,7 @@ public class DataImporter extends HeavyTask<Integer> {
             try {
                 Record record = checkoutRecord(row);
                 if (record != null) {
-                    record = RebuildApplication.getEntityService(rule.getToEntity().getEntityCode()).createOrUpdate(record);
+                    record = Application.getEntityService(rule.getToEntity().getEntityCode()).createOrUpdate(record);
                     this.addSucceeded();
                     eachLogs.put(firstCell.getRowNo(), record.getPrimary());
                 }
@@ -163,7 +163,7 @@ public class DataImporter extends HeavyTask<Integer> {
             sql.append(" and ").append(c).append(" = :").append(c);
         }
 
-        Query query = RebuildApplication.createQueryNoFilter(sql.toString());
+        Query query = Application.createQueryNoFilter(sql.toString());
         for (Map.Entry<String, Object> e : wheres.entrySet()) {
             query.setParameter(e.getKey(), e.getValue());
         }

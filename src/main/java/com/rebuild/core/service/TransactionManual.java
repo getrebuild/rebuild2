@@ -7,7 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.service;
 
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
@@ -29,7 +29,7 @@ public class TransactionManual {
      * @return
      */
     public static DataSourceTransactionManager getTxManager() {
-        return RebuildApplication.getBean(DataSourceTransactionManager.class);
+        return Application.getBean(DataSourceTransactionManager.class);
     }
 
     /**

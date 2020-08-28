@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.rebuild.api.ApiContext;
 import com.rebuild.api.ApiInvokeException;
 import com.rebuild.api.BaseApi;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.privileges.bizz.ZeroEntry;
@@ -41,7 +41,7 @@ public class LoginToken extends BaseApi {
             return formatFailure(hasError);
         }
 
-        User loginUser = RebuildApplication.getUserStore().getUser(user);
+        User loginUser = Application.getUserStore().getUser(user);
         String loginToken = AuthTokenManager.generateToken(loginUser.getId(), 60);
 
         JSON ret = JSONUtils.toJSONObject(
@@ -60,17 +60,17 @@ public class LoginToken extends BaseApi {
      * @return
      */
     public static String checkUser(String user, String password) {
-        if (!RebuildApplication.getUserStore().existsUser(user)) {
+        if (!Application.getUserStore().existsUser(user)) {
             return "用户名或密码错误";
         }
 
-        User loginUser = RebuildApplication.getUserStore().getUser(user);
+        User loginUser = Application.getUserStore().getUser(user);
         if (!loginUser.isActive()
-                || !RebuildApplication.getPrivilegesManager().allow(loginUser.getId(), ZeroEntry.AllowLogin)) {
+                || !Application.getPrivilegesManager().allow(loginUser.getId(), ZeroEntry.AllowLogin)) {
             return "用户未激活或不允许登录";
         }
 
-        Object[] foundUser = RebuildApplication.createQueryNoFilter(
+        Object[] foundUser = Application.createQueryNoFilter(
                 "select password from User where loginName = ? or email = ?")
                 .setParameter(1, user)
                 .setParameter(2, user)

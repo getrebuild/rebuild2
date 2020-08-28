@@ -11,7 +11,7 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.project.ProjectConfigService;
 import com.rebuild.core.service.project.ProjectPlanConfigService;
@@ -48,7 +48,7 @@ public class ProjectAdminControll extends BaseController {
             return null;
         }
 
-        Object[] p = RebuildApplication.createQuery(
+        Object[] p = Application.createQuery(
                 "select projectName,scope,principal,members from ProjectConfig where configId = ?")
                 .setParameter(1, projectId2)
                 .unique();
@@ -63,7 +63,7 @@ public class ProjectAdminControll extends BaseController {
 
     @RequestMapping("/admin/projects/list")
     public void listProjects(HttpServletResponse resp) {
-        Object[][] array = RebuildApplication.createQuery(
+        Object[][] array = Application.createQuery(
                 "select configId,projectName,projectCode,iconName from ProjectConfig order by projectName")
                 .array();
         writeSuccess(resp, array);
@@ -72,7 +72,7 @@ public class ProjectAdminControll extends BaseController {
     @RequestMapping("/admin/projects/plan-list")
     public void listPlans(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ID projectId = getIdParameterNotNull(req, "project");
-        Object[][] array = RebuildApplication.createQuery(
+        Object[][] array = Application.createQuery(
                 "select configId,planName,flowStatus,flowNexts,seq from ProjectPlanConfig where projectId = ? order by seq")
                 .setParameter(1, projectId)
                 .array();
@@ -92,7 +92,7 @@ public class ProjectAdminControll extends BaseController {
         Record project = EntityHelper.parse(data, user);
         if (project.getPrimary() == null) {
             String projectCode = project.getString("projectCode");
-            Object exists = RebuildApplication.createQuery(
+            Object exists = Application.createQuery(
                     "select projectCode from ProjectConfig where projectCode = ?")
                     .setParameter(1, projectCode)
                     .unique();
@@ -101,10 +101,10 @@ public class ProjectAdminControll extends BaseController {
                 return;
             }
 
-            project = RebuildApplication.getBean(ProjectConfigService.class).createProject(project, useTemplate);
+            project = Application.getBean(ProjectConfigService.class).createProject(project, useTemplate);
 
         } else {
-            RebuildApplication.getBean(ProjectPlanConfigService.class).update(project);
+            Application.getBean(ProjectPlanConfigService.class).update(project);
         }
 
         writeSuccess(resp, JSONUtils.toJSONObject("id", project.getPrimary()));

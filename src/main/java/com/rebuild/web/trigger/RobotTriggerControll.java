@@ -9,7 +9,7 @@ package com.rebuild.web.trigger;
 
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.MetadataSorter;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -47,7 +47,7 @@ public class RobotTriggerControll extends BaseController {
     @RequestMapping("trigger/{id}")
     public ModelAndView pageEditor(@PathVariable String id, HttpServletResponse response) throws IOException {
         ID configId = ID.valueOf(id);
-        Object[] config = RebuildApplication.createQuery(
+        Object[] config = Application.createQuery(
                 "select belongEntity,actionType,when,whenFilter,actionContent,priority,name,whenTimer from RobotTriggerConfig where configId = ?")
                 .setParameter(1, configId)
                 .unique();

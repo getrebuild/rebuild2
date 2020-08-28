@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.Record;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.general.FormsManager;
 import com.rebuild.core.configuration.general.LayoutConfigService;
@@ -81,7 +81,7 @@ public class FormDesignControll extends BaseController {
         if (record.getPrimary() == null) {
             record.setString("shareTo", FormsManager.SHARE_ALL);
         }
-        RebuildApplication.getBean(LayoutConfigService.class).createOrUpdate(record);
+        Application.getBean(LayoutConfigService.class).createOrUpdate(record);
 
         if (!newLabels.isEmpty()) {
             List<Record> willUpdate = new ArrayList<>();
@@ -99,7 +99,7 @@ public class FormDesignControll extends BaseController {
             }
 
             if (!willUpdate.isEmpty()) {
-                RebuildApplication.getCommonsService().createOrUpdate(willUpdate.toArray(new Record[0]), false);
+                Application.getCommonsService().createOrUpdate(willUpdate.toArray(new Record[0]), false);
                 MetadataHelper.getMetadataFactory().refresh(false);
             }
         }

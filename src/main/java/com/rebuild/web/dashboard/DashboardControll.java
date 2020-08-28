@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ShareToManager;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -77,7 +77,7 @@ public class DashboardControll extends BaseController {
         if (dashCopy != null) {
             for (Object o : dashCopy) {
                 JSONObject item = (JSONObject) o;
-                Record chart = RebuildApplication.createQueryNoFilter(
+                Record chart = Application.createQueryNoFilter(
                         "select config,belongEntity,chartType,title,createdBy from ChartConfig where chartId = ?")
                         .setParameter(1, ID.valueOf(item.getString("chart")))
                         .record();
@@ -95,13 +95,13 @@ public class DashboardControll extends BaseController {
                     String field = iter.next();
                     chartRecord.setObjectValue(field, chart.getObjectValue(field));
                 }
-                chartRecord = RebuildApplication.getCommonsService().create(chartRecord);
+                chartRecord = Application.getCommonsService().create(chartRecord);
                 item.put("chart", chartRecord.getPrimary());
             }
             dashRecord.setString("config", dashCopy.toJSONString());
         }
 
-        dashRecord = RebuildApplication.getBean(DashboardConfigService.class).create(dashRecord);
+        dashRecord = Application.getBean(DashboardConfigService.class).create(dashRecord);
 
         JSON ret = JSONUtils.toJSONObject("id", dashRecord.getPrimary());
         writeSuccess(response, ret);
@@ -114,7 +114,7 @@ public class DashboardControll extends BaseController {
 
         Record record = EntityHelper.forUpdate(dashid, getRequestUser(request));
         record.setString("config", config.toJSONString());
-        RebuildApplication.getBean(DashboardConfigService.class).update(record);
+        Application.getBean(DashboardConfigService.class).update(record);
         writeSuccess(response);
     }
 
@@ -147,7 +147,7 @@ public class DashboardControll extends BaseController {
                 sql = sql.replace("1=1", entitySql);
             }
 
-            charts = RebuildApplication.createQueryNoFilter(sql).setParameter(1, useBizz).array();
+            charts = Application.createQueryNoFilter(sql).setParameter(1, useBizz).array();
             for (Object[] o : charts) {
                 o[3] = CommonsUtils.formatClientDate((Date) o[3]);
                 o[4] = EasyMeta.getLabel(MetadataHelper.getEntity((String) o[4]));

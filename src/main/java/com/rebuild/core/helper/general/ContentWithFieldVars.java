@@ -10,7 +10,7 @@ package com.rebuild.core.helper.general;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import org.apache.commons.lang.StringUtils;
 
@@ -52,7 +52,7 @@ public class ContentWithFieldVars {
 
         String sql = String.format("select %s from %s where %s = ?",
                 StringUtils.join(fieldVars.keySet(), ","), entity.getName(), entity.getPrimaryField().getName());
-        Record o = RebuildApplication.createQueryNoFilter(sql).setParameter(1, record).record();
+        Record o = Application.createQueryNoFilter(sql).setParameter(1, record).record();
         if (o != null) {
             for (String field : fieldVars.keySet()) {
                 Object value = o.getObjectValue(field);

@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.helper.setup;
 
 import cn.devezhao.commons.ObjectUtils;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -53,7 +53,7 @@ public final class UpgradeDatabase {
                 }
 
                 LOG.info("Upgrade SQL(#" + (upgradeVer + 1) + ") > \n" + StringUtils.join(sql, "\n"));
-                RebuildApplication.getSqlExecutor().executeBatch(sql, 60 * 2);
+                Application.getSqlExecutor().executeBatch(sql, 60 * 2);
                 upgradeVer++;
             }
         } finally {

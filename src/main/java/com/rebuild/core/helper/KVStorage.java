@@ -9,7 +9,7 @@ package com.rebuild.core.helper;
 
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
@@ -52,7 +52,7 @@ public class KVStorage {
      * @param value
      */
     protected static void setValue(final String key, Object value) {
-        Object[] exists = RebuildApplication.createQueryNoFilter(
+        Object[] exists = Application.createQueryNoFilter(
                 "select configId from SystemConfig where item = ?")
                 .setParameter(1, key)
                 .unique();
@@ -66,8 +66,8 @@ public class KVStorage {
         }
         record.setString("value", String.valueOf(value));
 
-        RebuildApplication.getCommonsService().createOrUpdate(record);
-        RebuildApplication.getCommonsCache().evict(key);
+        Application.getCommonsService().createOrUpdate(record);
+        Application.getCommonsCache().evict(key);
     }
 
     /**
@@ -79,15 +79,15 @@ public class KVStorage {
     protected static String getValue(final String key, boolean reload, Object defaultValue) {
         String value = null;
 
-        if (RebuildApplication.serversReady()) {
+        if (Application.serversReady()) {
             // 0. 从缓存
-            value = RebuildApplication.getCommonsCache().get(key);
+            value = Application.getCommonsCache().get(key);
             if (value != null && !reload) {
                 return value;
             }
 
             // 1. 从数据库
-            Object[] fromDb = RebuildApplication.createQueryNoFilter(
+            Object[] fromDb = Application.createQueryNoFilter(
                     "select value from SystemConfig where item = ?")
                     .setParameter(1, key)
                     .unique();
@@ -104,11 +104,11 @@ public class KVStorage {
             value = defaultValue.toString();
         }
 
-        if (RebuildApplication.serversReady()) {
+        if (Application.serversReady()) {
             if (value == null) {
-                RebuildApplication.getCommonsCache().evict(key);
+                Application.getCommonsCache().evict(key);
             } else {
-                RebuildApplication.getCommonsCache().put(key, value);
+                Application.getCommonsCache().put(key, value);
             }
         }
 

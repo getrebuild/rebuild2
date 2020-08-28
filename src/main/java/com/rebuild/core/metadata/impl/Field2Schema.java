@@ -19,7 +19,7 @@ import cn.devezhao.persist4j.util.StringHelper;
 import cn.devezhao.persist4j.util.support.Table;
 import com.alibaba.fastjson.JSON;
 import com.hankcs.hanlp.HanLP;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.BlackList;
 import com.rebuild.core.helper.setup.Installer;
 import com.rebuild.core.metadata.EntityHelper;
@@ -89,11 +89,11 @@ public class Field2Schema {
 
         boolean schemaReady = schema2Database(entity, new Field[]{field});
         if (!schemaReady) {
-            RebuildApplication.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
+            Application.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
             throw new MetadataException("无法创建字段到数据库");
         }
 
-        RebuildApplication.getMetadataFactory().refresh(false);
+        Application.getMetadataFactory().refresh(false);
         return fieldName;
     }
 
@@ -123,14 +123,14 @@ public class Field2Schema {
 
         String ddl = String.format("alter table `%s` drop column `%s`", entity.getPhysicalName(), field.getPhysicalName());
         try {
-            RebuildApplication.getSqlExecutor().execute(ddl, 10 * 60);
+            Application.getSqlExecutor().execute(ddl, 10 * 60);
         } catch (Throwable ex) {
             LOG.error("DDL ERROR : \n" + ddl, ex);
             return false;
         }
 
-        RebuildApplication.getBean(MetaFieldService.class).delete(metaRecordId);
-        RebuildApplication.getMetadataFactory().refresh(false);
+        Application.getBean(MetaFieldService.class).delete(metaRecordId);
+        Application.getMetadataFactory().refresh(false);
         return true;
     }
 
@@ -140,7 +140,7 @@ public class Field2Schema {
      */
     protected long checkRecordCount(Entity entity) {
         String sql = String.format("select count(%s) from %s", entity.getPrimaryField().getName(), entity.getName());
-        Object[] count = RebuildApplication.createQueryNoFilter(sql).unique();
+        Object[] count = Application.createQueryNoFilter(sql).unique();
         return ObjectUtils.toLong(count[0]);
     }
 
@@ -150,7 +150,7 @@ public class Field2Schema {
      * @return
      */
     public boolean schema2Database(Entity entity, Field[] fields) {
-        Dialect dialect = RebuildApplication.getPersistManagerFactory().getDialect();
+        Dialect dialect = Application.getPersistManagerFactory().getDialect();
         final Table table = new Table(entity, dialect);
         final String alterSql = "alter table `" + entity.getPhysicalName() + "`";
 
@@ -161,7 +161,7 @@ public class Field2Schema {
                 table.generateFieldDDL(field, ddl);
 
                 try {
-                    RebuildApplication.getSqlExecutor().executeBatch(new String[]{ddl.toString()}, 10 * 60);
+                    Application.getSqlExecutor().executeBatch(new String[]{ddl.toString()}, 10 * 60);
                 } catch (Throwable ex) {
                     LOG.error("DDL ERROR : \n" + ddl, ex);
                     return false;
@@ -180,7 +180,7 @@ public class Field2Schema {
         ddl.deleteCharAt(ddl.length() - 1);
 
         try {
-            RebuildApplication.getSqlExecutor().executeBatch(new String[]{ddl.toString()}, 10 * 60);
+            Application.getSqlExecutor().executeBatch(new String[]{ddl.toString()}, 10 * 60);
         } catch (Throwable ex) {
             LOG.error("DDL ERROR : \n" + ddl, ex);
             return false;
@@ -275,7 +275,7 @@ public class Field2Schema {
             throw new MetadataException("引用字段必须指定引用实体");
         }
 
-        recordOfField = RebuildApplication.getCommonsService().create(recordOfField);
+        recordOfField = Application.getCommonsService().create(recordOfField);
         tempMetaId.add(recordOfField.getPrimary());
 
         // 以下会改变一些属性，因为并不想他们保存在元数据中

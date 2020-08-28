@@ -11,7 +11,7 @@ import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.commons.EncryptUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.SMSender;
 import com.rebuild.core.helper.VerfiyCode;
 import com.rebuild.core.metadata.EntityHelper;
@@ -44,7 +44,7 @@ public class AccountSettings extends EntityController {
     @RequestMapping("/settings/send-email-vcode")
     public void sendEmailVcode(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String email = getParameterNotNull(request, "email");
-        if (RebuildApplication.getUserStore().existsEmail(email)) {
+        if (Application.getUserStore().existsEmail(email)) {
             writeFailure(response, "邮箱已被占用，请换用其他邮箱");
             return;
         }
@@ -69,14 +69,14 @@ public class AccountSettings extends EntityController {
             writeFailure(response, "验证码无效");
             return;
         }
-        if (RebuildApplication.getUserStore().existsEmail(email)) {
+        if (Application.getUserStore().existsEmail(email)) {
             writeFailure(response, "邮箱已被占用，请换用其他邮箱");
             return;
         }
 
         Record record = EntityHelper.forUpdate(user, user);
         record.setString("email", email);
-        RebuildApplication.getBean(UserService.class).update(record);
+        Application.getBean(UserService.class).update(record);
         writeSuccess(response);
     }
 
@@ -86,7 +86,7 @@ public class AccountSettings extends EntityController {
         String oldp = getParameterNotNull(request, "oldp");
         String newp = getParameterNotNull(request, "newp");
 
-        Object[] o = RebuildApplication.createQuery("select password from User where userId = ?")
+        Object[] o = Application.createQuery("select password from User where userId = ?")
                 .setParameter(1, user)
                 .unique();
         if (o == null || !StringUtils.equals((String) o[0], EncryptUtils.toSHA256Hex(oldp))) {
@@ -96,14 +96,14 @@ public class AccountSettings extends EntityController {
 
         Record record = EntityHelper.forUpdate(user, user);
         record.setString("password", newp);
-        RebuildApplication.getBean(UserService.class).update(record);
+        Application.getBean(UserService.class).update(record);
         writeSuccess(response);
     }
 
     @RequestMapping("/settings/login-logs")
     public void loginLogs(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID user = getRequestUser(request);
-        Object[][] logs = RebuildApplication.createQueryNoFilter(
+        Object[][] logs = Application.createQueryNoFilter(
                 "select loginTime,userAgent,ipAddr,logoutTime from LoginLog where user = ? order by loginTime desc")
                 .setParameter(1, user)
                 .setLimit(100)

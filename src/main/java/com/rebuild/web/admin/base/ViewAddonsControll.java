@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.general.LayoutConfigService;
 import com.rebuild.core.configuration.general.ViewAddonsManager;
@@ -61,7 +61,7 @@ public class ViewAddonsControll extends BaseController {
             record = EntityHelper.forUpdate(configId, user);
         }
         record.setString("config", config.toJSONString());
-        RebuildApplication.getBean(LayoutConfigService.class).createOrUpdate(record);
+        Application.getBean(LayoutConfigService.class).createOrUpdate(record);
 
         writeSuccess(response);
     }

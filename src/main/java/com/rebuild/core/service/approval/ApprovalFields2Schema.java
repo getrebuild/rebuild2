@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.metadata.CascadeModel;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
@@ -49,11 +49,11 @@ public class ApprovalFields2Schema extends Field2Schema {
 
         boolean schemaReady = schema2Database(approvalEntity, new Field[]{apporvalId, apporvalState, apporvalStepId});
         if (!schemaReady) {
-            RebuildApplication.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
+            Application.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
             throw new MetadataException("无法创建审批流程字段到数据库");
         }
 
-        RebuildApplication.getMetadataFactory().refresh(false);
+        Application.getMetadataFactory().refresh(false);
         return true;
     }
 }

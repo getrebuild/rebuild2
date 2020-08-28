@@ -11,7 +11,7 @@ import cn.devezhao.bizz.privileges.PrivilegesException;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.feeds.FeedsHelper;
 import com.rebuild.core.service.notification.Message;
@@ -37,7 +37,7 @@ public class ProjectCommentService extends BaseTaskService {
 
     @Override
     public Record create(Record record) {
-        final ID user = RebuildApplication.getCurrentUser();
+        final ID user = Application.getCurrentUser();
         checkInMembers(user, record.getID("taskId"));
 
         record = super.create(record);
@@ -53,7 +53,7 @@ public class ProjectCommentService extends BaseTaskService {
 
     @Override
     public int delete(ID commentId) {
-        final ID user = RebuildApplication.getCurrentUser();
+        final ID user = Application.getCurrentUser();
         if (!ProjectHelper.isManageable(commentId, user)) {
             throw new PrivilegesException("不能删除他人评论");
         }
@@ -77,14 +77,14 @@ public class ProjectCommentService extends BaseTaskService {
         int send = 0;
         for (ID to : atUsers) {
             // 是否已经发送过
-            Object[] sent = RebuildApplication.createQueryNoFilter(
+            Object[] sent = Application.createQueryNoFilter(
                     "select messageId from Notification where toUser = ? and relatedRecord = ?")
                     .setParameter(1, to)
                     .setParameter(2, record.getPrimary())
                     .unique();
             if (sent != null) continue;
 
-            RebuildApplication.getNotifications().send(
+            Application.getNotifications().send(
                     MessageBuilder.createMessage(to, msg, Message.TYPE_PROJECT, record.getPrimary()));
             send++;
         }

@@ -11,7 +11,7 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.Field;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.PickListManager;
 import com.rebuild.core.configuration.general.PickListService;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -49,7 +49,7 @@ public class PickListControll extends BaseController {
         JSONObject config = (JSONObject) ServletUtils.getRequestJson(request);
 
         Field fieldMeta = MetadataHelper.getField(entity, field);
-        RebuildApplication.getBean(PickListService.class).updateBatch(fieldMeta, config);
+        Application.getBean(PickListService.class).updateBatch(fieldMeta, config);
         writeSuccess(response);
     }
 }

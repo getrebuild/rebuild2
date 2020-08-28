@@ -9,7 +9,7 @@ package com.rebuild.core.service;
 
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 
 /**
  * 业务对象基础服务类定义
@@ -23,7 +23,7 @@ public interface ServiceSpec {
      * 专供某个实体的
      *
      * @return
-     * @see RebuildApplication#getEntityService(int)
+     * @see Application#getEntityService(int)
      */
     int getEntityCode();
 

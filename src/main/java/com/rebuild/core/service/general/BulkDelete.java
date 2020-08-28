@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.service.general;
 
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.service.DataSpecificationException;
 
 /**
@@ -29,7 +29,7 @@ public class BulkDelete extends BulkOperator {
         this.setTotal(records.length);
 
         for (ID id : records) {
-            if (RebuildApplication.getPrivilegesManager().allowDelete(context.getOpUser(), id)) {
+            if (Application.getPrivilegesManager().allowDelete(context.getOpUser(), id)) {
                 try {
                     ges.delete(id, context.getCascades());
                     this.addSucceeded();

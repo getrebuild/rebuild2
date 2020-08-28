@@ -13,7 +13,7 @@ import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.utils.JSONUtils;
@@ -44,7 +44,7 @@ public abstract class EntityController extends BaseController {
         putEntityMeta(mv, entityMeta);
 
         if (MetadataHelper.hasPrivilegesField(entityMeta)) {
-            Privileges priv = RebuildApplication.getPrivilegesManager().getPrivileges(user, entityMeta.getEntityCode());
+            Privileges priv = Application.getPrivilegesManager().getPrivileges(user, entityMeta.getEntityCode());
             Permission[] actions = new Permission[]{
                     BizzPermission.CREATE,
                     BizzPermission.DELETE,
@@ -92,7 +92,7 @@ public abstract class EntityController extends BaseController {
             };
             Map<String, Boolean> actionMap = new HashMap<>();
             for (Permission act : actions) {
-                actionMap.put(act.getName(), RebuildApplication.getPrivilegesManager().allow(user, record, act));
+                actionMap.put(act.getName(), Application.getPrivilegesManager().allow(user, record, act));
             }
             mv.getModel().put("entityPrivileges", JSON.toJSONString(actionMap));
         } else if (EasyMeta.valueOf(entity).isPlainEntity()) {

@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.BaseServiceImpl;
 import org.springframework.stereotype.Service;
@@ -45,14 +45,14 @@ public class RoleService extends BaseServiceImpl implements AdminGuard {
     @Override
     public Record create(Record record) {
         record = super.create(record);
-        RebuildApplication.getUserStore().refreshRole(record.getPrimary());
+        Application.getUserStore().refreshRole(record.getPrimary());
         return record;
     }
 
     @Override
     public Record update(Record record) {
         record = super.update(record);
-        RebuildApplication.getUserStore().refreshRole(record.getPrimary());
+        Application.getUserStore().refreshRole(record.getPrimary());
         return record;
     }
 
@@ -70,7 +70,7 @@ public class RoleService extends BaseServiceImpl implements AdminGuard {
      */
     public void deleteAndTransfer(ID roleId, ID transferTo) {
         super.delete(roleId);
-        RebuildApplication.getUserStore().removeRole(roleId, transferTo);
+        Application.getUserStore().removeRole(roleId, transferTo);
     }
 
     /**
@@ -78,9 +78,9 @@ public class RoleService extends BaseServiceImpl implements AdminGuard {
      * @param definition
      */
     public void updatePrivileges(ID roleId, JSONObject definition) {
-        final ID user = RebuildApplication.getCurrentUser();
+        final ID user = Application.getCurrentUser();
 
-        Object[][] array = RebuildApplication.createQuery(
+        Object[][] array = Application.createQuery(
                 "select privilegesId,definition,entity,zeroKey from RolePrivileges where roleId = ?")
                 .setParameter(1, roleId)
                 .array();
@@ -126,6 +126,6 @@ public class RoleService extends BaseServiceImpl implements AdminGuard {
             }
         }
 
-        RebuildApplication.getUserStore().refreshRole(roleId);
+        Application.getUserStore().refreshRole(roleId);
     }
 }

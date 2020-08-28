@@ -10,7 +10,7 @@ package com.rebuild.core.helper.state;
 import cn.devezhao.persist4j.Field;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.metadata.impl.FieldExtConfigProps;
@@ -55,7 +55,7 @@ public class StateManager {
         }
 
         final String cKey = "STATECLASS-" + stateClass;
-        JSONArray options = (JSONArray) RebuildApplication.getCommonsCache().getx(cKey);
+        JSONArray options = (JSONArray) Application.getCommonsCache().getx(cKey);
         if (options != null) {
             return (JSONArray) JSONUtils.clone(options);
         }
@@ -68,7 +68,7 @@ public class StateManager {
                     new Object[]{((StateSpec) c).getState(), ((StateSpec) c).getName(), ((StateSpec) c).isDefault()});
             options.add(item);
         }
-        RebuildApplication.getCommonsCache().putx(cKey, options);
+        Application.getCommonsCache().putx(cKey, options);
         return options;
     }
 

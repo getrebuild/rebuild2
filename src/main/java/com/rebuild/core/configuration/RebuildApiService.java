@@ -9,7 +9,7 @@ package com.rebuild.core.configuration;
 
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.AdminGuard;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class RebuildApiService extends BaseConfigurationService implements Admin
 
     @Override
     protected void cleanCache(ID cfgid) {
-        Object[] cfg = RebuildApplication.createQueryNoFilter(
+        Object[] cfg = Application.createQueryNoFilter(
                 "select appId from RebuildApi where uniqueId = ?")
                 .setParameter(1, cfgid)
                 .unique();

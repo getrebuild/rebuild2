@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.DataListManager;
 import com.rebuild.core.helper.general.DataListControl;
 import com.rebuild.core.helper.general.DefaultDataListControl;
@@ -54,7 +54,7 @@ public class GeneralDataListControll extends EntityController {
             return null;
         }
 
-        if (!RebuildApplication.getPrivilegesManager().allowRead(user, thatEntity.getEntityCode())) {
+        if (!Application.getPrivilegesManager().allowRead(user, thatEntity.getEntityCode())) {
             response.sendError(403, "你没有访问此实体的权限");
             return null;
         }
@@ -71,11 +71,11 @@ public class GeneralDataListControll extends EntityController {
 
         // 列表相关权限
         mv.getModel().put(ZeroEntry.AllowCustomDataList.name(),
-                RebuildApplication.getPrivilegesManager().allow(user, ZeroEntry.AllowCustomDataList));
+                Application.getPrivilegesManager().allow(user, ZeroEntry.AllowCustomDataList));
         mv.getModel().put(ZeroEntry.AllowDataExport.name(),
-                RebuildApplication.getPrivilegesManager().allow(user, ZeroEntry.AllowDataExport));
+                Application.getPrivilegesManager().allow(user, ZeroEntry.AllowDataExport));
         mv.getModel().put(ZeroEntry.AllowBatchUpdate.name(),
-                RebuildApplication.getPrivilegesManager().allow(user, ZeroEntry.AllowBatchUpdate));
+                Application.getPrivilegesManager().allow(user, ZeroEntry.AllowBatchUpdate));
 
         // 展开 WIDGET 面板
         String asideCollapsed = ServletUtils.readCookie(request, "rb.asideCollapsed");

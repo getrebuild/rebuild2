@@ -10,7 +10,7 @@ package com.rebuild.core.configuration.general;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.service.dashboard.ChartManager;
@@ -113,7 +113,7 @@ public class BaseLayoutManager extends ShareToManager {
      * @return
      */
     public ConfigBean getLayoutById(ID cfgid) {
-        Object[] o = RebuildApplication.createQueryNoFilter(
+        Object[] o = Application.createQueryNoFilter(
                 "select belongEntity,applyType from LayoutConfig where configId = ?")
                 .setParameter(1, cfgid)
                 .unique();

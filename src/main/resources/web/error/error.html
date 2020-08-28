@@ -11,7 +11,8 @@
     <title th:text="${appName}"></title>
     <style type="text/css">
       .zmdi.e404,
-      .zmdi.e403 {
+      .zmdi.e403,
+      .zmdi.e400 {
         color: #4285f4 !important;
       }
     </style>
@@ -22,7 +23,7 @@
         <div class="main-content container">
           <div class="error-container">
             <div class="error-number mb-0"><i class="zmdi zmdi-alert-circle text-danger" th:classappend="${'e' + error_code}"></i></div>
-            <div class="error-description" th:text="${error_message}"></div>
+            <div class="error-description" th:text="${error_msg}"></div>
             <div class="error-description text-left" th:text="${error_stack}"></div>
             <div class="error-goback-button">
               <a class="btn btn-xl btn-space btn-secondary" th:href="@{/dashboard/home}" id="goHome">返回首页</a>

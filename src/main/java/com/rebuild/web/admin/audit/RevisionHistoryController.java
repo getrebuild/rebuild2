@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.web.EntityController;
@@ -42,7 +42,7 @@ public class RevisionHistoryController extends EntityController {
     @RequestMapping("revision-history/details")
     public void details(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID id = getIdParameterNotNull(request, "id");
-        Object[] rev = RebuildApplication.createQueryNoFilter(
+        Object[] rev = Application.createQueryNoFilter(
                 "select revisionContent,belongEntity from RevisionHistory where revisionId = ?")
                 .setParameter(1, id)
                 .unique();

@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.hankcs.hanlp.HanLP;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationManager;
 import com.rebuild.core.configuration.general.PickListManager;
 import com.rebuild.core.helper.state.StateManager;
@@ -59,7 +59,7 @@ public class QuickCodeReindexTask extends HeavyTask<Integer> {
 
         int pageNo = 1;
         while (true) {
-            List<Record> records = RebuildApplication.createQueryNoFilter(sql)
+            List<Record> records = Application.createQueryNoFilter(sql)
                     .setLimit(PAGE_SIZE, pageNo * PAGE_SIZE - PAGE_SIZE)
                     .list();
 
@@ -85,7 +85,7 @@ public class QuickCodeReindexTask extends HeavyTask<Integer> {
                     } else {
                         record.setString(EntityHelper.QuickCode, quickCodeNew);
                     }
-                    RebuildApplication.getCommonsService().update(record, false);
+                    Application.getCommonsService().update(record, false);
                     this.addSucceeded();
 
                 } finally {

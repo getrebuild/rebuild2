@@ -9,7 +9,7 @@ package com.rebuild.core.service.project;
 
 import cn.devezhao.bizz.security.AccessDeniedException;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.ConfigurationException;
 import com.rebuild.core.metadata.EntityHelper;
@@ -59,14 +59,14 @@ public class ProjectHelper {
         }
 
         // 创建人
-        Object[] createdBy = RebuildApplication.getQueryFactory().uniqueNoFilter(taskOrComment, "createdBy");
+        Object[] createdBy = Application.getQueryFactory().uniqueNoFilter(taskOrComment, "createdBy");
         return createdBy != null && createdBy[0].equals(user);
     }
 
     // 转为任务 ID
     private static ID convert2Task(ID taskOrComment) {
         if (taskOrComment.getEntityCode() == EntityHelper.ProjectTaskComment) {
-            Object[] o = RebuildApplication.getQueryFactory().uniqueNoFilter(taskOrComment, "taskId");
+            Object[] o = Application.getQueryFactory().uniqueNoFilter(taskOrComment, "taskId");
             if (o == null) {
                 throw new NoRecordFoundException(taskOrComment);
             }

@@ -11,7 +11,7 @@ import cn.devezhao.bizz.security.member.Team;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.BaseServiceImpl;
 import org.springframework.stereotype.Service;
@@ -39,21 +39,21 @@ public class TeamService extends BaseServiceImpl implements AdminGuard {
     @Override
     public Record create(Record record) {
         record = super.create(record);
-        RebuildApplication.getUserStore().refreshTeam(record.getPrimary());
+        Application.getUserStore().refreshTeam(record.getPrimary());
         return record;
     }
 
     @Override
     public Record update(Record record) {
         record = super.update(record);
-        RebuildApplication.getUserStore().refreshTeam(record.getPrimary());
+        Application.getUserStore().refreshTeam(record.getPrimary());
         return record;
     }
 
     @Override
     public int delete(ID teamId) {
         int del = super.delete(teamId);
-        RebuildApplication.getUserStore().removeTeam(teamId);
+        Application.getUserStore().removeTeam(teamId);
         return del;
     }
 
@@ -66,12 +66,12 @@ public class TeamService extends BaseServiceImpl implements AdminGuard {
      */
     public int createMembers(ID teamId, Collection<ID> members) {
         int added = 0;
-        Team team = RebuildApplication.getUserStore().getTeam(teamId);
+        Team team = Application.getUserStore().getTeam(teamId);
         for (ID user : members) {
             if (team.isMember(user)) {
                 continue;
             }
-            Record record = EntityHelper.forNew(EntityHelper.TeamMember, RebuildApplication.getCurrentUser());
+            Record record = EntityHelper.forNew(EntityHelper.TeamMember, Application.getCurrentUser());
             record.setID("teamId", teamId);
             record.setID("userId", user);
             super.create(record);
@@ -79,7 +79,7 @@ public class TeamService extends BaseServiceImpl implements AdminGuard {
         }
 
         if (added > 0) {
-            RebuildApplication.getUserStore().refreshTeam(teamId);
+            Application.getUserStore().refreshTeam(teamId);
         }
         return added;
     }
@@ -94,7 +94,7 @@ public class TeamService extends BaseServiceImpl implements AdminGuard {
     public int deleteMembers(ID teamId, Collection<ID> members) {
         int deleted = 0;
         for (ID m : members) {
-            Object[] exists = RebuildApplication.createQueryNoFilter(
+            Object[] exists = Application.createQueryNoFilter(
                     "select memberId from TeamMember where teamId = ? and userId = ?")
                     .setParameter(1, teamId)
                     .setParameter(2, m)
@@ -106,7 +106,7 @@ public class TeamService extends BaseServiceImpl implements AdminGuard {
         }
 
         if (deleted > 0) {
-            RebuildApplication.getUserStore().refreshTeam(teamId);
+            Application.getUserStore().refreshTeam(teamId);
         }
         return deleted;
     }

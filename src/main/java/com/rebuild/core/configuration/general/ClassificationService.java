@@ -11,7 +11,7 @@ import cn.devezhao.commons.ThreadPool;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.BaseConfigurationService;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.AdminGuard;
@@ -42,7 +42,7 @@ public class ClassificationService extends BaseConfigurationService implements A
     @Override
     public int delete(ID recordId) {
         // 检查是否被使用
-        Object[][] used = RebuildApplication.createQueryNoFilter(
+        Object[][] used = Application.createQueryNoFilter(
                 "select extConfig from MetaField where displayType = 'CLASSIFICATION'")
                 .array();
         for (Object[] o : used) {
@@ -83,7 +83,7 @@ public class ClassificationService extends BaseConfigurationService implements A
                     reindexFullNameByParent(itemId);
                 } finally {
                     long cost = System.currentTimeMillis() - start;
-                    if (cost > 2000 || RebuildApplication.devMode()) {
+                    if (cost > 2000 || Application.devMode()) {
                         LOG.info("Reindex FullName [ " + itemId + " ] in " + cost + " ms");
                     }
                 }
@@ -115,7 +115,7 @@ public class ClassificationService extends BaseConfigurationService implements A
         String quickCode = QuickCodeReindexTask.generateQuickCode(fullName);
         ID parent = record.getID("parent");
         if (parent == null && record.getPrimary() != null) {
-            Object[] o = RebuildApplication.createQueryNoFilter(
+            Object[] o = Application.createQueryNoFilter(
                     "select parent from ClassificationData where itemId = ?")
                     .setParameter(1, record.getPrimary())
                     .unique();
@@ -138,7 +138,7 @@ public class ClassificationService extends BaseConfigurationService implements A
      * @see #reindexFullNameByParent(ID, ID)
      */
     protected int reindexFullNameByParent(ID parent) {
-        Object[] data = RebuildApplication.createQueryNoFilter(
+        Object[] data = Application.createQueryNoFilter(
                 "select dataId from ClassificationData where itemId = ?")
                 .setParameter(1, parent)
                 .unique();
@@ -160,7 +160,7 @@ public class ClassificationService extends BaseConfigurationService implements A
         if (dataId != null) {
             sql += " and dataId = '" + dataId + "'";
         }
-        Object[][] array = RebuildApplication.createQueryNoFilter(sql)
+        Object[][] array = Application.createQueryNoFilter(sql)
                 .setParameter(1, parent)
                 .array();
 

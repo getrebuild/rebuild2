@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
  * @author devezhao
  * @since 2020/8/26
  */
-public class RebuildApplicationTest {
+public class ApplicationTest {
 
     @Test
     void run() {
-        RebuildApplication.main(new String[]{"-Drbdev=true"});
+        Application.main(new String[]{"-Drbdev=true"});
     }
 }

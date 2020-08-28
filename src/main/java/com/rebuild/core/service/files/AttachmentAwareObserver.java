@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
@@ -59,7 +59,7 @@ public class AttachmentAwareObserver extends OperatingObserver {
         }
         if (creates.isEmpty()) return;
 
-        RebuildApplication.getCommonsService().createOrUpdate(creates.toArray(new Record[0]), false);
+        Application.getCommonsService().createOrUpdate(creates.toArray(new Record[0]), false);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class AttachmentAwareObserver extends OperatingObserver {
                 }
 
                 for (Object o : beforeFiles) {
-                    Object[] delete = RebuildApplication.createQueryNoFilter(
+                    Object[] delete = Application.createQueryNoFilter(
                             "select attachmentId from Attachment where belongEntity = ? and belongField = ? and filePath = ?")
                             .setParameter(1, field.getOwnEntity().getEntityCode())
                             .setParameter(2, fieldName)
@@ -111,7 +111,7 @@ public class AttachmentAwareObserver extends OperatingObserver {
         }
         if (creates.isEmpty() && deletes.isEmpty()) return;
 
-        RebuildApplication.getCommonsService().createOrUpdateAndDelete(
+        Application.getCommonsService().createOrUpdateAndDelete(
                 creates.toArray(new Record[0]), deletes.toArray(new ID[0]), false);
     }
 
@@ -121,7 +121,7 @@ public class AttachmentAwareObserver extends OperatingObserver {
         Field[] fileFields = MetadataSorter.sortFields(record.getEntity(), DisplayType.FILE, DisplayType.IMAGE);
         if (fileFields.length == 0) return;
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select attachmentId from Attachment where relatedRecord = ?")
                 .setParameter(1, record.getPrimary())
                 .array();
@@ -142,7 +142,7 @@ public class AttachmentAwareObserver extends OperatingObserver {
             }
         }
 
-        RebuildApplication.getCommonsService().createOrUpdateAndDelete(
+        Application.getCommonsService().createOrUpdateAndDelete(
                 updates.toArray(new Record[0]), deletes.toArray(new ID[0]), false);
     }
 

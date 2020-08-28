@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.dialect.FieldType;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.query.compiler.SelectItem;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -165,6 +165,6 @@ public class DataListWrapper {
 
         int fieldIndex = queryJoinFields.get(fieldPath[0]);
         Object check = original[fieldIndex];
-        return check == null || RebuildApplication.getPrivilegesManager().allowRead(user, (ID) check);
+        return check == null || Application.getPrivilegesManager().allowRead(user, (ID) check);
     }
 }

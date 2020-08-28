@@ -22,7 +22,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationManager;
 import com.rebuild.core.configuration.general.MultiSelectManager;
 import com.rebuild.core.configuration.general.PickListManager;
@@ -88,7 +88,7 @@ public class PicklistDataControll extends BaseController {
             sql += "parent is null";
         }
         sql += " order by code, name";
-        Object[][] data = RebuildApplication.createQueryNoFilter(sql)
+        Object[][] data = Application.createQueryNoFilter(sql)
                 .setParameter(1, useClassification)
                 .setLimit(500)  // 最多显示
                 .array();

@@ -20,7 +20,7 @@ import cn.devezhao.persist4j.exception.jdbc.GenericJdbcException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.FormsBuilder;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.metadata.EntityHelper;
@@ -73,7 +73,7 @@ public class GeneralOperatingControll extends BaseController {
         }
 
         // 检查重复值
-        List<Record> repeated = RebuildApplication.getGeneralEntityService().getCheckRepeated(record, 100);
+        List<Record> repeated = Application.getGeneralEntityService().getCheckRepeated(record, 100);
         if (!repeated.isEmpty()) {
             JSONObject map = new JSONObject();
             map.put("error_code", CODE_REPEATED_VALUES);
@@ -84,7 +84,7 @@ public class GeneralOperatingControll extends BaseController {
         }
 
         try {
-            record = RebuildApplication.getService(record.getEntity().getEntityCode()).createOrUpdate(record);
+            record = Application.getService(record.getEntity().getEntityCode()).createOrUpdate(record);
         } catch (AccessDeniedException | DataSpecificationException know) {
             writeFailure(response, know.getLocalizedMessage());
             return;
@@ -131,7 +131,7 @@ public class GeneralOperatingControll extends BaseController {
 
         final ID firstId = records[0];
         final Entity entity = MetadataHelper.getEntity(firstId.getEntityCode());
-        final ServiceSpec ies = RebuildApplication.getService(entity.getEntityCode());
+        final ServiceSpec ies = Application.getService(entity.getEntityCode());
 
         String[] cascades = parseCascades(request);
 
@@ -167,7 +167,7 @@ public class GeneralOperatingControll extends BaseController {
 
         final ID firstId = records[0];
         final Entity entity = MetadataHelper.getEntity(firstId.getEntityCode());
-        final EntityService ies = RebuildApplication.getEntityService(entity.getEntityCode());
+        final EntityService ies = Application.getEntityService(entity.getEntityCode());
 
         String[] cascades = parseCascades(request);
         ID assignTo = getIdParameterNotNull(request, "to");
@@ -209,7 +209,7 @@ public class GeneralOperatingControll extends BaseController {
 
         final ID firstId = records[0];
         final Entity entity = MetadataHelper.getEntity(firstId.getEntityCode());
-        final EntityService ies = RebuildApplication.getEntityService(entity.getEntityCode());
+        final EntityService ies = Application.getEntityService(entity.getEntityCode());
 
         String[] cascades = parseCascades(request);
 
@@ -247,7 +247,7 @@ public class GeneralOperatingControll extends BaseController {
 
         final ID firstId = accessIds[0];
         final Entity entity = MetadataHelper.getEntity(firstId.getEntityCode());
-        final EntityService ies = RebuildApplication.getEntityService(entity.getEntityCode());
+        final EntityService ies = Application.getEntityService(entity.getEntityCode());
 
         int affected;
         try {
@@ -293,7 +293,7 @@ public class GeneralOperatingControll extends BaseController {
             accessSql += String.format(" and shareTo in ('%s')", StringUtils.join(toUsers, "','"));
         }
 
-        Object[][] accessArray = RebuildApplication.createQueryNoFilter(accessSql).array();
+        Object[][] accessArray = Application.createQueryNoFilter(accessSql).array();
         if (accessArray.length == 0) {
             JSON ret = JSONUtils.toJSONObject(
                     new String[]{"unshared", "requests"},
@@ -309,7 +309,7 @@ public class GeneralOperatingControll extends BaseController {
             access.add((ID) o[1]);
         }
 
-        final EntityService ies = RebuildApplication.getEntityService(records[0].getEntityCode());
+        final EntityService ies = Application.getEntityService(records[0].getEntityCode());
 
         int affected = 0;
         try {
@@ -344,7 +344,7 @@ public class GeneralOperatingControll extends BaseController {
         }
 
         sql = String.format(sql, entity.getName(), entity.getPrimaryField().getName(), id);
-        Object[] recordMeta = RebuildApplication.createQueryNoFilter(sql).unique();
+        Object[] recordMeta = Application.createQueryNoFilter(sql).unique();
         if (recordMeta == null) {
             writeFailure(response, "记录不存在");
             return;
@@ -356,11 +356,11 @@ public class GeneralOperatingControll extends BaseController {
         String[] owning = null;
         List<String[]> sharingList = null;
         if (recordMeta.length == 3) {
-            User user = RebuildApplication.getUserStore().getUser((ID) recordMeta[2]);
+            User user = Application.getUserStore().getUser((ID) recordMeta[2]);
             String dept = user.getOwningDept() == null ? null : user.getOwningDept().getName();
             owning = new String[]{user.getIdentity().toString(), user.getFullName(), dept};
 
-            Object[][] shareTo = RebuildApplication.createQueryNoFilter(
+            Object[][] shareTo = Application.createQueryNoFilter(
                     "select shareTo from ShareAccess where belongEntity = ? and recordId = ?")
                     .setParameter(1, entity.getName())
                     .setParameter(2, id)
@@ -385,7 +385,7 @@ public class GeneralOperatingControll extends BaseController {
 
         String sql = String.format("select modifiedOn from %s where %s = '%s'",
                 entity.getName(), entity.getPrimaryField().getName(), id);
-        Object[] recordMeta = RebuildApplication.createQueryNoFilter(sql).unique();
+        Object[] recordMeta = Application.createQueryNoFilter(sql).unique();
         if (recordMeta == null) {
             writeFailure(response, "NO_EXISTS");
             return;
@@ -402,7 +402,7 @@ public class GeneralOperatingControll extends BaseController {
         final ID id = getIdParameterNotNull(request, "id");
         final Entity entity = MetadataHelper.getEntity(id.getEntityCode());
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select shareTo,accessId,createdOn,createdBy from ShareAccess where belongEntity = ? and recordId = ?")
                 .setParameter(1, entity.getName())
                 .setParameter(2, id)

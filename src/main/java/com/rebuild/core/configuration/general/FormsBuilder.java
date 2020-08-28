@@ -16,7 +16,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
@@ -132,10 +132,10 @@ public class FormsBuilder extends FormsManager {
                 // 明细无需审批
                 approvalState = null;
 
-                if (!RebuildApplication.getPrivilegesManager().allowUpdate(user, masterRecordId)) {
+                if (!Application.getPrivilegesManager().allowUpdate(user, masterRecordId)) {
                     return formatModelError("你没有权限向此记录添加明细");
                 }
-            } else if (!RebuildApplication.getPrivilegesManager().allowCreate(user, entityMeta.getEntityCode())) {
+            } else if (!Application.getPrivilegesManager().allowCreate(user, entityMeta.getEntityCode())) {
                 return formatModelError("没有新建权限");
             } else {
                 approvalState = getHadApproval(entityMeta, null);
@@ -143,7 +143,7 @@ public class FormsBuilder extends FormsManager {
         }
         // 查看（视图）
         else if (viewMode) {
-            if (!RebuildApplication.getPrivilegesManager().allowRead(user, record)) {
+            if (!Application.getPrivilegesManager().allowRead(user, record)) {
                 return formatModelError("你无权读取此记录或记录已被删除");
             }
 
@@ -152,7 +152,7 @@ public class FormsBuilder extends FormsManager {
         }
         // 编辑
         else {
-            if (!RebuildApplication.getPrivilegesManager().allowUpdate(user, record)) {
+            if (!Application.getPrivilegesManager().allowUpdate(user, record)) {
                 return formatModelError("你没有编辑此记录的权限");
             }
 
@@ -243,7 +243,7 @@ public class FormsBuilder extends FormsManager {
             Field stmField = MetadataHelper.getSlaveToMasterField(entity);
             String sql = String.format("select %s from %s where %s = ?",
                     stmField.getName(), entity.getName(), entity.getPrimaryField().getName());
-            Object[] o = RebuildApplication.createQueryNoFilter(sql).setParameter(1, recordId).unique();
+            Object[] o = Application.createQueryNoFilter(sql).setParameter(1, recordId).unique();
             if (o == null) {
                 return null;
             }
@@ -261,7 +261,7 @@ public class FormsBuilder extends FormsManager {
      * @param user
      */
     public void buildModelElements(JSONArray elements, Entity entity, Record data, ID user) {
-        final User currentUser = RebuildApplication.getUserStore().getUser(user);
+        final User currentUser = Application.getUserStore().getUser(user);
         final Date now = CalendarUtils.now();
         final boolean hideUncreate = RebuildConfiguration.getBool(ConfigurationItem.FormHideUncreateField) && data == null;
 
@@ -439,7 +439,7 @@ public class FormsBuilder extends FormsManager {
                 .append(" where ")
                 .append(entity.getPrimaryField().getName())
                 .append(" = ?");
-        return RebuildApplication.getQueryFactory().createQuery(sql.toString(), user).setParameter(1, id).record();
+        return Application.getQueryFactory().createQuery(sql.toString(), user).setParameter(1, id).record();
     }
 
     /**

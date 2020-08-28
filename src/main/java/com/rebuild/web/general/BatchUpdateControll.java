@@ -14,7 +14,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.MultiSelectManager;
 import com.rebuild.core.configuration.general.PickListManager;
 import com.rebuild.core.helper.state.StateManager;
@@ -56,7 +56,7 @@ public class BatchUpdateControll extends BaseController {
     public void submit(@PathVariable String entity,
                        HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID user = getRequestUser(request);
-        Assert.isTrue(RebuildApplication.getPrivilegesManager().allow(user, ZeroEntry.AllowBatchUpdate), "没有权限");
+        Assert.isTrue(Application.getPrivilegesManager().allow(user, ZeroEntry.AllowBatchUpdate), "没有权限");
 
         JSONObject requestData = (JSONObject) ServletUtils.getRequestJson(request);
 
@@ -66,7 +66,7 @@ public class BatchUpdateControll extends BaseController {
         BulkContext bulkContext = new BulkContext(user, BizzPermission.UPDATE, requestData);
 
         Entity entityMeta = MetadataHelper.getEntity(entity);
-        ServiceSpec ies = RebuildApplication.getService(entityMeta.getEntityCode());
+        ServiceSpec ies = Application.getService(entityMeta.getEntityCode());
         String taskid = ((EntityService) ies).bulkAsync(bulkContext);
 
         writeSuccess(response, taskid);

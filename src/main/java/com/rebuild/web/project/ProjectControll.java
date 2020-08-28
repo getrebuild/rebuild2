@@ -11,7 +11,7 @@ import cn.devezhao.commons.CodecUtils;
 import cn.devezhao.commons.ObjectUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.ConfigurationException;
 import com.rebuild.core.service.project.ProjectManager;
@@ -88,13 +88,13 @@ public class ProjectControll extends BaseController {
             String[] codes = gs.split("-");
             Object[] project = null;
             if (codes.length == 2) {
-                project = RebuildApplication.createQuery(
+                project = Application.createQuery(
                         "select projectId,taskId from ProjectTask where projectId.projectCode = ? or taskNumber = ?")
                         .setParameter(1, codes[0])
                         .setParameter(2, ObjectUtils.toLong(codes[1]))
                         .unique();
             } else if (PATT_CODE.matcher(codes[0]).matches()) {
-                project = RebuildApplication.createQuery(
+                project = Application.createQuery(
                         "select configId from ProjectConfig where projectCode = ?")
                         .setParameter(1, codes[0])
                         .unique();

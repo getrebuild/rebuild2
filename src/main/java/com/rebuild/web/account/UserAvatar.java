@@ -10,7 +10,7 @@ package com.rebuild.web.account;
 import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.QiniuCloud;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
@@ -66,14 +66,14 @@ public class UserAvatar extends BaseController {
 
         User realUser = null;
         if (user instanceof ID) {
-            realUser = RebuildApplication.getUserStore().getUser((ID) user);
+            realUser = Application.getUserStore().getUser((ID) user);
         }
         if (ID.isId(user)) {
-            realUser = RebuildApplication.getUserStore().getUser(ID.valueOf(user.toString()));
-        } else if (RebuildApplication.getUserStore().existsName(user.toString())) {
-            realUser = RebuildApplication.getUserStore().getUserByName(user.toString());
-        } else if (RebuildApplication.getUserStore().existsEmail(user.toString())) {
-            realUser = RebuildApplication.getUserStore().getUserByEmail(user.toString());
+            realUser = Application.getUserStore().getUser(ID.valueOf(user.toString()));
+        } else if (Application.getUserStore().existsName(user.toString())) {
+            realUser = Application.getUserStore().getUserByName(user.toString());
+        } else if (Application.getUserStore().existsEmail(user.toString())) {
+            realUser = Application.getUserStore().getUserByEmail(user.toString());
         }
 
         if (realUser == null) {
@@ -129,7 +129,7 @@ public class UserAvatar extends BaseController {
         ID user = getRequestUser(request);
         Record record = EntityHelper.forUpdate(user, user);
         record.setString("avatarUrl", uploadName);
-        RebuildApplication.getBean(UserService.class).update(record);
+        Application.getBean(UserService.class).update(record);
 
         writeSuccess(response, uploadName);
     }

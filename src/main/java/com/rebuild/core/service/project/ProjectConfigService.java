@@ -10,7 +10,7 @@ package com.rebuild.core.service.project;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.BaseConfigurationService;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.AdminGuard;
@@ -51,7 +51,7 @@ public class ProjectConfigService extends BaseConfigurationService implements Ad
 
     @Override
     public int delete(ID projectId) {
-        Object[] count = RebuildApplication.createQuery(
+        Object[] count = Application.createQuery(
                 "select count(taskId) from ProjectTask where projectId = ?")
                 .setParameter(1, projectId)
                 .unique();
@@ -91,7 +91,7 @@ public class ProjectConfigService extends BaseConfigurationService implements Ad
      * @see ProjectPlanConfigService
      */
     private ID createPlan(ID projectId, String planName, int seq, int flowStatus, ID[] flowNexts) {
-        Record plan = EntityHelper.forNew(EntityHelper.ProjectPlanConfig, RebuildApplication.getCurrentUser());
+        Record plan = EntityHelper.forNew(EntityHelper.ProjectPlanConfig, Application.getCurrentUser());
         plan.setID("projectId", projectId);
         plan.setString("planName", planName);
         plan.setInt("seq", seq);
@@ -103,7 +103,7 @@ public class ProjectConfigService extends BaseConfigurationService implements Ad
     }
 
     private void updateFlowNexts(ID planId, ID[] flowNexts) {
-        Record plan = EntityHelper.forUpdate(planId, RebuildApplication.getCurrentUser(), false);
+        Record plan = EntityHelper.forUpdate(planId, Application.getCurrentUser(), false);
         plan.setString("flowNexts", StringUtils.join(flowNexts, ","));
         super.updateOnly(plan);
     }

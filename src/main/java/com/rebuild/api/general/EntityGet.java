@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.rebuild.api.ApiContext;
 import com.rebuild.api.ApiInvokeException;
 import com.rebuild.api.BaseApi;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import org.apache.commons.lang.StringUtils;
 
@@ -42,7 +42,7 @@ public class EntityGet extends BaseApi {
             throw new ApiInvokeException(ApiInvokeException.ERR_BIZ, "Unsupportted operation for entity/id : " + queryId);
         }
 
-        if (!RebuildApplication.getPrivilegesManager().allowRead(context.getBindUser(), queryId)) {
+        if (!Application.getPrivilegesManager().allowRead(context.getBindUser(), queryId)) {
             return formatFailure("无权读取记录或记录不存在 : " + queryId);
         }
 
@@ -52,7 +52,7 @@ public class EntityGet extends BaseApi {
         String sql = String.format("select %s from %s where %s = ?",
                 StringUtils.join(fields, ","), useEntity.getName(), useEntity.getPrimaryField().getName());
 
-        Query query = RebuildApplication.getQueryFactory().createQueryNoFilter(sql);
+        Query query = Application.getQueryFactory().createQueryNoFilter(sql);
         Object[] queryed = query.setParameter(1, queryId).unique();
         if (queryed == null) {
             return formatFailure("记录不存在 : " + queryId);

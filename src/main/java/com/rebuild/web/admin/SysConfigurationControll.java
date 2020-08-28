@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.qiniu.common.QiniuException;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.util.Auth;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.*;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
@@ -213,25 +213,25 @@ public class SysConfigurationControll extends BaseController {
         final String sql = "select date_format(sendTime,'%Y-%m-%d'),count(sendId) from SmsendLog" +
                 " where type = ? and sendTime > ? group by date_format(sendTime,'%Y-%m-%d')";
 
-        Object[][] sms = RebuildApplication.createQueryNoFilter(sql)
+        Object[][] sms = Application.createQueryNoFilter(sql)
                 .setParameter(1, 1)
                 .setParameter(2, xday)
                 .array();
         Arrays.sort(sms, Comparator.comparing(o -> o[0].toString()));
 
-        Object[] smsCount = RebuildApplication.createQueryNoFilter(
+        Object[] smsCount = Application.createQueryNoFilter(
                 "select count(sendId) from SmsendLog where type = ?")
                 .setParameter(1, 1)
                 .unique();
 
 
-        Object[][] email = RebuildApplication.createQueryNoFilter(sql)
+        Object[][] email = Application.createQueryNoFilter(sql)
                 .setParameter(1, 2)
                 .setParameter(2, xday)
                 .array();
         Arrays.sort(email, Comparator.comparing(o -> o[0].toString()));
 
-        Object[] emailCount = RebuildApplication.createQueryNoFilter(
+        Object[] emailCount = Application.createQueryNoFilter(
                 "select count(sendId) from SmsendLog where type = ?")
                 .setParameter(1, 2)
                 .unique();

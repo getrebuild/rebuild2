@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.DataListManager;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.utils.JSONUtils;
@@ -60,7 +60,7 @@ public class LoginLogControll extends EntityController {
     @RequestMapping("/admin/bizuser/online-users")
     public void getOnlineUsers(HttpServletResponse response) throws IOException {
         JSONArray users = new JSONArray();
-        for (HttpSession s : RebuildApplication.getSessionStore().getAllSession()) {
+        for (HttpSession s : Application.getSessionStore().getAllSession()) {
             ID user = (ID) s.getAttribute(WebUtils.CURRENT_USER);
             if (user == null) continue;
 
@@ -83,7 +83,7 @@ public class LoginLogControll extends EntityController {
     @RequestMapping("/admin/bizuser/kill-session")
     public void killSession(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID user = getIdParameterNotNull(request, "user");
-        HttpSession s = RebuildApplication.getSessionStore().getSession(user);
+        HttpSession s = Application.getSessionStore().getSession(user);
         if (s != null) {
             LOG.warn("Kill session via admin : " + user + " < " + s.getId());
             try {

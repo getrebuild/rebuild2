@@ -11,10 +11,10 @@ import cn.devezhao.commons.ThrowableUtils;
 import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.engine.ID;
-import com.alibaba.fastjson.JSONObject;
-import com.rebuild.api.Controller;
 import com.rebuild.api.login.AuthTokenManager;
+import com.rebuild.core.Application;
 import com.rebuild.core.RebuildEnvironmentPostProcessor;
+import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.web.admin.AdminEntryController;
 import org.apache.commons.lang.StringUtils;
 
@@ -83,30 +83,20 @@ public class AppUtils {
      * @param request
      * @return
      */
-    public static boolean isAdminVerified(HttpServletRequest request) {
-        Object verified = ServletUtils.getSessionAttribute(request, AdminEntryController.KEY_VERIFIED);
-        return verified != null;
+    public static User getRequestUserBean(HttpServletRequest request) {
+        ID user = getRequestUser(request);
+        if (user == null) user = getRequestUserViaRbMobile(request, false);
+        if (user == null) return null;
+        return Application.getUserStore().getUser(user);
     }
 
     /**
-     * 格式化标准的客户端消息
-     *
-     * @param errorCode
-     * @param errorMsg
+     * @param request
      * @return
-     * @see Controller
      */
-    public static String formatControllerMessage(int errorCode, String errorMsg) {
-        JSONObject map = new JSONObject();
-        map.put("error_code", errorCode);
-        if (errorMsg != null) {
-            if (errorCode == 0) {
-                map.put("data", errorMsg);
-            } else {
-                map.put("error_msg", errorMsg);
-            }
-        }
-        return map.toJSONString();
+    public static boolean isAdminVerified(HttpServletRequest request) {
+        Object verified = ServletUtils.getSessionAttribute(request, AdminEntryController.KEY_VERIFIED);
+        return verified != null;
     }
 
     /**
@@ -117,6 +107,25 @@ public class AppUtils {
      * @return
      */
     public static String getErrorMessage(HttpServletRequest request, Throwable exception) {
+        if (exception == null && request != null) {
+            String errorMsg = (String) request.getAttribute(ServletUtils.ERROR_MESSAGE);
+            if (StringUtils.isNotBlank(errorMsg)) {
+                return errorMsg;
+            }
+
+            Integer code = (Integer) request.getAttribute(ServletUtils.ERROR_STATUS_CODE);
+            if (code != null && code == 404) {
+                return "访问的地址/资源不存在";
+            } else if (code != null && code == 403) {
+                return "权限不足，访问被阻止";
+            }
+
+            exception = (Throwable) request.getAttribute(ServletUtils.ERROR_EXCEPTION);
+            if (exception == null) {
+                exception = (Throwable) request.getAttribute(ServletUtils.JSP_JSP_EXCEPTION);
+            }
+        }
+
         // 已知异常
         if (exception != null) {
             Throwable know = ThrowableUtils.getRootCause(exception);
@@ -127,31 +136,15 @@ public class AppUtils {
             }
         }
 
-        String errorMsg = (String) request.getAttribute(ServletUtils.ERROR_MESSAGE);
-        if (StringUtils.isNotBlank(errorMsg)) {
-            return errorMsg;
-        }
-
         if (exception == null) {
-            exception = (Throwable) request.getAttribute(ServletUtils.ERROR_EXCEPTION);
-        }
-        if (exception == null) {
-            exception = (Throwable) request.getAttribute(ServletUtils.JSP_JSP_EXCEPTION);
-        }
-
-        if (exception == null) {
-            Integer state = (Integer) request.getAttribute(ServletUtils.ERROR_STATUS_CODE);
-            if (state != null && state == 404) {
-                return "访问的地址/资源不存在";
-            } else if (state != null && state == 403) {
-                return "权限不足，访问被阻止";
-            } else {
-                return "系统繁忙，请稍后重试";
-            }
+            return "系统繁忙，请稍后重试";
         } else {
             exception = ThrowableUtils.getRootCause(exception);
-            errorMsg = StringUtils.defaultIfBlank(exception.getLocalizedMessage(), "系统繁忙，请稍后重试");
-            return exception.getClass().getSimpleName() + ": " + errorMsg;
+            String errorMsg = StringUtils.defaultIfBlank(exception.getLocalizedMessage(), "系统繁忙，请稍后重试");
+            if (Application.devMode()) {
+                errorMsg += " (" + exception.getClass().getSimpleName() + ")";
+            }
+            return errorMsg;
         }
     }
 

@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.Query;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.util.support.QueryHelper;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.task.HeavyTask;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
@@ -48,7 +48,7 @@ public class SeriesReindexTask extends HeavyTask<Integer> {
         if (ONLY_REINDEX_BLANK) {
             sql += String.format(" where %s is null or %s = ''", field.getName(), field.getName());
         }
-        Query query = RebuildApplication.createQueryNoFilter(sql);
+        Query query = Application.createQueryNoFilter(sql);
         Object[][] array = QueryHelper.readArray(query);
 
         setTotal(array.length);
@@ -62,7 +62,7 @@ public class SeriesReindexTask extends HeavyTask<Integer> {
                 Record record = EntityHelper.forUpdate((ID) o[0], UserService.SYSTEM_USER, false);
                 String series = SeriesGeneratorFactory.generate(field);
                 record.setString(field.getName(), series);
-                RebuildApplication.getCommonsService().update(record, false);
+                Application.getCommonsService().update(record, false);
                 this.addSucceeded();
 
             } finally {

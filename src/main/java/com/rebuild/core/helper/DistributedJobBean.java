@@ -7,7 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.helper;
 
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.setup.Installer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,7 +38,7 @@ public abstract class DistributedJobBean {
      */
     protected boolean isRunning() {
         if (Installer.isUseRedis()) {
-            JedisPool pool = RebuildApplication.getCommonsCache().getJedisPool();
+            JedisPool pool = Application.getCommonsCache().getJedisPool();
             String jobKey = getClass().getName() + LOCK_KEY;
 
             try (Jedis jedis = pool.getResource()) {

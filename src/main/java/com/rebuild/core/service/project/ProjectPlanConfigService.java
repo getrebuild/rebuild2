@@ -9,7 +9,7 @@ package com.rebuild.core.service.project;
 
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.BaseConfigurationService;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.AdminGuard;
@@ -49,7 +49,7 @@ public class ProjectPlanConfigService extends BaseConfigurationService implement
 
     @Override
     public int delete(ID planId) {
-        Object[] count = RebuildApplication.createQuery(
+        Object[] count = Application.createQuery(
                 "select count(taskId) from ProjectTask where projectPlanId = ?")
                 .setParameter(1, planId)
                 .unique();
@@ -61,7 +61,7 @@ public class ProjectPlanConfigService extends BaseConfigurationService implement
 
     @Override
     protected void cleanCache(ID cfgid) {
-        Object[] projectId = RebuildApplication.createQueryNoFilter(
+        Object[] projectId = Application.createQueryNoFilter(
                 "select projectId from ProjectPlanConfig where configId = ?")
                 .setParameter(1, cfgid)
                 .unique();

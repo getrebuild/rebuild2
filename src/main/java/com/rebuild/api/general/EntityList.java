@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.api.ApiContext;
 import com.rebuild.api.ApiInvokeException;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.helper.general.DataListControl;
 import com.rebuild.core.helper.general.DataListWrapper;
 import com.rebuild.core.metadata.EntityHelper;
@@ -44,7 +44,7 @@ public class EntityList extends EntityGet {
             throw new ApiInvokeException(ApiInvokeException.ERR_BIZ, "Unsupportted operation for entity : " + entity);
         }
 
-        if (!RebuildApplication.getPrivilegesManager().allowRead(context.getBindUser(), useEntity.getEntityCode())) {
+        if (!Application.getPrivilegesManager().allowRead(context.getBindUser(), useEntity.getEntityCode())) {
             return formatFailure("无权读取 [" + EasyMeta.getLabel(useEntity) + "] 记录");
         }
 

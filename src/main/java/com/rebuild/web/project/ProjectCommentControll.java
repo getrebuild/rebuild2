@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
@@ -39,7 +39,7 @@ public class ProjectCommentControll extends BaseController {
         ID user = getRequestUser(request);
         ID taskId = getIdParameterNotNull(request, "task");
 
-        Object[][] array = RebuildApplication.createQueryNoFilter(
+        Object[][] array = Application.createQueryNoFilter(
                 "select commentId,content,attachments,createdOn,createdBy,createdBy" +
                         " from ProjectTaskComment where taskId = ? order by createdOn desc")
                 .setParameter(1, taskId)

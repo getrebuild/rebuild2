@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.query.AdvFilterParser;
 
@@ -87,7 +87,7 @@ public class FlowBranch extends FlowNode {
 
             String sql = MessageFormat.format("select {0} from {1} where {2} and {0} = ?",
                     entity.getPrimaryField().getName(), entity.getName(), sqlWhere);
-            Object[] matches = RebuildApplication.createQueryNoFilter(sql).setParameter(1, record).unique();
+            Object[] matches = Application.createQueryNoFilter(sql).setParameter(1, record).unique();
             return matches != null;
         }
         return true;

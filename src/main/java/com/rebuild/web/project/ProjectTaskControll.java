@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.RebuildApplication;
+import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.project.ProjectHelper;
@@ -95,7 +95,7 @@ public class ProjectTaskControll extends BaseController {
         else sort = "seq asc";
         querySql += " order by " + sort;
 
-        Object[][] tasks = RebuildApplication.createQueryNoFilter(querySql)
+        Object[][] tasks = Application.createQueryNoFilter(querySql)
                 .setParameter(1, planId)
                 .array();
 
@@ -111,7 +111,7 @@ public class ProjectTaskControll extends BaseController {
     @RequestMapping("/project/tasks/get")
     public void taskGet(HttpServletRequest request, HttpServletResponse response) {
         ID taskId = getIdParameterNotNull(request, "task");
-        Object[] task = RebuildApplication.createQueryNoFilter(
+        Object[] task = Application.createQueryNoFilter(
                 "select " + BASE_FIELDS + " from ProjectTask where taskId = ?")
                 .setParameter(1, taskId)
                 .unique();
@@ -122,7 +122,7 @@ public class ProjectTaskControll extends BaseController {
     @RequestMapping("/project/tasks/details")
     public void taskDetails(HttpServletRequest request, HttpServletResponse response) {
         ID taskId = getIdParameterNotNull(request, "task");
-        Object[] task = RebuildApplication.createQueryNoFilter(
+        Object[] task = Application.createQueryNoFilter(
                 "select " + BASE_FIELDS + ",projectId,description,attachments from ProjectTask where taskId = ?")
                 .setParameter(1, taskId)
                 .unique();
