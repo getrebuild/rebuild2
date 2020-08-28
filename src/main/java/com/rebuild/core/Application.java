@@ -8,7 +8,6 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core;
 
 import cn.devezhao.bizz.security.AccessDeniedException;
-import cn.devezhao.commons.ReflectUtils;
 import cn.devezhao.commons.excel.Cell;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Query;
@@ -17,8 +16,6 @@ import cn.devezhao.persist4j.engine.StandardRecord;
 import cn.devezhao.persist4j.query.QueryedRecord;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
-import com.rebuild.api.ApiGateway;
-import com.rebuild.api.BaseApi;
 import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.License;
@@ -45,14 +42,18 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.SystemUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.h2.Driver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.jdbc.JdbcRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
@@ -62,7 +63,9 @@ import java.util.*;
  * @author zhaofang123@gmail.com
  * @since 05/18/2018
  */
-@SpringBootApplication(scanBasePackages = {"com.rebuild"})
+@Repository
+@SpringBootApplication(scanBasePackages = {"com.rebuild"}, exclude = {
+        DataSourceAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class, JdbcTemplateAutoConfiguration.class })
 @ImportResource("classpath:application-bean.xml")
 public class Application {
 
@@ -77,7 +80,7 @@ public class Application {
     /**
      * Logger for global
      */
-    public static final Log LOG = LogFactory.getLog(Application.class);
+    public static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
     static {
         // Driver for DB
@@ -103,6 +106,8 @@ public class Application {
     // 实体对应的服务类
     private static Map<Integer, ServiceSpec> ESS = null;
 
+    private static boolean serversReady;
+
     public static void main(String[] args) {
         if (APPLICATION_CONTEXT != null) throw new IllegalStateException("Rebuild already started");
 
@@ -125,55 +130,54 @@ public class Application {
             }
 
         } catch (Exception ex) {
+            serversReady = false;
             LOG.error(formatBootMsg("REBUILD BOOTING FILAED !!!"), ex);
         }
     }
 
+    /**
+     * 系统初始化
+     *
+     * @param startAt
+     * @throws Exception
+     */
     public static void init(long startAt) throws Exception {
         LOG.info("Initializing Rebuild context ...");
 
-        if (!ServerStatus.checkAll()) {
+        if (!(serversReady = ServerStatus.checkAll())) {
             LOG.error(formatBootMsg(
                     "REBUILD BOOTING FAILURE DURING THE STATUS CHECK.", "PLEASE VIEW LOGS FOR MORE DETAILS."));
             return;
         }
 
-        try {
-            // 升级数据库
-            UpgradeDatabase.getInstance().upgradeQuietly();
+        // 升级数据库
+        UpgradeDatabase.getInstance().upgradeQuietly();
 
-            // 刷新配置缓存
-            for (ConfigurationItem item : ConfigurationItem.values()) {
-                RebuildConfiguration.get(item, true);
-            }
-
-            // 加载自定义实体
-            LOG.info("Loading customized/business entities ...");
-            ((DynamicMetadataFactory) APPLICATION_CONTEXT.getBean(PersistManagerFactory.class).getMetadataFactory()).refresh(false);
-
-            // 实体对应的服务类
-            ESS = new HashMap<>();
-            for (Map.Entry<String, ServiceSpec> e : APPLICATION_CONTEXT.getBeansOfType(ServiceSpec.class).entrySet()) {
-                ServiceSpec ss = e.getValue();
-                if (ss.getEntityCode() > 0) {
-                    ESS.put(ss.getEntityCode(), ss);
-                    LOG.info("Service specification : " + ss.getEntityCode() + " " + ss.getClass());
-                }
-            }
-
-            // 注册 API
-            Set<Class<?>> apiClasses = ReflectUtils.getAllSubclasses(ApiGateway.class.getPackage().getName(), BaseApi.class);
-            for (Class<?> c : apiClasses) {
-                //noinspection unchecked
-                ApiGateway.registerApi((Class<? extends BaseApi>) c);
-            }
-
-            APPLICATION_CONTEXT.registerShutdownHook();
-
-        } catch (Exception ex) {
-            APPLICATION_CONTEXT = null;
-            throw ex;
+        // 刷新配置缓存
+        for (ConfigurationItem item : ConfigurationItem.values()) {
+            RebuildConfiguration.get(item, true);
         }
+
+        // 加载自定义实体
+        LOG.info("Loading customized/business entities ...");
+        ((DynamicMetadataFactory) APPLICATION_CONTEXT.getBean(PersistManagerFactory.class).getMetadataFactory()).refresh(false);
+
+        // 实体对应的服务类
+        ESS = new HashMap<>();
+        for (Map.Entry<String, ServiceSpec> e : APPLICATION_CONTEXT.getBeansOfType(ServiceSpec.class).entrySet()) {
+            ServiceSpec ss = e.getValue();
+            if (ss.getEntityCode() > 0) {
+                ESS.put(ss.getEntityCode(), ss);
+                LOG.info("Service specification : " + ss.getEntityCode() + " " + ss.getClass());
+            }
+        }
+
+        // 初始化业务
+        for (Initialization bean : APPLICATION_CONTEXT.getBeansOfType(Initialization.class).values()) {
+            bean.init();
+        }
+
+        APPLICATION_CONTEXT.registerShutdownHook();
 
         LOG.info("Rebuild boot successful in " + (System.currentTimeMillis() - startAt) + " ms");
         LOG.info("REBUILD AUTHORITY : " + StringUtils.join(License.queryAuthority().values(), " | "));
@@ -198,7 +202,7 @@ public class Application {
     }
 
     public static boolean serversReady() {
-        return APPLICATION_CONTEXT != null;
+        return serversReady && APPLICATION_CONTEXT != null;
     }
 
     public static ConfigurableApplicationContext getApplicationContext() {

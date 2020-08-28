@@ -41,9 +41,6 @@ public enum ConfigurationItem {
     // 数据库版本
     DBVer(0L),
 
-    // 启用最近搜素
-    EnableRecentlyUsed(true),
-
     // 新建记录表单不显示不可创建字段
     FormHideUncreateField(false),
 

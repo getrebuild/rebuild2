@@ -27,9 +27,9 @@ $(document).ready(function () {
   $('.J_passwd').click(() => renderRbcomp(<DlgChangePasswd />))
 
   $('.J_save').click(function () {
-    const fullName = $val('#fullName')
-    const avatarUrl = $('.avatar img').attr('data-src') || null
-    const workphone = $val('#workphone')
+    const fullName = $val('#fullName'),
+      avatarUrl = $('.avatar img').attr('data-src') || null,
+      workphone = $val('#workphone')
     if (!fullName && !avatarUrl && workphone === null) {
       location.reload()
       return
@@ -39,12 +39,14 @@ $(document).ready(function () {
       return
     }
 
-    const _data = { metadata: { entity: 'User', id: window.__PageConfig.userid } }
+    const _data = {
+      metadata: { id: window.__PageConfig.userid },
+    }
     if (fullName) _data.fullName = fullName
     if (workphone || workphone === '') _data.workphone = workphone
     if (avatarUrl) _data.avatarUrl = avatarUrl
 
-    $.post('/app/entity/record-save', JSON.stringify(_data), function (res) {
+    $.post('/app/entity/record-save', JSON.stringify(_data), (res) => {
       if (res.error_code === 0) location.reload()
       else RbHighbar.create(res.error_msg)
     })
@@ -53,7 +55,7 @@ $(document).ready(function () {
   $('a.nav-link[href="#logs"]').click(() => {
     if ($('#logs tbody>tr').length > 0) return
 
-    $.get('/account/settings/login-logs', (res) => {
+    $.get('/settings/user/login-logs', (res) => {
       $(res.data).each(function (idx) {
         const $tr = $('<tr></tr>').appendTo('#logs tbody')
         $(`<td class="text-muted">${idx + 1}.</td>`).appendTo($tr)
@@ -64,12 +66,12 @@ $(document).ready(function () {
       })
 
       $('#logs tbody>tr').each(function () {
-        const ipAddr = $(this).find('td:eq(3)')
-        const ip = ipAddr.text()
+        const $ip = $(this).find('td:eq(3)')
+        const ip = $ip.text()
         $.get(`/commons/ip-location?ip=${ip}`, (res) => {
           if (res.error_code === 0 && res.data.country !== 'N') {
             const L = res.data.country === 'R' ? '局域网' : [res.data.region, res.data.country].join(', ')
-            ipAddr.text(`${ip} (${L})`)
+            $ip.text(`${ip} (${L})`)
           }
         })
       })
@@ -122,25 +124,16 @@ class DlgChangePasswd extends RbFormHandler {
 
   post() {
     const s = this.state
-    if (!s.oldPasswd) {
-      RbHighbar.create('请输入原密码')
-      return
-    }
-    if (!s.newPasswd) {
-      RbHighbar.create('请输入新密码')
-      return
-    }
-    if (s.newPasswd !== s.newPasswdAgain) {
-      RbHighbar.create('两次输入的新密码不一致')
-      return
-    }
+    if (!s.oldPasswd) return RbHighbar.create('请输入原密码')
+    if (!s.newPasswd) return RbHighbar.create('请输入新密码')
+    if (s.newPasswd !== s.newPasswdAgain) return RbHighbar.create('两次输入的新密码不一致')
 
-    const btns = $(this.refs['btns']).find('.btn').button('loading')
-    $.post(`/account/settings/save-passwd?oldp=${$encode(s.oldPasswd)}&newp=${$encode(s.newPasswd)}`, (res) => {
-      btns.button('reset')
+    const $btns = $(this.refs['btns']).find('.btn').button('loading')
+    $.post(`/settings/user/save-passwd?oldp=${$encode(s.oldPasswd)}&newp=${$encode(s.newPasswd)}`, (res) => {
+      $btns.button('reset')
       if (res.error_code === 0) {
         this.hide()
-        RbHighbar.create('密码修改成功', 'success')
+        RbHighbar.success('密码修改成功')
       } else RbHighbar.create(res.error_msg)
     })
   }
@@ -191,12 +184,10 @@ class DlgChangeEmail extends RbFormHandler {
 
   sendVCode() {
     const s = this.state
-    if (!s.newEmail || !$regex.isMail(s.newEmail)) {
-      RbHighbar.create('请输入有效的邮箱地址')
-      return
-    }
+    if (!s.newEmail || !$regex.isMail(s.newEmail)) return RbHighbar.create('请输入有效的邮箱地址')
+
     this.setState({ vcodeDisabled: true })
-    $.post(`/account/settings/send-email-vcode?email=${$encode(s.newEmail)}`, (res) => {
+    $.post(`/settings/user/send-email-vcode?email=${$encode(s.newEmail)}`, (res) => {
       if (res.error_code === 0) this.vcodeResend()
       else {
         this.setState({ vcodeDisabled: false })
@@ -218,18 +209,12 @@ class DlgChangeEmail extends RbFormHandler {
 
   post() {
     const s = this.state
-    if (!s.newEmail || !$regex.isMail(s.newEmail)) {
-      RbHighbar.create('请输入有效的邮箱地址')
-      return
-    }
-    if (!s.newEmail || !s.vcode) {
-      RbHighbar.create('请输入邮箱地址和验证码')
-      return
-    }
+    if (!s.newEmail || !$regex.isMail(s.newEmail)) return RbHighbar.create('请输入有效的邮箱地址')
+    if (!s.newEmail || !s.vcode) return RbHighbar.create('请输入邮箱地址和验证码')
 
-    const btns = $(this.refs['btns']).find('.btn').button('loading')
-    $.post(`/account/settings/save-email?email=${$encode(s.newEmail)}&vcode=${$encode(s.vcode)}`, (res) => {
-      btns.button('reset')
+    const $btns = $(this.refs['btns']).find('.btn').button('loading')
+    $.post(`/settings/user/save-email?email=${$encode(s.newEmail)}&vcode=${$encode(s.vcode)}`, (res) => {
+      $btns.button('reset')
       if (res.error_code === 0) {
         this.hide()
         $('.J_email-account').html(`当前绑定邮箱 <b>${s.newEmail}</b>`)

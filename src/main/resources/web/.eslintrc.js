@@ -12,6 +12,12 @@ module.exports = {
   parser: 'babel-eslint',
   plugins: ['react'],
   extends: ['eslint:recommended', 'plugin:react/recommended'],
+  settings: {
+    react: {
+      pragma: 'React',
+      version: '16.10.2',
+    },
+  },
 
   rules: {
     'react/jsx-no-target-blank': 0,

@@ -12,17 +12,17 @@
       <div class="rb-right-navbar" th:with="user = ${T(com.rebuild.utils.AppUtils).getRequestUserBean(#request)}">
         <ul class="nav navbar-nav float-right rb-user-nav">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" th:href="@{/account/settings}" data-toggle="dropdown">
+            <a class="nav-link dropdown-toggle" th:href="@{/settings/user}" data-toggle="dropdown">
               <img th:src="@{/account/user-avatar}" alt="Avatar" />
               <span class="user-name" th:text="${user.getFullName()}">姓名</span>
             </a>
             <div class="dropdown-menu">
               <div class="user-info">
                 <div class="user-name" th:text="${user.getFullName()}">姓名</div>
-                <div class="user-id" th:data-user="${user.getId()}" th:text="${user.getEmail()}">邮箱</div>
+                <div class="user-id" th:data-user="${user.getId()}" th:text="${user.getEmail() ?: '邮箱未设置'}">邮箱</div>
               </div>
-              <a class="dropdown-item" th:href="@{/account/settings}"><i class="icon zmdi zmdi-account-box"></i>个人设置</a>
-              <a class="dropdown-item" th:href="@{/user/logout}"><i class="icon zmdi zmdi-power"></i>退出</a>
+              <a class="dropdown-item" th:href="@{/settings/user}"><i class="icon zmdi zmdi-account-box"></i>个人设置</a>
+              <a class="dropdown-item" th:href="@{/user/logout}"><i class="icon zmdi zmdi-power"></i>安全退出</a>
             </div>
           </li>
         </ul>

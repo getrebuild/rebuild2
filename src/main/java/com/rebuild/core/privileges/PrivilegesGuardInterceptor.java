@@ -148,6 +148,7 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
         if (CommonsService.class.isAssignableFrom(invocation.getThis().getClass())) {
             return false;
         }
+
         String action = invocation.getMethod().getName();
         return action.startsWith("create") || action.startsWith("update") || action.startsWith("delete")
                 || action.startsWith("assign") || action.startsWith("share") || action.startsWith("unshare")

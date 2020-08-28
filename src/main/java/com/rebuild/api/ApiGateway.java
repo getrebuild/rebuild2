@@ -17,6 +17,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.rebuild.core.Application;
+import com.rebuild.core.Initialization;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.RebuildApiManager;
 import com.rebuild.core.metadata.EntityHelper;
@@ -26,8 +27,8 @@ import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.RateLimiters;
 import es.moki.ratelimitj.core.limiter.request.RequestRateLimiter;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,10 +37,7 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * OpenAPI 网关
@@ -48,11 +46,23 @@ import java.util.TreeMap;
  * @since 05/19/2018
  */
 @org.springframework.stereotype.Controller
-public class ApiGateway extends Controller {
+public class ApiGateway extends Controller implements Initialization {
 
-    private static final Log LOG = LogFactory.getLog(ApiGateway.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ApiGateway.class);
 
     private static final RequestRateLimiter RRL = RateLimiters.createRateLimiter(1, 200);
+
+    private static final Map<String, Class<? extends BaseApi>> API_CLASSES = new HashMap<>();
+
+    @Override
+    public void init() throws Exception {
+        Set<Class<?>> apiClasses = cn.devezhao.commons.ReflectUtils.getAllSubclasses(
+                ApiGateway.class.getPackage().getName(), BaseApi.class);
+        for (Class<?> c : apiClasses) {
+            //noinspection unchecked
+            ApiGateway.registerApi((Class<? extends BaseApi>) c);
+        }
+    }
 
     @CrossOrigin
     @RequestMapping("/gw/api/**")
@@ -120,7 +130,7 @@ public class ApiGateway extends Controller {
      * @param useApi
      * @return
      */
-    protected ApiContext verfiy(HttpServletRequest request, BaseApi useApi) {
+    protected ApiContext verfiy(HttpServletRequest request, @SuppressWarnings("unused") BaseApi useApi) {
         final Map<String, String> sortedMap = new TreeMap<>();
         for (Map.Entry<String, String[]> e : request.getParameterMap().entrySet()) {
             String[] vv = e.getValue();
@@ -252,18 +262,16 @@ public class ApiGateway extends Controller {
         return true;
     }
 
-    // -- 注册 API
-
-    private static final Map<String, Class<? extends BaseApi>> API_CLASSES = new HashMap<>();
-
     /**
+     * 注册 API
+     *
      * @param clazz
      */
     public static void registerApi(Class<? extends BaseApi> clazz) {
         BaseApi api = (BaseApi) ReflectUtils.newInstance(clazz);
         String apiName = api.getApiName();
         if (API_CLASSES.containsKey(apiName)) {
-            LOG.error("Replaced API : " + apiName);
+            LOG.warn("Replaced API : " + apiName);
         }
 
         API_CLASSES.put(apiName, clazz);

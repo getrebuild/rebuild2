@@ -216,7 +216,7 @@ var __initNavs = function () {
   }
 
   $('.nav-settings').click(function () {
-    RbModal.create(rb.baseUrl + '/p/commons/nav-settings', '设置导航菜单')
+    RbModal.create(rb.baseUrl + '/p/settings/nav-settings', '设置导航菜单')
   })
 
   // WHEN SMALL-WIDTH
@@ -625,4 +625,11 @@ var $converEmoji = converEmoji
 var $fromNow = function (date) {
   if (!date || !window.moment) return null
   return moment(date.split('UTC')[0].trim()).fromNow()
+}
+
+// 转义 JSON
+var $unescape = function (text) {
+  if (!text) return null
+  text = text.replace(/&quot;/g, '"')
+  return $.parseJSON(text)
 }

@@ -1,3 +1,10 @@
+/*
+Copyright (c) REBUILD <https://getrebuild.com/> and/or its owners. All rights reserved.
+
+rebuild is dual-licensed under commercial and open source licenses (GPLv3).
+See LICENSE and COMMERCIAL in the project root for license information.
+*/
+
 package com.rebuild.core;
 
 import com.rebuild.core.helper.ConfigurationItem;
@@ -16,6 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * @author zhaofang123@gmail.com
+ * @since 08/28/2020
+ */
 @Component
 public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor, InstallState {
 

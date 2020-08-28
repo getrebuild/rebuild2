@@ -48,8 +48,9 @@ public class ProtocolFilterParser {
             case "ref": {
                 return parseRef(ps[1]);
             }
+            default:
+                return null;
         }
-        return null;
     }
 
     /**

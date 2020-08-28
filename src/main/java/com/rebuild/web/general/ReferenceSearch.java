@@ -24,13 +24,14 @@ import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.privileges.UserService;
-import com.rebuild.core.service.general.RecentlyUsedCache;
+import com.rebuild.core.service.general.RecentlyUsedHelper;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.EntityController;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -52,7 +53,7 @@ import java.util.*;
 public class ReferenceSearch extends EntityController {
 
     // 快速搜索引用字段
-    @RequestMapping({"reference", "quick"})
+    @GetMapping({"reference", "quick"})
     public void referenceSearch(HttpServletRequest request, HttpServletResponse response) {
         final ID user = getRequestUser(request);
         final String entity = getParameterNotNull(request, "entity");
@@ -83,7 +84,7 @@ public class ReferenceSearch extends EntityController {
             ID[] recently = null;
             if (protocolFilter == null) {
                 String type = getParameter(request, "type");
-                recently = Application.getBean(RecentlyUsedCache.class).gets(user, referenceEntity.getName(), type);
+                recently = RecentlyUsedHelper.gets(user, referenceEntity.getName(), type);
             }
 
             if (recently == null || recently.length == 0) {
@@ -133,7 +134,7 @@ public class ReferenceSearch extends EntityController {
     }
 
     // 搜索指定实体的指定字段
-    @RequestMapping("search")
+    @GetMapping("search")
     public void search(HttpServletRequest request, HttpServletResponse response) {
         final ID user = getRequestUser(request);
         final String entity = getParameterNotNull(request, "entity");
@@ -142,7 +143,7 @@ public class ReferenceSearch extends EntityController {
         // 为空则加载最近使用的
         if (StringUtils.isBlank(q)) {
             String type = getParameter(request, "type");
-            ID[] recently = RecentlyUsedSearch.cache().gets(user, entity, type);
+            ID[] recently = RecentlyUsedHelper.gets(user, entity, type);
             if (recently.length == 0) {
                 writeSuccess(response, JSONUtils.EMPTY_ARRAY);
             } else {
@@ -194,7 +195,7 @@ public class ReferenceSearch extends EntityController {
     }
 
     // 获取记录的名称字段值
-    @RequestMapping("read-labels")
+    @GetMapping("read-labels")
     public void referenceLabel(HttpServletRequest request, HttpServletResponse response) {
         String ids = getParameter(request, "ids", null);
         if (ids == null) {
@@ -214,7 +215,7 @@ public class ReferenceSearch extends EntityController {
     }
 
     // 搜索分类字段
-    @RequestMapping("classification")
+    @GetMapping("classification")
     public void searchClassification(HttpServletRequest request, HttpServletResponse response) {
         final ID user = getRequestUser(request);
         final String entity = getParameterNotNull(request, "entity");
@@ -227,7 +228,7 @@ public class ReferenceSearch extends EntityController {
         // 为空则加载最近使用的
         if (StringUtils.isBlank(q)) {
             String type = "d" + useClassification;
-            ID[] recently = RecentlyUsedSearch.cache().gets(user, "ClassificationData", type);
+            ID[] recently = RecentlyUsedHelper.gets(user, "ClassificationData", type);
             if (recently.length == 0) {
                 writeSuccess(response, JSONUtils.EMPTY_ARRAY);
             } else {
@@ -289,9 +290,9 @@ public class ReferenceSearch extends EntityController {
     }
 
     /**
-     * @see com.rebuild.web.general.GeneralDataListControll#pageList(String, HttpServletRequest, HttpServletResponse)
+     * @see com.rebuild.web.general.GeneralListController#pageList(String, HttpServletRequest, HttpServletResponse)
      */
-    @RequestMapping("reference-search-list")
+    @GetMapping("reference-search-list")
     public ModelAndView pageListSearch(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String[] fieldAndEntity = getParameterNotNull(request, "field").split("\\.");
         if (!MetadataHelper.checkAndWarnField(fieldAndEntity[1], fieldAndEntity[0])) {
@@ -303,7 +304,7 @@ public class ReferenceSearch extends EntityController {
         Field field = entity.getField(fieldAndEntity[0]);
         Entity searchEntity = field.getReferenceEntity();
 
-        ModelAndView mv = createModelAndView("/general-entity/reference-search.jsp");
+        ModelAndView mv = createModelAndView("/general/reference-search");
         putEntityMeta(mv, searchEntity);
 
         JSON config = DataListManager.instance.getFieldsLayout(searchEntity.getName(), getRequestUser(request));

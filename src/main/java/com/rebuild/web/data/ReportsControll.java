@@ -56,7 +56,7 @@ public class ReportsControll extends BaseController {
 
         JSON model = FormsBuilder.instance.buildView(entity, user, recordId);
 
-        ModelAndView mv = createModelAndView("/general-entity/print-preview.jsp");
+        ModelAndView mv = createModelAndView("/general/print-preview");
         mv.getModel().put("contentBody", model);
         mv.getModel().put("recordId", recordId);
         mv.getModel().put("printTime", CalendarUtils.getUTCDateTimeFormat().format(CalendarUtils.now()));

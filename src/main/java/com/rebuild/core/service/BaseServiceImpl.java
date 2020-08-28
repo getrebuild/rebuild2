@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
  * @author devezhao
  * @since 01/04/2019
  */
-@Service
 public class BaseServiceImpl extends BaseService {
 
     public BaseServiceImpl(PersistManagerFactory aPMFactory) {

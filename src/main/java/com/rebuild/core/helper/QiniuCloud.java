@@ -52,13 +52,13 @@ public class QiniuCloud {
 
     private final UploadManager UPLOAD_MANAGER = new UploadManager(CONFIGURATION);
 
-    private Auth _auth;
+    private Auth auth;
     private String bucketName;
 
     private QiniuCloud() {
         String[] account = RebuildConfiguration.getStorageAccount();
         if (account != null) {
-            this._auth = Auth.create(account[0], account[1]);
+            this.auth = Auth.create(account[0], account[1]);
             this.bucketName = account[2];
         } else {
             LOG.warn("No QiniuCloud configuration! Using local storage.");
@@ -71,15 +71,15 @@ public class QiniuCloud {
      * @return
      */
     public boolean available() {
-        return this._auth != null;
+        return this.auth != null;
     }
 
     /**
      * @return
      */
     public Auth getAuth() {
-        Assert.notNull(_auth, "云存储账户未配置");
-        return _auth;
+        Assert.notNull(auth, "云存储账户未配置");
+        return auth;
     }
 
     /**

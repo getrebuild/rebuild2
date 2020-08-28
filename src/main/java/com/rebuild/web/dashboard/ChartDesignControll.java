@@ -32,6 +32,8 @@ import com.rebuild.web.EntityController;
 import com.rebuild.web.InvalidParameterException;
 import com.rebuild.web.commons.MetadataGetting;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -49,9 +51,9 @@ import java.util.List;
 @RequestMapping("/dashboard")
 public class ChartDesignControll extends EntityController {
 
-    @RequestMapping("/chart-design")
+    @GetMapping("/chart-design")
     public ModelAndView pageDesign(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ModelAndView mv = createModelAndView("/dashboard/chart-design.jsp");
+        ModelAndView mv = createModelAndView("/dashboard/chart-design");
 
         ID user = getRequestUser(request);
         String entity = getParameter(request, "source");
@@ -140,8 +142,8 @@ public class ChartDesignControll extends EntityController {
         }
     }
 
-    @RequestMapping("/chart-preview")
-    public void dataPreview(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("/chart-preview")
+    public void dataPreview(HttpServletRequest request, HttpServletResponse response) {
         JSON config = ServletUtils.getRequestJson(request);
         JSON data;
         try {
@@ -154,8 +156,8 @@ public class ChartDesignControll extends EntityController {
         writeSuccess(response, data);
     }
 
-    @RequestMapping("/chart-save")
-    public void chartSave(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("/chart-save")
+    public void chartSave(HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         JSON formJson = ServletUtils.getRequestJson(request);
 
@@ -189,7 +191,7 @@ public class ChartDesignControll extends EntityController {
     }
 
     @RequestMapping("/chart-delete")
-    public void chartDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void chartDelete(HttpServletRequest request, HttpServletResponse response) {
         // TODO 不能删除他人图表
         ID chartId = getIdParameterNotNull(request, "id");
         Application.getBean(ChartConfigService.class).delete(chartId);

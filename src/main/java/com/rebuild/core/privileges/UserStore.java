@@ -16,6 +16,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
+import com.rebuild.core.Initialization;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.privileges.bizz.User;
@@ -36,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @since 09/16/2018
  */
 @Component
-public class UserStore {
+public class UserStore implements Initialization {
 
     private static final Log LOG = LogFactory.getLog(UserStore.class);
 
@@ -52,7 +53,6 @@ public class UserStore {
 
     protected UserStore(PersistManagerFactory aPMFactory) {
         this.aPMFactory = aPMFactory;
-        this.init();
     }
 
     /**
@@ -495,10 +495,8 @@ public class UserStore {
 
     private static final String USER_FS = "userId,loginName,email,fullName,avatarUrl,isDisabled,deptId,roleId,workphone";
 
-    /**
-     * 初始化
-     */
-    private void init() {
+    @Override
+    public void init() {
         // 用户
 
         Object[][] array = aPMFactory.createQuery("select " + USER_FS + " from User").array();

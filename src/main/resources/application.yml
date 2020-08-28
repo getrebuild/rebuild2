@@ -49,6 +49,10 @@ spring:
     static-path-pattern: /assets/**
   resources:
     static-locations: classpath:/web/assets
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 200MB
   thymeleaf:
     prefix: classpath:/web
     suffix: .html

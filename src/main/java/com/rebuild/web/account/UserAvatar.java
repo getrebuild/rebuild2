@@ -60,7 +60,7 @@ public class UserAvatar extends BaseController {
      */
     protected void renderUserAvatar(Object user, HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (user == null) {
-            response.sendError(404);
+            response.sendRedirect(AppUtils.getContextPath() + "/assets/img/avatar.png");
             return;
         }
 
@@ -77,7 +77,7 @@ public class UserAvatar extends BaseController {
         }
 
         if (realUser == null) {
-            response.sendError(404);
+            response.sendRedirect(AppUtils.getContextPath() + "/assets/img/avatar.png");
             return;
         }
 
@@ -109,8 +109,7 @@ public class UserAvatar extends BaseController {
             } catch (IOException ex) {
                 LOG.warn("Couldn't generate avatar", ex);
 
-                avatarUrl = AppUtils.getContextPath() + "/assets/img/avatar.png";
-                response.sendRedirect(avatarUrl);
+                response.sendRedirect(AppUtils.getContextPath() + "/assets/img/avatar.png");
                 return;
             }
 

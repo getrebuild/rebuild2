@@ -10,6 +10,7 @@ package com.rebuild.web;
 import cn.devezhao.commons.web.ServletUtils;
 import com.alibaba.fastjson.support.spring.FastJsonJsonView;
 import com.rebuild.core.Application;
+import com.rebuild.core.Initialization;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.utils.AppUtils;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -40,35 +42,30 @@ import java.util.Map;
  * @since 2020/8/26
  */
 @Component
-public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver {
+public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver, Initialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(RebuildWebConfigurer.class);
 
     @Resource(name = "thymeleafViewResolver")
     private ThymeleafViewResolver thymeleafViewResolver;
 
-    private static ThymeleafViewResolver thymeleafViewResolverHold;
-
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
         if (thymeleafViewResolver != null) {
-            thymeleafViewResolverHold = thymeleafViewResolver;
-            resetStaticVariables();
+            this.init();
         }
         WebMvcConfigurer.super.configureViewResolvers(registry);
     }
 
-    /**
-     * 设置全局 Web 上下文变量
-     */
-    public static void resetStaticVariables() {
-        Assert.notNull(thymeleafViewResolverHold, "[thymeleafViewResolverHold] not be bull");
+    @Override
+    public void init() {
+        Assert.notNull(thymeleafViewResolver, "[thymeleafViewResolverHold] not be bull");
 
-        thymeleafViewResolverHold.addStaticVariable("baseUrl", AppUtils.getContextPath());
-        thymeleafViewResolverHold.addStaticVariable("env", Application.devMode() ? "dev" : "prodution");
-        thymeleafViewResolverHold.addStaticVariable("appName", RebuildConfiguration.get(ConfigurationItem.AppName));
-        thymeleafViewResolverHold.addStaticVariable("storageUrl", RebuildConfiguration.get(ConfigurationItem.StorageURL));
-        thymeleafViewResolverHold.addStaticVariable("fileSharable", RebuildConfiguration.get(ConfigurationItem.FileSharable));
+        thymeleafViewResolver.addStaticVariable("baseUrl", AppUtils.getContextPath());
+        thymeleafViewResolver.addStaticVariable("env", Application.devMode() ? "dev" : "prodution");
+        thymeleafViewResolver.addStaticVariable("appName", RebuildConfiguration.get(ConfigurationItem.AppName));
+        thymeleafViewResolver.addStaticVariable("storageUrl", RebuildConfiguration.get(ConfigurationItem.StorageURL));
+        thymeleafViewResolver.addStaticVariable("fileSharable", RebuildConfiguration.get(ConfigurationItem.FileSharable));
     }
 
     /**
@@ -111,11 +108,17 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
      * @return
      */
     private ModelAndView createError(HttpServletRequest request, Exception ex) {
+        MediaType mediaType = null;
+        try {
+            mediaType = MediaType.valueOf(request.getContentType());
+        } catch (Exception ignore) {
+        }
+
         ModelAndView error;
-        if (ServletUtils.isAjaxRequest(request)) {
-            error = new ModelAndView(new FastJsonJsonView());
-        } else {
+        if (MediaType.TEXT_HTML.equals(mediaType)) {
             error = new ModelAndView("/error/error");
+        } else {
+            error = new ModelAndView(new FastJsonJsonView());
         }
 
         String errorMsg = AppUtils.getErrorMessage(request, ex);

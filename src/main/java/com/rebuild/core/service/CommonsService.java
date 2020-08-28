@@ -61,7 +61,7 @@ public class CommonsService extends BaseService {
      */
     public Record create(Record record, boolean strictMode) {
         if (strictMode) {
-            tryIfWithPrivileges(record);
+            tryIfHasPrivileges(record);
         }
         return super.create(record);
     }
@@ -73,7 +73,7 @@ public class CommonsService extends BaseService {
      */
     public Record update(Record record, boolean strictMode) {
         if (strictMode) {
-            tryIfWithPrivileges(record);
+            tryIfHasPrivileges(record);
         }
         return super.update(record);
     }
@@ -85,7 +85,7 @@ public class CommonsService extends BaseService {
      */
     public int delete(ID recordId, boolean strictMode) {
         if (strictMode) {
-            tryIfWithPrivileges(recordId);
+            tryIfHasPrivileges(recordId);
         }
         return super.delete(recordId);
     }
@@ -136,16 +136,6 @@ public class CommonsService extends BaseService {
     }
 
     /**
-     * 批量新建/更新、删除（同一事物）
-     *
-     * @param records
-     * @param deletes
-     */
-    public void createOrUpdateAndDelete(Record[] records, ID[] deletes) {
-        createOrUpdateAndDelete(records, deletes, true);
-    }
-
-    /**
      * 批量新建/更新、删除
      *
      * @param records
@@ -162,8 +152,9 @@ public class CommonsService extends BaseService {
      *
      * @param idOrRecord
      * @throws PrivilegesException
+     * @see MetadataHelper#hasPrivilegesField(Entity)
      */
-    private void tryIfWithPrivileges(Object idOrRecord) throws PrivilegesException {
+    private void tryIfHasPrivileges(Object idOrRecord) throws PrivilegesException {
         Entity entity;
         if (idOrRecord instanceof ID) {
             entity = MetadataHelper.getEntity(((ID) idOrRecord).getEntityCode());

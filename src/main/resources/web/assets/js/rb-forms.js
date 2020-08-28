@@ -66,7 +66,7 @@ class RbFormModal extends React.Component {
     $.post(`/app/${entity}/form-model?id=${id}`, JSON.stringify(initialValue), function (res) {
       // 包含错误
       if (res.error_code > 0 || !!res.data.error) {
-        let error = res.data.error || res.error_msg
+        const error = (res.data || {}).error || res.error_msg
         that.renderFromError(error)
         return
       }

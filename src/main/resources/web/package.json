@@ -4,7 +4,7 @@
   "description": "Lint the web",
   "main": ".eslintrc.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint --ext .js assets/js/* &"
   },
   "author": "REBUILD",
   "license": "GPL-3.0",

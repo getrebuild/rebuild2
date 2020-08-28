@@ -17,10 +17,11 @@ import net.coobird.thumbnailator.Thumbnails;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -35,14 +36,14 @@ import java.nio.charset.StandardCharsets;
  * @author devezhao
  * @since 01/03/2019
  */
-@RequestMapping("/filex/")
 @Controller
+@RequestMapping("/filex/")
 public class FileDownloader extends BaseController {
 
     // 图片缓存时间
     private static final int IMG_CACHE_TIME = 60 * 2;
 
-    @RequestMapping(value = "img/**", method = RequestMethod.GET)
+    @GetMapping("img/**")
     public void viewImg(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String filePath = request.getRequestURI();
         filePath = filePath.split("/filex/img/")[1];
@@ -118,7 +119,7 @@ public class FileDownloader extends BaseController {
         return Integer.parseInt(w);
     }
 
-    @RequestMapping(value = {"download/**", "access/**"}, method = RequestMethod.GET)
+    @GetMapping(value = {"download/**", "access/**"})
     public void download(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String filePath = request.getRequestURI();
 

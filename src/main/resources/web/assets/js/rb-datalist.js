@@ -765,7 +765,7 @@ const RbListPage = {
         RbViewModal.create({ id: ids[0], entity: entity[0] })
       }
     })
-    $('.J_columns').click(() => RbModal.create(`${rb.baseUrl}/p/general-entity/show-fields?entity=${entity[0]}`, '设置列显示'))
+    $('.J_columns').click(() => RbModal.create(`${rb.baseUrl}/p/general/show-fields?entity=${entity[0]}`, '设置列显示'))
 
     // 权限实体才有
     $('.J_assign').click(() => {

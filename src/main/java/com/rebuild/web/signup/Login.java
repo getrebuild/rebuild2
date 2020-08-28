@@ -126,7 +126,6 @@ public class Login extends BaseController {
             writeFailure(response, "验证码错误");
             return;
         }
-        needVcode.toString();
 
         final String user = getParameterNotNull(request, "user");
         final String password = ServletUtils.getRequestString(request);
