@@ -11,13 +11,13 @@ import cn.devezhao.persist4j.Query;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.helper.general.DataListWrapper;
-import com.rebuild.core.helper.general.DefaultDataListControl;
+import com.rebuild.core.helper.general.DataListBuilderImpl;
 
 /**
  * @author devezhao
  * @since 2020/5/21
  */
-public class ApiDataListControl extends DefaultDataListControl {
+public class ApiDataListControl extends DataListBuilderImpl {
 
     /**
      * @param query

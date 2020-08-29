@@ -188,7 +188,7 @@ class SelectReport extends React.Component {
               <div>
                 <ul className="list-unstyled">
                   {(this.state.reports || []).map((item) => {
-                    const reportUrl = `${rb.baseUrl}/app/${this.props.entity}/reports/export?report=${item.id}&record=${this.props.id}`
+                    const reportUrl = `${rb.baseUrl}/app/${this.props.entity}/report/export?report=${item.id}&record=${this.props.id}`
                     return (
                       <li key={'r-' + item.id}>
                         <a target="_blank" href={reportUrl} className="text-truncate">
@@ -208,7 +208,7 @@ class SelectReport extends React.Component {
   }
 
   componentDidMount() {
-    $.get(`/app/${this.props.entity}/reports/available`, (res) => this.setState({ reports: res.data }))
+    $.get(`/app/${this.props.entity}/report/available`, (res) => this.setState({ reports: res.data }))
     $(this._dlg).modal({ show: true, keyboard: true })
   }
 
@@ -543,7 +543,7 @@ const RbViewPage = {
     if (rb.isAdminUser) {
       $('.J_view-addons').click(function () {
         const type = $(this).data('type')
-        RbModal.create(`${rb.baseUrl}/p/admin/entityhub/view-addons?entity=${that.__entity[0]}&type=${type}`, '配置' + (type === 'TAB' ? '显示项' : '新建项'))
+        RbModal.create(`${rb.baseUrl}/p/admin/metadata/view-addons?entity=${that.__entity[0]}&type=${type}`, '配置' + (type === 'TAB' ? '显示项' : '新建项'))
       })
     }
   },

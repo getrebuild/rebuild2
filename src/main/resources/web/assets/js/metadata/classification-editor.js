@@ -152,7 +152,7 @@ class LevelBox extends React.Component {
 
   loadItems(p) {
     this.parentId = p
-    $.get(`/admin/entityhub/classification/load-data-items?data_id=${wpc.id}&parent=${p || ''}`, (res) => {
+    $.get(`/admin/metadata/classification/load-data-items?data_id=${wpc.id}&parent=${p || ''}`, (res) => {
       this.clear()
       this.setState({ items: res.data, activeId: null })
     })
@@ -187,7 +187,7 @@ class LevelBox extends React.Component {
     })
     if (repeated) return RbHighbar.create('存在同名分类项')
 
-    let url = `/admin/entityhub/classification/save-data-item?data_id=${wpc.id}&name=${name}`
+    let url = `/admin/metadata/classification/save-data-item?data_id=${wpc.id}&name=${name}`
     if (this.state.itemId) url += `&item_id=${this.state.itemId}`
     else url += `&parent=${this.parentId}&level=${this.props.level}`
     let isUnhide = null
@@ -230,7 +230,7 @@ class LevelBox extends React.Component {
       type: 'danger',
       confirm: function () {
         this.disabled()
-        $.post(`/admin/entityhub/classification/delete-data-item?item_id=${item[0]}`, (res) => {
+        $.post(`/admin/metadata/classification/delete-data-item?item_id=${item[0]}`, (res) => {
           this.hide()
           if (res.error_code !== 0) {
             RbHighbar.error(res.error_msg)
@@ -257,7 +257,7 @@ class LevelBox extends React.Component {
       alertExt.cancelText = '禁用'
       alertExt.cancel = function () {
         this.disabled()
-        const url = `/admin/entityhub/classification/save-data-item?item_id=${item[0]}&hide=true`
+        const url = `/admin/metadata/classification/save-data-item?item_id=${item[0]}&hide=true`
         $.post(url, (res) => {
           this.hide()
           if (res.error_code !== 0) {
@@ -438,7 +438,7 @@ class DlgImports extends RbModalHandler {
     }
 
     this.setState({ inProgress: true })
-    const url = `/admin/entityhub/classification/imports/file?dest=${this.props.id}&file=${$encode(this.state.uploadFile)}`
+    const url = `/admin/metadata/classification/imports/file?dest=${this.props.id}&file=${$encode(this.state.uploadFile)}`
     $.post(url, (res) => {
       if (res.error_code === 0) this.__checkState(res.data)
       else RbHighbar.error(res.error_msg || '导入失败')
@@ -448,7 +448,7 @@ class DlgImports extends RbModalHandler {
   import4Rbstore = (e) => {
     const file = e.currentTarget.dataset.file
     const name = e.currentTarget.dataset.name
-    const url = `/admin/entityhub/classification/imports/start?dest=${this.props.id}&file=${$encode(file)}`
+    const url = `/admin/metadata/classification/imports/start?dest=${this.props.id}&file=${$encode(file)}`
     const that = this
     RbAlert.create(`<strong>${name}</strong><br>此导入为增量导入，不会对现有数据造成影响。开始导入吗？`, {
       html: true,

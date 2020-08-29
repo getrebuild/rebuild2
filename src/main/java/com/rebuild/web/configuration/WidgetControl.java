@@ -19,13 +19,13 @@ import com.rebuild.core.configuration.general.ShareToManager;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.web.BaseController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * @author devezhao
@@ -33,11 +33,11 @@ import java.io.IOException;
  */
 @Controller
 @RequestMapping("/app/{entity}/")
-public class WidgetControll extends BaseController implements ShareTo {
+public class WidgetControl extends BaseController implements ShareTo {
 
-    @RequestMapping(value = "/widget-charts", method = RequestMethod.POST)
+    @PostMapping("widget-charts")
     public void sets(@PathVariable String entity,
-                     HttpServletRequest request, HttpServletResponse response) throws IOException {
+                     HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         JSON config = ServletUtils.getRequestJson(request);
         ID cfgid = getIdParameter(request, "id");
@@ -61,9 +61,9 @@ public class WidgetControll extends BaseController implements ShareTo {
         writeSuccess(response, record.getPrimary());
     }
 
-    @RequestMapping(value = "/widget-charts", method = RequestMethod.GET)
+    @GetMapping("widget-charts")
     public void gets(@PathVariable String entity,
-                     HttpServletRequest request, HttpServletResponse response) throws IOException {
+                     HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         ConfigBean config = BaseLayoutManager.instance.getWidgetCharts(user, entity);
         writeSuccess(response, config == null ? null : config.toJSON());

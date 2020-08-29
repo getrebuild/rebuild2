@@ -29,9 +29,9 @@ import java.io.IOException;
  * @author Zhao Fangfang
  * @since 1.0, 2013-6-24
  */
-public class RebuildAuthHandler extends HandlerInterceptorAdapter implements InstallState {
+public class RebuildAuthInterceptor extends HandlerInterceptorAdapter implements InstallState {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RebuildAuthHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RebuildAuthInterceptor.class);
 
     private static final String TIMEOUT_KEY = "ErrorHandler_TIMEOUT";
 

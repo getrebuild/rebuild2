@@ -19,12 +19,12 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserService;
 
 /**
- * 数据列表控制器
+ * 数据列表数据构建
  *
  * @author Zhao Fangfang
  * @since 1.0, 2013-6-20
  */
-public class DefaultDataListControl implements DataListControl {
+public class DataListBuilderImpl implements DataListBuilder {
 
     final protected Entity entity;
     final protected QueryParser queryParser;
@@ -34,7 +34,7 @@ public class DefaultDataListControl implements DataListControl {
      * @param query
      * @param user
      */
-    public DefaultDataListControl(JSONObject query, ID user) {
+    public DataListBuilderImpl(JSONObject query, ID user) {
         this.entity = MetadataHelper.getEntity(query.getString("entity"));
         this.queryParser = new QueryParser(query, this);
         this.user = user;

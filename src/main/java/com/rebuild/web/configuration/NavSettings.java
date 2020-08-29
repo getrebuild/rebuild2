@@ -24,12 +24,12 @@ import com.rebuild.web.BaseController;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * 导航菜单设置
@@ -41,8 +41,8 @@ import java.io.IOException;
 @RequestMapping("/app/settings/")
 public class NavSettings extends BaseController implements ShareTo {
 
-    @RequestMapping(value = "nav-settings", method = RequestMethod.POST)
-    public void sets(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("nav-settings")
+    public void sets(HttpServletRequest request, HttpServletResponse response) {
         final ID user = getRequestUser(request);
         Assert.isTrue(Application.getPrivilegesManager().allow(user, ZeroEntry.AllowCustomNav), "没有权限");
 
@@ -75,7 +75,7 @@ public class NavSettings extends BaseController implements ShareTo {
         writeSuccess(response);
     }
 
-    @RequestMapping(value = "nav-settings", method = RequestMethod.GET)
+    @GetMapping("nav-settings")
     public void gets(HttpServletRequest request, HttpServletResponse response) {
         final ID user = getRequestUser(request);
         final String cfgid = request.getParameter("id");
@@ -90,7 +90,7 @@ public class NavSettings extends BaseController implements ShareTo {
         }
     }
 
-    @RequestMapping(value = "nav-settings/alist", method = RequestMethod.GET)
+    @GetMapping("nav-settings/alist")
     public void getsList(HttpServletRequest request, HttpServletResponse response) {
         final ID user = getRequestUser(request);
 

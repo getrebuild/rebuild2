@@ -14,7 +14,7 @@ import com.rebuild.core.RebuildException;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.SetUser;
 import com.rebuild.core.helper.general.DataListWrapper;
-import com.rebuild.core.helper.general.DefaultDataListControl;
+import com.rebuild.core.helper.general.DataListBuilderImpl;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -29,7 +29,7 @@ import java.util.List;
  * 数据导出
  *
  * @author ZHAO
- * @see DefaultDataListControl
+ * @see DataListBuilderImpl
  * @since 2019/11/18
  */
 public class DataExporter extends SetUser<DataExporter> {
@@ -67,7 +67,7 @@ public class DataExporter extends SetUser<DataExporter> {
      * @param dest
      */
     public void export(File dest) {
-        DefaultDataListControl control = new DefaultDataListControl(queryData, getUser());
+        DataListBuilderImpl control = new DataListBuilderImpl(queryData, getUser());
 
         List<String> head = this.buildHead(control);
 
@@ -109,7 +109,7 @@ public class DataExporter extends SetUser<DataExporter> {
      * @param control
      * @return
      */
-    protected List<String> buildHead(DefaultDataListControl control) {
+    protected List<String> buildHead(DataListBuilderImpl control) {
         List<String> headList = new ArrayList<>();
         for (String field : control.getQueryParser().getQueryFields()) {
             headFields.add(MetadataHelper.getLastJoinField(control.getEntity(), field));
@@ -125,7 +125,7 @@ public class DataExporter extends SetUser<DataExporter> {
      * @param control
      * @return
      */
-    protected List<List<String>> buildData(DefaultDataListControl control) {
+    protected List<List<String>> buildData(DataListBuilderImpl control) {
         JSONArray data = ((JSONObject) control.getJSONResult()).getJSONArray("data");
 
         List<List<String>> into = new ArrayList<>();

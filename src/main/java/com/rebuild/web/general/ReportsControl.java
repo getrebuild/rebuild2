@@ -5,7 +5,7 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-package com.rebuild.web.data;
+package com.rebuild.web.general;
 
 import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.commons.web.ServletUtils;
@@ -45,7 +45,7 @@ import java.io.IOException;
  */
 @Controller
 @RequestMapping("/app/{entity}/")
-public class ReportsControll extends BaseController {
+public class ReportsControl extends BaseController {
 
     // 打印视图
 
@@ -66,14 +66,14 @@ public class ReportsControll extends BaseController {
 
     // 报表
 
-    @RequestMapping("reports/available")
+    @RequestMapping("report/available")
     public void availableReports(@PathVariable String entity, HttpServletResponse response) {
         Entity entityMeta = MetadataHelper.getEntity(entity);
         JSONArray reports = DataReportManager.instance.getReports(entityMeta);
         writeSuccess(response, reports);
     }
 
-    @RequestMapping({"reports/generate", "reports/export"})
+    @RequestMapping({"report/generate", "report/export"})
     public void reportGenerate(@PathVariable String entity,
                                HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID reportId = getIdParameterNotNull(request, "report");
@@ -96,7 +96,7 @@ public class ReportsControll extends BaseController {
 
     // 列表导出
 
-    @RequestMapping("data-export/submit")
+    @RequestMapping("export/submit")
     public void export(@PathVariable String entity,
                        HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);

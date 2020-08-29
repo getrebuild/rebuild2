@@ -66,7 +66,7 @@ public class FileManagerControl extends BaseController {
                 continue;
             }
             ID fileId = ID.valueOf(file);
-            if (!isAllowed(user, fileId)) {
+            if (unallowOperating(user, fileId)) {
                 writeFailure(response, "无权删除他人文件");
                 return;
             }
@@ -90,7 +90,7 @@ public class FileManagerControl extends BaseController {
                 continue;
             }
             ID fileId = ID.valueOf(file);
-            if (!isAllowed(user, fileId)) {
+            if (unallowOperating(user, fileId)) {
                 writeFailure(response, "无权更改他人文件");
                 return;
             }
@@ -125,8 +125,14 @@ public class FileManagerControl extends BaseController {
         writeSuccess(response, readable);
     }
 
-    // 是否允许操作指定文件（管理员总是允许）
-    private boolean isAllowed(ID user, ID file) {
+    /**
+     * 是否允许操作指定文件（管理员与创建人允许）
+     *
+     * @param user
+     * @param file
+     * @return
+     */
+    private boolean unallowOperating(ID user, ID file) {
         if (UserHelper.isAdmin(user)) return true;
 
         Object[] o = Application.createQueryNoFilter(

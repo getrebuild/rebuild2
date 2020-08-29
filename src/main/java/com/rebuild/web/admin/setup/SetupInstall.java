@@ -12,8 +12,6 @@ import cn.devezhao.commons.ThrowableUtils;
 import cn.devezhao.commons.web.ServletUtils;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.ConfigurationItem;
-import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.setup.InstallState;
 import com.rebuild.core.helper.setup.Installer;
 import com.rebuild.utils.JSONUtils;
@@ -51,15 +49,13 @@ public class SetupInstall extends BaseController implements InstallState {
             return null;
         }
 
-        ModelAndView mv = new ModelAndView("/admin/setup/install");
-        mv.getModel().put("defaultDataDirectory", RebuildConfiguration.getFileOfData(null).getAbsolutePath().replace("\\", "/"));
-        mv.getModel().put("defaultAppName", RebuildConfiguration.get(ConfigurationItem.AppName));
-        mv.getModel().put("defaultHomeURL", RebuildConfiguration.get(ConfigurationItem.HomeURL));
+        ModelAndView mv = createModelAndView("/admin/setup/install");
+        mv.getModel().put("Version", Application.VER);
         return mv;
     }
 
     @RequestMapping("test-connection")
-    public void testConnection(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void testConnection(HttpServletRequest request, HttpServletResponse response) {
         JSONObject dbProps = (JSONObject) ServletUtils.getRequestJson(request);
         JSONObject props = JSONUtils.toJSONObject("databaseProps", dbProps);
 
@@ -89,7 +85,7 @@ public class SetupInstall extends BaseController implements InstallState {
     }
 
     @RequestMapping("test-directory")
-    public void testDirectory(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void testDirectory(HttpServletRequest request, HttpServletResponse response) {
         String dir = getParameterNotNull(request, "dir");
         File file = new File(dir);
         if (file.exists()) {
@@ -117,7 +113,7 @@ public class SetupInstall extends BaseController implements InstallState {
     }
 
     @RequestMapping("test-cache")
-    public void testCache(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void testCache(HttpServletRequest request, HttpServletResponse response) {
         JSONObject cacheProps = (JSONObject) ServletUtils.getRequestJson(request);
 
         JedisPool pool = new JedisPool(new JedisPoolConfig(),
@@ -138,7 +134,7 @@ public class SetupInstall extends BaseController implements InstallState {
     }
 
     @RequestMapping("install-rebuild")
-    public void installExec(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void installExec(HttpServletRequest request, HttpServletResponse response) {
         JSONObject installProps = (JSONObject) ServletUtils.getRequestJson(request);
         try {
             new Installer(installProps).install();

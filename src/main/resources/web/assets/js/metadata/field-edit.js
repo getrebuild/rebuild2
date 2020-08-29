@@ -176,9 +176,9 @@ $(document).ready(function () {
   }
   // 分类
   else if (dt === 'CLASSIFICATION') {
-    $.get(`/admin/entityhub/classification/info?id=${extConfig.classification}`, function (res) {
+    $.get(`/admin/metadata/classification/info?id=${extConfig.classification}`, function (res) {
       $('#useClassification a')
-        .attr({ href: `${rb.baseUrl}/admin/entityhub/classification/${extConfig.classification}` })
+        .attr({ href: `${rb.baseUrl}/admin/metadata/classification/${extConfig.classification}` })
         .text(res.data.name)
     })
   }

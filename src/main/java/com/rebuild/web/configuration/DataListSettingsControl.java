@@ -33,13 +33,10 @@ import com.rebuild.web.BaseController;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,11 +50,11 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/app/{entity}/")
-public class DataListSettingsControll extends BaseController implements ShareTo {
+public class DataListSettingsControl extends BaseController implements ShareTo {
 
-    @RequestMapping(value = "list-fields", method = RequestMethod.POST)
+    @PostMapping("list-fields")
     public void sets(@PathVariable String entity,
-                     HttpServletRequest request, HttpServletResponse response) throws IOException {
+                     HttpServletRequest request, HttpServletResponse response) {
         final ID user = getRequestUser(request);
         Assert.isTrue(Application.getPrivilegesManager().allow(user, ZeroEntry.AllowCustomDataList), "没有权限");
 
@@ -90,7 +87,7 @@ public class DataListSettingsControll extends BaseController implements ShareTo 
         writeSuccess(response);
     }
 
-    @RequestMapping(value = "list-fields", method = RequestMethod.GET)
+    @GetMapping("list-fields")
     public void gets(@PathVariable String entity,
                      HttpServletRequest request, HttpServletResponse response) {
         final ID user = getRequestUser(request);
@@ -152,7 +149,7 @@ public class DataListSettingsControll extends BaseController implements ShareTo 
     /**
      * @see NavSettings#getsList(HttpServletRequest, HttpServletResponse)
      */
-    @RequestMapping(value = "list-fields/alist", method = RequestMethod.GET)
+    @GetMapping("list-fields/alist")
     public void getsList(@PathVariable String entity,
                          HttpServletRequest request, HttpServletResponse response) {
         final ID user = getRequestUser(request);

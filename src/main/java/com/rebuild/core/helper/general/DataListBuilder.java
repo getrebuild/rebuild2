@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSON;
  * @author Zhao Fangfang
  * @since 1.0, 2013-6-20
  */
-public interface DataListControl {
+public interface DataListBuilder {
 
     /**
      * @return

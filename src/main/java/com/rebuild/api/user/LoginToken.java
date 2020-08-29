@@ -5,7 +5,7 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-package com.rebuild.api.login;
+package com.rebuild.api.user;
 
 import cn.devezhao.commons.EncryptUtils;
 import com.alibaba.fastjson.JSON;

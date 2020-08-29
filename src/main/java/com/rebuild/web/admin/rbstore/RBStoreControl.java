@@ -14,6 +14,7 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.rbstore.RBStore;
 import com.rebuild.web.BaseController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,17 +27,17 @@ import java.io.IOException;
  */
 @Controller
 @RequestMapping("/admin/rbstore")
-public class RBStoreControll extends BaseController {
+public class RBStoreControl extends BaseController {
 
-    @RequestMapping("load-index")
-    public void loadDataIndex(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @GetMapping("load-index")
+    public void loadDataIndex(HttpServletRequest request, HttpServletResponse response) {
         String type = getParameterNotNull(request, "type");
         JSON index = RBStore.fetchRemoteJson(type + "/index.json");
         writeSuccess(response, index);
     }
 
-    @RequestMapping("load-metaschemas")
-    public void loadMetaschemas(HttpServletResponse response) throws IOException {
+    @GetMapping("load-metaschemas")
+    public void loadMetaschemas(HttpServletResponse response) {
         JSONArray index = (JSONArray) RBStore.fetchMetaschema("index.json");
 
         for (Object o : index) {

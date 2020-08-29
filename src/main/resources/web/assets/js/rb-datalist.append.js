@@ -83,7 +83,7 @@ class DataExport extends BatchOperator {
 
   confirm = () => {
     this.disabled(true)
-    $.post(`/app/${this.props.entity}/data-export/submit?dr=${this.state.dataRange}`, JSON.stringify(this.getQueryData()), (res) => {
+    $.post(`/app/${this.props.entity}/export/submit?dr=${this.state.dataRange}`, JSON.stringify(this.getQueryData()), (res) => {
       if (res.error_code === 0) {
         this.hide()
         window.open(`${rb.baseUrl}/filex/download/${res.data}?temp=yes`)

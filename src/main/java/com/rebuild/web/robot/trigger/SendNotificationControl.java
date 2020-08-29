@@ -13,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +25,7 @@ import java.util.Map;
 public class SendNotificationControl extends BaseController {
 
     @RequestMapping("sendnotification-atypes")
-    public void availableTypes(HttpServletResponse response) throws IOException {
+    public void availableTypes(HttpServletResponse response) {
         Map<String, Boolean> ta = new HashMap<>();
         ta.put("serviceMail", SMSender.availableMail());
         ta.put("serviceSms", SMSender.availableSMS());

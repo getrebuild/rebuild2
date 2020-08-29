@@ -30,10 +30,11 @@ import java.io.IOException;
  * @since 2019/04/08
  */
 @Controller
-public class ClassificationImportControll extends BaseController {
+@RequestMapping("/admin/metadata/classification/")
+public class ClassificationImportControl extends BaseController {
 
-    @RequestMapping("/admin/entityhub/classification/imports/start")
-    public void starts(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @RequestMapping("imports/start")
+    public void starts(HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         ID dest = getIdParameterNotNull(request, "dest");
         String fileUrl = getParameterNotNull(request, "file");
@@ -43,8 +44,8 @@ public class ClassificationImportControll extends BaseController {
         writeSuccess(response, taskid);
     }
 
-    @RequestMapping("/admin/entityhub/classification/imports/file")
-    public void startsFile(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @RequestMapping("imports/file")
+    public void startsFile(HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         ID dest = getIdParameterNotNull(request, "dest");
         String filePath = getParameterNotNull(request, "file");

@@ -25,7 +25,7 @@ $(document).ready(function () {
 
     _btn.button('loading')
     $.post('/admin/entity/entity-new?nameField=' + $val('#nameField'), JSON.stringify(_data), function (res) {
-      if (res.error_code === 0) parent.location.href = rb.baseUrl + '/admin/entity/' + res.data + '/base'
+      if (res.error_code === 0) parent.location.href = `${rb.baseUrl}/admin/entity/${res.data}/base`
       else RbHighbar.error(res.error_msg)
     })
   })
@@ -131,12 +131,12 @@ class MetaschemaList extends React.Component {
         that.setState({ inProgress: true })
 
         $mp2.start()
-        $.post(`/admin/metaschema/imports?key=${item.key}`, (res) => {
+        $.post(`/admin/metadata/imports?key=${item.key}`, (res) => {
           $mp2.end()
           that.setState({ inProgress: false })
           if (res.error_code === 0) {
             RbHighbar.success('导入完成')
-            setTimeout(() => (parent.location.href = `../../entity/${res.data}/base`), 1500)
+            setTimeout(() => (parent.location.href = `${rb.baseUrl}/admin/entity/${res.data}/base`), 1500)
           } else RbHighbar.error(res.error_msg)
         })
       },

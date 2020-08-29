@@ -51,7 +51,7 @@ class GridList extends React.Component {
   }
 
   componentDidMount() {
-    $.get('/admin/entityhub/classification/list', (res) => this.setState({ list: res.data }))
+    $.get('/admin/metadata/classification/list', (res) => this.setState({ list: res.data }))
   }
 
   _handleEdit(item) {

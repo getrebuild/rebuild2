@@ -21,6 +21,7 @@ import com.rebuild.web.BaseController;
 import com.rebuild.web.admin.data.ReportTemplateControl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -39,12 +40,12 @@ import java.util.List;
 @RequestMapping("/admin/robot/")
 public class RobotTriggerControl extends BaseController {
 
-    @RequestMapping("triggers")
+    @GetMapping("triggers")
     public ModelAndView pageList() {
         return createModelAndView("/admin/robot/trigger-list");
     }
 
-    @RequestMapping("trigger/{id}")
+    @GetMapping("trigger/{id}")
     public ModelAndView pageEditor(@PathVariable String id,
                                    HttpServletResponse response) throws IOException {
         ID configId = ID.valueOf(id);

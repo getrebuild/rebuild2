@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.configuration.ConfigBean;
-import com.rebuild.core.helper.general.DefaultDataListControl;
+import com.rebuild.core.helper.general.DataListBuilderImpl;
 import com.rebuild.core.service.dashboard.ChartManager;
 import com.rebuild.core.service.dashboard.charts.ChartData;
 import com.rebuild.core.service.dashboard.charts.ChartsException;
@@ -60,7 +60,7 @@ public class ChartDataControl extends BaseController {
      * @param request
      * @param response
      * @throws IOException
-     * @see DefaultDataListControl
+     * @see DataListBuilderImpl
      */
     @RequestMapping("view-chart-sources")
     public void viewChartSources(HttpServletRequest request, HttpServletResponse response) throws IOException {

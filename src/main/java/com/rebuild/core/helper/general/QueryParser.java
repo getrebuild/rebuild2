@@ -31,7 +31,7 @@ import java.util.*;
 public class QueryParser {
 
     private JSONObject queryExpr;
-    private DataListControl dataListControl;
+    private DataListBuilder dataListBuilder;
 
     private Entity entity;
 
@@ -55,13 +55,13 @@ public class QueryParser {
 
     /**
      * @param queryExpr
-     * @param dataListControl
+     * @param dataListBuilder
      */
-    protected QueryParser(JSONObject queryExpr, DataListControl dataListControl) {
+    protected QueryParser(JSONObject queryExpr, DataListBuilder dataListBuilder) {
         this.queryExpr = queryExpr;
-        this.dataListControl = dataListControl;
-        this.entity = dataListControl != null ?
-                dataListControl.getEntity() : MetadataHelper.getEntity(queryExpr.getString("entity"));
+        this.dataListBuilder = dataListBuilder;
+        this.entity = dataListBuilder != null ?
+                dataListBuilder.getEntity() : MetadataHelper.getEntity(queryExpr.getString("entity"));
     }
 
     /**
@@ -169,7 +169,7 @@ public class QueryParser {
         List<String> wheres = new ArrayList<>();
 
         // Default
-        String defaultFilter = dataListControl == null ? null : dataListControl.getDefaultFilter();
+        String defaultFilter = dataListBuilder == null ? null : dataListBuilder.getDefaultFilter();
         if (StringUtils.isNotBlank(defaultFilter)) {
             wheres.add(defaultFilter);
         }

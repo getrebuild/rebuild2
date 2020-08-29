@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,10 +31,10 @@ import java.util.List;
  * @since 2019/04/28
  */
 @Controller
-public class MetaschemaControll extends BaseController {
+public class MetaschemaControl extends BaseController {
 
-    @RequestMapping("/admin/metaschema/imports")
-    public void imports(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @RequestMapping("/admin/metadata/imports")
+    public void imports(HttpServletRequest request, HttpServletResponse response) {
         final String entityKey = getParameterNotNull(request, "key");
 
         JSONArray index = (JSONArray) RBStore.fetchMetaschema("index.json");

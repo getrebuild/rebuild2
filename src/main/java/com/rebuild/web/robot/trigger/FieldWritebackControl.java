@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +37,7 @@ import java.util.List;
 public class FieldWritebackControl extends BaseController {
 
     @RequestMapping("field-writeback-fields")
-    public void getTargetField(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void getTargetField(HttpServletRequest request, HttpServletResponse response) {
         Entity sourceEntity = MetadataHelper.getEntity(getParameterNotNull(request, "source"));
         String target = getParameter(request, "target");
         Entity targetEntity = StringUtils.isBlank(target) ? null : MetadataHelper.getEntity(target);
@@ -83,7 +82,6 @@ public class FieldWritebackControl extends BaseController {
         }
 
         // 审批流程启用
-        @SuppressWarnings("DuplicatedCode")
         boolean hadApproval = targetEntity != null && RobotApprovalManager.instance.hadApproval(targetEntity, null) != null;
 
         JSON data = JSONUtils.toJSONObject(

@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +38,7 @@ import java.util.List;
 public class FieldAggregationControl extends BaseController {
 
     @RequestMapping("field-aggregation-entities")
-    public void getTargetEntity(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void getTargetEntity(HttpServletRequest request, HttpServletResponse response) {
         Entity sourceEntity = MetadataHelper.getEntity(getParameterNotNull(request, "source"));
         boolean self = getBoolParameter(request, "self", true);
 
@@ -63,7 +62,7 @@ public class FieldAggregationControl extends BaseController {
     }
 
     @RequestMapping("field-aggregation-fields")
-    public void getTargetField(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void getTargetField(HttpServletRequest request, HttpServletResponse response) {
         Entity sourceEntity = MetadataHelper.getEntity(getParameterNotNull(request, "source"));
         String target = getParameter(request, "target");
         Entity targetEntity = StringUtils.isBlank(target) ? null : MetadataHelper.getEntity(target);

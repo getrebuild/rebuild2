@@ -33,7 +33,7 @@ import java.io.IOException;
  * @since 2019/03/27
  */
 @Controller
-@RequestMapping("/admin/entityhub/")
+@RequestMapping("/admin/metadata/")
 public class ClassificationControl extends BaseController {
 
     @GetMapping("classifications")

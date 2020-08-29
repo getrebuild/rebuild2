@@ -74,7 +74,7 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new RebuildAuthHandler())
+        registry.addInterceptor(new RebuildAuthInterceptor())
                 .excludePathPatterns("/gw/**")
                 .excludePathPatterns("/assets/**")
                 .excludePathPatterns("/error");

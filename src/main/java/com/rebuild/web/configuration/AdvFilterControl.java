@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * 高级查询
@@ -38,11 +37,11 @@ import java.io.IOException;
  */
 @Controller
 @RequestMapping("/app/{entity}/")
-public class AdvFilterControll extends BaseController implements ShareTo {
+public class AdvFilterControl extends BaseController implements ShareTo {
 
     @RequestMapping("advfilter/post")
     public void sets(@PathVariable String entity,
-                     HttpServletRequest request, HttpServletResponse response) throws IOException {
+                     HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         ID filterId = getIdParameter(request, "id");
         String filterName = getParameter(request, "name");

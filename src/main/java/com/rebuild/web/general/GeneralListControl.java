@@ -14,8 +14,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.DataListManager;
-import com.rebuild.core.helper.general.DataListControl;
-import com.rebuild.core.helper.general.DefaultDataListControl;
+import com.rebuild.core.helper.general.DataListBuilder;
+import com.rebuild.core.helper.general.DataListBuilderImpl;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.bizz.ZeroEntry;
 import com.rebuild.web.EntityController;
@@ -92,8 +92,8 @@ public class GeneralListControl extends EntityController {
     public void dataList(@PathVariable String entity, HttpServletRequest request, HttpServletResponse response) {
         JSONObject query = (JSONObject) ServletUtils.getRequestJson(request);
 
-        DataListControl control = new DefaultDataListControl(query, getRequestUser(request));
-        JSON result = control.getJSONResult();
+        DataListBuilder builder = new DataListBuilderImpl(query, getRequestUser(request));
+        JSON result = builder.getJSONResult();
         writeSuccess(response, result);
     }
 }

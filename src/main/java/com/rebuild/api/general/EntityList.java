@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.api.ApiContext;
 import com.rebuild.api.ApiInvokeException;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.general.DataListControl;
+import com.rebuild.core.helper.general.DataListBuilder;
 import com.rebuild.core.helper.general.DataListWrapper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -83,8 +83,8 @@ public class EntityList extends EntityGet {
         queryEntry.put("sort", sortBy);
         queryEntry.put("reload", "true");
 
-        DataListControl control = new ApiDataListControl(queryEntry, context.getBindUser());
-        JSONObject ret = (JSONObject) control.getJSONResult();
+        DataListBuilder builder = new ApiDataListControl(queryEntry, context.getBindUser());
+        JSONObject ret = (JSONObject) builder.getJSONResult();
         return formatSuccess(ret);
     }
 }

@@ -82,7 +82,7 @@ $(document).ready(function () {
     } else if (dt === 'CLASSIFICATION') {
       if (classificationLoaded === false) {
         classificationLoaded = true
-        $.get('/admin/entityhub/classification/list', (res) => {
+        $.get('/admin/metadata/classification/list', (res) => {
           let hasData = false
           $(res.data).each(function () {
             if (!this[2]) {
