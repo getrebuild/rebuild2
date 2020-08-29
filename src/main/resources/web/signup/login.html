@@ -8,16 +8,13 @@
         margin-left: -15px !important;
         margin-right: -15px !important;
       }
-
       .vcode-row {
         height: 41px;
         max-width: 100%;
       }
-
       .vcode-row img {
         cursor: pointer;
       }
-
       .splash-footer *,
       .copyright,
       .copyright * {
@@ -27,11 +24,9 @@
         margin: 0 auto;
         text-align: center;
       }
-
       .copyright.dev-show a {
         text-decoration: underline;
       }
-
       .rb-bgimg {
         position: fixed;
         width: 100%;
@@ -42,7 +37,6 @@
         background-size: cover;
         opacity: 1;
       }
-
       .rb-bgimg::before {
         content: '';
         position: absolute;
@@ -51,9 +45,18 @@
         z-index: 1;
         background: rgba(0, 0, 0, 0.1);
       }
-
       .rb-content {
         z-index: 2;
+      }
+      .select-lang > a {
+        display: inline-block;
+        padding: 6px 5px;
+        font-size: 0;
+        line-height: 1;
+        border-radius: 2px;
+      }
+      .select-lang > a:hover {
+        background-color: #e6eff8;
       }
     </style>
   </head>
@@ -69,7 +72,7 @@
               <div class="card-body">
                 <form id="login-form">
                   <div class="form-group">
-                    <input class="form-control" id="user" type="text" placeholder="用户名 (或邮箱)" />
+                    <input class="form-control" id="user" type="text" th:placeholder="${bundle.lang('UsernameOrEmail')}" />
                   </div>
                   <div class="form-group">
                     <input class="form-control" id="passwd" type="password" placeholder="登录密码" />
@@ -96,6 +99,10 @@
                   <div class="form-group login-submit mb-2">
                     <button class="btn btn-primary btn-xl" type="submit" data-spinner>登录</button>
                     <div class="mt-4 text-center">还没有账号？<a href="signup">立即注册</a></div>
+                  </div>
+                  <div class="select-lang text-center mb-2">
+                    <a th:href="@{/language/select?nexturl=login&locale=zh_CN}" title="中文"><img th:src="@{/assets/img/flag/zh-CN.png}" /></a>
+                    <a th:href="@{/language/select?nexturl=login&locale=en}" title="English"><img th:src="@{/assets/img/flag/en-US.png}" /></a>
                   </div>
                 </form>
               </div>

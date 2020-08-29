@@ -19,7 +19,7 @@ import com.rebuild.core.helper.License;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.web.BaseController;
-import com.rebuild.web.RebuildAuthInterceptor;
+import com.rebuild.web.RebuildWebInterceptor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +48,7 @@ public class AdminVerfiyControl extends BaseController {
     @GetMapping("/user/admin-verify")
     public ModelAndView pageAdminVerify(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        boolean pass = RebuildAuthInterceptor.verfiyPass(request, response);
+        boolean pass = RebuildWebInterceptor.verfiyPass(request, response);
         if (!pass) {
             return null;
         }

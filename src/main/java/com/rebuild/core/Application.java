@@ -20,6 +20,8 @@ import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.License;
 import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.helper.i18n.Language;
+import com.rebuild.core.helper.i18n.LanguageBundle;
 import com.rebuild.core.helper.setup.Installer;
 import com.rebuild.core.helper.setup.UpgradeDatabase;
 import com.rebuild.core.metadata.DynamicMetadataFactory;
@@ -223,6 +225,10 @@ public class Application {
 
     public static ID getCurrentUser() throws AccessDeniedException {
         return getSessionStore().get();
+    }
+
+    public static LanguageBundle getCurrentBundle() {
+        return getBean(Language.class).getCurrentBundle();
     }
 
     public static PersistManagerFactory getPersistManagerFactory() {

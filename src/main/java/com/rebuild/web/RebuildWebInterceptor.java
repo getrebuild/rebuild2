@@ -30,9 +30,9 @@ import java.io.IOException;
  * @author Zhao Fangfang
  * @since 1.0, 2013-6-24
  */
-public class RebuildAuthInterceptor extends HandlerInterceptorAdapter implements InstallState {
+public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements InstallState {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RebuildAuthInterceptor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RebuildWebInterceptor.class);
 
     private static final String TIMEOUT_KEY = "ErrorHandler_TIMEOUT";
 
@@ -40,6 +40,12 @@ public class RebuildAuthInterceptor extends HandlerInterceptorAdapter implements
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         request.getSession(true);
+
+        request.setAttribute(TIMEOUT_KEY, System.currentTimeMillis());
+
+        // Locale
+        Application.getSessionStore().setLocale(AppUtils.getReuqestLocale(request));
+        request.setAttribute("bundle", Application.getCurrentBundle());
 
         final String requestUrl = request.getRequestURI();
 
@@ -64,8 +70,6 @@ public class RebuildAuthInterceptor extends HandlerInterceptorAdapter implements
             }
         }
 
-        request.setAttribute(TIMEOUT_KEY, System.currentTimeMillis());
-
         return verfiyPass(request, response);
     }
 
@@ -79,7 +83,7 @@ public class RebuildAuthInterceptor extends HandlerInterceptorAdapter implements
         // 打印处理时间
         Long startTime = (Long) request.getAttribute(TIMEOUT_KEY);
         startTime = System.currentTimeMillis() - startTime;
-        if (startTime > 500) {
+        if (startTime > 1000) {
             String url = request.getRequestURI();
             String qstr = request.getQueryString();
             if (qstr != null) {

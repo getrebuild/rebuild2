@@ -9,6 +9,7 @@ package com.rebuild.core.privileges;
 
 import cn.devezhao.bizz.security.AccessDeniedException;
 import cn.devezhao.persist4j.engine.ID;
+import org.springframework.core.NamedThreadLocal;
 
 /**
  * 当前请求用户（线程量）
@@ -18,7 +19,7 @@ import cn.devezhao.persist4j.engine.ID;
  */
 public class CurrentCaller {
 
-    private static final ThreadLocal<ID> CALLER = new ThreadLocal<>();
+    private static final ThreadLocal<ID> CALLER = new NamedThreadLocal<>("Current session user");
 
     /**
      * @param caller

@@ -28,6 +28,7 @@ import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.utils.AES;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.web.BaseController;
+import com.rebuild.web.commons.LanguageControl;
 import com.wf.captcha.utils.CaptchaUtil;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.commons.lang.StringUtils;
@@ -51,9 +52,7 @@ public class LoginControl extends BaseController {
 
     public static final String CK_AUTOLOGIN = "rb.alt";
 
-    public static final String SK_LOGINID = WebUtils.KEY_PREFIX + ".LOGINID";
-
-    private static final String NEED_VCODE = "needLoginVCode";
+    private static final String SK_NEED_VCODE = "needLoginVCode";
 
     private static final String DEFAULT_HOME = "../dashboard/home";
 
@@ -76,7 +75,7 @@ public class LoginControl extends BaseController {
                 return null;
             } else {
                 // 立即显示验证码
-                ServletUtils.setSessionAttribute(request, NEED_VCODE, true);
+                ServletUtils.setSessionAttribute(request, SK_NEED_VCODE, true);
             }
         }
 
@@ -109,7 +108,7 @@ public class LoginControl extends BaseController {
                 return null;
             } else {
                 // 显示验证码
-                ServletUtils.setSessionAttribute(request, NEED_VCODE, true);
+                ServletUtils.setSessionAttribute(request, SK_NEED_VCODE, true);
             }
         }
 
@@ -120,7 +119,7 @@ public class LoginControl extends BaseController {
     @PostMapping("user-login")
     public void userLogin(HttpServletRequest request, HttpServletResponse response) {
         String vcode = getParameter(request, "vcode");
-        Boolean needVcode = (Boolean) ServletUtils.getSessionAttribute(request, NEED_VCODE);
+        Boolean needVcode = (Boolean) ServletUtils.getSessionAttribute(request, SK_NEED_VCODE);
         if (needVcode != null && needVcode
                 && (StringUtils.isBlank(vcode) || !CaptchaUtil.ver(vcode, request))) {
             writeFailure(response, "验证码错误");
@@ -132,7 +131,7 @@ public class LoginControl extends BaseController {
 
         int retry = getLoginRetryTimes(user, 1);
         if (retry > 3 && StringUtils.isBlank(vcode)) {
-            ServletUtils.setSessionAttribute(request, NEED_VCODE, true);
+            ServletUtils.setSessionAttribute(request, SK_NEED_VCODE, true);
             writeFailure(response, "VCODE");
             return;
         }
@@ -148,7 +147,7 @@ public class LoginControl extends BaseController {
 
         // 清理
         getLoginRetryTimes(user, -1);
-        ServletUtils.setSessionAttribute(request, NEED_VCODE, null);
+        ServletUtils.setSessionAttribute(request, SK_NEED_VCODE, null);
 
         writeSuccess(response);
     }
@@ -192,8 +191,7 @@ public class LoginControl extends BaseController {
             ServletUtils.removeCookie(request, response, CK_AUTOLOGIN);
         }
 
-        ID loginId = createLoginLog(request, user);
-        ServletUtils.setSessionAttribute(request, SK_LOGINID, loginId);
+        createLoginLog(request, user);
 
         ServletUtils.setSessionAttribute(request, WebUtils.CURRENT_USER, user);
         Application.getSessionStore().storeLoginSuccessed(request);
@@ -204,9 +202,8 @@ public class LoginControl extends BaseController {
      *
      * @param request
      * @param user
-     * @return
      */
-    public static ID createLoginLog(HttpServletRequest request, ID user) {
+    public static void createLoginLog(HttpServletRequest request, ID user) {
         String ipAddr = ServletUtils.getRemoteAddr(request);
         String UA = request.getHeader("user-agent");
         if (AppUtils.isRbMobile(request)) {
@@ -227,8 +224,7 @@ public class LoginControl extends BaseController {
         record.setString("ipAddr", ipAddr);
         record.setString("userAgent", UA);
         record.setDate("loginTime", CalendarUtils.now());
-        record = Application.getCommonsService().create(record);
-        return record.getPrimary();
+        Application.getCommonsService().create(record);
     }
 
     @GetMapping("logout")

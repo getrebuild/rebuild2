@@ -7,17 +7,11 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.web;
 
-import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.commons.web.WebUtils;
-import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.Application;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
-import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.CurrentCaller;
-import com.rebuild.core.privileges.UserService;
-import com.rebuild.web.user.signup.LoginControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.NamedThreadLocal;
@@ -28,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -46,13 +41,13 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
     private static final Logger LOG = LoggerFactory.getLogger(OnlineSessionStore.class);
 
     private static final Set<HttpSession> ONLINE_SESSIONS = new CopyOnWriteArraySet<>();
+
     private static final Map<ID, HttpSession> ONLINE_USERS = new ConcurrentHashMap<>();
 
-    private static final ThreadLocal<String> LOCALE = new NamedThreadLocal<>("Current session user");
+    private static final ThreadLocal<String> LOCALE = new NamedThreadLocal<>("Current session locale");
 
     /**
      * 最近访问 [时间, 路径]
-     *
      * @see #storeLastActive(HttpServletRequest)
      */
     public static final String SK_LASTACTIVE = WebUtils.KEY_PREFIX + "Session-LastActive";
@@ -82,14 +77,6 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
                 }
             }
         }
-
-        // Logout time
-        ID loginId = (ID) s.getAttribute(LoginControl.SK_LOGINID);
-        if (loginId != null) {
-            Record logout = EntityHelper.forUpdate(loginId, UserService.SYSTEM_USER);
-            logout.setDate("logoutTime", CalendarUtils.now());
-            Application.getCommonsService().update(logout);
-        }
     }
 
     /**
@@ -101,7 +88,7 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
         Set<HttpSession> all = new HashSet<>();
         all.addAll(ONLINE_SESSIONS);
         all.addAll(ONLINE_USERS.values());
-        return all;
+        return Collections.unmodifiableSet(all);
     }
 
     /**
@@ -143,6 +130,23 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
 
         ONLINE_SESSIONS.remove(s);
         ONLINE_USERS.put((ID) loginUser, s);
+    }
+
+    /**
+     * @param locale
+     */
+    public void setLocale(String locale) {
+        LOCALE.set(locale);
+    }
+
+    /**
+     * @return Returns default if unset
+     * @see com.rebuild.core.helper.i18n.Language
+     */
+    public String getLocale() {
+        String l = LOCALE.get();
+        if (l == null) l = RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
+        return l;
     }
 
     @Override

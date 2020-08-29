@@ -77,6 +77,9 @@ public enum ConfigurationItem {
     // 允许同一用户多个会话
     MultipleSessions(true),
 
+    // 默认语言
+    DefaultLanguage("zh-CN"),
+
     ;
 
     private Object defaultVal;

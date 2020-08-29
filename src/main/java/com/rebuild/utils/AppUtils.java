@@ -42,6 +42,11 @@ public class AppUtils {
     public static final String MOBILE_HF_AUTHTOKEN = "X-AuthToken";
 
     /**
+     * 语言
+     */
+    public static final String SK_LOCALE = WebUtils.KEY_PREFIX + ".LOCALE";
+
+    /**
      * @return
      */
     public static String getContextPath() {
@@ -89,6 +94,14 @@ public class AppUtils {
         if (user == null) user = getRequestUserViaRbMobile(request, false);
         if (user == null) return null;
         return Application.getUserStore().getUser(user);
+    }
+
+    /**
+     * @param request
+     * @return
+     */
+    public static String getReuqestLocale(HttpServletRequest request) {
+        return (String) request.getSession(true).getAttribute(SK_LOCALE);
     }
 
     /**
