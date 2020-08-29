@@ -70,8 +70,8 @@ public class RebuildAuthHandler extends HandlerInterceptorAdapter implements Ins
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-        ID caller = Application.serversReady() ? Application.getSessionStore().get(true) : null;
-        if (caller != null) {
+        ID user = Application.serversReady() ? Application.getSessionStore().get(true) : null;
+        if (user != null) {
             Application.getSessionStore().clean();
         }
 
@@ -123,6 +123,9 @@ public class RebuildAuthHandler extends HandlerInterceptorAdapter implements Ins
                 }
                 return false;
             }
+
+            // 前端使用
+            request.setAttribute("user", Application.getUserStore().getUser(user));
 
         } else if (!isIgnoreAuth(requestUrl)) {
             LOG.warn("Unauthorized access [ " + requestUrl + " ] from "

@@ -22,4 +22,9 @@
       fileSharable: '[[${fileSharable}]]' === 'true',
     }
   </script>
+  <script th:if="${user != null}">
+    window.rb.currentUser = '[[${user.getId()}]]'
+    window.rb.isAdminUser = '[[${user.isAdmin()}]]' === 'true'
+    window.rb.isAdminVerified = '[[${T(com.rebuild.utils.AppUtils).isAdminVerified(#request)}]]' === 'true'
+  </script>
 </th:block>

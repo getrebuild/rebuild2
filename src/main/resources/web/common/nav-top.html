@@ -9,7 +9,7 @@
         <input class="form-control form-control-sm search-input-gs" type="text" name="search" maxlength="100" placeholder="搜索" autocomplete="off" />
         <div class="search-models animated fadeIn faster"></div>
       </div>
-      <div class="rb-right-navbar" th:with="user = ${T(com.rebuild.utils.AppUtils).getRequestUserBean(#request)}">
+      <div class="rb-right-navbar">
         <ul class="nav navbar-nav float-right rb-user-nav">
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" th:href="@{/settings/user}" data-toggle="dropdown">
@@ -26,7 +26,7 @@
             </div>
           </li>
         </ul>
-        <div class="page-title hide"><span>标题</span></div>
+        <div class="page-title hide"><span>REBUILD</span></div>
         <ul class="nav navbar-nav float-right rb-icons-nav">
           <li class="nav-item dropdown admin-danger hide">
             <a class="nav-link" href="javascript:;"><i class="icon zmdi zmdi-alert-octagon text-danger"></i></a>
