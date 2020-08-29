@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <th:block th:replace="~{/common/header}" />
+    <th:block th:replace="~{/_include/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/charts.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/chart-design.css}" />
     <title>图表设计器</title>
   </head>
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-offcanvas-menu">
-      <th:block th:replace="~{/common/nav-top}" />
+      <th:block th:replace="~{/_include/nav-top}" />
       <div class="rb-content">
         <aside class="data-aside">
           <div class="rb-scroller">
@@ -165,7 +165,7 @@
           </ul>
       </span>
     </script>
-    <th:block th:replace="~{/common/footer}" />
+    <th:block th:replace="~{/_include/footer}" />
     <script>
       window.__PageConfig = {
         sourceEntity: '[[${entityName}]]',

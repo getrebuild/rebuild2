@@ -38,7 +38,7 @@ server:
       charset: UTF-8
       force: true
   error:
-    whitelabel.enabled: false
+    whitelabel.enabled: true
   tomcat:
     uri-encoding: UTF-8
     threads.max: 200
@@ -53,8 +53,8 @@ spring:
     multipart.enabled: false
   thymeleaf:
     prefix: classpath:/web
-    suffix: .html
     cache: false
+    enable-spring-el-compiler: false
   quartz:
     scheduler-name: rbScheduler
     startup-delay: 15s

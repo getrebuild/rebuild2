@@ -17,7 +17,7 @@ import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.CurrentCaller;
 import com.rebuild.core.privileges.UserService;
-import com.rebuild.web.signup.Login;
+import com.rebuild.web.user.signup.LoginControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.NamedThreadLocal;
@@ -84,7 +84,7 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
         }
 
         // Logout time
-        ID loginId = (ID) s.getAttribute(Login.SK_LOGINID);
+        ID loginId = (ID) s.getAttribute(LoginControl.SK_LOGINID);
         if (loginId != null) {
             Record logout = EntityHelper.forUpdate(loginId, UserService.SYSTEM_USER);
             logout.setDate("logoutTime", CalendarUtils.now());

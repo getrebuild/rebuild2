@@ -12,7 +12,7 @@ let _Members
 let _PlanList
 
 $(document).ready(() => {
-  renderRbcomp(<UserSelector multiple={false} />, 'principal', function () {
+  renderRbcomp(<UserSelector hideDepartment={true} hideRole={true} hideTeam={true} multiple={false} />, 'principal', function () {
     _Principal = this
     _initUserComp(wpc.principal, _Principal)
   })

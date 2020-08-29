@@ -107,7 +107,7 @@ $(document).ready(function () {
 
   $('.J_new-field').click(() => {
     if (wpc.isSuperAdmin) {
-      RbModal.create(`${rb.baseUrl}/admin/p/entityhub/field-new?entity=${wpc.entityName}&ref=form-design`, '添加字段')
+      RbModal.create(`${rb.baseUrl}/p/admin/metadata/field-new?entity=${wpc.entityName}&ref=form-design`, '添加字段')
     } else {
       RbHighbar.error('仅超级管理员可添加字段')
     }

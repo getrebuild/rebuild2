@@ -10,7 +10,6 @@ package com.rebuild.core;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.setup.InstallState;
 import com.rebuild.utils.AES;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -55,8 +54,8 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
                 }
 
                 aesDecrypt(ps);
-                PropertiesPropertySource propertySource = new PropertiesPropertySource(".rebuild", temp);
-                environment.getPropertySources().addLast(propertySource);
+                PropertiesPropertySource installedSource = new PropertiesPropertySource(".rebuild", temp);
+                environment.getPropertySources().addFirst(installedSource);
 
             } catch (IOException ex) {
                 throw new IllegalStateException("Load file of install failed : " + file.toString(), ex);
@@ -64,17 +63,17 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
         }
 
         // 解密
-        Properties superlativeProperties = new Properties();
+        Properties decryptedProperties = new Properties();
         for (ConfigurationItem item : ConfigurationItem.values()) {
             String name = V2_PREFIX + item.name();
             String value = environment.getProperty(name);
-            if (StringUtils.isNotBlank(value)) {
-                superlativeProperties.put(name, value);
+            if (value != null) {
+                decryptedProperties.put(name, value);
             }
         }
-        aesDecrypt(superlativeProperties);
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(".rebuild", superlativeProperties);
-        environment.getPropertySources().addLast(propertySource);
+        aesDecrypt(decryptedProperties);
+        PropertiesPropertySource propertySource = new PropertiesPropertySource(".decrypted", decryptedProperties);
+        environment.getPropertySources().addFirst(propertySource);
 
         ENV_HOLD = environment;
     }
@@ -110,12 +109,15 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
      * @return
      */
     public static String getProperty(String name, String defaultValue) {
-        String value;
+        String value = null;
         if (ENV_HOLD == null && ConfigurationItem.DataDirectory.name().equalsIgnoreCase(name)) {
             value = System.getProperty("DataDirectory");
-        } else {
-            value = ENV_HOLD == null ? null : ENV_HOLD.getProperty(name);
+        } else if (ENV_HOLD != null) {
+            if (!(name.startsWith(V2_PREFIX) || name.contains("."))) {
+                name = V2_PREFIX + name;
+            }
+            value = ENV_HOLD.getProperty(name);
         }
-        return StringUtils.defaultIfBlank(value, defaultValue);
+        return value == null ? defaultValue : value;
     }
 }

@@ -116,7 +116,7 @@ $(document).ready(function () {
       })
       if (res.data.length > 5) $('#picklist-items').parent().removeClass('autoh')
     })
-    $('.J_picklist-edit').click(() => RbModal.create(`${rb.baseUrl}/admin/p/entityhub/picklist-editor?entity=${wpc.entityName}&field=${wpc.fieldName}&multi=${dt === 'MULTISELECT'}`, '配置选项'))
+    $('.J_picklist-edit').click(() => RbModal.create(`${rb.baseUrl}/p/admin/metadata/picklist-editor?entity=${wpc.entityName}&field=${wpc.fieldName}&multi=${dt === 'MULTISELECT'}`, '配置选项'))
   }
   // 自动编号
   else if (dt === 'SERIES') {

@@ -1,0 +1,42 @@
+{
+  "nodes": [
+    { "type": "start", "nodeId": "ROOT" },
+    {
+      "branches": [
+        {
+          "nodes": [
+            {
+              "data": { "selfSelecting": true, "signMode": "OR", "editableFields": [{ "field": "DECIMAL", "notNull": false }], "users": ["001-01713eab66640002"] },
+              "type": "approver",
+              "nodeId": "NODE15964340911066"
+            },
+            {
+              "branches": [
+                {
+                  "nodes": [{ "type": "approver", "nodeId": "NODE15964452932671" }],
+                  "data": { "filter": { "items": [{ "op": "GT", "field": "DECIMAL", "index": 1, "value": "5000" }], "entity": "TESTALLFIELDS" } },
+                  "priority": 1,
+                  "nodeId": "COND15964439908563"
+                },
+                { "nodes": [{ "data": { "selfSelecting": true, "users": [] }, "type": "cc", "nodeId": "NODE15964440068287" }], "priority": 2, "nodeId": "COND15964439908564" }
+              ],
+              "type": "condition",
+              "nodeId": "COND15964439908532"
+            }
+          ],
+          "data": { "filter": { "items": [{ "op": "GT", "field": "DECIMAL", "index": 1, "value": "3000" }], "entity": "TESTALLFIELDS" } },
+          "priority": 1,
+          "nodeId": "COND15964340710753"
+        },
+        {
+          "nodes": [{ "data": { "selfSelecting": true, "signMode": "OR", "editableFields": [], "users": ["001-9000000000000001"] }, "type": "approver", "nodeId": "NODE15964439523401" }],
+          "data": { "filter": { "items": [], "entity": "TESTALLFIELDS" } },
+          "priority": 2,
+          "nodeId": "COND15964340710754"
+        }
+      ],
+      "type": "condition",
+      "nodeId": "COND15964340710732"
+    }
+  ]
+}

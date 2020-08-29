@@ -45,7 +45,7 @@ public class UrlSafe extends BaseController {
             return null;
         }
 
-        ModelAndView mv = createModelAndView("/commons/url-safe.jsp");
+        ModelAndView mv = createModelAndView("/commons/url-safe");
         mv.getModel().put("outerUrl", url);
         return mv;
     }

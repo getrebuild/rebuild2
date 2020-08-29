@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <th:block th:replace="~{/_include/header}" />
+    <title>云存储配置</title>
+  </head>
+  <body>
+    <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-color-header">
+      <th:block th:replace="~{/_include/nav-top}" />
+      <th:block th:replace="~{/_include/nav-left-admin :: nav(active='integration-storage')}" />
+      <div class="rb-content">
+        <div class="main-content container-fluid syscfg">
+          <div class="row">
+            <div class="col-lg-9 col-12">
+              <div class="card">
+                <div class="card-header card-header-divider">
+                  七牛云 QINIU
+                  <a href="#modfiy" class="float-right"><i class="icon zmdi zmdi-edit"></i> 修改</a>
+                </div>
+                <div class="card-body">
+                  <h5><a class="cl-base" href="https://portal.qiniu.com/signup?utm_source=getrebuild.com&code=3letk048wdsnm" target="_blank" rel="noopener noreferrer">云存储</a></h5>
+                  <table class="table">
+                    <tbody>
+                      <tr>
+                        <td width="40%">访问域名</td>
+                        <td data-id="StorageURL">[[${storageAccount == null ? "未配置" : storageAccount[3]}]]</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          存储空间
+                          <p>存储空间变更需你自行迁移原有数据</p>
+                        </td>
+                        <td data-id="StorageBucket">[[${storageAccount == null ? "未配置" : storageAccount[2]}]]</td>
+                      </tr>
+                      <tr>
+                        <td>秘钥 AK</td>
+                        <td data-id="StorageApiKey">[[${storageAccount == null ? "未配置" : storageAccount[0]}]]</td>
+                      </tr>
+                      <tr>
+                        <td>秘钥 SK</td>
+                        <td data-id="StorageApiSecret">[[${storageAccount == null ? "未配置" : storageAccount[1]}]]</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div th:if="${!_StorageCloud}" class="alert alert-warning alert-icon mt-6">
+                    <div class="icon"><span class="zmdi zmdi-alert-triangle"></span></div>
+                    <div class="message">七牛云存储账户未配置或配置有误，当前已启用本地文件存储</div>
+                  </div>
+                  <div class="edit-footer">
+                    <button class="btn btn-link">取消</button>
+                    <button class="btn btn-primary">保存</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-12">
+              <div class="card">
+                <div class="card-header card-header-divider">存储大小</div>
+                <div class="card-body">
+                  <strong class="fs-16">[[${_StorageSize}]]</strong>
+                  ([[${_StorageCloud ? '七牛云' : '本地存储'}]])
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <th:block th:replace="~{/_include/footer}" />
+    <script th:src="@{/assets/js/admin/syscfg.js}" type="text/babel"></script>
+  </body>
+</html>

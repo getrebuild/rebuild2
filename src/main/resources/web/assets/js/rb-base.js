@@ -61,7 +61,8 @@ See LICENSE and COMMERCIAL in the project root for license information.
     cache: false,
     complete: function (xhr) {
       if (!(xhr.status === 200 || xhr.status === 0)) {
-        RbHighbar.error(xhr.responseText || '系统繁忙，请稍后重试')
+        if (xhr.responseJSON && xhr.responseJSON.status === 404) RbHighbar.error('资源不存在 : ' + xhr.responseJSON.path)
+        else RbHighbar.error(xhr.responseText || '系统繁忙，请稍后重试')
       }
     },
     beforeSend: function (xhr, settings) {
@@ -114,7 +115,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
   // for `select2`
   $.fn.select2.defaults.set('width', '100%')
-  $.fn.select2.defaults.set('language', rb.locale)
+  $.fn.select2.defaults.set('language', 'zh-CN')
   $.fn.select2.defaults.set('allowClear', true)
   $.fn.select2.defaults.set('placeholder', '')
 })(jQuery)

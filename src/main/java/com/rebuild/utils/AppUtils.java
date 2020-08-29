@@ -15,7 +15,7 @@ import com.rebuild.api.login.AuthTokenManager;
 import com.rebuild.core.Application;
 import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.core.privileges.bizz.User;
-import com.rebuild.web.admin.AdminEntryController;
+import com.rebuild.web.admin.AdminVerfiyControl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.MediaType;
 
@@ -96,7 +96,7 @@ public class AppUtils {
      * @return
      */
     public static boolean isAdminVerified(HttpServletRequest request) {
-        Object verified = ServletUtils.getSessionAttribute(request, AdminEntryController.KEY_VERIFIED);
+        Object verified = ServletUtils.getSessionAttribute(request, AdminVerfiyControl.KEY_VERIFIED);
         return verified != null;
     }
 

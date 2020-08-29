@@ -117,7 +117,7 @@ public class RebuildAuthHandler extends HandlerInterceptorAdapter implements Ins
             // 管理后台访问
             if (requestUrl.contains("/admin/") && !AppUtils.isAdminVerified(request)) {
                 if (AppUtils.isHtmlRequest(request)) {
-                    response.sendRedirect(AppUtils.getContextPath() + "/user/admin-entry?nexturl=" + CodecUtils.urlEncode(requestUrl));
+                    response.sendRedirect(AppUtils.getContextPath() + "/user/admin-verify?nexturl=" + CodecUtils.urlEncode(requestUrl));
                 } else {
                     ServletUtils.writeJson(response, ResultBody.error("请验证管理员访问权限", 403).toString());
                 }

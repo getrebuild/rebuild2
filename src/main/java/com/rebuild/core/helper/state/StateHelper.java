@@ -62,6 +62,11 @@ public class StateHelper {
     public static Class<?> getSatetClass(String stateClass) throws IllegalArgumentException {
         Assert.notNull(stateClass, "[stateClass] not be null");
 
+        // fix V1
+        if ("com.rebuild.server.helper.state.HowtoState".equalsIgnoreCase(stateClass)) {
+            stateClass = HowtoState.class.getName();
+        }
+
         Class<?> stateEnum;
         try {
             stateEnum = ClassUtils.getClass(stateClass);

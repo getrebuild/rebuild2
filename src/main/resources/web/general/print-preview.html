@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <th:block th:replace="~{/common/header}" />
+    <th:block th:replace="~{/_include/header}" />
     <title>打印预览</title>
     <style type="text/css">
       html,
@@ -53,7 +53,7 @@
       <div id="preview-table"></div>
       <div class="font-italic text-muted hide">打印时间：[[${printTime}]] &nbsp;&nbsp;&nbsp;&nbsp; 打印人：[[${printUser}]]</div>
     </div>
-    <th:block th:replace="~{/common/footer}" />
+    <th:block th:replace="~{/_include/footer}" />
     <script>
       window.__PageConfig = {
         record: '[[${recordId}]]',

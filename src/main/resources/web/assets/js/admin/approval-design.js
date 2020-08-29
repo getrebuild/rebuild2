@@ -18,7 +18,6 @@ $(document).ready(() => {
   // 备用
   $.get(`/commons/metadata/fields?entity=${wpc.applyEntity}`, (res) => (fieldsCache = res.data))
 
-  if (wpc.flowDefinition) wpc.flowDefinition = JSON.parse(wpc.flowDefinition)
   renderRbcomp(<RbFlowCanvas />, 'rbflow')
 
   $(document.body).click(function (e) {
