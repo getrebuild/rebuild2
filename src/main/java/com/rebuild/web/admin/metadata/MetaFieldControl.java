@@ -101,8 +101,8 @@ public class MetaFieldControl extends BaseController {
 
         mv.getModel().put("fieldMetaId", easyField.getMetaId());
         mv.getModel().put("fieldName", easyField.getName());
-        mv.getModel().put("fieldLabel", CommonsUtils.escapeHtml(easyField.getLabel()));
-        mv.getModel().put("fieldComments", CommonsUtils.escapeHtml(easyField.getComments()));
+        mv.getModel().put("fieldLabel", easyField.getLabel());
+        mv.getModel().put("fieldComments", easyField.getComments());
         mv.getModel().put("fieldType", easyField.getDisplayType(false));
         mv.getModel().put("fieldTypeLabel", easyField.getDisplayType(true));
         mv.getModel().put("fieldNullable", fieldMeta.isNullable());
@@ -110,7 +110,7 @@ public class MetaFieldControl extends BaseController {
         mv.getModel().put("fieldUpdatable", fieldMeta.isUpdatable());
         mv.getModel().put("fieldRepeatable", fieldMeta.isRepeatable());
         mv.getModel().put("fieldBuildin", easyField.isBuiltin());
-        mv.getModel().put("fieldDefaultValue", CommonsUtils.escapeHtml(fieldMeta.getDefaultValue()));
+        mv.getModel().put("fieldDefaultValue", fieldMeta.getDefaultValue());
         mv.getModel().put("isSuperAdmin", UserHelper.isSuperAdmin(getRequestUser(request)));
 
         // 明细实体

@@ -242,9 +242,9 @@ public class MetaEntityControl extends BaseController {
         EasyMeta entityMeta = EasyMeta.valueOf(entity);
         mv.getModel().put("entityMetaId", entityMeta.getMetaId());
         mv.getModel().put("entityName", entityMeta.getName());
-        mv.getModel().put("entityLabel", CommonsUtils.escapeHtml(entityMeta.getLabel()));
+        mv.getModel().put("entityLabel", entityMeta.getLabel());
         mv.getModel().put("icon", entityMeta.getIcon());
-        mv.getModel().put("comments", CommonsUtils.escapeHtml(entityMeta.getComments()));
+        mv.getModel().put("comments", entityMeta.getComments());
         return entityMeta;
     }
 }

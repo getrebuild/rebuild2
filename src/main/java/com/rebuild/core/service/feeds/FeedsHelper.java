@@ -177,7 +177,7 @@ public class FeedsHelper {
      */
     public static String formatContent(String content, boolean xss) {
         if (xss) {
-            content = CommonsUtils.escapeHtml(content);
+            content = MessageBuilder.escapeHtml(content);
         }
 
         Matcher urlMatcher = URL_PATTERN.matcher(content);

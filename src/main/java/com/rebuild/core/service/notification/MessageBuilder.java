@@ -12,8 +12,9 @@ import com.rebuild.core.Application;
 import com.rebuild.core.helper.general.FieldValueWrapper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.utils.AppUtils;
-import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.MarkdownUtils;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,15 +26,6 @@ import java.util.regex.Pattern;
  * @since 2019/07/12
  */
 public class MessageBuilder {
-
-    /**
-     * @param toUser
-     * @param message
-     * @return
-     */
-    public static Message createMessage(ID toUser, String message) {
-        return new Message(null, toUser, message, null, Message.TYPE_DEFAULT);
-    }
 
     /**
      * @param toUser
@@ -114,7 +106,7 @@ public class MessageBuilder {
      */
     public static String formatMessage(String message, boolean md2html, boolean xss) {
         if (xss) {
-            message = CommonsUtils.escapeHtml(message);
+            message = escapeHtml(message);
         }
 
         // 匹配 `@ID`
@@ -154,5 +146,18 @@ public class MessageBuilder {
         String recordLabel = FieldValueWrapper.getLabelNotry(id);
         String recordUrl = AppUtils.getContextPath() + "/app/list-and-view?id=" + id;
         return String.format("[%s](%s)", recordLabel, recordUrl);
+    }
+
+    /**
+     * @param text
+     * @return
+     * @see org.apache.commons.lang.StringEscapeUtils#escapeHtml(String)
+     */
+    public static String escapeHtml(Object text) {
+        if (text == null || StringUtils.isBlank(text.toString())) {
+            return StringUtils.EMPTY;
+        }
+        String escape = StringEscapeUtils.escapeHtml(text.toString());
+        return escape.replace("&gt;", ">");  // `>` for MD
     }
 }

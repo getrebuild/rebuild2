@@ -89,19 +89,6 @@ public class CommonsUtils {
     }
 
     /**
-     * @param text
-     * @return
-     * @see org.apache.commons.lang.StringEscapeUtils#escapeHtml(String)
-     */
-    public static String escapeHtml(Object text) {
-        if (text == null || StringUtils.isBlank(text.toString())) {
-            return StringUtils.EMPTY;
-        }
-        String escape = StringEscapeUtils.escapeHtml(text.toString());
-        return escape.replace("&gt;", ">");  // `>` for MD
-    }
-
-    /**
      * 客户端所需的日期时间格式（带时区偏移）
      *
      * @param date
