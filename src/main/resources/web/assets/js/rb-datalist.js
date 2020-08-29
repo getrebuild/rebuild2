@@ -1228,8 +1228,6 @@ $(document).ready(() => {
       const el = $('.rb-aside').toggleClass('rb-aside-collapsed')
       $.cookie('rb.asideCollapsed', el.hasClass('rb-aside-collapsed'), { expires: 180 })
     })
-    // 默认不展开（由后台处理 jsp，避免页面闪动）
-    // if ($.cookie('rb.asideCollapsed') === 'false') $('.rb-aside').removeClass('rb-aside-collapsed')
 
     const $content = $('.page-aside .tab-content')
     $addResizeHandler(() => {

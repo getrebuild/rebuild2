@@ -6,7 +6,7 @@
     <title th:text="${entityLabel}"></title>
   </head>
   <body>
-    <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-aside">
+    <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-aside" th:classappend="${asideCollapsed} ? 'rb-aside-collapsed'">
       <th:block th:replace="~{/_include/nav-top}" />
       <th:block th:replace="~{/_include/nav-left :: nav(active=${'nav_entity-' + entityName})}" />
       <div class="rb-content">

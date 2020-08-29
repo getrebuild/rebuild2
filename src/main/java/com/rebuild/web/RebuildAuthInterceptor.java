@@ -13,6 +13,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.api.ResultBody;
 import com.rebuild.core.Application;
 import com.rebuild.core.helper.setup.InstallState;
+import com.rebuild.core.privileges.bizz.ZeroEntry;
 import com.rebuild.utils.AppUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -124,8 +125,10 @@ public class RebuildAuthInterceptor extends HandlerInterceptorAdapter implements
                 return false;
             }
 
-            // 前端使用
+            // FIX: 前端使用（可能有更好的地方放置此代码）
             request.setAttribute("user", Application.getUserStore().getUser(user));
+            request.setAttribute("AllowCustomNav",
+                    Application.getPrivilegesManager().allow(user, ZeroEntry.AllowCustomNav));
 
         } else if (!isIgnoreAuth(requestUrl)) {
             LOG.warn("Unauthorized access [ " + requestUrl + " ] from "
