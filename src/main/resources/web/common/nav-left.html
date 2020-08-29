@@ -1,4 +1,4 @@
-<th:block xmlns:th="http://www.thymeleaf.org">
+<th:block xmlns:th="http://www.thymeleaf.org" th:fragment="nav">
   <div class="rb-left-sidebar">
     <div class="left-sidebar-wrapper">
       <a class="left-sidebar-toggle">导航</a>
@@ -6,10 +6,10 @@
         <div class="left-sidebar-scroll rb-scroller">
           <div class="left-sidebar-content no-divider">
             <ul class="sidebar-elements">
-              <li th:class="${activeNav == 'dashboard-home' ? 'active' : ''}">
+              <li th:class="${active == 'dashboard-home'} ? 'active'">
                 <a th:href="@{/dashboard/home}"><i class="icon zmdi zmdi-home"></i><span>首页</span></a>
               </li>
-              <th:block th:utext="${T(com.rebuild.core.configuration.NavBuilder).renderNav(#request, #activeNav)}"></th:block>
+              <th:block th:utext="${T(com.rebuild.core.configuration.NavBuilder).renderNav(#request, active)}"></th:block>
             </ul>
           </div>
         </div>

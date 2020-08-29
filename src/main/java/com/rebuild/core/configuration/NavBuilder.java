@@ -150,6 +150,8 @@ public class NavBuilder extends NavManager {
      * @return
      */
     public static String renderNav(HttpServletRequest request, String activeNav) {
+        if (activeNav == null) activeNav = "dashboard-home";
+
         JSONArray navs = NavBuilder.instance.getNavPortal(AppUtils.getRequestUser(request));
         StringBuilder navsHtml = new StringBuilder();
         for (Object item : navs) {

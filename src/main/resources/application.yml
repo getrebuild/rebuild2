@@ -55,4 +55,11 @@ spring:
     prefix: classpath:/web
     suffix: .html
     cache: false
+  quartz:
+    scheduler-name: rbScheduler
+    startup-delay: 15s
 
+management:
+  endpoints:
+    web:
+      base-path: /_actuator

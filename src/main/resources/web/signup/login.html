@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <embed th:replace="~{/common/header}" />
+    <th:block th:replace="~{/common/header}" />
     <title>登录</title>
     <style type="text/css">
       #login-form > .row {
@@ -115,7 +115,7 @@
         </div>
       </div>
     </div>
-    <embed th:replace="~{/common/footer}" />
+    <th:block th:replace="~{/common/footer}" />
     <script th:src="@{/assets/js/feeds/announcement.js}" type="text/babel"></script>
     <script type="text/babel">
       $(document).ready(function () {

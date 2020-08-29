@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <embed th:replace="~{/common/header}" />
+    <th:block th:replace="~{/common/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/view-page.css}" />
     <title th:text="${entityLabel}"></title>
   </head>
@@ -57,7 +57,7 @@
         </div>
       </div>
     </div>
-    <embed th:replace="~{/common/footer}" />
+    <th:block th:replace="~{/common/footer}" />
     <script>
       window.__PageConfig = {
         type: 'SlaveView',

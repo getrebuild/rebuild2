@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <embed th:replace="~{/common/header}" />
+    <th:block th:replace="~{/common/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/charts.css}" />
     <title th:text="${entityLabel}"></title>
   </head>
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-aside">
-      <embed th:replace="~{/common/nav-top}" />
-      <embed th:replace="~{/common/nav-left(activeNav=${'nav_entity-' + entityName})}" />
+      <th:block th:replace="~{/common/nav-top}" />
+      <th:block th:replace="~{/common/nav-left :: nav(active=${'nav_entity-' + entityName})}" />
       <div class="rb-content">
         <aside class="page-aside widgets">
           <a class="side-toggle" title="展开/收缩面板"><i class="zmdi zmdi-arrow-left"></i></a>
@@ -102,7 +102,7 @@
         </div>
       </div>
     </div>
-    <embed th:replace="~{/common/footer}" />
+    <th:block th:replace="~{/common/footer}" />
     <script>
       window.__PageConfig = {
         type: 'RecordList',

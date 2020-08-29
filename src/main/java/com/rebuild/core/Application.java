@@ -48,7 +48,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jdbc.JdbcRepositoriesAutoConfiguration;
+import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -65,7 +67,8 @@ import java.util.*;
  */
 @Repository
 @SpringBootApplication(scanBasePackages = {"com.rebuild"}, exclude = {
-        DataSourceAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class, JdbcTemplateAutoConfiguration.class })
+        DataSourceAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class, JdbcTemplateAutoConfiguration.class,
+        RedisAutoConfiguration.class, CacheAutoConfiguration.class })
 @ImportResource("classpath:application-bean.xml")
 public class Application {
 

@@ -58,7 +58,7 @@ public class RebuildAuthHandler extends HandlerInterceptorAdapter implements Ins
 
         } else {
             // Last active
-            if (!(isIgnoreActive(requestUrl) || ServletUtils.isAjaxRequest(request))) {
+            if (!isIgnoreActive(requestUrl) && AppUtils.isHtmlRequest(request)) {
                 Application.getSessionStore().storeLastActive(request);
             }
         }
@@ -116,10 +116,10 @@ public class RebuildAuthHandler extends HandlerInterceptorAdapter implements Ins
 
             // 管理后台访问
             if (requestUrl.contains("/admin/") && !AppUtils.isAdminVerified(request)) {
-                if (ServletUtils.isAjaxRequest(request)) {
-                    ServletUtils.writeJson(response, ResultBody.error("请验证管理员访问权限", 403).toString());
-                } else {
+                if (AppUtils.isHtmlRequest(request)) {
                     response.sendRedirect(AppUtils.getContextPath() + "/user/admin-entry?nexturl=" + CodecUtils.urlEncode(requestUrl));
+                } else {
+                    ServletUtils.writeJson(response, ResultBody.error("请验证管理员访问权限", 403).toString());
                 }
                 return false;
             }
@@ -129,10 +129,10 @@ public class RebuildAuthHandler extends HandlerInterceptorAdapter implements Ins
                     + StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "<unknow>")
                     + " via " + ServletUtils.getRemoteAddr(request));
 
-            if (ServletUtils.isAjaxRequest(request)) {
-                ServletUtils.writeJson(response, ResultBody.error("未授权访问", 403).toString());
-            } else {
+            if (AppUtils.isHtmlRequest(request)) {
                 response.sendRedirect(AppUtils.getContextPath() + "/user/login?nexturl=" + CodecUtils.urlEncode(requestUrl));
+            } else {
+                ServletUtils.writeJson(response, ResultBody.error("未授权访问", 403).toString());
             }
             return false;
         }

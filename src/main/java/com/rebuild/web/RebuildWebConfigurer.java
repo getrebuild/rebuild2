@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -89,40 +88,33 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
     @Override
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
         resolvers.add((request, response, handler, ex) -> {
-            request.setAttribute(ServletUtils.ERROR_STATUS_CODE, HttpStatus.INTERNAL_SERVER_ERROR.value());
             logError(request, ex, handler);
-            return createError(request, ex);
+            return createError(request, ex, HttpStatus.INTERNAL_SERVER_ERROR);
         });
     }
 
     @Override
     public ModelAndView resolveErrorView(HttpServletRequest request, HttpStatus status, Map<String, Object> model) {
-        request.setAttribute(ServletUtils.ERROR_STATUS_CODE, status.value());
         logError(request, null, model);
-        return createError(request, null);
+        return createError(request, null, status);
     }
 
     /**
      * @param request
      * @param ex
      * @return
+     * @see AppUtils#isHtmlRequest(HttpServletRequest)
      */
-    private ModelAndView createError(HttpServletRequest request, Exception ex) {
-        MediaType mediaType = null;
-        try {
-            mediaType = MediaType.valueOf(request.getContentType());
-        } catch (Exception ignore) {
-        }
-
+    private ModelAndView createError(HttpServletRequest request, Exception ex, HttpStatus status) {
         ModelAndView error;
-        if (MediaType.TEXT_HTML.equals(mediaType)) {
+        if (AppUtils.isHtmlRequest(request)) {
             error = new ModelAndView("/error/error");
         } else {
             error = new ModelAndView(new FastJsonJsonView());
         }
 
         String errorMsg = AppUtils.getErrorMessage(request, ex);
-        error.getModel().put("error_code", com.rebuild.api.Controller.CODE_ERROR);
+        error.getModel().put("error_code", status.value());
         error.getModel().put("error_msg", errorMsg);
         return error;
     }

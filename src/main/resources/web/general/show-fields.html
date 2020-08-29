@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <embed th:replace="~{/common/header}" />
+    <th:block th:replace="~{/common/header}" />
     <title>列显示</title>
   </head>
   <body class="dialog">
@@ -29,7 +29,7 @@
         <button class="btn btn-secondary" onclick="parent.RbModal.hide()" type="button">取消</button>
       </div>
     </div>
-    <embed th:replace="~{/common/footer}" />
+    <th:block th:replace="~{/common/footer}" />
     <script th:src="@{/assets/js/sortable.js}"></script>
     <script th:src="@{/assets/js/settings-share2.js}" type="text/babel"></script>
     <script type="text/babel">

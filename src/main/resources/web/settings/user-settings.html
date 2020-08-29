@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <embed th:replace="~{/common/header}" />
+    <th:block th:replace="~{/common/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/lib/widget/cropper.min.css}" />
     <title>个人设置</title>
     <style type="text/css">
@@ -69,8 +69,8 @@
   </head>
   <body th:with="user = ${T(com.rebuild.utils.AppUtils).getRequestUserBean(#request)}">
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-offcanvas-menu">
-      <embed th:replace="~{/common/nav-top}" />
-      <embed th:replace="~{/common/nav-left}" />
+      <th:block th:replace="~{/common/nav-top}" />
+      <th:block th:replace="~{/common/nav-left :: nav}" />
       <div class="rb-content">
         <div class="main-content container">
           <div class="card">
@@ -191,7 +191,7 @@
         </div>
       </div>
     </div>
-    <embed th:replace="~{/common/footer}" />
+    <th:block th:replace="~{/common/footer}" />
     <script>
       window.__PageConfig = {
         userid: '[[${user.getId()}]]',

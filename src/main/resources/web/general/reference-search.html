@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
-    <embed th:replace="~{/common/header}" />
+    <th:block th:replace="~{/common/header}" />
     <title th:text="|查询${entityLabel}|"></title>
     <style type="text/css">
       .rb-datatable-header {
@@ -44,7 +44,7 @@
         </div>
       </div>
     </div>
-    <embed th:replace="~{/common/footer}" />
+    <th:block th:replace="~{/common/footer}" />
     <script>
       window.__PageConfig = {
         type: 'RecordList',

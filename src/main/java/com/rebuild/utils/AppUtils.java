@@ -17,6 +17,7 @@ import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.web.admin.AdminEntryController;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.http.MediaType;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.file.AccessDeniedException;
@@ -157,5 +158,26 @@ public class AppUtils {
     public static boolean isRbMobile(HttpServletRequest request) {
         String UA = request.getHeader("user-agent");
         return UA != null && UA.toUpperCase().startsWith(MOILE_UA_PREFIX);
+    }
+
+    /**
+     * 是否 HTML 请求
+     *
+     * @param request
+     * @return
+     */
+    public static boolean isHtmlRequest(HttpServletRequest request) {
+        if (ServletUtils.isAjaxRequest(request)) return false;
+
+        MediaType mediaType = null;
+        try {
+            String contentType = request.getContentType();
+            if (contentType == null) {
+                contentType = request.getHeader("Accept").split(",")[0];
+            }
+            mediaType = MediaType.valueOf(contentType);
+        } catch (Exception ignore) {
+        }
+        return MediaType.TEXT_HTML.equals(mediaType) || MediaType.APPLICATION_XHTML_XML.equals(mediaType);
     }
 }
