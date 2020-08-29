@@ -86,7 +86,7 @@ class RbViewForm extends React.Component {
     })
   }
 
-  // see RbForm in `rb-forms.jsx`
+  // see RbForm in `rb-forms.js`
 
   setFieldValue(field, value, error) {
     this.__FormData[field] = { value: value, error: error }

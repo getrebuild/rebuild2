@@ -784,7 +784,7 @@ const RbListPage = {
       ids.length > 0 && DlgUnshare.create({ entity: entity[0], ids: ids })
     })
 
-    // in `rb-datalist.append.jsx`
+    // in `rb-datalist.append.js`
     // eslint-disable-next-line react/jsx-no-undef
     $('.J_export').click(() => renderRbcomp(<DataExport listRef={RbListPage._RbList} entity={entity[0]} />))
     // eslint-disable-next-line react/jsx-no-undef

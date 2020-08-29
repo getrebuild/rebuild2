@@ -122,9 +122,6 @@ public class AppUtils {
             }
 
             exception = (Throwable) request.getAttribute(ServletUtils.ERROR_EXCEPTION);
-            if (exception == null) {
-                exception = (Throwable) request.getAttribute(ServletUtils.JSP_JSP_EXCEPTION);
-            }
         }
 
         // 已知异常

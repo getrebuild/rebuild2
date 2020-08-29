@@ -671,7 +671,7 @@ class TaskComment extends React.Component {
 }
 
 // ~ 编辑框
-// @see feeds-post.jsx
+// @see feeds-post.js
 class TextEditor extends React.Component {
   state = { ...this.props }
 

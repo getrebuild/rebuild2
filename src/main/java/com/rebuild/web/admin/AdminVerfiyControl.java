@@ -110,12 +110,12 @@ public class AdminVerfiyControl extends BaseController {
     // -- CLI
 
     @RequestMapping("/admin/cli/console")
-    public ModelAndView adminCliConsole() throws IOException {
-        return createModelAndView("/admin/admin-cli.jsp");
+    public ModelAndView adminCliConsole() {
+        return createModelAndView("/admin/admin-cli");
     }
 
     @RequestMapping("/admin/cli/exec")
-    public void adminCliExec(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void adminCliExec(HttpServletRequest request, HttpServletResponse response) {
         String command = ServletUtils.getRequestString(request);
         if (StringUtils.isBlank(command)) {
             return;

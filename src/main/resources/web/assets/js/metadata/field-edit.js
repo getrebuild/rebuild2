@@ -241,7 +241,7 @@ const picklistItemRender = function (data) {
 }
 
 // Check incorrect?
-// Also see RbFormElement#checkHasError in rb-forms.jsx
+// Also see RbFormElement#checkHasError in rb-forms.js
 const checkDefaultValue = function (v, t) {
   let valid = true
   if (t === 'NUMBER' || t === 'DECIMAL') {

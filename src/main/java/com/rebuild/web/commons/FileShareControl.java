@@ -78,7 +78,7 @@ public class FileShareControl extends BaseController {
         }
 
         String publicUrl = genPublicUrl(fileUrl);
-        ModelAndView mv = createModelAndView("/commons/shared-file.jsp");
+        ModelAndView mv = createModelAndView("/commons/shared-file");
         mv.getModelMap().put("publicUrl", publicUrl);
         return mv;
     }

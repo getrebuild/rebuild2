@@ -51,7 +51,7 @@ public class SetupInstall extends BaseController implements InstallState {
             return null;
         }
 
-        ModelAndView mv = new ModelAndView("/setup/install.jsp");
+        ModelAndView mv = new ModelAndView("/admin/setup/install");
         mv.getModel().put("defaultDataDirectory", RebuildConfiguration.getFileOfData(null).getAbsolutePath().replace("\\", "/"));
         mv.getModel().put("defaultAppName", RebuildConfiguration.get(ConfigurationItem.AppName));
         mv.getModel().put("defaultHomeURL", RebuildConfiguration.get(ConfigurationItem.HomeURL));

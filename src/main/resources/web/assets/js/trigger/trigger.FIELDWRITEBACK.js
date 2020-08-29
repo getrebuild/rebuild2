@@ -5,7 +5,7 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-// @see trigger.FIELDAGGREGATION.jsx auto-fillin.jsx
+// @see trigger.FIELDAGGREGATION.js auto-fillin.js
 
 const EXPR_SPLIT = '#'
 
@@ -310,7 +310,7 @@ renderContentComp = function (props) {
   })
 }
 
-// see: field-edit.jsx#AdvDateDefaultValue
+// see: field-edit.js#AdvDateDefaultValue
 // ~~ 日期高级表达式
 class AdvDateValue extends RbAlert {
   constructor(props) {

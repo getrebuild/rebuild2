@@ -49,9 +49,9 @@ $(document).ready(function () {
           $('#fieldLabel, #comments').val('')
           $('#type').val('TEXT').trigger('change')
           $('#fieldLabel').focus()
-          // @see `field-new.jsp`
+          // @see `field-new.html`
           parent && parent.loadFields && parent.loadFields()
-          // @see `form-design.jsx`
+          // @see `form-design.js`
           parent && parent.add2Layout && parent.add2Layout($val('#add2Layout'), res.data)
         } else {
           parent.location.href = `${rb.baseUrl}/admin/entity/${entity}/field/${res.data}`

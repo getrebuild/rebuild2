@@ -238,7 +238,7 @@ public class ApprovalControl extends BaseController {
 
     @RequestMapping("view/{id}")
     public ModelAndView pageView(@PathVariable String id) {
-        ModelAndView mv = createModelAndView("/entity/approval/approval-view.jsp");
+        ModelAndView mv = createModelAndView("/entity/approval/approval-view");
         mv.getModel().put("approvalId", id);
         return mv;
     }

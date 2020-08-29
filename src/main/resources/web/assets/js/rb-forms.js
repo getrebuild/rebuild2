@@ -1618,7 +1618,7 @@ class ClassificationSelector extends React.Component {
   }
 }
 
-// see `reference-search.jsp`
+// see `reference-search.html`
 // eslint-disable-next-line no-unused-vars
 var referenceSearch__call = function (selected) {
   /* NOOP */

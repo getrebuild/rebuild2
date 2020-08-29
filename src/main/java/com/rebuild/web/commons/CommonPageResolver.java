@@ -40,7 +40,7 @@ public class CommonPageResolver extends BaseController {
         if ("1".equals(request.getParameter("check"))) {
             ServerStatus.checkAll();
         }
-        return createModelAndView("/server-status.jsp");
+        return createModelAndView("/admin/server-status");
     }
 
     @GetMapping("/gw/server-status.json")
