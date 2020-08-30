@@ -3,7 +3,7 @@
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) --- [%-12thread]  %logger{36}:%line  %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} %-5level --- [%-12thread]  %logger{36}:%line  %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -14,7 +14,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${env.TEMP}/logs/rebuild.%d{yyyy-MM-dd}-%i.log</fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
-            <maxHistory>90</maxHistory>
+            <maxHistory>180</maxHistory>
         </rollingPolicy>
     </appender>
 
