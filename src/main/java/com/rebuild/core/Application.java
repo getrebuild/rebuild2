@@ -35,7 +35,6 @@ import com.rebuild.core.service.general.EntityService;
 import com.rebuild.core.service.general.GeneralEntityService;
 import com.rebuild.core.service.notification.NotificationService;
 import com.rebuild.core.service.query.QueryFactory;
-import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.JSONable;
 import com.rebuild.utils.codec.RbDateCodec;
 import com.rebuild.utils.codec.RbRecordCodec;
@@ -121,17 +120,20 @@ public class Application {
         spring.setBannerMode(Banner.Mode.OFF);
         APPLICATION_CONTEXT = spring.run(args);
 
+        String localUrl = String.format("http://localhost:%s%s",
+                RebuildEnvironmentPostProcessor.getProperty("server.port", "8080"),
+                RebuildEnvironmentPostProcessor.getProperty("server.servlet.context-path", ""));
+
         try {
             if (Installer.isInstalled()) {
-                init(startAt);
+                init();
+                LOGGER.info(formatBootMsg("Rebuild boot successful in "
+                        + (System.currentTimeMillis() - startAt) + " ms", "Local URL : " + localUrl));
             } else {
                 // 加载语言包
                 APPLICATION_CONTEXT.getBean(Language.class).init();
 
-                String localUrl = String.format("http://localhost:%s%s",
-                        RebuildEnvironmentPostProcessor.getProperty("server.port", "8080"),
-                        AppUtils.getContextPath());
-                LOGGER.warn(formatBootMsg("REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
+                LOGGER.info(formatBootMsg("REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
             }
 
         } catch (Exception ex) {
@@ -143,10 +145,9 @@ public class Application {
     /**
      * 系统初始化
      *
-     * @param startAt
      * @throws Exception
      */
-    public static void init(long startAt) throws Exception {
+    public static void init() throws Exception {
         LOGGER.info("Initializing Rebuild context ...");
 
         if (!(serversReady = ServerStatus.checkAll())) {
@@ -184,7 +185,6 @@ public class Application {
 
         APPLICATION_CONTEXT.registerShutdownHook();
 
-        LOGGER.info("Rebuild boot successful in " + (System.currentTimeMillis() - startAt) + " ms");
         LOGGER.info("REBUILD AUTHORITY : " + StringUtils.join(License.queryAuthority().values(), " | "));
     }
 

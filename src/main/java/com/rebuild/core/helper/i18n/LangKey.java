@@ -15,7 +15,7 @@ public class LangKey {
 
     protected final String key;
 
-    private LangKey(String key) {
+    public LangKey(String key) {
         this.key = key;
     }
 
@@ -40,6 +40,6 @@ public class LangKey {
      * @return
      */
     public static LangKey entity(String entityName) {
-        return new LangKey("entity." + key);
+        return new LangKey("entity." + entityName);
     }
 }

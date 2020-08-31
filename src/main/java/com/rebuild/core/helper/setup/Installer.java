@@ -104,7 +104,7 @@ public class Installer implements InstallState {
 
         // re-init
         try {
-            Application.init(System.currentTimeMillis());
+            Application.init();
         } catch (Exception ex) {
             FileUtils.deleteQuietly(dest);
             throw ex;

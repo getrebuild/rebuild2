@@ -54,12 +54,12 @@ public class ApiGateway extends Controller implements Initialization {
 
     private static final Map<String, Class<? extends BaseApi>> API_CLASSES = new HashMap<>();
 
+    @SuppressWarnings("unchecked")
     @Override
     public void init() throws Exception {
         Set<Class<?>> apiClasses = cn.devezhao.commons.ReflectUtils.getAllSubclasses(
                 ApiGateway.class.getPackage().getName(), BaseApi.class);
         for (Class<?> c : apiClasses) {
-            //noinspection unchecked
             ApiGateway.registerApi((Class<? extends BaseApi>) c);
         }
     }
