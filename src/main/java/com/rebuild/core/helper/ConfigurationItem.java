@@ -78,7 +78,7 @@ public enum ConfigurationItem {
     MultipleSessions(true),
 
     // 默认语言
-    DefaultLanguage("zh-CN"),
+    DefaultLanguage("zh_CN"),
 
     ;
 

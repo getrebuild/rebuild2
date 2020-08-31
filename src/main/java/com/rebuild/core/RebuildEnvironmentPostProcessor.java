@@ -38,7 +38,7 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
         // 从安装文件
         File file = getInstallFile();
         if (file != null && file.exists()) {
-            Application.LOG.info("Loading file of install : " + file);
+            Application.LOGGER.info("Loading file of install : " + file);
 
             try {
                 Properties temp = PropertiesLoaderUtils.loadProperties(new FileSystemResource(file));

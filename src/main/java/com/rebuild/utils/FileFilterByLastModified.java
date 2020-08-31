@@ -8,7 +8,6 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.utils;
 
 import cn.devezhao.commons.CalendarUtils;
-import com.rebuild.core.Application;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -52,10 +51,7 @@ public class FileFilterByLastModified implements FileFilter {
         }
 
         for (File d : ds) {
-            if (d.isFile()) {
-                FileUtils.deleteQuietly(d);
-                Application.LOG.warn("Delete useless file : " + d);
-            }
+            if (d.isFile()) FileUtils.deleteQuietly(d);
         }
     }
 }

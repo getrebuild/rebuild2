@@ -14,6 +14,7 @@ import com.rebuild.api.ApiInvokeException;
 import com.rebuild.api.BaseApi;
 import com.rebuild.core.Application;
 import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.helper.i18n.Language;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.privileges.bizz.ZeroEntry;
 import com.rebuild.utils.JSONUtils;
@@ -61,13 +62,13 @@ public class LoginToken extends BaseApi {
      */
     public static String checkUser(String user, String password) {
         if (!Application.getUserStore().existsUser(user)) {
-            return "用户名或密码错误";
+            return Language.getLang("SomeError", "UsernameOrPassword");
         }
 
         User loginUser = Application.getUserStore().getUser(user);
         if (!loginUser.isActive()
                 || !Application.getPrivilegesManager().allow(loginUser.getId(), ZeroEntry.AllowLogin)) {
-            return "用户未激活或不允许登录";
+            return Language.getLang("UnactiveUser");
         }
 
         Object[] foundUser = Application.createQueryNoFilter(
@@ -75,11 +76,11 @@ public class LoginToken extends BaseApi {
                 .setParameter(1, user)
                 .setParameter(2, user)
                 .unique();
-        if (foundUser == null
-                || !foundUser[0].equals(EncryptUtils.toSHA256Hex(password))) {
-            return "用户名或密码错误";
-        }
+        if (foundUser != null && foundUser[0].equals(EncryptUtils.toSHA256Hex(password))) {
+            return null;
 
-        return null;
+        } else {
+            return Language.getLang("SomeError", "UsernameOrPassword");
+        }
     }
 }

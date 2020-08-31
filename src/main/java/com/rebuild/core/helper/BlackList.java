@@ -10,9 +10,12 @@ package com.rebuild.core.helper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.rebuild.core.Application;
+import com.rebuild.core.helper.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
@@ -26,6 +29,8 @@ import java.io.IOException;
  * @since 01/31/2019
  */
 public class BlackList {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BlackList.class);
 
     private static JSONArray BLACKLIST = null;
 
@@ -58,7 +63,7 @@ public class BlackList {
             String s = FileUtils.readFileToString(file, "UTF-8");
             BLACKLIST = JSON.parseArray(s);
         } catch (IOException e) {
-            Application.LOG.error("Couldn't load [blacklist.json] file! This feature is missed : " + e);
+            LOG.error("Couldn't load [blacklist.json] file! This feature is missed : " + e);
             BLACKLIST = JSONUtils.EMPTY_ARRAY;
         }
     }

@@ -74,6 +74,8 @@ import java.util.*;
 @ImportResource("classpath:application-bean.xml")
 public class Application {
 
+    protected static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+
     /**
      * Rebuild Version
      */
@@ -82,10 +84,6 @@ public class Application {
      * Rebuild Build
      */
     public static final int BUILD = 20000;
-    /**
-     * Logger for global
-     */
-    public static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
     static {
         // Driver for DB
@@ -118,7 +116,7 @@ public class Application {
 
         long startAt = System.currentTimeMillis();
 
-        LOG.info("Initializing SpringBoot context ...");
+        LOGGER.info("Initializing SpringBoot context ...");
         SpringApplication spring = new SpringApplication(Application.class);
         spring.setBannerMode(Banner.Mode.OFF);
         APPLICATION_CONTEXT = spring.run(args);
@@ -127,16 +125,18 @@ public class Application {
             if (Installer.isInstalled()) {
                 init(startAt);
             } else {
+                // 加载语言包
+                APPLICATION_CONTEXT.getBean(Language.class).init();
+
                 String localUrl = String.format("http://localhost:%s%s",
                         RebuildEnvironmentPostProcessor.getProperty("server.port", "8080"),
                         AppUtils.getContextPath());
-                LOG.warn(formatBootMsg(
-                        "REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
+                LOGGER.warn(formatBootMsg("REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
             }
 
         } catch (Exception ex) {
             serversReady = false;
-            LOG.error(formatBootMsg("REBUILD BOOTING FILAED !!!"), ex);
+            LOGGER.error(formatBootMsg("REBUILD BOOTING FILAED !!!"), ex);
         }
     }
 
@@ -147,10 +147,10 @@ public class Application {
      * @throws Exception
      */
     public static void init(long startAt) throws Exception {
-        LOG.info("Initializing Rebuild context ...");
+        LOGGER.info("Initializing Rebuild context ...");
 
         if (!(serversReady = ServerStatus.checkAll())) {
-            LOG.error(formatBootMsg(
+            LOGGER.error(formatBootMsg(
                     "REBUILD BOOTING FAILURE DURING THE STATUS CHECK.", "PLEASE VIEW LOGS FOR MORE DETAILS."));
             return;
         }
@@ -164,7 +164,7 @@ public class Application {
         }
 
         // 加载自定义实体
-        LOG.info("Loading customized/business entities ...");
+        LOGGER.info("Loading customized/business entities ...");
         ((DynamicMetadataFactory) APPLICATION_CONTEXT.getBean(PersistManagerFactory.class).getMetadataFactory()).refresh(false);
 
         // 实体对应的服务类
@@ -173,7 +173,7 @@ public class Application {
             ServiceSpec ss = e.getValue();
             if (ss.getEntityCode() > 0) {
                 ESS.put(ss.getEntityCode(), ss);
-                LOG.info("Service specification : " + ss.getEntityCode() + " " + ss.getClass());
+                LOGGER.info("Service specification : " + ss.getEntityCode() + " " + ss.getClass());
             }
         }
 
@@ -184,8 +184,8 @@ public class Application {
 
         APPLICATION_CONTEXT.registerShutdownHook();
 
-        LOG.info("Rebuild boot successful in " + (System.currentTimeMillis() - startAt) + " ms");
-        LOG.info("REBUILD AUTHORITY : " + StringUtils.join(License.queryAuthority().values(), " | "));
+        LOGGER.info("Rebuild boot successful in " + (System.currentTimeMillis() - startAt) + " ms");
+        LOGGER.info("REBUILD AUTHORITY : " + StringUtils.join(License.queryAuthority().values(), " | "));
     }
 
     private static String formatBootMsg(String... msgs) {

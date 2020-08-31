@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>登录</title>
+    <title>[[${bundle.lang('UserLogin')}]]</title>
     <style type="text/css">
       #login-form > .row {
         margin-left: -15px !important;
@@ -75,30 +75,30 @@
                     <input class="form-control" id="user" type="text" th:placeholder="${bundle.lang('UsernameOrEmail')}" />
                   </div>
                   <div class="form-group">
-                    <input class="form-control" id="passwd" type="password" placeholder="登录密码" />
+                    <input class="form-control" id="passwd" type="password" th:placeholder="${bundle.lang('Password')}" />
                   </div>
                   <div class="form-group row pt-0 mb-3 vcode-row" th:if="${session.needLoginVCode}">
                     <div class="col-6 pr-0">
-                      <input class="form-control" type="text" placeholder="输入验证码" />
+                      <input class="form-control" type="text" placeholder="${bundle.lang('Captcha')}" />
                     </div>
                     <div class="col-6 text-right pl-0 pr-0">
-                      <img class="mw-100 mr-zero" src="captcha" alt="验证码" title="点击刷新" />
+                      <img class="mw-100 mr-zero" src="captcha" title="${bundle.lang('ClickReload')}" />
                     </div>
                   </div>
                   <div class="form-group row login-tools">
                     <div class="col-6 login-remember">
                       <label class="custom-control custom-checkbox custom-control-inline mb-0">
                         <input class="custom-control-input" type="checkbox" id="autoLogin" />
-                        <span class="custom-control-label">记住登录</span>
+                        <span class="custom-control-label">[[${bundle.lang('RememberMe')}]]</span>
                       </label>
                     </div>
                     <div class="col-6 login-forgot-password">
-                      <a href="forgot-passwd">找回密码</a>
+                      <a href="forgot-passwd">[[${bundle.lang('ForgotPassword')}]]</a>
                     </div>
                   </div>
                   <div class="form-group login-submit mb-2">
-                    <button class="btn btn-primary btn-xl" type="submit" data-spinner>登录</button>
-                    <div class="mt-4 text-center">还没有账号？<a href="signup">立即注册</a></div>
+                    <button class="btn btn-primary btn-xl" type="submit" data-spinner>[[${bundle.lang('Login')}]]</button>
+                    <div class="mt-4 text-center" th:utext="${bundle.lang('NoAccountYet')}"></div>
                   </div>
                   <div class="select-lang text-center mb-2">
                     <a th:href="@{/language/select?nexturl=login&locale=zh_CN}" title="中文"><img th:src="@{/assets/img/flag/zh_CN.png}" /></a>
@@ -111,14 +111,7 @@
               <div class="copyright">&copy; REBUILD</div>
             </div>
           </div>
-          <div class="copyright">
-            <a href="https://getrebuild.com/" class="link" target="_blank">REBUILD</a>
-            使用开源
-            <a href="https://getrebuild.com/license/LICENSE.txt" class="link" target="_blank">GPL-3.0</a>
-            和
-            <a href="https://getrebuild.com/license/COMMERCIAL.txt" class="link" target="_blank">商用</a>
-            双重授权许可，安装/使用即表示你已阅读并同意许可内容。
-          </div>
+          <div class="copyright link" th:utext="${bundle.lang('RebuildRights')}"></div>
         </div>
       </div>
     </div>
@@ -141,11 +134,11 @@
             passwd = $val('#passwd'),
             vcode = $val('.vcode-row input')
           if (!user || !passwd) {
-            RbHighbar.create('请输入用户名和密码')
+            RbHighbar.create('PlsInputSome'.lang('UsernameAndPassword'))
             return
           }
           if ($('.vcode-row img').length > 0 && !vcode) {
-            RbHighbar.create('请输入验证码')
+            RbHighbar.create('PlsInputSome'.lang('Captcha'))
             return
           }
 

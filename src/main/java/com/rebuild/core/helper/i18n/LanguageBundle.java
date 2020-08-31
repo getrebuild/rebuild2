@@ -11,6 +11,9 @@ import cn.devezhao.commons.EncryptUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.utils.JSONable;
+import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.util.Locale;
@@ -27,6 +30,13 @@ import java.util.regex.Pattern;
  * @since 2019/10/31
  */
 public class LanguageBundle implements JSONable {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LanguageBundle.class);
+
+    // 链接
+    private static final Pattern LINK_PATT = Pattern.compile("\\[(.*?)]\\((.*?)\\)");
+    // 换行
+    private static final Pattern BR_PATT = Pattern.compile("\\[]");
 
     final private String locale;
     final private JSONObject bundle;
@@ -45,8 +55,6 @@ public class LanguageBundle implements JSONable {
         this.bundle = this.merge(bundle);
     }
 
-    private static final Pattern VARS_PATT = Pattern.compile("\\{([0-9a-zA-Z]+)}");
-    private static final Pattern LINK_PATT = Pattern.compile("\\[(.*?)]\\((.*?)\\)");
     /**
      * 合并语言
      *
@@ -54,29 +62,25 @@ public class LanguageBundle implements JSONable {
      * @return
      */
     private JSONObject merge(JSONObject bundle) {
-        // 变量
         String bundleString = bundle.toJSONString();
-        Matcher matcher = VARS_PATT.matcher(bundleString);
-        while (matcher.find()) {
-            String var = matcher.group(1);
-            String lang = bundle.getString(var);
-            if (lang != null) {
-                bundleString = bundleString.replace("{" + var +"}", lang);
-            }
-        }
 
         // 换行
-        bundleString = bundleString.replaceAll("\\[]", "<br/>");
+        bundleString = BR_PATT.matcher(bundleString).replaceAll("<br/>");
 
         // 链接
-        matcher = LINK_PATT.matcher(bundleString);
+        Matcher matcher = LINK_PATT.matcher(bundleString);
         while (matcher.find()) {
             String text = matcher.group(1);
             String url = matcher.group(2);
 
+            String link = "<a href='%s'>%s</a>";
+            if (url.startsWith("http:") || url.startsWith("https:")) {
+                link = "<a target='_blank' href='%s'>%s</a>";
+            }
+
             bundleString = bundleString.replace(
                     String.format("[%s](%s)", text, url),
-                    String.format("<a href='%s'>%s</a>", url, text));
+                    String.format(link, url, text));
         }
 
         this.bundleHash = EncryptUtils.toMD5Hex(bundleString);
@@ -100,38 +104,57 @@ public class LanguageBundle implements JSONable {
 
     /**
      * @param key
-     * @param args
+     * @param phValues
      * @return
-     * @see MessageFormat#format(String, Object...)
+     * @see String#format(String, Object...)
      */
-    public String formatLang(String key, Object... args) {
+    public String formatLang(String key, Object... phValues) {
         String lang = getLang(key);
-        return MessageFormat.format(lang, args);
+        return String.format(lang, phValues);
     }
 
     /**
      * @param key
      * @return
      */
-    public String getLang(String key) {
+    public String getLang(String key, String... phKeys) {
         String lang = bundle.getString(key);
         if (lang == null && parent != null) {
             lang = parent.getDefaultBundle().getLang(key);
         }
 
         if (lang == null) {
+            LOG.warn("Missing lang-key `{}` for `{}`", key, getLocale());
             return String.format("[%s]", key.toUpperCase());
+        }
+
+        if (phKeys.length > 0) {
+            String[] phLangs = new String[phKeys.length];
+            for (int i = 0; i < phKeys.length; i++) {
+                phLangs[i] = getLang(phKeys[i]);
+            }
+            return MessageFormat.format(lang, phLangs);
+
         } else {
             return lang;
         }
     }
 
     /**
+     * for client short
+     *
      * @param key
      * @return
+     * @see #getLang(String, String...)
      */
     public String lang(String key) {
-        return getLang(key);
+        if (key.contains(",")) {
+            String[] keys = key.split(",");
+            String[] phKeys = (String[]) ArrayUtils.subarray(keys, 1, keys.length);
+            return getLang(keys[0], phKeys);
+        } else {
+            return getLang(key);
+        }
     }
 
     @Override

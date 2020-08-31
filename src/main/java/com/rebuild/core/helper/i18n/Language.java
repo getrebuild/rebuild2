@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.Initialization;
+import com.rebuild.core.RebuildException;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import org.slf4j.Logger;
@@ -54,8 +55,8 @@ public class Language implements Initialization {
 
             try (InputStream is = new FileInputStream(file)) {
                 JSONObject o = JSON.parseObject(is, null);
-                bundleMap.remove(locale);
-                bundleMap.put(locale, new LanguageBundle(locale, o, this));
+                LanguageBundle bundle = new LanguageBundle(locale, o, this);
+                bundleMap.put(locale, bundle);
             }
         }
     }
@@ -85,7 +86,11 @@ public class Language implements Initialization {
      * @return
      */
     public LanguageBundle getDefaultBundle() {
-        return bundleMap.get(RebuildConfiguration.get(ConfigurationItem.DefaultLanguage));
+        String d = RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
+        if (!available(d)) {
+            throw new RebuildException("No default locale found : " + d);
+        }
+        return bundleMap.get(d);
     }
 
     /**
@@ -122,5 +127,25 @@ public class Language implements Initialization {
             return true;
         }
         return a;
+    }
+
+    // -- Quick Methods
+
+    /**
+     * @param key
+     * @param phKeys
+     * @return
+     */
+    public static String getLang(String key, String...phKeys) {
+        return Application.getBean(Language.class).getCurrentBundle().getLang(key, phKeys);
+    }
+
+    /**
+     * @param key
+     * @param phValues
+     * @return
+     */
+    public static String formatLang(String key, String...phValues) {
+        return Application.getBean(Language.class).getCurrentBundle().formatLang(key, phValues);
     }
 }

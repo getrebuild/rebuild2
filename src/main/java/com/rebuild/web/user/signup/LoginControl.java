@@ -28,7 +28,6 @@ import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.utils.AES;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.web.BaseController;
-import com.rebuild.web.commons.LanguageControl;
 import com.wf.captcha.utils.CaptchaUtil;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.commons.lang.StringUtils;
@@ -122,7 +121,7 @@ public class LoginControl extends BaseController {
         Boolean needVcode = (Boolean) ServletUtils.getSessionAttribute(request, SK_NEED_VCODE);
         if (needVcode != null && needVcode
                 && (StringUtils.isBlank(vcode) || !CaptchaUtil.ver(vcode, request))) {
-            writeFailure(response, "验证码错误");
+            writeFailure(response, getLang(request, "SomeError", "Captcha"));
             return;
         }
 
@@ -267,14 +266,15 @@ public class LoginControl extends BaseController {
     @PostMapping("user-confirm-passwd")
     public void userConfirmPasswd(HttpServletRequest request, HttpServletResponse response) {
         JSONObject data = (JSONObject) ServletUtils.getRequestJson(request);
-        String hasError = SignUpControl.checkVCode(data);
-        if (hasError != null) {
-            writeFailure(response, hasError);
+
+        String newpwd = data.getString("newpwd");
+        String email = data.getString("email");
+        String vcode = data.getString("vcode");
+
+        if (!VerfiyCode.verfiy(email, vcode, true)) {
+            writeFailure(response, getLang(request, "SomeInvalid", "Captcha"));
             return;
         }
-
-        String email = data.getString("email");
-        String newpwd = data.getString("newpwd");
 
         User user = Application.getUserStore().getUserByEmail(email);
         Record record = EntityHelper.forUpdate(user.getId(), user.getId());

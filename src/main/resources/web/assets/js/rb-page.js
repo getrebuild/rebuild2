@@ -641,8 +641,10 @@ var $lang = function () {
   var lang = __$lang(arguments[0])
   if (arguments.length < 2) return lang
   for (var i = 1; i < arguments.length; i++) {
-    var iLang = __$lang(arguments[i])
-    lang = lang.replace('{' + (i - 1) + '}', iLang)
+    if (arguments[i]) {
+      var iLang = __$lang(arguments[i])
+      lang = lang.replace('{' + (i - 1) + '}', iLang)
+    }
   }
   return lang
 }
@@ -651,5 +653,6 @@ var __$lang = function (key) {
 }
 
 String.prototype.lang = function () {
-  return $lang(this)
+  if (arguments.length > 0) return $lang(this, arguments[0], arguments[1], arguments[2])
+  else $lang(this)
 }

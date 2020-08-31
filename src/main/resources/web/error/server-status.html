@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="shortcut icon" th:href="@{/assets/img/favicon.png}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/rb-base.css}" />
-    <title>系统状态</title>
+    <title>REBUILD</title>
     <style type="text/css">
       .block {
         max-width: 1000px;
@@ -27,14 +27,12 @@
   <body>
     <div th:if="${!ok}" class="error">
       <div class="block mt-0">
-        <h2 class="mt-0">系统故障</h2>
-        <div>
-          服务未能正常启动，请通过快速检查列表排除故障，故障排除后请重启服务。你也可以 <a href="https://getrebuild.com/report-issue?title=boot-error" target="_blank"><u>报告此问题</u></a>
-        </div>
+        <h2 class="mt-0">[[${bundle.lang('SystemFailure')}]]</h2>
+        <div th:utext="${bundle.lang('SystemFailureMemo')}"></div>
       </div>
     </div>
     <div class="block">
-      <h5 class="text-bold">快速检查</h5>
+      <h5 class="text-bold">QUICK CHECK</h5>
       <table class="table table-bordered table-sm table-hover">
         <tbody>
           <tr>
@@ -67,7 +65,7 @@
       </table>
     </div>
     <div class="block">
-      <h5 class="text-bold">系统信息</h5>
+      <h5 class="text-bold">SYSTEM INFORMATION</h5>
       <table class="table table-bordered table-sm table-hover">
       <tbody>
         <tr>

@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>用户注册</title>
+    <title>[[${bundle.lang('UserSignup')}]]</title>
     <style type="text/css">
       .form-group.row {
         margin-left: -15px !important;
@@ -23,36 +23,36 @@
               <div class="card-header"><a class="logo-img"></a></div>
               <div class="card-body">
                 <div class="form-group">
-                  <input class="form-control" id="sFullName" type="text" placeholder="你的姓名" autocomplete="off" />
-                  <p class="form-text">管理员将审核你的注册信息，请正确填写</p>
+                  <input class="form-control" id="sFullName" type="text" th:placeholder="${bundle.lang('FullName')}" autocomplete="off" />
+                  <p class="form-text">[[${bundle.lang('AdminWillReviewSignup')}]]</p>
                 </div>
                 <div class="form-group">
-                  <input class="form-control" id="sName" type="text" placeholder="用户名" autocomplete="off" />
+                  <input class="form-control" id="sName" type="text" th:placeholder="${bundle.lang('Username')}" autocomplete="off" />
                 </div>
                 <div class="form-group">
-                  <input class="form-control" id="sEmail" type="email" placeholder="邮箱" autocomplete="off" />
+                  <input class="form-control" id="sEmail" type="email" th:placeholder="${bundle.lang('Email')}" autocomplete="off" />
                 </div>
                 <div class="form-group row pt-0">
                   <div class="col-7">
-                    <input class="form-control" type="text" id="sVcode" placeholder="邮箱验证码" autocomplete="off" />
+                    <input class="form-control" type="text" id="sVcode" th:placeholder="${bundle.lang('EmailVcode')}" autocomplete="off" />
                   </div>
                   <div class="col-5 text-right pl-0">
-                    <button class="btn btn-primary bordered J_vcode-btn" type="button">获取验证码</button>
+                    <button class="btn btn-primary bordered J_vcode-btn" type="button">[[${bundle.lang('GetVcode')}]]</button>
                   </div>
                 </div>
                 <div class="form-group login-submit">
-                  <button class="btn btn-primary btn-xl J_confirm-btn" type="button">提交注册申请</button>
+                  <button class="btn btn-primary btn-xl J_confirm-btn" type="button">[[${bundle.lang('SubmitSome,Signup')}]]</button>
                 </div>
                 <div class="alert alert-success alert-icon alert-icon-border alert-sm hide">
                   <div class="icon"><span class="zmdi zmdi-check"></span></div>
                   <div class="message">
-                    <p>注册信息已提交，审核结果将通过邮件通知你<br /><a href="login">返回登录</a></p>
+                    <p>[[${bundle.lang('SignupSuccess')}]]<br /><a href="login">[[${bundle.lang('ReturnLogin')}]]</a></p>
                   </div>
                 </div>
               </div>
             </div>
             <div class="splash-footer">
-              <span><a href="login">返回登录</a></span>
+              <span><a href="login">[[${bundle.lang('ReturnLogin')}]]</a></span>
             </div>
           </div>
         </div>
