@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="shortcut icon" th:href="@{/assets/img/favicon.png}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/assets/css/rb-base.css}" />
+    <title>系统状态</title>
+    <style type="text/css">
+      .block {
+        max-width: 1000px;
+        padding: 0 14px;
+        margin: 30px auto 0;
+      }
+      .error {
+        background-color: #ea4335;
+        color: #fff;
+        padding: 18px 0;
+      }
+      .error a {
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div th:if="${!ok}" class="error">
+      <div class="block mt-0">
+        <h2 class="mt-0">系统故障</h2>
+        <div>
+          服务未能正常启动，请通过快速检查列表排除故障，故障排除后请重启服务。你也可以 <a href="https://getrebuild.com/report-issue?title=boot-error" target="_blank"><u>报告此问题</u></a>
+        </div>
+      </div>
+    </div>
+    <div class="block">
+      <h5 class="text-bold">快速检查</h5>
+      <table class="table table-bordered table-sm table-hover">
+        <tbody>
+          <tr>
+            <th width="30%">REBUILD Service</th>
+            <td>
+              <span class="text-success" th:if="${ok}">OK</span>
+              <span class="text-danger" th:if="${!ok}">Startup failed</span>
+            </td>
+          </tr>
+          <tr th:each="s : ${status}">
+            <th>[[${s.name}]]</td>
+            <td>
+              <span class="text-success" th:if="${s.success}">OK</span>
+              <span class="text-danger" th:if="${!s.success}">[[${s.error}]]</span>
+            </td>
+          </tr>
+          <tr>
+            <th>MemoryUsage</td>
+            <td>
+              [[${MemoryUsage[1]}]]% ([[${MemoryUsage[0]}]])
+            </td>
+          </tr>
+          <tr>
+            <th>SystemLoad</td>
+            <td>
+              [[${SystemLoad}]]
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="block">
+      <h5 class="text-bold">系统信息</h5>
+      <table class="table table-bordered table-sm table-hover">
+      <tbody>
+        <tr>
+          <th width="30%">App Version</th>
+          <td>[[${T(com.rebuild.core.Application).VER}]]</td>
+        </tr>
+        <tr>
+          <th>OS</th>
+          <td>[[${T(org.apache.commons.lang.SystemUtils).OS_NAME}]] ([[${T(org.apache.commons.lang.SystemUtils).OS_ARCH}]])</td>
+        </tr>
+        <tr>
+          <th>JVM</th>
+          <td>[[${T(org.apache.commons.lang.SystemUtils).JAVA_VM_NAME}]] ([[${T(org.apache.commons.lang.SystemUtils).JAVA_VERSION}]])</td>
+        </tr>
+      </tbody>
+      </table>
+    </div>
+    <div class="block">
+      <div class="text-muted">
+        &copy; REBUILD &nbsp;·&nbsp;
+        <a href="server-status.json">Status Api</a>
+      </div>
+    </div>
+  </body>
+</html>

@@ -144,7 +144,7 @@ public class SMSender {
      * @throws IOException
      */
     protected static Element getMailTemplate() throws IOException {
-        File tmp = RebuildConfiguration.getFileOfRes("i18n/email_zh-CN.html");
+        File tmp = RebuildConfiguration.getFileOfRes("i18n/email.zh_CN.html");
         Document html = Jsoup.parse(tmp, "utf-8");
         return html.body();
     }

@@ -20,7 +20,6 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class Language implements Initialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(Language.class);
 
-    private static final String LB_PREFIX = "language_";
+    private static final String LB_PREFIX = "language.";
 
     private static final String LB_SUFFIX = ".json";
 
@@ -50,10 +49,10 @@ public class Language implements Initialization {
 
         for (File file : Objects.requireNonNull(files)) {
             String locale = file.getName().substring(LB_PREFIX.length());
-            locale = locale.split("\\.")[0];
+            locale = locale.substring(0, locale.length() - 5);
+            LOG.info("Loading language bundle : " + locale);
 
             try (InputStream is = new FileInputStream(file)) {
-                LOG.info("Loading language bundle : " + locale);
                 JSONObject o = JSON.parseObject(is, null);
                 bundleMap.remove(locale);
                 bundleMap.put(locale, new LanguageBundle(locale, o, this));
@@ -68,7 +67,6 @@ public class Language implements Initialization {
      */
     public LanguageBundle getBundle(String locale) {
         if (locale != null) {
-            locale = locale.replace("_", "-");
             if (bundleMap.containsKey(locale)) {
                 return bundleMap.get(locale);
             }
@@ -103,7 +101,7 @@ public class Language implements Initialization {
      * @return
      */
     private String useCode(String locale) {
-        String code = locale.split("-")[0];
+        String code = locale.split("[_-]")[0];
         for (String key : bundleMap.keySet()) {
             if (key.equals(code) || key.startsWith(code)) {
                 return key;
@@ -119,7 +117,6 @@ public class Language implements Initialization {
      * @return
      */
     public boolean available(String locale) {
-        locale = locale.replace("_", "-");
         boolean a = bundleMap.containsKey(locale);
         if (!a && useCode(locale) != null) {
             return true;

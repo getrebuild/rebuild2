@@ -633,3 +633,23 @@ var $unescape = function (text) {
   text = text.replace(/&quot;/g, '"')
   return $.parseJSON(text)
 }
+
+/**
+ * 获取语言
+ */
+var $lang = function () {
+  var lang = __$lang(arguments[0])
+  if (arguments.length < 2) return lang
+  for (var i = 1; i < arguments.length; i++) {
+    var iLang = __$lang(arguments[i])
+    lang = lang.replace('{' + (i - 1) + '}', iLang)
+  }
+  return lang
+}
+var __$lang = function (key) {
+  return (window.__BUNDLE__ || {})[key] || '[' + key.toUpperCase() + ']'
+}
+
+String.prototype.lang = function () {
+  return $lang(this)
+}

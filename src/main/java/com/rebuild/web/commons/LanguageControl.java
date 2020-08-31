@@ -53,7 +53,7 @@ public class LanguageControl extends BaseController {
         // 无缓存
         String cacheControl = response.getHeader(HEADER_CACHE_CONTROL);
         if (cacheControl != null && cacheControl.contains(DIRECTIVE_NO_STORE)) {
-            ServletUtils.write(response, "__LANGBUNDLE__ = " + bundle.toJSON().toJSONString());
+            ServletUtils.write(response, "__BUNDLE__ = " + bundle.toJSON().toJSONString());
             return;
         }
 
@@ -62,7 +62,7 @@ public class LanguageControl extends BaseController {
                 responseETag.replaceFirst("^W/", "").equals(requestETag.replaceFirst("^W/", "")))) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         } else {
-            ServletUtils.write(response, "__LANGBUNDLE__ = " + bundle.toJSON().toJSONString());
+            ServletUtils.write(response, "__BUNDLE__ = " + bundle.toJSON().toJSONString());
         }
     }
 
@@ -75,7 +75,7 @@ public class LanguageControl extends BaseController {
             if ("login".equals(nexturl)) {
                 nexturl = AppUtils.getContextPath() + "/user/login?locale=" + getParameter(request, "locale");
             }
-            
+
             nexturl = StringUtils.defaultIfBlank(nexturl, AppUtils.getContextPath());
             response.sendRedirect(CodecUtils.urlDecode(nexturl));
         } else {
@@ -93,7 +93,7 @@ public class LanguageControl extends BaseController {
     public static boolean switchLanguage(HttpServletRequest request) {
         String locale = request.getParameter("locale");
         Language language = Application.getBean(Language.class);
-        if (!language.available(locale)) {
+        if (locale == null || !language.available(locale)) {
             return false;
         }
 
