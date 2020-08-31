@@ -98,11 +98,11 @@ See LICENSE and COMMERCIAL in the project root for license information.
   }
 
   // for `moment`
-  if (window.moment) window.moment.locale('zh-CN')
+  if (window.moment) window.moment.locale(rb.locale)
 
   // for `datetimepicker`
   $.fn.datetimepicker.defaults = {
-    language: 'zh',
+    language: rb.locale.split('_')[0],
     fontAwesome: true,
     format: 'yyyy-mm-dd hh:ii',
     weekStart: 1,
@@ -115,9 +115,10 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
   // for `select2`
   $.fn.select2.defaults.set('width', '100%')
-  $.fn.select2.defaults.set('language', 'zh-CN')
+  $.fn.select2.defaults.set('language', rb.locale)
   $.fn.select2.defaults.set('allowClear', true)
   $.fn.select2.defaults.set('placeholder', '')
+
 })(jQuery)
 
 // extends Array

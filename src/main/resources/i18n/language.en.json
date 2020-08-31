@@ -34,7 +34,7 @@
   "CancelYourAdminAccess": "Administrator access is currently enabled. If you no longer use it, it is recommended that you [cancel the access](#)",
   "NoPrivileges": "Permission denied",
   "UnsupportIE10": "Browsers below IE10 are not supported [] Edge, Chrome, Firefox or IE11 are recommended",
-  "ReportIssue": "Report issue",
+  "ReportIssue": "Report an issue",
   "SystemFailure": "System failure",
   "ReturnHome": "Return home",
   "SystemFailureMemo": "The service fails to start normally, please use the quick check list to troubleshoot the fault, and restart the service after the fault is rectified. You can also (https://getrebuild.com/report-issue?title=boot-error)[Report an issue]"
