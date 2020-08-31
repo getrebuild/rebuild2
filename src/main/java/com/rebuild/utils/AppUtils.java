@@ -100,14 +100,6 @@ public class AppUtils {
      * @param request
      * @return
      */
-    public static String getReuqestLocale(HttpServletRequest request) {
-        return (String) request.getSession(true).getAttribute(SK_LOCALE);
-    }
-
-    /**
-     * @param request
-     * @return
-     */
     public static boolean isAdminVerified(HttpServletRequest request) {
         Object verified = ServletUtils.getSessionAttribute(request, AdminVerfiyControl.KEY_VERIFIED);
         return verified != null;

@@ -37,7 +37,7 @@ $(function () {
     var topPopover = function (el, content) {
       var pop_show_timer
       var pop_hide_timer
-      var pop = $(el)
+      var $pop = $(el)
         .popover({
           trigger: 'manual',
           placement: 'bottom',
@@ -48,13 +48,13 @@ $(function () {
         .on('mouseenter', function () {
           pop_hide_timer && clearTimeout(pop_hide_timer)
           pop_show_timer = setTimeout(function () {
-            pop.popover('show')
+            $pop.popover('show')
           }, 200)
         })
         .on('mouseleave', function () {
           pop_show_timer && clearTimeout(pop_show_timer)
           pop_hide_timer = setTimeout(function () {
-            pop.popover('hide')
+            $pop.popover('hide')
           }, 200)
         })
         .on('shown.bs.popover', function (e) {
@@ -64,13 +64,14 @@ $(function () {
             .off('mouseleave')
             .on('mouseenter', function () {
               pop_hide_timer && clearTimeout(pop_hide_timer)
-              pop.popover('show')
+              $pop.popover('show')
             })
             .on('mouseleave', function () {
               pop_show_timer && clearTimeout(pop_show_timer)
-              pop.popover('hide')
+              $pop.popover('hide')
             })
         })
+      return $pop
     }
 
     $('html').addClass('admin')
@@ -78,7 +79,7 @@ $(function () {
     if (location.href.indexOf('/admin/') > -1) $('.admin-settings').remove()
     else if (rb.isAdminVerified) {
       $('.admin-settings a>.icon').addClass('text-danger')
-      topPopover($('.admin-settings a'), '<div class="p-1">当前已启用管理员访问功能，如不再使用建议你 <a href="javascript:;" onclick="__cancelAdmin()">取消访问</a></div>')
+      topPopover($('.admin-settings a'), '<div class="p-1">' + $lang('CancelYourAdminAccess').replace('#', 'javascript:cancelAdmin()') + '</div>')
     }
 
     $.get('/user/admin-dangers', function (res) {
@@ -141,10 +142,9 @@ var $addResizeHandler = function (call) {
 }
 
 // 取消管理员访问
-var __cancelAdmin = function () {
+var cancelAdmin = function () {
   $.post('/user/admin-cancel', function (res) {
     if (res.error_code === 0) {
-      // location.reload()
       $('.admin-settings a>.icon').removeClass('text-danger')
       $('.admin-settings a').popover('dispose')
       rb.isAdminVerified = false
@@ -216,7 +216,7 @@ var __initNavs = function () {
   }
 
   $('.nav-settings').click(function () {
-    RbModal.create(rb.baseUrl + '/p/settings/nav-settings', '设置导航菜单')
+    RbModal.create('/p/settings/nav-settings', $lang('SetSome', 'NavMenu'))
   })
 
   // WHEN SMALL-WIDTH
@@ -277,7 +277,7 @@ var __loadMessages = function () {
       $('<span class="date">' + $fromNow(item[2]) + '</span>').appendTo(o)
     })
     __loadMessages_state = true
-    if (res.data.length === 0) $('<li class="text-center mt-4 mb-4 text-muted">暂无消息</li>').appendTo(dest)
+    if (res.data.length === 0) $('<li class="text-center mt-4 mb-4 text-muted">' + $lang('NoNotice') + '</li>').appendTo(dest)
   })
 }
 var __showNotification = function () {
@@ -285,7 +285,7 @@ var __showNotification = function () {
   var _Notification = window.Notification || window.mozNotification || window.webkitNotification
   if (_Notification) {
     if (_Notification.permission === 'granted') {
-      new _Notification('你有 ' + __checkMessage__state + ' 条未读消息', {
+      new _Notification($lang('HasXNotice').replace('%d', __checkMessage__state), {
         tag: 'rbNotification',
         icon: rb.baseUrl + '/assets/img/favicon.png',
       })
@@ -368,7 +368,7 @@ var $fileExtName = function (fileName) {
 var $createUploader = function (input, next, complete, error) {
   input = $(input).off('change')
   var imgOnly = input.attr('accept') === 'image/*'
-  var temp = input.data('temp') // 临时文件
+  var temp = input.data('temp') // Temp file
   if (window.qiniu && rb.storageUrl && !temp) {
     input.on('change', function () {
       var file = this.files[0]
@@ -384,9 +384,9 @@ var $createUploader = function (input, next, complete, error) {
           error: function (err) {
             var msg = (err.message || err.error || 'UnknowError').toUpperCase()
             if (imgOnly && msg.contains('FILE TYPE')) {
-              RbHighbar.create('请上传图片')
+              RbHighbar.create($lang('PlsUploadImg'))
             } else if (msg.contains('EXCEED FSIZELIMIT')) {
-              RbHighbar.create('超出文件大小限制 (100M)')
+              RbHighbar.create($lang('ExceedMaxLimit') + ' (100MB)')
             } else {
               RbHighbar.error('上传失败: ' + msg)
             }
@@ -406,10 +406,10 @@ var $createUploader = function (input, next, complete, error) {
       postUrl: rb.baseUrl + '/filex/upload?type=' + (imgOnly ? 'image' : 'file') + '&temp=' + (temp || ''),
       onSelectError: function (file, err) {
         if (err === 'ErrorType') {
-          RbHighbar.create(imgOnly ? '请上传图片' : '文件格式错误')
+          RbHighbar.create($lang(imgOnly ? 'PlsUploadImg' : 'FileTypeError'))
           return false
         } else if (err === 'ErrorMaxSize') {
-          RbHighbar.create('超出文件大小限制')
+          RbHighbar.create($lang('ExceedMaxLimit'))
           return false
         }
       },
@@ -423,12 +423,12 @@ var $createUploader = function (input, next, complete, error) {
           if (!temp) $.post('/filex/store-filesize?fs=' + file.size + '&fp=' + $encode(e.data))
           complete({ key: e.data })
         } else {
-          RbHighbar.error('上传失败，请稍后重试')
+          RbHighbar.error($lang('ErrorUpload'))
           typeof error === 'function' && error()
         }
       },
       onClientError: function (e, file) {
-        RbHighbar.error('网络错误，请稍后重试')
+        RbHighbar.error($lang('ErrorUpload'))
         typeof error === 'function' && error()
       },
     })
@@ -449,7 +449,7 @@ var $unmount = function (container, delay, keepContainer) {
 var $initReferenceSelect2 = function (el, field) {
   var search_input = null
   return $(el).select2({
-    placeholder: '选择' + field.label,
+    placeholder: $lang('Select').replace('{0}', field.label),
     minimumInputLength: 0,
     maximumSelectionLength: 2,
     ajax: {
@@ -465,19 +465,19 @@ var $initReferenceSelect2 = function (el, field) {
     },
     language: {
       noResults: function () {
-        return (search_input || '').length > 0 ? '未找到结果' : '输入关键词搜索'
+        return (search_input || '').length > 0 ? $lang('NoResults') : $lang('InputSearch')
       },
       inputTooShort: function () {
-        return '输入关键词搜索'
+        return $lang('InputSearch')
       },
       searching: function () {
-        return '搜索中...'
+        return $lang('Searching')
       },
       maximumSelected: function () {
-        return '只能选择 1 项'
+        return $lang('InputKeySearch').replace('%d', 1)
       },
       removeAllItems: function () {
-        return '清除'
+        return $lang('Clean')
       },
     },
     theme: `default ${field.appendClass || ''}`,

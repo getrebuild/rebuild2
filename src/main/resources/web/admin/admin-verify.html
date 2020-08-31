@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>管理员入口</title>
+    <title>[[${bundle.lang('AdminVerify')}]]</title>
     <style type="text/css">
       .rb-navbar-header .rb-toggle-left-sidebar {
         display: none !important;
@@ -17,21 +17,21 @@
           <div class="splash-container">
             <div class="card card-border-color card-border-color-primary">
               <div class="card-header">
-                <h4>需要验证你的管理员身份</h4>
+                <h4>[[${bundle.lang('VerifyYourAdminIdentity')}]]</h4>
               </div>
               <div class="card-body">
                 <form>
                   <div class="form-group">
-                    <input class="form-control" id="admin-passwd" type="password" placeholder="输入登录密码" autocomplete="off" />
+                    <input class="form-control" id="admin-passwd" type="password" th:placeholder="${bundle.lang('InputSome,Password')}" autocomplete="off" />
                   </div>
                   <div class="form-group login-submit">
-                    <button class="btn btn-primary btn-xl J_verify-btn" type="submit">验证</button>
+                    <button class="btn btn-primary btn-xl J_verify-btn" type="submit">[[${bundle.lang('Confirm')}]]</button>
                   </div>
                 </form>
               </div>
             </div>
             <div class="splash-footer">
-              <span><a href="javascript:history.back()">返回</a></span>
+              <span><a href="javascript:history.back()">[[${bundle.lang('Return')}]]</a></span>
             </div>
           </div>
         </div>
@@ -40,25 +40,29 @@
     <th:block th:replace="~{/_include/footer}" />
     <script type="text/babel">
       $(document).ready(function () {
-        const nexturl = $decode($urlp('nexturl') || '../admin/systems')
-        $('.J_verify-btn').click(function () {
-          const passwd = $val('#admin-passwd')
-          if (!!!passwd) return false
-
-          const $but = $(this).button('loading')
-          $.post('admin-verify?passwd=' + passwd, function (res) {
-            if (res.error_code == 0) location.replace(nexturl)
-            else {
-              RbHighbar.create(res.error_msg)
-              $but.button('reset')
-            }
-          })
-          return false
-        })
         if (self != top && $(window).width() < 800) {
           $('.splash-footer, .navbar').remove()
           $('.rb-wrapper').addClass('pt-0')
         }
+
+        const nexturl = $decode($urlp('nexturl') || '../admin/systems')
+        const $btn = $('.J_verify-btn').click(function () {
+          const passwd = $val('#admin-passwd')
+          if (!passwd) {
+            RbHighbar.create($lang('PlsInputSome', 'Password'))
+            return false
+          }
+
+          $btn.button('loading')
+          $.post('admin-verify?passwd=' + passwd, function (res) {
+            if (res.error_code == 0) location.replace(nexturl)
+            else {
+              RbHighbar.create(res.error_msg)
+              $btn.button('reset')
+            }
+          })
+          return false
+        })
       })
     </script>
   </body>

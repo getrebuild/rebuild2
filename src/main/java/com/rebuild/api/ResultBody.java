@@ -9,6 +9,7 @@ package com.rebuild.api;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.rebuild.core.helper.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.utils.JSONable;
 import org.apache.commons.lang.StringUtils;
@@ -21,9 +22,9 @@ import org.apache.commons.lang.StringUtils;
  */
 public class ResultBody implements JSONable {
 
-    private int errorCode;
-    private String errorMsg;
-    private Object data;
+    final private int errorCode;
+    final private String errorMsg;
+    final private Object data;
 
     public ResultBody(int errorCode, String errorMsg, Object data) {
         this.errorCode = errorCode;
@@ -48,19 +49,49 @@ public class ResultBody implements JSONable {
 
     // --
 
+    /**
+     * @param errorMsg
+     * @return
+     */
     public static ResultBody error(String errorMsg) {
         return error(errorMsg, Controller.CODE_ERROR);
     }
 
-    public static ResultBody error(String errorMsg, int errorCode) {
-        return new ResultBody(errorCode, StringUtils.defaultIfBlank(errorMsg, "系统繁忙，请稍后重试"), null);
+    /**
+     * @param errorCode
+     * @return
+     */
+    public static ResultBody error(int errorCode) {
+        String errorMsg = null;
+        if (errorCode == 401) errorMsg = Language.getLang("Error401");
+        else if (errorCode == 403) errorMsg = Language.getLang("Error403");
+        else if (errorCode == 404) errorMsg = Language.getLang("Error404");
+
+        return error(errorMsg, errorCode);
     }
 
+    /**
+     * @param errorMsg
+     * @param errorCode
+     * @return
+     */
+    public static ResultBody error(String errorMsg, int errorCode) {
+        if (errorMsg == null) errorMsg = Language.getLang("Error500");
+        return new ResultBody(errorCode, errorMsg, null);
+    }
+
+    /**
+     * @return
+     */
     public static ResultBody ok() {
         return ok(null);
     }
 
+    /**
+     * @param data
+     * @return
+     */
     public static ResultBody ok(Object data) {
-        return new ResultBody(Controller.CODE_OK, "调用成功", data);
+        return new ResultBody(Controller.CODE_OK, Language.getLang("Error0"), data);
     }
 }

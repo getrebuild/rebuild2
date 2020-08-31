@@ -107,7 +107,7 @@
             .find('a.card')
             .attr('href', 'javascript:;')
             .click(function () {
-              if (window.__PageConfig.isSuperAdmin) RbModal.create(rb.baseUrl + '/p/admin/metadata/entity-new', '添加实体')
+              if (window.__PageConfig.isSuperAdmin) RbModal.create('/p/admin/metadata/entity-new', '添加实体')
               else RbHighbar.error('仅超级管理员可添加实体')
             })
         })

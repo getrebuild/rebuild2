@@ -69,7 +69,7 @@ import java.util.*;
 @Repository
 @SpringBootApplication(scanBasePackages = {"com.rebuild"}, exclude = {
         DataSourceAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class, JdbcTemplateAutoConfiguration.class,
-        RedisAutoConfiguration.class, CacheAutoConfiguration.class })
+        RedisAutoConfiguration.class, CacheAutoConfiguration.class})
 @ImportResource("classpath:application-bean.xml")
 public class Application {
 
@@ -113,7 +113,7 @@ public class Application {
     public static void main(String[] args) {
         if (APPLICATION_CONTEXT != null) throw new IllegalStateException("Rebuild already started");
 
-        long startAt = System.currentTimeMillis();
+        long time = System.currentTimeMillis();
 
         LOGGER.info("Initializing SpringBoot context ...");
         SpringApplication spring = new SpringApplication(Application.class);
@@ -127,10 +127,12 @@ public class Application {
         try {
             if (Installer.isInstalled()) {
                 init();
-                LOGGER.info(formatBootMsg("Rebuild boot successful in "
-                        + (System.currentTimeMillis() - startAt) + " ms", "Local URL : " + localUrl));
-            } else {
-                // 加载语言包
+
+                time = System.currentTimeMillis() - time;
+                LOGGER.info("Rebuild boot successful in " + time + " ms. Local URL : " + localUrl);
+            }
+            else {
+                // 失败也加载语言包
                 APPLICATION_CONTEXT.getBean(Language.class).init();
 
                 LOGGER.info(formatBootMsg("REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));

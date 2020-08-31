@@ -12,6 +12,8 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.api.ResultBody;
 import com.rebuild.core.Application;
+import com.rebuild.core.helper.ConfigurationItem;
+import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.setup.InstallState;
 import com.rebuild.core.privileges.bizz.ZeroEntry;
 import com.rebuild.utils.AppUtils;
@@ -26,6 +28,9 @@ import java.io.IOException;
 
 /**
  * 请求拦截
+ * - 检查授权
+ * - 设置前端页面变量
+ * - 设置请求用户（线程量）
  *
  * @author Zhao Fangfang
  * @since 1.0, 2013-6-24
@@ -43,30 +48,35 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
 
         request.setAttribute(TIMEOUT_KEY, System.currentTimeMillis());
 
-        // Locale
-        Application.getSessionStore().setLocale(AppUtils.getReuqestLocale(request));
-        request.setAttribute("bundle", Application.getCurrentBundle());
+        final String requestUri = request.getRequestURI();
+        final boolean htmlRequest = AppUtils.isHtmlRequest(request);
 
-        final String requestUrl = request.getRequestURI();
+        // Locale
+        String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
+        if (locale == null) {
+            locale = RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
+        }
+        Application.getSessionStore().setLocale(locale);
+
+        if (htmlRequest) {
+            request.setAttribute("locale", locale);
+            if (Application.serversReady()) {
+                request.setAttribute("bundle", Application.getCurrentBundle());
+            }
+        }
 
         // If server status is not passed
         if (!Application.serversReady()) {
             if (checkInstalled()) {
-                LOG.error("Server Unavailable : " + requestUrl);
-                if (!requestUrl.contains("/gw/server-status")) {
-                    response.sendRedirect(AppUtils.getContextPath() + "/gw/server-status?s=" + CodecUtils.urlEncode(requestUrl));
+                LOG.error("Server Unavailable : " + requestUri);
+                if (!requestUri.contains("/gw/server-status")) {
+                    sendRedirect(response, "/gw/server-status", null);
                     return false;
                 }
 
-            } else if (!requestUrl.contains("/setup/")) {
-                response.sendRedirect(AppUtils.getContextPath() + "/setup/install");
+            } else if (!requestUri.contains("/setup/")) {
+                sendRedirect(response, "/setup/install", null);
                 return false;
-            }
-
-        } else {
-            // Last active
-            if (!isIgnoreActive(requestUrl) && AppUtils.isHtmlRequest(request)) {
-                Application.getSessionStore().storeLastActive(request);
             }
         }
 
@@ -75,26 +85,20 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        // 清理用户
         ID user = Application.serversReady() ? Application.getSessionStore().get(true) : null;
         if (user != null) {
             Application.getSessionStore().clean();
         }
 
         // 打印处理时间
-        Long startTime = (Long) request.getAttribute(TIMEOUT_KEY);
-        startTime = System.currentTimeMillis() - startTime;
-        if (startTime > 1000) {
-            String url = request.getRequestURI();
-            String qstr = request.getQueryString();
-            if (qstr != null) {
-                url += '?' + qstr;
-            }
-            LOG.warn("Method handle time " + startTime + " ms. Request URL [ " + url + " ] from [ "
-                    + StringUtils.defaultIfEmpty(ServletUtils.getReferer(request), "-") + " ]");
+        Long time = (Long) request.getAttribute(TIMEOUT_KEY);
+        time = System.currentTimeMillis() - time;
+        if (time > 1000) {
+            LOG.warn("Method handle time {} ms. Request URL {} ref {}",
+                    time, ServletUtils.getFullRequestUrl(request), StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "-"));
         }
     }
-
-    // --
 
     /**
      * 用户验证
@@ -104,45 +108,45 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
      * @return
      * @throws IOException
      */
-    public static boolean verfiyPass(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String requestUrl = request.getRequestURI();
-        String qstr = request.getQueryString();
-        if (StringUtils.isNotBlank(qstr)) {
-            requestUrl += "?" + qstr;
+    protected boolean verfiyPass(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        final String requestUri = request.getRequestURI();
+        final boolean isHtmlRequest = AppUtils.isHtmlRequest(request);
+
+        ID requestUser = AppUtils.getRequestUser(request);
+        if (requestUser == null) {
+            requestUser = AppUtils.getRequestUserViaRbMobile(request, true);
         }
 
-        ID user = AppUtils.getRequestUser(request);
-        if (user == null) {
-            user = AppUtils.getRequestUserViaRbMobile(request, true);
-        }
-
-        if (user != null) {
-            Application.getSessionStore().set(user);
-
+        if (requestUser != null) {
             // 管理后台访问
-            if (requestUrl.contains("/admin/") && !AppUtils.isAdminVerified(request)) {
-                if (AppUtils.isHtmlRequest(request)) {
-                    response.sendRedirect(AppUtils.getContextPath() + "/user/admin-verify?nexturl=" + CodecUtils.urlEncode(requestUrl));
+            if (requestUri.contains("/admin/") && !AppUtils.isAdminVerified(request)) {
+                if (isHtmlRequest) {
+                    sendRedirect(response, "/user/admin-verify", requestUri);
                 } else {
-                    ServletUtils.writeJson(response, ResultBody.error("请验证管理员访问权限", 403).toString());
+                    ServletUtils.writeJson(response, ResultBody.error(401).toString());
                 }
                 return false;
             }
 
-            // FIX: 前端使用（可能有更好的地方放置此代码）
-            request.setAttribute("user", Application.getUserStore().getUser(user));
-            request.setAttribute("AllowCustomNav",
-                    Application.getPrivilegesManager().allow(user, ZeroEntry.AllowCustomNav));
+            Application.getSessionStore().set(requestUser);
 
-        } else if (!isIgnoreAuth(requestUrl)) {
-            LOG.warn("Unauthorized access [ " + requestUrl + " ] from "
-                    + StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "<unknow>")
-                    + " via " + ServletUtils.getRemoteAddr(request));
+            // 前端使用（fix: 可能有更好的地方放置此代码）
+            if (isHtmlRequest) {
+                Application.getSessionStore().storeLastActive(request);
 
-            if (AppUtils.isHtmlRequest(request)) {
-                response.sendRedirect(AppUtils.getContextPath() + "/user/login?nexturl=" + CodecUtils.urlEncode(requestUrl));
+                request.setAttribute("user", Application.getUserStore().getUser(requestUser));
+                request.setAttribute("AllowCustomNav",
+                        Application.getPrivilegesManager().allow(requestUser, ZeroEntry.AllowCustomNav));
+            }
+
+        } else if (!isIgnoreAuth(requestUri)) {
+            LOG.warn("Unauthorized access {} from {} via {}",
+                    requestUri, StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "-"), ServletUtils.getRemoteAddr(request));
+
+            if (isHtmlRequest) {
+                sendRedirect(response, "/user/login", requestUri);
             } else {
-                ServletUtils.writeJson(response, ResultBody.error("未授权访问", 403).toString());
+                ServletUtils.writeJson(response, ResultBody.error(403).toString());
             }
             return false;
         }
@@ -150,34 +154,28 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         return true;
     }
 
-    /**
-     * 是否忽略用户验证
-     *
-     * @param requestUrl
-     * @return
-     */
-    static boolean isIgnoreAuth(String requestUrl) {
-        if (requestUrl.contains("/user/") && !requestUrl.contains("/user/admin")) {
-            return true;
-        }
-
-        requestUrl = requestUrl.replaceFirst(AppUtils.getContextPath(), "");
-        return requestUrl.startsWith("/gw/") || requestUrl.startsWith("/assets/") || requestUrl.startsWith("/error/")
-                || requestUrl.startsWith("/t/") || requestUrl.startsWith("/s/") || requestUrl.startsWith("/public/")
-                || requestUrl.startsWith("/setup/") || requestUrl.startsWith("/language/")
-                || requestUrl.startsWith("/commons/announcements")
-                || requestUrl.startsWith("/commons/url-safe")
-                || requestUrl.startsWith("/filex/access/")
-                || requestUrl.startsWith("/commons/barcode/render");
+    private void sendRedirect(HttpServletResponse response, String url, String nexturl) throws IOException {
+        String fullUrl = AppUtils.getContextPath() + url;
+        if (nexturl != null) fullUrl += "?nexturl=" + CodecUtils.urlEncode(nexturl);
+        response.sendRedirect(fullUrl);
     }
 
     /**
-     * SESSION 活跃忽略
+     * 忽略认证
      *
-     * @param reqUrl
+     * @param requestUri
      * @return
      */
-    static boolean isIgnoreActive(String reqUrl) {
-        return reqUrl.contains("/language/") || reqUrl.contains("/user-avatar");
+    private boolean isIgnoreAuth(String requestUri) {
+        if (requestUri.contains("/user/") && !requestUri.contains("/user/admin")) return true;
+
+        requestUri = requestUri.replaceFirst(AppUtils.getContextPath(), "");
+        return requestUri.length() < 3 || requestUri.startsWith("/t/") || requestUri.startsWith("/s/")
+                || requestUri.startsWith("/setup/")
+                || requestUri.startsWith("/language/")
+                || requestUri.startsWith("/filex/access/")
+                || requestUri.startsWith("/commons/announcements")
+                || requestUri.startsWith("/commons/url-safe")
+                || requestUri.startsWith("/commons/barcode/render");
     }
 }

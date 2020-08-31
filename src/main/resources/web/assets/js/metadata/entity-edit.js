@@ -51,7 +51,7 @@ $(document).ready(function () {
   })
 
   $('#entityIcon').click(function () {
-    RbModal.create(rb.baseUrl + '/p/commons/search-icon', '选择图标')
+    RbModal.create('/p/commons/search-icon', '选择图标')
   })
 
   $.get('/commons/metadata/fields?entity=' + wpc.entity, function (d) {

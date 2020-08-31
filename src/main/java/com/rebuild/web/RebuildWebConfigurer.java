@@ -60,8 +60,9 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
     public void init() {
         Assert.notNull(thymeleafViewResolver, "[thymeleafViewResolverHold] not be bull");
 
-        thymeleafViewResolver.addStaticVariable("baseUrl", AppUtils.getContextPath());
         thymeleafViewResolver.addStaticVariable("env", Application.devMode() ? "dev" : "prodution");
+        thymeleafViewResolver.addStaticVariable("locale", RebuildConfiguration.get(ConfigurationItem.DefaultLanguage));
+        thymeleafViewResolver.addStaticVariable("baseUrl", AppUtils.getContextPath());
         thymeleafViewResolver.addStaticVariable("appName", RebuildConfiguration.get(ConfigurationItem.AppName));
         thymeleafViewResolver.addStaticVariable("storageUrl", RebuildConfiguration.get(ConfigurationItem.StorageURL));
         thymeleafViewResolver.addStaticVariable("fileSharable", RebuildConfiguration.get(ConfigurationItem.FileSharable));
@@ -76,8 +77,8 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new RebuildWebInterceptor())
                 .excludePathPatterns("/gw/**")
-                .excludePathPatterns("/assets/**")
-                .excludePathPatterns("/error");
+                .excludePathPatterns("/language/**")
+                .excludePathPatterns("/assets/**");
     }
 
     /**
@@ -87,16 +88,13 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
      */
     @Override
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
-        resolvers.add((request, response, handler, ex) -> {
-            logError(request, ex, handler);
-            return createError(request, ex, HttpStatus.INTERNAL_SERVER_ERROR);
-        });
+        resolvers.add((request, response, handler, ex)
+                -> createError(request, ex, HttpStatus.INTERNAL_SERVER_ERROR, null));
     }
 
     @Override
     public ModelAndView resolveErrorView(HttpServletRequest request, HttpStatus status, Map<String, Object> model) {
-        logError(request, null, model);
-        return createError(request, null, status);
+        return createError(request, null, status, model);
     }
 
     /**
@@ -105,7 +103,7 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
      * @return
      * @see AppUtils#isHtmlRequest(HttpServletRequest)
      */
-    private ModelAndView createError(HttpServletRequest request, Exception ex, HttpStatus status) {
+    private ModelAndView createError(HttpServletRequest request, Exception ex, HttpStatus status, Map<String, Object> model) {
         ModelAndView error;
         if (AppUtils.isHtmlRequest(request)) {
             error = new ModelAndView("/error/error");
@@ -114,23 +112,17 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
         }
 
         String errorMsg = AppUtils.getErrorMessage(request, ex);
+
+        String errorLog = "\n++ EXECUTE REQUEST ERROR(s) TRACE +++++++++++++++++++++++++++++++++++++++++++++" +
+                "\nUser    : " + ObjectUtils.defaultIfNull(AppUtils.getRequestUser(request), "-") +
+                "\nIP      : " + ServletUtils.getRemoteAddr(request) +
+                "\nUA      : " + StringUtils.defaultIfEmpty(request.getHeader("user-agent"), "-") +
+                "\nURL(s)  : " + request.getRequestURL() + " ref " + ServletUtils.getReferer(request) +
+                "\nMessage : " + errorMsg + (model != null ? (" " + model.toString()) : "");
+        LOG.error(errorLog, ex);
+
         error.getModel().put("error_code", status.value());
         error.getModel().put("error_msg", errorMsg);
         return error;
-    }
-
-    /**
-     * @param request
-     * @param ex
-     * @param details
-     */
-    private void logError(HttpServletRequest request, Exception ex, Object details) {
-        String err = "\n++ EXECUTE REQUEST ERROR(s) TRACE +++++++++++++++++++++++++++++++++++++++++++++" +
-                "\nUser      : " + ObjectUtils.defaultIfNull(AppUtils.getRequestUser(request), "-") +
-                "\nIP        : " + ServletUtils.getRemoteAddr(request) +
-                "\nUserAgent : " + StringUtils.defaultIfEmpty(request.getHeader("user-agent"), "-") +
-                "\nReferer   : " + StringUtils.defaultIfEmpty(ServletUtils.getReferer(request), "-") +
-                "\nDetails   : " + request.getRequestURI() + " [ " + details + " ]";
-        LOG.error(err, ex);
     }
 }

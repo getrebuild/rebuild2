@@ -86,6 +86,9 @@ class RbModal extends React.Component {
    * @param {*} ext
    */
   static create(url, title, ext) {
+    // URL prefix
+    if (url.substr(0, 1) === '/' && rb.baseUrl) url = rb.baseUrl + url
+
     ext = ext || {}
     ext.disposeOnHide = ext.disposeOnHide === true // default false
     this.__HOLDERs = this.__HOLDERs || {}

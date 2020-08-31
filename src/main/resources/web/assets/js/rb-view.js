@@ -543,7 +543,7 @@ const RbViewPage = {
     if (rb.isAdminUser) {
       $('.J_view-addons').click(function () {
         const type = $(this).data('type')
-        RbModal.create(`${rb.baseUrl}/p/admin/metadata/view-addons?entity=${that.__entity[0]}&type=${type}`, '配置' + (type === 'TAB' ? '显示项' : '新建项'))
+        RbModal.create(`/p/admin/metadata/view-addons?entity=${that.__entity[0]}&type=${type}`, '配置' + (type === 'TAB' ? '显示项' : '新建项'))
       })
     }
   },

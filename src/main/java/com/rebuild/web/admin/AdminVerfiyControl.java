@@ -19,7 +19,6 @@ import com.rebuild.core.helper.License;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.web.BaseController;
-import com.rebuild.web.RebuildWebInterceptor;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,17 +47,11 @@ public class AdminVerfiyControl extends BaseController {
     @GetMapping("/user/admin-verify")
     public ModelAndView pageAdminVerify(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        boolean pass = RebuildWebInterceptor.verfiyPass(request, response);
-        if (!pass) {
-            return null;
-        }
-
-        ID adminId = getRequestUser(request);
-        User admin = Application.getUserStore().getUser(adminId);
+        User admin = Application.getUserStore().getUser(getRequestUser(request));
         if (admin.isAdmin()) {
             return createModelAndView("/admin/admin-verify");
         } else {
-            response.sendError(403, "当前登录用户非管理员");
+            response.sendError(403, getLang(request, "NoneAdmin"));
             return null;
         }
     }
@@ -77,7 +70,7 @@ public class AdminVerfiyControl extends BaseController {
             writeSuccess(response);
         } else {
             ServletUtils.setSessionAttribute(request, KEY_VERIFIED, null);
-            writeFailure(response, "密码不正确");
+            writeFailure(response, getLang(request, "SomeError", "Password"));
         }
     }
 
@@ -88,7 +81,7 @@ public class AdminVerfiyControl extends BaseController {
     }
 
     @RequestMapping("/user/admin-dangers")
-    public void adminDangers(HttpServletResponse response) {
+    public void adminDangers(HttpServletRequest request, HttpServletResponse response) {
         if (!RebuildConfiguration.getBool(ConfigurationItem.AdminDangers)) {
             writeSuccess(response);
             return;
@@ -99,7 +92,7 @@ public class AdminVerfiyControl extends BaseController {
         JSONObject ret = License.siteApi("api/authority/check-build", true);
         if (ret != null && ret.getIntValue("build") > Application.BUILD) {
             String buildUpdate = String.format(
-                    "有新版的 REBUILD (%s) 更新可用 <a target='_blank' href='%s' class='link'>(查看详情)</a>",
+                    getLang(request, "NewVersion"),
                     ret.getString("version"), ret.getString("releaseUrl"));
             dangers.add(buildUpdate);
         }
