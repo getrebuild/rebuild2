@@ -20,6 +20,7 @@ import com.rebuild.core.helper.BlackList;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
 import com.rebuild.core.helper.SMSender;
+import com.rebuild.core.helper.i18n.Language;
 import com.rebuild.core.helper.task.TaskExecutors;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.BaseServiceImpl;
@@ -28,6 +29,7 @@ import com.rebuild.core.service.notification.Message;
 import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.CommonsUtils;
+import org.apache.commons.codec.language.bm.Lang;
 import org.springframework.stereotype.Service;
 
 /**
@@ -114,7 +116,7 @@ public class UserService extends BaseServiceImpl {
         }
 
         if (record.hasValue("email") && Application.getUserStore().existsUser(record.getString("email"))) {
-            throw new DataSpecificationException("邮箱重复");
+            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "Email"));
         }
 
         if (record.getPrimary() == null && !record.hasValue("fullName")) {
@@ -136,10 +138,11 @@ public class UserService extends BaseServiceImpl {
      */
     private void checkLoginName(String loginName) throws DataSpecificationException {
         if (Application.getUserStore().existsUser(loginName)) {
-            throw new DataSpecificationException("登陆名重复");
+            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "Username"));
         }
+
         if (!CommonsUtils.isPlainText(loginName) || BlackList.isBlack(loginName)) {
-            throw new DataSpecificationException("无效登陆名");
+            throw new DataSpecificationException(Language.getLang("SomeInvalid", "Username"));
         }
     }
 
@@ -153,14 +156,14 @@ public class UserService extends BaseServiceImpl {
         if (UserHelper.isAdmin(currentUser)) return;
 
         if (action == BizzPermission.CREATE || action == BizzPermission.DELETE) {
-            throw new PrivilegesException("无操作权限 (E1)");
+            throw new PrivilegesException(Language.getLang("NoPrivileges"));
         }
 
         // 用户可自己改自己
         if (action == BizzPermission.UPDATE && currentUser.equals(user)) {
             return;
         }
-        throw new PrivilegesException("无操作权限 (E1)");
+        throw new PrivilegesException(Language.getLang("NoPrivileges"));
     }
 
     /**
@@ -171,7 +174,7 @@ public class UserService extends BaseServiceImpl {
      */
     protected void checkPassword(String password) throws DataSpecificationException {
         if (password.length() < 6) {
-            throw new DataSpecificationException("密码不能小于6位");
+            throw new DataSpecificationException(Language.getLang("PasswordLevel1"));
         }
 
         int policy = RebuildConfiguration.getInt(ConfigurationItem.PasswordPolicy);
@@ -196,10 +199,10 @@ public class UserService extends BaseServiceImpl {
         }
 
         if (countUpper == 0 || countLower == 0 || countDigit == 0) {
-            throw new DataSpecificationException("密码必须包含数字和大小写字母");
+            throw new DataSpecificationException(Language.getLang("PasswordLevel2"));
         }
         if (policy >= 3 && (countSpecial == 0 || password.length() < 8)) {
-            throw new DataSpecificationException("密码不能小于8位，且必须包含特殊字符");
+            throw new DataSpecificationException(Language.getLang("PasswordLevel3"));
         }
     }
 
@@ -216,9 +219,9 @@ public class UserService extends BaseServiceImpl {
         String appName = RebuildConfiguration.get(ConfigurationItem.AppName);
         String homeUrl = RebuildConfiguration.getHomeUrl();
 
-        String subject = String.format("你的 %s 账号已就绪", appName);
+        String subject = Language.getLang("YourAccountReady");
         String content = String.format(
-                "系统管理员已经为你开通了 %s 账号！以下为你的登录信息，请妥善保管。<br>登录账号：%s <br>登录密码：%s <br>登录地址：[%s](%s) <br><br>首次登陆，建议你立即修改登陆密码。修改方式：登陆后点击右上角头像 - 个人设置 - 安全设置 - 更改密码",
+                Language.getLang("NewUserAddedNotify"),
                 appName, newUser.getString("loginName"), passwd, homeUrl, homeUrl);
 
         SMSender.sendMail(newUser.getString("email"), subject, content);
@@ -281,9 +284,7 @@ public class UserService extends BaseServiceImpl {
 
         ID newUserId = record.getPrimary();
         String viewUrl = AppUtils.getContextPath() + "/app/list-and-view?id=" + newUserId;
-        String content = String.format(
-                "用户 @%s 提交了注册申请。请验证用户有效性后为其启用并指定部门和角色，以便用户登录使用。如果这是一个无效申请请忽略。[点击此处激活](%s)",
-                newUserId, viewUrl);
+        String content = String.format(Language.getLang("NewUserSignupNotify"), newUserId, viewUrl);
 
         Message message = MessageBuilder.createMessage(ADMIN_USER, content, newUserId);
         Application.getNotifications().send(message);

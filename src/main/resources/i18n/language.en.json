@@ -15,6 +15,7 @@
   "Error500": "System busy, please try again later",
   "Error404": "The address/resource accessed does not exist",
   "Error403": "Insufficient permissions, access blocked",
+  "NoPrivileges": "Permission denied",
   "UnsupportIE10": "Browsers below IE10 are not supported [] Chrome, Firefox, Edge or IE11 are recommended",
   "ReportIssue": "Report issue",
   "SystemFailure": "System failure",
