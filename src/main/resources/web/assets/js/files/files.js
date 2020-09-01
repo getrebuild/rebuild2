@@ -78,7 +78,7 @@ class FilesList extends React.Component {
         <span>{item.fileSize}</span>
         {item.relatedRecord && (
           <span>
-            <a title={$lang('ClickViewRecord')} onClick={(e) => $stopEvent(e)} href={`${rb.baseUrl}/app/list-and-view?id=${item.relatedRecord[0]}`}>
+            <a title={$lang('ClickViewReleated')} onClick={(e) => $stopEvent(e)} href={`${rb.baseUrl}/app/list-and-view?id=${item.relatedRecord[0]}`}>
               {item.relatedRecord[1]}
             </a>
           </span>
