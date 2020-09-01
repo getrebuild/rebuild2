@@ -130,6 +130,7 @@
   "ExceedMaxLimit": "超出文件大小限制",
   "FileTypeError": "文件格式错误",
   "ErrorUpload": "上传失败，请稍后重试",
+  "NoFilePrivilegesSome": "无权{0}他人文件",
   "InputForSearch": "输入关键词搜索",
   "NoResults": "未找到结果",
   "Searching": "搜索中...",

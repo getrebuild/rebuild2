@@ -425,6 +425,7 @@ $(document).ready(() => {
             this.hide()
             filesList.loadData()
           } else {
+            this.disabled()
             RbHighbar.error(res.error_msg)
           }
         })

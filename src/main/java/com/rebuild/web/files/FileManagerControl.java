@@ -57,17 +57,16 @@ public class FileManagerControl extends BaseController {
 
     @RequestMapping("delete-files")
     public void deleteFiles(HttpServletRequest request, HttpServletResponse response) {
-        ID user = getRequestUser(request);
+        final ID user = getRequestUser(request);
         String[] files = getParameter(request, "ids", "").split(",");
 
         Set<ID> willDeletes = new HashSet<>();
         for (String file : files) {
-            if (!ID.isId(file)) {
-                continue;
-            }
+            if (!ID.isId(file)) continue;
+
             ID fileId = ID.valueOf(file);
-            if (unallowOperating(user, fileId)) {
-                writeFailure(response, "无权删除他人文件");
+            if (!allowOperating(user, fileId)) {
+                writeFailure(response, getLang(request, "NoFilePrivilegesSome", "Delete"));
                 return;
             }
 
@@ -90,8 +89,8 @@ public class FileManagerControl extends BaseController {
                 continue;
             }
             ID fileId = ID.valueOf(file);
-            if (unallowOperating(user, fileId)) {
-                writeFailure(response, "无权更改他人文件");
+            if (!allowOperating(user, fileId)) {
+                writeFailure(response, getLang(request, "NoFilePrivilegesSome", "Modify"));
                 return;
             }
 
@@ -132,7 +131,7 @@ public class FileManagerControl extends BaseController {
      * @param file
      * @return
      */
-    private boolean unallowOperating(ID user, ID file) {
+    private boolean allowOperating(ID user, ID file) {
         if (UserHelper.isAdmin(user)) return true;
 
         Object[] o = Application.createQueryNoFilter(
