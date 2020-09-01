@@ -60,17 +60,15 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
 
         if (htmlRequest) {
             request.setAttribute("locale", locale);
-            if (Application.serversReady()) {
-                request.setAttribute("bundle", Application.getCurrentBundle());
-            }
+            request.setAttribute("bundle", Application.getCurrentBundle());
         }
 
-        // If server status is not passed
+        // 服务状态
         if (!Application.serversReady()) {
             if (checkInstalled()) {
                 LOG.error("Server Unavailable : " + requestUri);
-                if (!requestUri.contains("/gw/server-status")) {
-                    sendRedirect(response, "/gw/server-status", null);
+                if (!(requestUri.endsWith("/error") || requestUri.contains("/error/"))) {
+                    sendRedirect(response, "/error/server-status", null);
                     return false;
                 }
 
@@ -78,9 +76,53 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
                 sendRedirect(response, "/setup/install", null);
                 return false;
             }
+
+            return true;
         }
 
-        return verfiyPass(request, response);
+        // 用户验证
+
+        ID requestUser = AppUtils.getRequestUser(request);
+        if (requestUser == null) {
+            requestUser = AppUtils.getRequestUserViaRbMobile(request, true);
+        }
+
+        if (requestUser != null) {
+            // 管理后台访问
+            if (requestUri.contains("/admin/") && !AppUtils.isAdminVerified(request)) {
+                if (htmlRequest) {
+                    sendRedirect(response, "/user/admin-verify", requestUri);
+                } else {
+                    ServletUtils.writeJson(response, ResultBody.error(401).toString());
+                }
+                return false;
+            }
+
+            Application.getSessionStore().set(requestUser);
+
+            if (htmlRequest) {
+                // Last active
+                Application.getSessionStore().storeLastActive(request);
+
+                // 前端使用
+                request.setAttribute("user", Application.getUserStore().getUser(requestUser));
+                request.setAttribute("AllowCustomNav",
+                        Application.getPrivilegesManager().allow(requestUser, ZeroEntry.AllowCustomNav));
+            }
+
+        } else if (!isIgnoreAuth(requestUri)) {
+            LOG.warn("Unauthorized access {} from {} via {}",
+                    requestUri, StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "-"), ServletUtils.getRemoteAddr(request));
+
+            if (htmlRequest) {
+                sendRedirect(response, "/user/login", requestUri);
+            } else {
+                ServletUtils.writeJson(response, ResultBody.error(403).toString());
+            }
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -95,65 +137,17 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         Long time = (Long) request.getAttribute(TIMEOUT_KEY);
         time = System.currentTimeMillis() - time;
         if (time > 1000) {
-            LOG.warn("Method handle time {} ms. Request URL {} ref {}",
+            LOG.warn("Method handle time {} ms. Request URL {} [ {} ]",
                     time, ServletUtils.getFullRequestUrl(request), StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "-"));
         }
     }
 
     /**
-     * 用户验证
-     *
-     * @param request
      * @param response
-     * @return
+     * @param url
+     * @param nexturl
      * @throws IOException
      */
-    protected boolean verfiyPass(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final String requestUri = request.getRequestURI();
-        final boolean isHtmlRequest = AppUtils.isHtmlRequest(request);
-
-        ID requestUser = AppUtils.getRequestUser(request);
-        if (requestUser == null) {
-            requestUser = AppUtils.getRequestUserViaRbMobile(request, true);
-        }
-
-        if (requestUser != null) {
-            // 管理后台访问
-            if (requestUri.contains("/admin/") && !AppUtils.isAdminVerified(request)) {
-                if (isHtmlRequest) {
-                    sendRedirect(response, "/user/admin-verify", requestUri);
-                } else {
-                    ServletUtils.writeJson(response, ResultBody.error(401).toString());
-                }
-                return false;
-            }
-
-            Application.getSessionStore().set(requestUser);
-
-            // 前端使用（fix: 可能有更好的地方放置此代码）
-            if (isHtmlRequest) {
-                Application.getSessionStore().storeLastActive(request);
-
-                request.setAttribute("user", Application.getUserStore().getUser(requestUser));
-                request.setAttribute("AllowCustomNav",
-                        Application.getPrivilegesManager().allow(requestUser, ZeroEntry.AllowCustomNav));
-            }
-
-        } else if (!isIgnoreAuth(requestUri)) {
-            LOG.warn("Unauthorized access {} from {} via {}",
-                    requestUri, StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "-"), ServletUtils.getRemoteAddr(request));
-
-            if (isHtmlRequest) {
-                sendRedirect(response, "/user/login", requestUri);
-            } else {
-                ServletUtils.writeJson(response, ResultBody.error(403).toString());
-            }
-            return false;
-        }
-
-        return true;
-    }
-
     private void sendRedirect(HttpServletResponse response, String url, String nexturl) throws IOException {
         String fullUrl = AppUtils.getContextPath() + url;
         if (nexturl != null) fullUrl += "?nexturl=" + CodecUtils.urlEncode(nexturl);
@@ -171,6 +165,7 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
 
         requestUri = requestUri.replaceFirst(AppUtils.getContextPath(), "");
         return requestUri.length() < 3 || requestUri.startsWith("/t/") || requestUri.startsWith("/s/")
+                || requestUri.endsWith("/error") || requestUri.contains("/error/")
                 || requestUri.startsWith("/setup/")
                 || requestUri.startsWith("/language/")
                 || requestUri.startsWith("/filex/access/")

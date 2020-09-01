@@ -73,7 +73,7 @@ import java.util.*;
 @ImportResource("classpath:application-bean.xml")
 public class Application {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
     /**
      * Rebuild Version
@@ -115,7 +115,7 @@ public class Application {
 
         long time = System.currentTimeMillis();
 
-        LOGGER.info("Initializing SpringBoot context ...");
+        LOG.info("Initializing SpringBoot context ...");
         SpringApplication spring = new SpringApplication(Application.class);
         spring.setBannerMode(Banner.Mode.OFF);
         APPLICATION_CONTEXT = spring.run(args);
@@ -124,23 +124,33 @@ public class Application {
                 RebuildEnvironmentPostProcessor.getProperty("server.port", "8080"),
                 RebuildEnvironmentPostProcessor.getProperty("server.servlet.context-path", ""));
 
+        boolean success = false;
         try {
             if (Installer.isInstalled()) {
-                init();
+                success = init();
 
-                time = System.currentTimeMillis() - time;
-                LOGGER.info("Rebuild boot successful in " + time + " ms. Local URL : " + localUrl);
-            }
-            else {
-                // 失败也加载语言包
-                APPLICATION_CONTEXT.getBean(Language.class).init();
+                if (success) {
+                    time = System.currentTimeMillis() - time;
+                    LOG.info("Rebuild boot successful in " + time + " ms. Local URL : " + localUrl);
+                }
 
-                LOGGER.info(formatBootMsg("REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
+            } else {
+                LOG.info(formatBootMsg("REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
             }
 
         } catch (Exception ex) {
             serversReady = false;
-            LOGGER.error(formatBootMsg("REBUILD BOOTING FILAED !!!"), ex);
+            LOG.error(formatBootMsg("REBUILD BOOTING FILAED !!!"), ex);
+
+        } finally {
+            if (!success) {
+                // 失败加载语言包
+                try {
+                    APPLICATION_CONTEXT.getBean(Language.class).init();
+                } catch (Exception ex) {
+                    LOG.error(null, ex);
+                }
+            }
         }
     }
 
@@ -149,13 +159,13 @@ public class Application {
      *
      * @throws Exception
      */
-    public static void init() throws Exception {
-        LOGGER.info("Initializing Rebuild context ...");
+    public static boolean init() throws Exception {
+        LOG.info("Initializing Rebuild context ...");
 
         if (!(serversReady = ServerStatus.checkAll())) {
-            LOGGER.error(formatBootMsg(
+            LOG.error(formatBootMsg(
                     "REBUILD BOOTING FAILURE DURING THE STATUS CHECK.", "PLEASE VIEW LOGS FOR MORE DETAILS."));
-            return;
+            return false;
         }
 
         // 升级数据库
@@ -167,7 +177,7 @@ public class Application {
         }
 
         // 加载自定义实体
-        LOGGER.info("Loading customized/business entities ...");
+        LOG.info("Loading customized/business entities ...");
         ((DynamicMetadataFactory) APPLICATION_CONTEXT.getBean(PersistManagerFactory.class).getMetadataFactory()).refresh(false);
 
         // 实体对应的服务类
@@ -176,7 +186,7 @@ public class Application {
             ServiceSpec ss = e.getValue();
             if (ss.getEntityCode() > 0) {
                 ESS.put(ss.getEntityCode(), ss);
-                LOGGER.info("Service specification : " + ss.getEntityCode() + " " + ss.getClass());
+                LOG.info("Service specification : " + ss.getEntityCode() + " " + ss.getClass());
             }
         }
 
@@ -187,7 +197,9 @@ public class Application {
 
         APPLICATION_CONTEXT.registerShutdownHook();
 
-        LOGGER.info("REBUILD AUTHORITY : " + StringUtils.join(License.queryAuthority().values(), " | "));
+        LOG.info("REBUILD AUTHORITY : " + StringUtils.join(License.queryAuthority().values(), " | "));
+
+        return true;
     }
 
     private static String formatBootMsg(String... msgs) {

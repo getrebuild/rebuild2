@@ -12,7 +12,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.helper.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.utils.JSONable;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * 请求返回消息
@@ -63,9 +62,13 @@ public class ResultBody implements JSONable {
      */
     public static ResultBody error(int errorCode) {
         String errorMsg = null;
-        if (errorCode == 401) errorMsg = Language.getLang("Error401");
-        else if (errorCode == 403) errorMsg = Language.getLang("Error403");
-        else if (errorCode == 404) errorMsg = Language.getLang("Error404");
+        if (errorCode == 401) {
+            errorMsg = Language.getLang("Error401");
+        } else if (errorCode == 403) {
+            errorMsg = Language.getLang("Error403");
+        } else if (errorCode == 404) {
+            errorMsg = Language.getLang("Error404");
+        }
 
         return error(errorMsg, errorCode);
     }

@@ -35,39 +35,4 @@ public class CommonPageResolver extends BaseController {
         p = p.split("/p/")[1];
         return createModelAndView("/" + p);
     }
-
-    @GetMapping("/gw/server-status")
-    public ModelAndView pageServersStatus(HttpServletRequest request) {
-        if ("1".equals(request.getParameter("check"))) {
-            ServerStatus.checkAll();
-        }
-
-        ModelAndView mv = createModelAndView("/error/server-status");
-        mv.getModel().put("ok", ServerStatus.isStatusOK() && Application.serversReady());
-        mv.getModel().put("status", ServerStatus.getLastStatus());
-        // Loads
-        mv.getModel().put("MemoryUsage", ServerStatus.getHeapMemoryUsed());
-        mv.getModel().put("SystemLoad", ServerStatus.getSystemLoad());
-        return mv;
-    }
-
-    @GetMapping("/gw/server-status.json")
-    public void apiServersStatus(HttpServletRequest request, HttpServletResponse response) {
-        if ("1".equals(request.getParameter("check"))) {
-            ServerStatus.checkAll();
-        }
-
-        JSONObject state = new JSONObject();
-        state.put("ok", ServerStatus.isStatusOK());
-        JSONArray stats = new JSONArray();
-        state.put("status", stats);
-        for (Status s : ServerStatus.getLastStatus()) {
-            stats.add(s.toJson());
-        }
-        // Loads
-        stats.add(JSONUtils.toJSONObject("MemoryUsage", ServerStatus.getHeapMemoryUsed()[1]));
-        stats.add(JSONUtils.toJSONObject("SystemLoad", ServerStatus.getSystemLoad()));
-
-        ServletUtils.writeJson(response, state.toJSONString());
-    }
 }

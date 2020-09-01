@@ -13,6 +13,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.Initialization;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.helper.i18n.Language;
 import com.rebuild.utils.AppUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -107,17 +108,17 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
         ModelAndView error;
         if (AppUtils.isHtmlRequest(request)) {
             error = new ModelAndView("/error/error");
+            error.getModelMap().put("bundle", Application.getBean(Language.class).getCurrentBundle());
         } else {
             error = new ModelAndView(new FastJsonJsonView());
         }
 
         String errorMsg = AppUtils.getErrorMessage(request, ex);
-
         String errorLog = "\n++ EXECUTE REQUEST ERROR(s) TRACE +++++++++++++++++++++++++++++++++++++++++++++" +
                 "\nUser    : " + ObjectUtils.defaultIfNull(AppUtils.getRequestUser(request), "-") +
                 "\nIP      : " + ServletUtils.getRemoteAddr(request) +
                 "\nUA      : " + StringUtils.defaultIfEmpty(request.getHeader("user-agent"), "-") +
-                "\nURL(s)  : " + request.getRequestURL() + " ref " + ServletUtils.getReferer(request) +
+                "\nURL(s)  : " + request.getRequestURL() + " [ " + StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "-") + " ]" +
                 "\nMessage : " + errorMsg + (model != null ? (" " + model.toString()) : "");
         LOG.error(errorLog, ex);
 

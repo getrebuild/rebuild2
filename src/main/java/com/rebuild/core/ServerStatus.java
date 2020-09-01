@@ -181,9 +181,9 @@ public final class ServerStatus {
             this.error = error;
 
             if (success) {
-                Application.LOGGER.info("Checking " + toString());
+                Application.LOG.info("Checking " + toString());
             } else {
-                Application.LOGGER.error("Checking " + toString());
+                Application.LOG.error("Checking " + toString());
             }
         }
 

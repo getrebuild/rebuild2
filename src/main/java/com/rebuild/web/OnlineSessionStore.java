@@ -144,9 +144,11 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
      * @see com.rebuild.core.helper.i18n.Language
      */
     public String getLocale() {
-        String l = LOCALE.get();
-        if (l == null) l = RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
-        return l;
+        String locale = LOCALE.get();
+        if (locale == null) {
+            locale = RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
+        }
+        return locale;
     }
 
     @Override
