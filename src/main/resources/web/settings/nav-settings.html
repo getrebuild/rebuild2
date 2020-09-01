@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>导航菜单</title>
+    <title>[[${bundle.lang('NavMenu')}]]</title>
     <style type="text/css">
       .dd3-content > .zmdi {
         position: absolute;
@@ -46,44 +46,44 @@
             <ol class="dd-list J_config"></ol>
           </div>
           <div class="actions">
-            <button type="button" class="btn btn-secondary btn-sm J_add-menu">+ 添加菜单项</button>
+            <button type="button" class="btn btn-secondary btn-sm J_add-menu">+ [[${bundle.lang('AddSome,MenuItem')}]]</button>
           </div>
         </div>
         <div class="col-7 mt-2 pl-6">
-          <div class="text-muted J_edit-tips">点击左侧菜单项编辑</div>
+          <div class="text-muted J_edit-tips">[[${bundle.lang('ClickEditMenuItem')}]]</div>
           <div class="J_edit-menu hide" style="margin-top: -6px">
             <div class="tab-container">
               <ul class="nav nav-tabs">
-                <li class="nav-item"><a class="nav-link J_menuType active" href="#ENTITY" data-toggle="tab">关联项</a></li>
-                <li class="nav-item"><a class="nav-link J_menuType" href="#URL" data-toggle="tab">外部地址</a></li>
+                <li class="nav-item"><a class="nav-link J_menuType active" href="#ENTITY" data-toggle="tab">[[${bundle.lang('RelatedEntry')}]]</a></li>
+                <li class="nav-item"><a class="nav-link J_menuType" href="#URL" data-toggle="tab">[[${bundle.lang('OutUrl')}]]</a></li>
               </ul>
               <div class="tab-content m-0 p-0 pt-3 pb-3">
                 <div class="tab-pane active" id="ENTITY">
                   <select class="form-control form-control-sm J_menuEntity">
-                    <option value="">请选择关联项</option>
-                    <optgroup label="业务实体"></optgroup>
-                    <optgroup label="系统内建">
-                      <option value="$FILEMRG$" data-icon="folder">文件</option>
-                      <option value="$FEEDS$" data-icon="chart-donut">动态</option>
-                      <option value="$PROJECT$" data-icon="shape">项目</option>
-                      <option value="$PARENT$" data-icon="menu">父级菜单</option>
+                    <option value="">[[${bundle.lang('PlsSelectSome,RelatedEntry')}]]</option>
+                    <optgroup th:label="${bundle.lang('BizEntity')}"></optgroup>
+                    <optgroup th:label="${bundle.lang('Builtin')}">
+                      <option value="$FILEMRG$" data-icon="folder">[[${bundle.lang('e.Attachment')}]]</option>
+                      <option value="$FEEDS$" data-icon="chart-donut">[[${bundle.lang('e.Feeds')}]]</option>
+                      <option value="$PROJECT$" data-icon="shape">[[${bundle.lang('Project')}]]</option>
+                      <option value="$PARENT$" data-icon="menu">[[${bundle.lang('ParentMenu')}]]</option>
                     </optgroup>
                   </select>
                 </div>
                 <div class="tab-pane" id="URL">
-                  <input type="text" class="form-control form-control-sm J_menuUrl" placeholder="输入 URL" />
-                  <div class="form-text">支持外部地址或相对地址</div>
+                  <input type="text" class="form-control form-control-sm J_menuUrl" th:placeholder="${bundle.lang('Input,URL')}" />
+                  <div class="form-text">[[${bundle.lang('SuprtEntryAndUrl')}]]</div>
                 </div>
               </div>
             </div>
             <div class="input-group mb-3">
               <span class="input-group-prepend">
-                <span class="input-group-text J_menuIcon" title="选择图标"><i class="zmdi zmdi-texture"></i></span>
+                <span class="input-group-text J_menuIcon" th:title="${bundle.lang('SelectSome,Icon')}"><i class="zmdi zmdi-texture"></i></span>
               </span>
-              <input type="text" class="form-control form-control-sm J_menuName" placeholder="菜单名称" />
+              <input type="text" class="form-control form-control-sm J_menuName" th:placeholder="${bundle.lang('MenuName')}" />
             </div>
             <div>
-              <button type="button" class="btn btn-primary bordered J_menuConfirm">确定</button>
+              <button type="button" class="btn btn-primary bordered J_menuConfirm">[[${bundle.lang('Confirm')}]]</button>
             </div>
           </div>
         </div>
@@ -92,8 +92,8 @@
         <div class="float-left">
           <div id="shareTo" class="shareTo--wrap"></div>
         </div>
-        <button class="btn btn-primary J_save" type="button">保存</button>
-        <button class="btn btn-secondary" onclick="parent.RbModal.hide()" type="button">取消</button>
+        <button class="btn btn-primary J_save" type="button">[[${bundle.lang('Save')}]]</button>
+        <button class="btn btn-secondary" onclick="parent.RbModal.hide('/p/settings/nav-settings')" type="button">[[${bundle.lang('Cancel')}]]</button>
       </div>
     </div>
     <th:block th:replace="~{/_include/footer}" />

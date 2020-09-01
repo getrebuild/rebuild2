@@ -61,8 +61,8 @@ See LICENSE and COMMERCIAL in the project root for license information.
     cache: false,
     complete: function (xhr) {
       if (!(xhr.status === 200 || xhr.status === 0)) {
-        if (xhr.responseJSON && xhr.responseJSON.status === 404) RbHighbar.error('资源不存在 : ' + xhr.responseJSON.path)
-        else RbHighbar.error(xhr.responseText || '系统繁忙，请稍后重试')
+        if (xhr.responseJSON && xhr.responseJSON.status === 404) RbHighbar.error($lang('Error500') + ' : ' + xhr.responseJSON.path)
+        else RbHighbar.error(xhr.responseText || $lang('Error500'))
       }
     },
     beforeSend: function (xhr, settings) {
@@ -156,9 +156,6 @@ String.prototype.contains = function (substr) {
 var $setTimeout__timers = {}
 /**
  * 不会重复执行的 setTimeout
- * @param {Function} e
- * @param {Number} t
- * @param {String} id
  */
 var $setTimeout = function (e, t, id) {
   if (id && $setTimeout__timers[id]) {
@@ -171,8 +168,6 @@ var $setTimeout = function (e, t, id) {
 
 /**
  * 获取 URL 参数
- * @param {String} key
- * @param {String} qstr
  */
 var $urlp = function (key, qstr) {
   qstr = qstr || window.location.search
@@ -190,7 +185,6 @@ var $urlp = function (key, qstr) {
 
 /**
  * 获取元素值。兼容旧值比较（根据 data-o 属性），如与旧值一致则返回 null
- * @param {Element/String} el
  */
 var $val = function (el) {
   el = $(el)
@@ -223,7 +217,6 @@ var $val = function (el) {
 
 /**
  * 清理 Map 中的无效值（null、undefined）
- * @param {Object} map
  */
 var $cleanMap = function (map) {
   if ($.type(map) !== 'object') throw Error('Unsupportted type ' + $.type(map))
@@ -235,7 +228,9 @@ var $cleanMap = function (map) {
   return newMap
 }
 
-// 常用正则
+/**
+ * 常用正则
+ */
 var $regex = {
   _Date: /^((((1[6-9]|[2-9]\d)\d{2})-(0?[13578]|1[02])-(0?[1-9]|[12]\d|3[01]))|(((1[6-9]|[2-9]\d)\d{2})-(0?[13456789]|1[012])-(0?[1-9]|[12]\d|30))|(((1[6-9]|[2-9]\d)\d{2})-0?2-(0?[1-9]|1\d|2[0-8]))|(((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))-0?2-29-))$/,
   _UTCDate: /^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$/, // eg. 2010-01-01, 2010-1-9
@@ -282,15 +277,25 @@ var $regex = {
   },
 }
 
+/**
+ * URL 编码
+ */
 var $encode = function (s) {
   if (!s) return ''
   return encodeURIComponent(s)
 }
+
+/**
+ * URL 解码
+ */
 var $decode = function (s) {
   if (!s) return ''
   return decodeURIComponent(s)
 }
 
+/**
+ * localStorage
+ */
 var $storage = {
   get: function (key) {
     if (window.localStorage) return localStorage.getItem(key)
@@ -298,10 +303,7 @@ var $storage = {
   },
   set: function (key, val) {
     if (window.localStorage) localStorage.setItem(key, val)
-    else
-      $.cookie(key, val, {
-        expires: 365,
-      })
+    else $.cookie(key, val, { expires: 365 })
   },
   remove: function (key) {
     if (window.localStorage) localStorage.removeItem(key)
@@ -310,17 +312,15 @@ var $storage = {
 }
 
 var $random__times = 0
-var $random_charts = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+var $random__charts = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 /**
- * @param {*} prefix
- * @param {*} alphabetic
- * @param {*} maxLength
+ * 随机数
  */
 var $random = function (prefix, alphabetic, maxLength) {
   if (alphabetic) {
     var c = ''
     for (var i = 0; i < (maxLength || 20); i++) {
-      c += $random_charts.charAt(Math.floor(Math.random() * $random_charts.length))
+      c += $random__charts.charAt(Math.floor(Math.random() * $random__charts.length))
     }
     return (prefix || '') + c
   }
@@ -329,8 +329,6 @@ var $random = function (prefix, alphabetic, maxLength) {
 
 /**
  * 计算分页
- * @param {Number} tp 总计页面
- * @param {Number} cp 当前页面
  */
 var $pages = function (tp, cp) {
   var pages = []
@@ -354,8 +352,6 @@ var $pages = function (tp, cp) {
 
 /**
  * 是否相同。兼容对象或数组
- * @param {*} a
- * @param {*} b
  */
 var $same = function (a, b) {
   if (!a && !b) return true
@@ -376,7 +372,6 @@ var $same = function (a, b) {
 
 /**
  * 是否为空。兼容对象或数组
- * @param {*} a
  */
 var $empty = function (a) {
   if (a === undefined || a === null || a === '') return true
@@ -388,7 +383,6 @@ var $empty = function (a) {
 
 /**
  * 停止事件传播
- * @param {Event} e
  */
 var $stopEvent = function (e) {
   if (e && e.stopPropagation) e.stopPropagation()
@@ -397,21 +391,14 @@ var $stopEvent = function (e) {
 }
 
 /**
- * @param top
- * @param target
+ * 定位到指定元素
  */
 var $gotoSection = function (top, target) {
-  $(target || 'html').animate(
-    {
-      scrollTop: top || 0,
-    },
-    600
-  )
+  $(target || 'html').animate({ scrollTop: top || 0 }, 600)
 }
 
 /**
- * @param {*} fn
- * @param {*} interval
+ * 节流函数
  */
 var $throttle = function (fn, interval) {
   var __self = fn,
@@ -437,9 +424,7 @@ var $throttle = function (fn, interval) {
 }
 
 /**
- * @param {*} array
- * @param {*} fn
- * @param {*} count
+ * 分时函数
  */
 var $timechunk = function (array, fn, count) {
   var start = function () {
@@ -451,9 +436,7 @@ var $timechunk = function (array, fn, count) {
   var timer
   return function () {
     timer = setInterval(function () {
-      if (array.length === 0) {
-        return clearInterval(timer)
-      }
+      if (array.length === 0) return clearInterval(timer)
       start()
     }, 20)
   }

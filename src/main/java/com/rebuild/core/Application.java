@@ -186,7 +186,7 @@ public class Application {
             ServiceSpec ss = e.getValue();
             if (ss.getEntityCode() > 0) {
                 ESS.put(ss.getEntityCode(), ss);
-                LOG.info("Service specification : " + ss.getEntityCode() + " " + ss.getClass());
+                LOG.info("Service specification : " + ss.getClass().getName() + " for <" + ss.getEntityCode() + ">");
             }
         }
 

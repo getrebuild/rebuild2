@@ -38,11 +38,11 @@ public class LanguageBundle implements JSONable {
     // 换行
     private static final Pattern BR_PATT = Pattern.compile("\\[]");
 
-    final private String locale;
-    final private JSONObject bundle;
+    private String locale;
+    private JSONObject bundle;
     private String bundleHash;
 
-    final private Language parent;
+    private Language parent;
 
     /**
      * @param locale
@@ -109,8 +109,7 @@ public class LanguageBundle implements JSONable {
      * @see String#format(String, Object...)
      */
     public String formatLang(String key, Object... phValues) {
-        String lang = getLang(key);
-        return String.format(lang, phValues);
+        return String.format(getLang(key), phValues);
     }
 
     /**
@@ -118,9 +117,9 @@ public class LanguageBundle implements JSONable {
      * @return
      */
     public String getLang(String key, String... phKeys) {
-        String lang = bundle.getString(key);
+        String lang = getLangBase(key);
         if (lang == null && parent != null) {
-            lang = parent.getDefaultBundle().getLang(key);
+            lang = parent.getDefaultBundle().getLangBase(key);
         }
 
         if (lang == null) {
@@ -129,31 +128,34 @@ public class LanguageBundle implements JSONable {
         }
 
         if (phKeys.length > 0) {
-            String[] phLangs = new String[phKeys.length];
+            Object[] phLangs = new Object[phKeys.length];
             for (int i = 0; i < phKeys.length; i++) {
-                phLangs[i] = getLang(phKeys[i]);
+                phLangs[i] = getLangBase(phKeys[i]);
             }
             return MessageFormat.format(lang, phLangs);
-
         } else {
             return lang;
         }
     }
 
+    private String getLangBase(String key) {
+        return bundle.getString(key);
+    }
+
     /**
      * for client short
      *
-     * @param key
+     * @param mixkey
      * @return
      * @see #getLang(String, String...)
      */
-    public String lang(String key) {
-        if (key.contains(",")) {
-            String[] keys = key.split(",");
+    public String lang(String mixkey) {
+        if (mixkey.contains(",")) {
+            String[] keys = mixkey.split(",");
             String[] phKeys = (String[]) ArrayUtils.subarray(keys, 1, keys.length);
             return getLang(keys[0], phKeys);
         } else {
-            return getLang(key);
+            return getLang(mixkey);
         }
     }
 

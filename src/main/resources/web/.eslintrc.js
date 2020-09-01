@@ -103,5 +103,6 @@ module.exports = {
     $timechunk: true,
     moment: true,
     $fromNow: true,
+    $lang: true,
   },
 }

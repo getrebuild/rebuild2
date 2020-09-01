@@ -7,6 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.helper.i18n;
 
+import cn.devezhao.persist4j.Field;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
@@ -14,11 +15,13 @@ import com.rebuild.core.Initialization;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.helper.ConfigurationItem;
 import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.metadata.MetadataHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
+import javax.swing.text.html.parser.Entity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -145,7 +148,27 @@ public class Language implements Initialization {
      * @param phValues
      * @return
      */
-    public static String formatLang(String key, String...phValues) {
+    public static String formatLang(String key, Object...phValues) {
         return Application.getBean(Language.class).getCurrentBundle().formatLang(key, phValues);
+    }
+
+    /**
+     * @param field
+     * @return
+     */
+    public static String getLang(Field field) {
+        if (MetadataHelper.isCommonsField(field)) {
+            return getLang("f." + field.getName());
+        } else {
+            return getLang("f." + field.getOwnEntity().getName() + "." + field.getName());
+        }
+    }
+
+    /**
+     * @param entity
+     * @return
+     */
+    public static String getLang(Entity entity) {
+        return getLang("e." + entity.getName());
     }
 }

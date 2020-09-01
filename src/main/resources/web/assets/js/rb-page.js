@@ -29,8 +29,8 @@ $(function () {
         delay: 200,
       })
     })
-    __initNavs()
-    setTimeout(__globalSearch, 200)
+    _initNavs()
+    setTimeout(_globalSearch, 200)
   }
 
   if (rb.isAdminUser) {
@@ -79,7 +79,7 @@ $(function () {
     if (location.href.indexOf('/admin/') > -1) $('.admin-settings').remove()
     else if (rb.isAdminVerified) {
       $('.admin-settings a>.icon').addClass('text-danger')
-      topPopover($('.admin-settings a'), '<div class="p-1">' + $lang('CancelYourAdminAccess').replace('#', 'javascript:cancelAdmin()') + '</div>')
+      topPopover($('.admin-settings a'), '<div class="p-1">' + $lang('CancelYourAdminAccess').replace('#', 'javascript:_cancelAdmin()') + '</div>')
     }
 
     $.get('/user/admin-dangers', function (res) {
@@ -97,15 +97,14 @@ $(function () {
   }
 
   if ($('.J_notifications-top').length > 0) {
-    setTimeout(__checkMessage, 2000)
-    $('.J_notifications-top').on('shown.bs.dropdown', __loadMessages)
+    setTimeout(_checkMessage, 2000)
+    $('.J_notifications-top').on('shown.bs.dropdown', _loadMessages)
   }
 
   var bkeydown_times = 0
   $(document.body).keydown(function (e) {
     if (e.shiftKey) {
       if (++bkeydown_times === 6) $('.bosskey-show').show()
-      command_exec(bkeydown_times)
     }
   })
 
@@ -125,24 +124,26 @@ $(function () {
   if (helpLink) $('.page-help>a').attr('href', helpLink)
 })
 
-// @t - trigger times
-var command_exec = function (t) {}
-
-var __ONRESIZE_CALLS = []
+var $addResizeHandler__calls = []
+/**
+ * 窗口 RESIZE 回调
+ */
 var $addResizeHandler = function (call) {
-  typeof call === 'function' && __ONRESIZE_CALLS && __ONRESIZE_CALLS.push(call)
+  typeof call === 'function' && $addResizeHandler__calls && $addResizeHandler__calls.push(call)
   return function () {
-    if (!__ONRESIZE_CALLS || __ONRESIZE_CALLS.length === 0) return
+    if (!$addResizeHandler__calls || $addResizeHandler__calls.length === 0) return
     // eslint-disable-next-line no-console
-    if (rb.env === 'dev') console.log('Calls ' + __ONRESIZE_CALLS.length + ' handlers of resize ...')
-    __ONRESIZE_CALLS.forEach(function (call) {
+    if (rb.env === 'dev') console.log('Calls ' + $addResizeHandler__calls.length + ' handlers of resize ...')
+    $addResizeHandler__calls.forEach(function (call) {
       call()
     })
   }
 }
 
-// 取消管理员访问
-var cancelAdmin = function () {
+/**
+ * 取消管理员访问
+ */
+var _cancelAdmin = function () {
   $.post('/user/admin-cancel', function (res) {
     if (res.error_code === 0) {
       $('.admin-settings a>.icon').removeClass('text-danger')
@@ -152,8 +153,10 @@ var cancelAdmin = function () {
   })
 }
 
-// MainNav
-var __initNavs = function () {
+/**
+ * 初始化导航菜单
+ */
+var _initNavs = function () {
   var isOffcanvas = $('.rb-offcanvas-menu').length > 0 // Float mode
 
   // Nav
@@ -216,7 +219,7 @@ var __initNavs = function () {
   }
 
   $('.nav-settings').click(function () {
-    RbModal.create('/p/settings/nav-settings', $lang('SetSome', 'NavMenu'))
+    RbModal.create('/p/settings/nav-settings', $lang('NavMenu'))
   })
 
   // WHEN SMALL-WIDTH
@@ -235,31 +238,33 @@ var __initNavs = function () {
   }
 }
 
-// Notification
-var __checkMessage__state = 0
-var __checkMessage = function () {
+var _checkMessage__state = 0
+/**
+ * 检查新消息
+ */
+var _checkMessage = function () {
   $.get('/notification/check-state', function (res) {
     if (res.error_code > 0) return
     $('.J_notifications-top .badge').text(res.data.unread)
     if (res.data.unread > 0) $('.J_notifications-top .indicator').removeClass('hide')
     else $('.J_notifications-top .indicator').addClass('hide')
 
-    if (__checkMessage__state !== res.data.unread) {
-      __checkMessage__state = res.data.unread
-      if (__checkMessage__state > 0) {
-        if (!window.__doctitle) window.__doctitle = document.title
-        document.title = '(' + __checkMessage__state + ') ' + window.__doctitle
-        if (rb.env === 'dev') __showNotification()
+    if (_checkMessage__state !== res.data.unread) {
+      _checkMessage__state = res.data.unread
+      if (_checkMessage__state > 0) {
+        if (!window.__title) window.__title = document.title
+        document.title = '(' + _checkMessage__state + ') ' + window.__title
+        if (rb.env === 'dev') _showNotification()
       }
-      __loadMessages_state = false
+      _loadMessages__state = false
     }
 
-    setTimeout(__checkMessage, rb.env === 'dev' ? 60 * 10000 : 2000)
+    setTimeout(_checkMessage, rb.env === 'dev' ? 60 * 10000 : 2000)
   })
 }
-var __loadMessages_state = false
-var __loadMessages = function () {
-  if (__loadMessages_state) return
+var _loadMessages__state = false
+var _loadMessages = function () {
+  if (_loadMessages__state) return
   var dest = $('.rb-notifications .content ul').empty()
   if (dest.find('li').length === 0) {
     $('<li class="text-center mt-3 mb-3"><i class="zmdi zmdi-refresh zmdi-hc-spin fs-18"></i></li>').appendTo(dest)
@@ -276,16 +281,16 @@ var __loadMessages = function () {
       $('<div class="text text-truncate">' + item[1] + '</div>').appendTo(o)
       $('<span class="date">' + $fromNow(item[2]) + '</span>').appendTo(o)
     })
-    __loadMessages_state = true
+    _loadMessages__state = true
     if (res.data.length === 0) $('<li class="text-center mt-4 mb-4 text-muted">' + $lang('NoNotice') + '</li>').appendTo(dest)
   })
 }
-var __showNotification = function () {
+var _showNotification = function () {
   if ($.cookie('rb.showNotification')) return
   var _Notification = window.Notification || window.mozNotification || window.webkitNotification
   if (_Notification) {
     if (_Notification.permission === 'granted') {
-      new _Notification($lang('HasXNotice').replace('%d', __checkMessage__state), {
+      new _Notification($lang('HasXNotice').replace('%d', _checkMessage__state), {
         tag: 'rbNotification',
         icon: rb.baseUrl + '/assets/img/favicon.png',
       })
@@ -296,8 +301,10 @@ var __showNotification = function () {
   }
 }
 
-// Global searchs
-var __globalSearch = function () {
+/**
+ * 全局搜索
+ */
+var _globalSearch = function () {
   $('.sidebar-elements li').each(function (idx, item) {
     if (idx > 40) return false
     var $item = $(item)
@@ -333,7 +340,9 @@ var __globalSearch = function () {
     })
 }
 
-// @mbg = .btn-group
+/**
+ * 清理 dropdown 菜单
+ */
 var $cleanMenu = function (mbg) {
   mbg = $(mbg)
   var mbgMenu = mbg.find('.dropdown-menu')
@@ -351,12 +360,19 @@ var $cleanMenu = function (mbg) {
   if (mbgMenu.children().length === 0) mbg.remove()
 }
 
+/**
+ * 获取附件文件名
+ */
 var $fileCutName = function (fileName) {
   fileName = fileName.split('?')[0]
   fileName = fileName.split('/')
   fileName = fileName[fileName.length - 1]
   return fileName.substr(fileName.indexOf('__') + 2)
 }
+
+/**
+ * 获取附件文件扩展名
+ */
 var $fileExtName = function (fileName) {
   fileName = (fileName || '').toLowerCase()
   fileName = fileName.split('?')[0]
@@ -364,7 +380,9 @@ var $fileExtName = function (fileName) {
   return fileName[fileName.length - 1] || '*'
 }
 
-// Use H5 or Qiuniu
+/**
+ * 创建 Upload 组件（自动判断使用七牛或本地）
+ */
 var $createUploader = function (input, next, complete, error) {
   input = $(input).off('change')
   var imgOnly = input.attr('accept') === 'image/*'
@@ -388,13 +406,13 @@ var $createUploader = function (input, next, complete, error) {
             } else if (msg.contains('EXCEED FSIZELIMIT')) {
               RbHighbar.create($lang('ExceedMaxLimit') + ' (100MB)')
             } else {
-              RbHighbar.error('上传失败: ' + msg)
+              RbHighbar.error($lang('ErrorUpload') + ' : ' + msg)
             }
             typeof error === 'function' && error()
             return false
           },
           complete: function (res) {
-            $.post('/filex/store-filesize?fs=' + file.size + '&fp=' + $encode(res.key))
+            if (file.size > 0) $.post('/filex/store-filesize?fs=' + file.size + '&fp=' + $encode(res.key))
             typeof complete === 'function' && complete({ key: res.key })
           },
         })
@@ -420,7 +438,7 @@ var $createUploader = function (input, next, complete, error) {
       onSuccess: function (e, file) {
         e = $.parseJSON(e.currentTarget.response)
         if (e.error_code === 0) {
-          if (!temp) $.post('/filex/store-filesize?fs=' + file.size + '&fp=' + $encode(e.data))
+          if (!temp && file.size > 0) $.post('/filex/store-filesize?fs=' + file.size + '&fp=' + $encode(e.data))
           complete({ key: e.data })
         } else {
           RbHighbar.error($lang('ErrorUpload'))
@@ -435,7 +453,9 @@ var $createUploader = function (input, next, complete, error) {
   }
 }
 
-// Clear React node
+/**
+ * 卸载 React 组件
+ */
 var $unmount = function (container, delay, keepContainer) {
   if (container && container[0]) {
     setTimeout(function () {
@@ -445,7 +465,9 @@ var $unmount = function (container, delay, keepContainer) {
   }
 }
 
-// 初始化引用字段搜索
+/**
+ * 初始化引用字段（搜索）
+ */
 var $initReferenceSelect2 = function (el, field) {
   var search_input = null
   return $(el).select2({
@@ -465,10 +487,10 @@ var $initReferenceSelect2 = function (el, field) {
     },
     language: {
       noResults: function () {
-        return (search_input || '').length > 0 ? $lang('NoResults') : $lang('InputSearch')
+        return (search_input || '').length > 0 ? $lang('NoResults') : $lang('InputForSearch')
       },
       inputTooShort: function () {
-        return $lang('InputSearch')
+        return $lang('InputForSearch')
       },
       searching: function () {
         return $lang('Searching')
@@ -484,7 +506,9 @@ var $initReferenceSelect2 = function (el, field) {
   })
 }
 
-// 保持模态窗口（如果需要）
+/**
+ * 保持模态窗口（如果需要）
+ */
 var $keepModalOpen = function () {
   if ($('.rbmodal.show, .rbview.show').length > 0) {
     var $body = $(document.body)
@@ -494,7 +518,9 @@ var $keepModalOpen = function () {
   return false
 }
 
-// 禁用按钮 X 秒，用在一些危险操作上
+/**
+ * 禁用按钮 N 秒（用在一些危险操作上）
+ */
 var $countdownButton = function (btn, seconds) {
   seconds = seconds || 5
   var text = btn.attr('disabled', true).text()
@@ -509,25 +535,27 @@ var $countdownButton = function (btn, seconds) {
   }, 1000)
 }
 
-// 加载状态条（单线程）
+/**
+ * 加载状态条（单线程）
+ */
 var $mp = {
-  __timer: null,
-  __mp: null,
+  _timer: null,
+  _mp: null,
   // 开始
   start: function () {
-    $mp.__timer = setTimeout(function () {
-      $mp.__mp = new Mprogress({ template: 3, start: true })
+    $mp._timer = setTimeout(function () {
+      $mp._mp = new Mprogress({ template: 3, start: true })
     }, 600)
   },
   // 结束
   end: function () {
-    if ($mp.__timer) {
-      clearTimeout($mp.__timer)
-      $mp.__timer = null
+    if ($mp._timer) {
+      clearTimeout($mp._timer)
+      $mp._timer = null
     }
-    if ($mp.__mp) {
-      $mp.__mp.end()
-      $mp.__mp = null
+    if ($mp._mp) {
+      $mp._mp.end()
+      $mp._mp = null
     }
   },
 }
@@ -606,7 +634,9 @@ var EMOJIS = {
   干杯: 'rb_ganbei.png',
   钱: 'rb_qian.png',
 }
-// 转换文字 emoji 为 img 标签
+/**
+ * 转换文字 emoji 为 img 标签
+ */
 var converEmoji = function (text) {
   var es = text.match(/\[(.+?)\]/g)
   if (!es) return text
@@ -621,13 +651,17 @@ var converEmoji = function (text) {
 }
 var $converEmoji = converEmoji
 
-// Use momentjs
+/**
+ * Use momentjs
+ */
 var $fromNow = function (date) {
   if (!date || !window.moment) return null
   return moment(date.split('UTC')[0].trim()).fromNow()
 }
 
-// 转义 JSON
+/**
+ * 转义 JSON
+ */
 var $unescape = function (text) {
   if (!text) return null
   text = text.replace(/&quot;/g, '"')
@@ -638,20 +672,22 @@ var $unescape = function (text) {
  * 获取语言
  */
 var $lang = function () {
-  var lang = __$lang(arguments[0])
-  if (arguments.length < 2) return lang
-  for (var i = 1; i < arguments.length; i++) {
-    if (arguments[i]) {
-      var iLang = __$lang(arguments[i])
-      lang = lang.replace('{' + (i - 1) + '}', iLang)
+  if (arguments.length === 0) return ''
+  var args = arguments.length === 1 ? arguments[0].split(',') : arguments
+  var lang = _$lang(args[0])
+  if (args.length < 2) return lang
+
+  for (var i = 1; i < args.length; i++) {
+    if (args[i]) {
+      var phLang = _$lang(args[i])
+      lang = lang.replace('{' + (i - 1) + '}', phLang)
     }
   }
   return lang
 }
-var __$lang = function (key) {
-  return (window.__BUNDLE__ || {})[key] || '[' + key.toUpperCase() + ']'
+var _$lang = function (key) {
+  return (window._LANGBUNDLE || {})[key] || '[' + key.toUpperCase() + ']'
 }
-
 String.prototype.lang = function () {
   if (arguments.length > 0) return $lang(this, arguments[0], arguments[1], arguments[2])
   else $lang(this)

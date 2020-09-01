@@ -21,7 +21,7 @@ class RbModal extends React.Component {
           <div className="modal-content">
             <div className="modal-header modal-header-colored">
               <h3 className="modal-title">{this.props.title || 'UNTITLED'}</h3>
-              <button className="close" type="button" onClick={() => this.hide()}>
+              <button className="close" type="button" onClick={() => this.hide()} title={$lang('Close')}>
                 <span className="zmdi zmdi-close" />
               </button>
             </div>
@@ -111,8 +111,12 @@ class RbModal extends React.Component {
    */
   static hide(url) {
     this.__HOLDERs = this.__HOLDERs || {}
-    if (url) this.__HOLDERs[url] && this.__HOLDERs[url].hide()
-    else if (this.__HOLDER) this.__HOLDER.hide()
+    if (url) {
+      const found = this.__HOLDERs[rb.baseUrl + url] || this.__HOLDERs[url]
+      found && found.hide()
+    } else if (this.__HOLDER) {
+      this.__HOLDER.hide()
+    }
   }
 
   /**
@@ -241,10 +245,10 @@ class RbAlert extends React.Component {
         <div className={this.props.title ? '' : 'mt-3'}>{content}</div>
         <div className="mt-4 mb-3">
           <button disabled={this.state.disable} className="btn btn-space btn-secondary" type="button" onClick={cancel}>
-            {this.props.cancelText || '取消'}
+            {this.props.cancelText || $lang('Cancel')}
           </button>
           <button disabled={this.state.disable} className={`btn btn-space btn-${type}`} type="button" onClick={confirm}>
-            {this.props.confirmText || '确定'}
+            {this.props.confirmText || $lang('Confirm')}
           </button>
         </div>
       </div>
@@ -345,14 +349,14 @@ class RbHighbar extends React.Component {
    * @param {*} message
    */
   static success(message) {
-    RbHighbar.create(message || '操作成功', 'success', { timeout: 2000 })
+    RbHighbar.create(message || $lang('SomeSuccess,Operation'), 'success', { timeout: 2000 })
   }
 
   /**
    * @param {*} message
    */
   static error(message) {
-    RbHighbar.create(message || '系统繁忙，请稍后重试', 'danger', { timeout: 4000 })
+    RbHighbar.create(message || $lang('Error500'), 'danger', { timeout: 4000 })
   }
 }
 
@@ -376,7 +380,7 @@ function RbAlertBox(props) {
   )
 }
 
-// ~~ 加载动画
+// ~~ 加载动画 @see spinner.html
 function RbSpinner(props) {
   const spinner = (
     <div className="rb-spinner">
@@ -401,10 +405,10 @@ class UserSelector extends React.Component {
 
     this._cached = {}
     this._useTabs = []
-    if (props.hideUser !== true) this._useTabs.push(['User', '用户'])
-    if (props.hideDepartment !== true) this._useTabs.push(['Department', '部门'])
-    if (props.hideRole !== true) this._useTabs.push(['Role', '角色'])
-    if (props.hideTeam !== true) this._useTabs.push(['Team', '团队'])
+    if (props.hideUser !== true) this._useTabs.push(['User', $lang('e.User')])
+    if (props.hideDepartment !== true) this._useTabs.push(['Department', $lang('e.Department')])
+    if (props.hideRole !== true) this._useTabs.push(['Role', $lang('e.Role')])
+    if (props.hideTeam !== true) this._useTabs.push(['Team', $lang('e.Team')])
 
     // 默认显示
     this.state.tabType = this._useTabs[0][0]
@@ -412,8 +416,8 @@ class UserSelector extends React.Component {
 
   render() {
     let inResult
-    if (!this.state.items) inResult = <li className="select2-results__option un-hover text-muted">搜索中...</li>
-    else if (this.state.items.length === 0) inResult = <li className="select2-results__option un-hover">未找到结果</li>
+    if (!this.state.items) inResult = <li className="select2-results__option un-hover text-muted">{$lang('Searching')}</li>
+    else if (this.state.items.length === 0) inResult = <li className="select2-results__option un-hover">{$lang('NoResults')}</li>
     else {
       inResult = this.state.items.map((item) => {
         return (
@@ -433,7 +437,7 @@ class UserSelector extends React.Component {
             <input
               type="search"
               className="form-control search"
-              placeholder="输入关键词搜索"
+              placeholder={$lang('InputForSearch')}
               value={this.state.query || ''}
               ref={(c) => (this._input = c)}
               onChange={(e) => this.searchItems(e)}
@@ -494,7 +498,7 @@ class UserSelector extends React.Component {
                 })}
                 <span className="select2-selection__choice abtn" data-toggle="dropdown">
                   <a>
-                    <i className="zmdi zmdi-plus" /> {this.props.multiple === false ? '选择' : '添加'}
+                    <i className="zmdi zmdi-plus" /> {this.props.multiple === false ? $lang('Select') : $lang('Add')}
                   </a>
                 </span>
                 {_DropdownMenu}
@@ -611,7 +615,7 @@ class UserSelector extends React.Component {
 
     if (!exists) ns.push(selected)
     if (ns.length >= 20) {
-      RbHighbar.create('最多选择 20 个')
+      RbHighbar.create($lang('MaxSelectX').replace('%d', 20))
       return false
     }
 
@@ -663,6 +667,7 @@ const DateShow = function (props) {
 
 /**
  * JSX 组件渲染
+ *
  * @param {*} jsx
  * @param {*} target id or object of element (or function of callback)
  * @param {*} call callback

@@ -35,7 +35,7 @@ public class FormExtrasControl extends BaseController {
      * @param request
      * @param response
      */
-    @GetMapping("fillin-value")
+    @RequestMapping("fillin-value")
     public void getFillinValue(HttpServletRequest request, HttpServletResponse response) {
         String entity = getParameterNotNull(request, "entity");
         String field = getParameterNotNull(request, "field");

@@ -20,23 +20,24 @@ $(document).ready(function () {
   $('.J_menuEntity').change(function () {
     if (item_current_isNew === true) {
       const icon = $('.J_menuEntity option:selected').data('icon')
-      $('.J_menuIcon .zmdi').attr('class', 'zmdi zmdi-' + icon)
+      $('.J_menuIcon .zmdi').attr('class', `zmdi zmdi-${icon}`)
       const name = $('.J_menuEntity option:selected').text()
       $('.J_menuName').val(name)
     }
   })
+
   $('.J_menuIcon').click(function () {
-    const url = rb.baseUrl + '/p/commons/search-icon'
     parent.clickIcon = function (s) {
       $('.J_menuIcon .zmdi').attr('class', 'zmdi zmdi-' + s)
-      parent.RbModal.hide(url)
+      parent.RbModal.hide()
     }
-    parent.RbModal.create(url, '选择图标')
+    parent.RbModal.create('/p/commons/search-icon', $lang('SelectSome,Icon'))
   })
+
   $('.J_menuConfirm').click(function () {
     const name = $val('.J_menuName')
     if (!name) {
-      RbHighbar.create('请输入菜单名称')
+      RbHighbar.create($lang('PlsSelectSome,MenuName'))
       return
     }
     const type = $('.J_menuType.active').attr('href').substr(1)
@@ -44,16 +45,16 @@ $(document).ready(function () {
     if (type === 'ENTITY') {
       value = $val('.J_menuEntity')
       if (!value) {
-        RbHighbar.create('请选择关联项')
+        RbHighbar.create($lang('PlsSelectSome,RelatedEntry'))
         return
       }
     } else {
       value = $val('.J_menuUrl')
       if (!value) {
-        RbHighbar.create('请输入 URL')
+        RbHighbar.create($lang('PlsInputSome,URL'))
         return
       } else if (!($regex.isUrl(value) || $regex.isUrl(`https://getrebuild.com${value}`))) {
-        RbHighbar.create('请输入有效的 URL')
+        RbHighbar.create($lang('PlsInputValidSome,URL'))
         return
       }
     }
@@ -85,12 +86,12 @@ $(document).ready(function () {
       if ($item) navs.push($item)
     })
     if (navs.length === 0) {
-      RbHighbar.create('请至少设置一个菜单项')
+      RbHighbar.create($lang('Set1MenuLeast'))
       return
     }
 
     if (coveredMode) {
-      RbAlert.create('保存将覆盖你现有的导航菜单。继续吗？', {
+      RbAlert.create($lang('OverSelfNavMenu'), {
         confirm: function () {
           this.hide()
           _save(navs)
@@ -125,13 +126,13 @@ $(document).ready(function () {
     $.get('/app/settings/nav-settings/alist', (res) => {
       const cc = res.data.find((x) => x[0] === _current.id)
       if (rb.isAdminUser) {
-        renderRbcomp(<Share2 title="导航菜单" list={res.data} configName={cc ? cc[1] : ''} shareTo={_current.shareTo} id={_current.id} />, 'shareTo', function () {
+        renderRbcomp(<Share2 title={$lang('NavMenu')} list={res.data} configName={cc ? cc[1] : ''} shareTo={_current.shareTo} id={_current.id} />, 'shareTo', function () {
           shareToComp = this
         })
       } else {
         // overSelf = cc && cc[3] !== rb.currentUser
         // eslint-disable-next-line no-undef
-        renderSwitchButton(res.data, '导航菜单', cc ? cc[0] : null)
+        renderSwitchButton(res.data, $lang('NavMenu'), cc ? cc[0] : null)
       }
 
       // 有自有才提示覆盖
@@ -179,7 +180,7 @@ let item_current_isNew
 let item_randomid = new Date().getTime()
 const render_item = function (data, isNew, append2) {
   data.id = data.id || item_randomid++
-  data.text = data.text || '未命名菜单'
+  data.text = data.text || $lang('Unname')
   data.icon = data.icon || UNICON_NAME
   append2 = append2 || '.J_config'
 

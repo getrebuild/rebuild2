@@ -45,21 +45,21 @@ class FilesList extends React.Component {
         {this.state.currentLen >= PAGE_SIZE && (
           <div className="text-center mt-3 mb-3">
             <a
-              href="#mores"
+              href="#"
               onClick={(e) => {
                 this.loadData(null, this.__pageNo + 1)
                 e.preventDefault()
               }}
             >
-              显示更多
+              {$lang('LoadMore')}
             </a>
           </div>
         )}
-        {this.__pageNo > 1 && this.state.currentLen > 0 && this.state.currentLen < PAGE_SIZE && <div className="text-center mt-3 mb-3 text-muted">没有更多了</div>}
+        {this.__pageNo > 1 && this.state.currentLen > 0 && this.state.currentLen < PAGE_SIZE && <div className="text-center mt-3 mb-3 text-muted">{$lang('LoadedAll')}</div>}
         {this.__pageNo === 1 && !hasFiles && (
           <div className="list-nodata pt-8 pb-8">
             <i className="zmdi zmdi-folder-outline"></i>
-            <p>暂无相关文件</p>
+            <p>{$lang('NoData')}</p>
           </div>
         )}
       </div>
@@ -78,7 +78,7 @@ class FilesList extends React.Component {
         <span>{item.fileSize}</span>
         {item.relatedRecord && (
           <span>
-            <a title="点击查看相关记录" onClick={(e) => $stopEvent(e)} href={`${rb.baseUrl}/app/list-and-view?id=${item.relatedRecord[0]}`}>
+            <a title={$lang('ClickViewRecord')} onClick={(e) => $stopEvent(e)} href={`${rb.baseUrl}/app/list-and-view?id=${item.relatedRecord[0]}`}>
               {item.relatedRecord[1]}
             </a>
           </span>
@@ -103,7 +103,7 @@ class FilesList extends React.Component {
 
   getSelected() {
     const s = this.state.currentActive
-    if (!s) RbHighbar.create('未选中任何文件')
+    if (!s) RbHighbar.create($lang('UnselectSome,File'))
     else return s
   }
 }
@@ -114,7 +114,7 @@ const previewFile = function (e, path, checkId) {
   if (checkId) {
     $.get(`/files/check-readable?id=${checkId}`, (res) => {
       if (res.data) RbPreview.create(path)
-      else RbHighbar.error('你没有查看此文件的权限')
+      else RbHighbar.error($lang('NoPrivilegesViewSome'))
     })
   } else RbPreview.create(path)
 }

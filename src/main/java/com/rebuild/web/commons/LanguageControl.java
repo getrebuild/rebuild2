@@ -53,7 +53,7 @@ public class LanguageControl extends BaseController {
         // 无缓存
         String cacheControl = response.getHeader(HEADER_CACHE_CONTROL);
         if (cacheControl != null && cacheControl.contains(DIRECTIVE_NO_STORE)) {
-            ServletUtils.write(response, "__BUNDLE__ = " + bundle.toJSON().toJSONString());
+            ServletUtils.write(response, "window._LANGBUNDLE = " + bundle.toJSON().toJSONString());
             return;
         }
 
@@ -62,7 +62,7 @@ public class LanguageControl extends BaseController {
                 responseETag.replaceFirst("^W/", "").equals(requestETag.replaceFirst("^W/", "")))) {
             response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
         } else {
-            ServletUtils.write(response, "__BUNDLE__ = " + bundle.toJSON().toJSONString());
+            ServletUtils.write(response, "window._LANGBUNDLE = " + bundle.toJSON().toJSONString());
         }
     }
 

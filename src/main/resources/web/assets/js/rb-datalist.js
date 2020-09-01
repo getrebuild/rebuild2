@@ -626,7 +626,7 @@ CellRenders.addRender('MULTISELECT', function (v, s, k) {
   )
 })
 
-// ～分页组件
+// ~ 分页组件
 class RbListPagination extends React.Component {
   constructor(props) {
     super(props)

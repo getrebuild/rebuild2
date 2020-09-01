@@ -4,24 +4,17 @@
 <metadata-config schema-name-optimize="true" default-parent="SystemCommon">
 
     <entity name="SystemCommon" type-code="000">
-        <field name="createdBy" type="reference" ref-entity="User" nullable="false" creatable="false" updatable="false"
-               description="创建人"/>
-        <field name="createdOn" type="timestamp" nullable="false" creatable="false" updatable="false"
-               description="创建时间"/>
-        <field name="modifiedBy" type="reference" ref-entity="User" nullable="false" creatable="false" updatable="false"
-               description="修改人"/>
-        <field name="modifiedOn" type="timestamp" nullable="false" creatable="false" updatable="false"
-               description="修改时间"/>
+        <field name="createdBy" type="reference" ref-entity="User" nullable="false" creatable="false" updatable="false" description="创建人"/>
+        <field name="createdOn" type="timestamp" nullable="false" creatable="false" updatable="false" description="创建时间"/>
+        <field name="modifiedBy" type="reference" ref-entity="User" nullable="false" creatable="false" updatable="false" description="修改人"/>
+        <field name="modifiedOn" type="timestamp" nullable="false" creatable="false" updatable="false" description="修改时间"/>
     </entity>
 
     <entity name="User" type-code="001" description="用户" name-field="fullName" extra-attrs="{icon:'account'}">
         <field name="userId" type="primary"/>
-        <field name="loginName" type="string" max-length="100" nullable="false" updatable="false" repeatable="false"
-               description="登录名"/>
-        <field name="password" type="string" max-length="100" nullable="false" updatable="false" queryable="false"
-               description="登录密码"/>
-        <field name="email" type="string" max-length="100" description="邮箱" repeatable="false"
-               extra-attrs="{displayType:'EMAIL'}"/>
+        <field name="loginName" type="string" max-length="100" nullable="false" updatable="false" repeatable="false" description="登录名"/>
+        <field name="password" type="string" max-length="100" nullable="false" updatable="false" queryable="false" description="登录密码"/>
+        <field name="email" type="string" max-length="100" description="邮箱" repeatable="false" extra-attrs="{displayType:'EMAIL'}"/>
         <field name="fullName" type="string" max-length="100" description="姓名"/>
         <field name="avatarUrl" type="string" max-length="200" description="头像" extra-attrs="{displayType:'AVATAR'}"/>
         <field name="jobTitle" type="string" max-length="100" description="职务"/>
@@ -51,7 +44,7 @@
         <field name="quickCode" type="string" max-length="70"/>
     </entity>
 
-    <entity name="RolePrivileges" type-code="004" parent="false" queryable="false">
+    <entity name="RolePrivileges" type-code="004" description="角色权限" parent="false" queryable="false">
         <field name="privilegesId" type="primary"/>
         <field name="roleId" type="reference" ref-entity="Role" nullable="false" updatable="false" cascade="delete"/>
         <field name="entity" type="int" default-value="0" nullable="false" updatable="false" description="哪个实体"/>
@@ -75,14 +68,14 @@
         <field name="quickCode" type="string" max-length="70"/>
     </entity>
 
-    <entity name="TeamMember" type-code="007" parent="false">
+    <entity name="TeamMember" type-code="007" description="团队成员" parent="false">
         <field name="memberId" type="primary"/>
         <field name="teamId" type="reference" ref-entity="Team" nullable="false" cascade="delete"/>
         <field name="userId" type="reference" ref-entity="User" nullable="false" cascade="delete"/>
         <index field-list="teamId,userId" type="unique"/>
     </entity>
 
-    <entity name="MetaEntity" type-code="010" name-field="entityName" queryable="false">
+    <entity name="MetaEntity" type-code="010" description="实体" name-field="entityName" queryable="false">
         <field name="entityId" type="primary"/>
         <field name="typeCode" type="small-int" nullable="false" updatable="false"/>
         <field name="entityName" type="string" max-length="100" nullable="false" updatable="false"/>
@@ -97,7 +90,7 @@
         <index type="unique" field-list="physicalName"/>
     </entity>
 
-    <entity name="MetaField" type-code="011" name-field="fieldName" queryable="false">
+    <entity name="MetaField" type-code="011" description="字段" name-field="fieldName" queryable="false">
         <field name="fieldId" type="primary"/>
         <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false"/>
         <field name="fieldName" type="string" max-length="100" nullable="false" updatable="false"/>
@@ -133,19 +126,16 @@
     <entity name="LayoutConfig" type-code="013" description="布局配置(表单/列表/导航/视图(相关项/新建))" queryable="false">
         <field name="configId" type="primary"/>
         <field name="config" type="text" description="JSON格式配置" nullable="false"/>
-        <field name="shareTo" type="string" max-length="420" default-value="SELF"
-               description="共享给哪些人(可选值: ALL/SELF/$MemberID)"/>
+        <field name="shareTo" type="string" max-length="420" default-value="SELF" description="共享给哪些人(可选值: ALL/SELF/$MemberID)"/>
         <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false"/>
-        <field name="applyType" type="string" max-length="20" nullable="false" updatable="false"
-               description="FORM,DATALIST,NAV,TBA,ADD"/>
+        <field name="applyType" type="string" max-length="20" nullable="false" updatable="false" description="FORM,DATALIST,NAV,TBA,ADD"/>
         <field name="configName" type="string" max-length="100"/>
     </entity>
 
     <entity name="FilterConfig" type-code="014" description="过滤条件配置" queryable="false">
         <field name="configId" type="primary"/>
         <field name="config" type="text" description="JSON格式配置" nullable="false"/>
-        <field name="shareTo" type="string" max-length="420" default-value="SELF"
-               description="共享给哪些人(可选值: ALL/SELF/$MemberID)"/>
+        <field name="shareTo" type="string" max-length="420" default-value="SELF" description="共享给哪些人(可选值: ALL/SELF/$MemberID)"/>
         <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false"/>
         <field name="filterName" type="string" max-length="100" nullable="false"/>
     </entity>
@@ -153,8 +143,7 @@
     <entity name="DashboardConfig" type-code="016" description="仪表盘配置" queryable="false">
         <field name="configId" type="primary"/>
         <field name="config" type="text" description="JSON格式配置" nullable="false"/>
-        <field name="shareTo" type="string" max-length="420" default-value="SELF"
-               description="共享给哪些人(可选值: ALL/SELF/$MemberID)"/>
+        <field name="shareTo" type="string" max-length="420" default-value="SELF" description="共享给哪些人(可选值: ALL/SELF/$MemberID)"/>
         <field name="title" type="string" max-length="100" nullable="false"/>
     </entity>
 
@@ -190,17 +179,14 @@
 
     <entity name="ShareAccess" type-code="020" description="记录共享" queryable="false">
         <field name="accessId" type="primary"/>
-        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false"
-               description="哪个实体"/>
-        <field name="recordId" type="any-reference" nullable="false" updatable="false" description="记录ID"
-               cascade="ignore"/>
-        <field name="shareTo" type="any-reference" ref-entity="User,Department,Role,Team" nullable="false"
-               updatable="false" description="共享给谁" cascade="ignore"/>
+        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false" description="哪个实体"/>
+        <field name="recordId" type="any-reference" nullable="false" updatable="false" description="记录ID" cascade="ignore"/>
+        <field name="shareTo" type="any-reference" ref-entity="User,Department,Role,Team" nullable="false" updatable="false" description="共享给谁" cascade="ignore"/>
         <field name="rights" type="int" default-value="0" nullable="false" description="共享权限(R=2,U=4,D=8,0=Auto)"/>
         <index field-list="belongEntity,recordId,shareTo"/>
     </entity>
 
-    <entity name="SystemConfig" type-code="021" parent="false" description="系统全局配置" queryable="false">
+    <entity name="SystemConfig" type-code="021" parent="false" description="通用配置" queryable="false">
         <field name="configId" type="primary"/>
         <field name="item" type="string" max-length="100" nullable="false" updatable="false"/>
         <field name="value" type="string" max-length="600" nullable="false"/>
@@ -238,8 +224,7 @@
         <field name="folderId" type="primary"/>
         <field name="name" type="string" max-length="100" nullable="false"/>
         <field name="parent" type="reference" ref-entity="AttachmentFolder"/>
-        <field name="scope" type="string" max-length="20" default-value="ALL"
-               description="哪些人可见(可选值: ALL/SELF/$TeamID)"/>
+        <field name="scope" type="string" max-length="20" default-value="ALL" description="哪些人可见(可选值: ALL/SELF/$TeamID)"/>
         <index field-list="scope,createdBy"/>
     </entity>
 
@@ -277,8 +262,7 @@
 
     <entity name="RobotApprovalConfig" type-code="028" name-field="name" description="审批流程" queryable="false">
         <field name="configId" type="primary"/>
-        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false"
-               description="应用实体"/>
+        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false" description="应用实体"/>
         <field name="name" type="string" max-length="100" nullable="false" description="流程名称"/>
         <field name="flowDefinition" type="text" description="流程定义"/>
         <field name="isDisabled" type="bool" default-value="F" description="是否停用"/>
@@ -287,8 +271,7 @@
     <entity name="RobotApprovalStep" type-code="029" description="审批步骤记录" queryable="false">
         <field name="stepId" type="primary"/>
         <field name="recordId" type="any-reference" nullable="false" updatable="false" description="审批记录"/>
-        <field name="approvalId" type="reference" ref-entity="RobotApprovalConfig" nullable="false" updatable="false"
-               description="审批流程"/>
+        <field name="approvalId" type="reference" ref-entity="RobotApprovalConfig" nullable="false" updatable="false" description="审批流程"/>
         <field name="node" type="string" max-length="100" nullable="false" updatable="false" description="审批节点"/>
         <field name="approver" type="reference" ref-entity="User" nullable="false" updatable="false" description="审批人"/>
         <field name="state" type="small-int" default-value="1" description="审批结果"/>
@@ -315,8 +298,7 @@
         <field name="remoteIp" type="string" max-length="100" nullable="false" updatable="false" description="来源IP"/>
         <field name="requestUrl" type="string" max-length="300" nullable="false" updatable="false" description="请求URL"/>
         <field name="requestBody" type="text" updatable="false" max-length="10000" description="请求数据"/>
-        <field name="responseBody" type="text" nullable="false" max-length="10000" updatable="false"
-               description="响应数据"/>
+        <field name="responseBody" type="text" nullable="false" max-length="10000" updatable="false" description="响应数据"/>
         <field name="requestTime" type="timestamp" nullable="false" updatable="false" description="请求时间"/>
         <field name="responseTime" type="timestamp" nullable="false" updatable="false" description="响应时间"/>
         <index field-list="appId,remoteIp,requestTime"/>
@@ -324,8 +306,7 @@
 
     <entity name="DataReportConfig" type-code="032" description="报表" queryable="false">
         <field name="configId" type="primary"/>
-        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false"
-               description="应用实体"/>
+        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false" description="应用实体"/>
         <field name="name" type="string" max-length="100" nullable="false" description="报表名称"/>
         <field name="templateFile" type="string" max-length="200" description="模板文件"/>
         <field name="templateContent" type="text" max-length="20000" description="模板内容"/>
@@ -334,34 +315,26 @@
 
     <entity name="RecycleBin" type-code="033" name-field="recordName" description="回收站" parent="false">
         <field name="recycleId" type="primary"/>
-        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false"
-               description="所属实体"/>
-        <field name="recordId" type="any-reference" nullable="false" updatable="false" description="ID字段值"
-               cascade="ignore"/>
+        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false" description="所属实体"/>
+        <field name="recordId" type="any-reference" nullable="false" updatable="false" description="ID字段值" cascade="ignore"/>
         <field name="recordName" type="string" max-length="191" nullable="false" updatable="false" description="名称字段值"/>
         <field name="recordContent" type="ntext" nullable="false" updatable="false" description="数据"/>
-        <field name="deletedBy" type="reference" ref-entity="User" nullable="false" updatable="false"
-               description="删除人"/>
+        <field name="deletedBy" type="reference" ref-entity="User" nullable="false" updatable="false" description="删除人"/>
         <field name="deletedOn" type="timestamp" nullable="false" updatable="false" description="删除时间"/>
-        <field name="channelWith" type="any-reference" updatable="false" description="删除渠道(空为直接删除, 否则为关联删除)"
-               cascade="ignore"/>
+        <field name="channelWith" type="any-reference" updatable="false" description="删除渠道(空为直接删除, 否则为关联删除)" cascade="ignore"/>
         <index field-list="belongEntity,recordName,deletedBy,deletedOn"/>
         <index field-list="recordId,channelWith"/>
     </entity>
 
     <entity name="RevisionHistory" type-code="034" name-field="recordName" description="记录变更历史" parent="false">
         <field name="revisionId" type="primary"/>
-        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false"
-               description="所属实体"/>
-        <field name="recordId" type="any-reference" nullable="false" updatable="false" description="记录ID"
-               cascade="ignore"/>
+        <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false" description="所属实体"/>
+        <field name="recordId" type="any-reference" nullable="false" updatable="false" description="记录ID" cascade="ignore"/>
         <field name="revisionType" type="small-int" default-value="1" description="变更类型"/>
         <field name="revisionContent" type="ntext" nullable="false" updatable="false" description="变更数据"/>
-        <field name="revisionBy" type="reference" ref-entity="User" nullable="false" updatable="false"
-               description="操作人"/>
+        <field name="revisionBy" type="reference" ref-entity="User" nullable="false" updatable="false" description="操作人"/>
         <field name="revisionOn" type="timestamp" nullable="false" updatable="false" description="操作时间"/>
-        <field name="channelWith" type="any-reference" updatable="false" description="变更渠道(空为直接, 否则为关联)"
-               cascade="ignore"/>
+        <field name="channelWith" type="any-reference" updatable="false" description="变更渠道(空为直接, 否则为关联)" cascade="ignore"/>
         <index field-list="belongEntity,revisionType,revisionBy,revisionOn"/>
         <index field-list="recordId,channelWith"/>
     </entity>
@@ -386,8 +359,7 @@
         <field name="attachments" type="string" max-length="700" description="附件" extra-attrs="{displayType:'FILE'}"/>
         <field name="relatedRecord" type="any-reference" description="相关业务记录" cascade="ignore"/>
         <field name="scheduleTime" type="timestamp" description="日程时间"/>
-        <field name="scope" type="string" max-length="20" default-value="ALL"
-               description="哪些人可见(可选值: ALL/SELF/$TeamID)"/>
+        <field name="scope" type="string" max-length="20" default-value="ALL" description="哪些人可见(可选值: ALL/SELF/$TeamID)"/>
         <index field-list="createdOn,scope,type,createdBy"/>
         <index field-list="relatedRecord"/>
         <index field-list="type,scheduleTime,createdBy"/>
@@ -396,8 +368,7 @@
 
     <entity name="FeedsComment" type-code="041" description="动态评论" name-field="content">
         <field name="commentId" type="primary"/>
-        <field name="feedsId" type="reference" ref-entity="Feeds" nullable="false" updatable="false" description="哪个动态"
-               cascade="delete"/>
+        <field name="feedsId" type="reference" ref-entity="Feeds" nullable="false" updatable="false" description="哪个动态" cascade="delete"/>
         <field name="content" type="text" nullable="false" max-length="3000" description="内容"/>
         <field name="images" type="string" max-length="700" description="图片" extra-attrs="{displayType:'IMAGE'}"/>
         <field name="attachments" type="string" max-length="700" description="附件" extra-attrs="{displayType:'FILE'}"/>
@@ -406,23 +377,17 @@
 
     <entity name="FeedsLike" type-code="042" description="动态点赞" parent="false">
         <field name="likeId" type="primary"/>
-        <field name="source" type="any-reference" ref-entity="Feeds,FeedsComment" nullable="false" updatable="false"
-               description="哪个动态/评论" cascade="delete"/>
-        <field name="createdBy" type="reference" ref-entity="User" nullable="false" creatable="false" updatable="false"
-               description="创建人"/>
-        <field name="createdOn" type="timestamp" nullable="false" creatable="false" updatable="false"
-               description="创建时间"/>
+        <field name="source" type="any-reference" ref-entity="Feeds,FeedsComment" nullable="false" updatable="false" description="哪个动态/评论" cascade="delete"/>
+        <field name="createdBy" type="reference" ref-entity="User" nullable="false" creatable="false" updatable="false" description="创建人"/>
+        <field name="createdOn" type="timestamp" nullable="false" creatable="false" updatable="false" description="创建时间"/>
         <index field-list="source,createdBy"/>
     </entity>
 
     <entity name="FeedsMention" type-code="043" description="用户提及" parent="false" queryable="false">
         <field name="mentionId" type="primary"/>
-        <field name="feedsId" type="reference" ref-entity="Feeds" nullable="false" updatable="false" description="哪个动态"
-               cascade="delete"/>
-        <field name="commentId" type="reference" ref-entity="FeedsComment" updatable="false" description="哪个评论"
-               cascade="delete"/>
-        <field name="user" type="reference" ref-entity="User" nullable="false" updatable="false" description="哪个用户"
-               cascade="delete"/>
+        <field name="feedsId" type="reference" ref-entity="Feeds" nullable="false" updatable="false" description="哪个动态" cascade="delete"/>
+        <field name="commentId" type="reference" ref-entity="FeedsComment" updatable="false" description="哪个评论" cascade="delete"/>
+        <field name="user" type="reference" ref-entity="User" nullable="false" updatable="false" description="哪个用户" cascade="delete"/>
         <index field-list="user,feedsId,commentId"/>
     </entity>
 
@@ -441,8 +406,7 @@
 
     <entity name="ProjectPlanConfig" type-code="051" description="项目面板配置" parent="false" queryable="false">
         <field name="configId" type="primary"/>
-        <field name="projectId" type="reference" ref-entity="ProjectConfig" nullable="false" updatable="false"
-               description="所属项目" cascade="delete"/>
+        <field name="projectId" type="reference" ref-entity="ProjectConfig" nullable="false" updatable="false" description="所属项目" cascade="delete"/>
         <field name="planName" type="string" max-length="100" nullable="false" description="面板名称"/>
         <field name="comments" type="string" max-length="300" description="备注"/>
         <field name="seq" type="int" default-value="0" description="排序(小到大)"/>
@@ -453,17 +417,13 @@
 
     <entity name="ProjectTask" type-code="052" description="任务">
         <field name="taskId" type="primary"/>
-        <field name="projectId" type="reference" ref-entity="ProjectConfig" nullable="false" updatable="false"
-               description="所属项目"/>
-        <field name="projectPlanId" type="reference" ref-entity="ProjectPlanConfig" nullable="false"
-               description="所属面板"/>
+        <field name="projectId" type="reference" ref-entity="ProjectConfig" nullable="false" updatable="false" description="所属项目"/>
+        <field name="projectPlanId" type="reference" ref-entity="ProjectPlanConfig" nullable="false" description="所属面板"/>
         <field name="taskNumber" type="long" nullable="false" updatable="false" description="任务编号"/>
         <field name="taskName" type="string" max-length="191" nullable="false" description="任务名称"/>
         <field name="executor" type="reference" ref-entity="User" description="执行人"/>
-        <field name="partners" type="string" max-length="420" default-value="ALL" description="参与者(可选值: $UserID)"
-               queryable="false"/>
-        <field name="priority" type="small-int" default-value="1" description="优先级(0=较低 1=普通 2=紧急 3=非常紧急)"
-               queryable="false"/>
+        <field name="partners" type="string" max-length="420" default-value="ALL" description="参与者(可选值: $UserID)" queryable="false"/>
+        <field name="priority" type="small-int" default-value="1" description="优先级(0=较低 1=普通 2=紧急 3=非常紧急)" queryable="false"/>
         <field name="status" type="small-int" default-value="0" description="状态(0=未完成/未开始)" queryable="false"/>
         <field name="deadline" type="timestamp" description="截至时间"/>
         <field name="startTime" type="timestamp" description="开始时间"/>
@@ -478,18 +438,15 @@
 
     <entity name="ProjectTaskRelation" type-code="053" description="任务关系" parent="false" queryable="false">
         <field name="relationId" type="primary"/>
-        <field name="taskId" type="reference" ref-entity="ProjectTask" nullable="false" updatable="false"
-               cascade="delete"/>
-        <field name="relationTaskId" type="reference" ref-entity="ProjectTask" nullable="false" updatable="false"
-               cascade="delete"/>
+        <field name="taskId" type="reference" ref-entity="ProjectTask" nullable="false" updatable="false" cascade="delete"/>
+        <field name="relationTaskId" type="reference" ref-entity="ProjectTask" nullable="false" updatable="false" cascade="delete"/>
         <field name="relationType" type="small-int" default-value="0" description="关系类型(0=相关 1=前置 2=后置)"/>
         <index field-list="taskId,relationTaskId"/>
     </entity>
 
     <entity name="ProjectTaskComment" type-code="054" description="任务评论">
         <field name="commentId" type="primary"/>
-        <field name="taskId" type="reference" ref-entity="ProjectTask" nullable="false" updatable="false"
-               cascade="delete" description="哪个任务"/>
+        <field name="taskId" type="reference" ref-entity="ProjectTask" nullable="false" updatable="false" cascade="delete" description="哪个任务"/>
         <field name="content" type="text" nullable="false" max-length="3000" description="内容"/>
         <field name="attachments" type="string" max-length="700" description="附件" extra-attrs="{displayType:'FILE'}"/>
         <index field-list="taskId"/>
@@ -497,8 +454,7 @@
 
     <entity name="ProjectTaskTag" type-code="055" description="任务标签" parent="false" queryable="false">
         <field name="tagId" type="primary"/>
-        <field name="projectId" type="reference" ref-entity="ProjectConfig" nullable="false" updatable="false"
-               cascade="delete" description="所属项目"/>
+        <field name="projectId" type="reference" ref-entity="ProjectConfig" nullable="false" updatable="false" cascade="delete" description="所属项目"/>
         <field name="tagName" type="string" max-length="100" nullable="false" description="标签名"/>
         <field name="color" type="string" max-length="20" description="颜色"/>
         <index field-list="projectId"/>
@@ -506,10 +462,8 @@
 
     <entity name="ProjectTaskTagRelation" type-code="056" description="任务N:N标签" parent="false" queryable="false">
         <field name="relationId" type="primary"/>
-        <field name="taskId" type="reference" ref-entity="ProjectTask" nullable="false" updatable="false"
-               cascade="delete"/>
-        <field name="tagId" type="reference" ref-entity="ProjectTaskTag" nullable="false" updatable="false"
-               cascade="delete"/>
+        <field name="taskId" type="reference" ref-entity="ProjectTask" nullable="false" updatable="false" cascade="delete"/>
+        <field name="tagId" type="reference" ref-entity="ProjectTaskTag" nullable="false" updatable="false" cascade="delete"/>
         <index field-list="taskId,tagId"/>
     </entity>
 
