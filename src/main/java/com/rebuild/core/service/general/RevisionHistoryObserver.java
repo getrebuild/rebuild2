@@ -21,7 +21,7 @@ import com.rebuild.core.service.trigger.RobotTriggerObserver;
 import com.rebuild.utils.JSONUtils;
 
 /**
- * 纪录变更历史
+ * 记录变更历史
  *
  * @author devezhao
  * @since 10/31/2018

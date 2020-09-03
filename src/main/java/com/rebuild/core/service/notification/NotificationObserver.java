@@ -19,6 +19,8 @@ import org.apache.commons.lang.StringUtils;
 import java.text.MessageFormat;
 
 /**
+ * 发送内部通知
+ *
  * @author devezhao
  * @since 11/01/2018
  */

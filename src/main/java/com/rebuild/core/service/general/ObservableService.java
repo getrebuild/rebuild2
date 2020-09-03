@@ -17,6 +17,9 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.BaseServiceImpl;
 import com.rebuild.core.service.NoRecordFoundException;
 import com.rebuild.core.service.ServiceSpec;
+import com.rebuild.core.service.files.AttachmentAwareObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.util.Iterator;
@@ -31,6 +34,8 @@ import java.util.Observable;
  */
 public abstract class ObservableService extends Observable implements ServiceSpec {
 
+    protected final Logger LOG = LoggerFactory.getLogger(getClass());
+
     /**
      * 删除前触发的动作
      */
@@ -43,6 +48,15 @@ public abstract class ObservableService extends Observable implements ServiceSpe
      */
     protected ObservableService(PersistManagerFactory aPMFactory) {
         this.delegateService = new BaseServiceImpl(aPMFactory);
+        this.initObservers();
+    }
+
+    /**
+     * 初始化监听者
+     */
+    protected void initObservers() {
+        addObserver(new RevisionHistoryObserver());
+        addObserver(new AttachmentAwareObserver());
     }
 
     @Override

@@ -33,6 +33,7 @@ import com.rebuild.core.service.approval.ApprovalStepService;
 import com.rebuild.core.service.dataimport.DataImporter;
 import com.rebuild.core.service.general.recyclebin.RecycleStore;
 import com.rebuild.core.service.general.series.SeriesGeneratorFactory;
+import com.rebuild.core.service.notification.NotificationObserver;
 import com.rebuild.core.service.trigger.RobotTriggerObserver;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -66,6 +67,15 @@ public class GeneralEntityService extends ObservableService implements EntitySer
     @Override
     public int getEntityCode() {
         return 0;
+    }
+
+    @Override
+    protected void initObservers() {
+        super.initObservers();
+
+        addObserver(new NotificationObserver());
+        addObserver(new RobotTriggerObserver());
+//        addObserver(new RedisQueueObserver());
     }
 
     @Override
