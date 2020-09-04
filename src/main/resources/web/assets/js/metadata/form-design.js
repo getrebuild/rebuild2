@@ -25,9 +25,9 @@ $(document).ready(function () {
       if (this.field === DIVIDER_LINE) {
         render_item({ fieldName: this.field, fieldLabel: this.label || '', isFull: true }, '.form-preview')
       } else if (!field) {
-        const $item = $(`<div class="dd-item"><div class="dd-handle J_field J_missed"><span class="text-danger">[${this.field.toUpperCase()}] 字段已被删除</span></div></div>`).appendTo(
-          '.form-preview'
-        )
+        const $item = $(
+          `<div class="dd-item"><div class="dd-handle J_field J_missed"><span class="text-danger">[${this.field.toUpperCase()}] ${$lang('SomeDeleted,Field')}</span></div></div>`
+        ).appendTo('.form-preview')
         const $action = $('<div class="dd-action"><a><i class="zmdi zmdi-close"></i></a></div>').appendTo($item.find('.dd-handle'))
         $action.find('a').click(function () {
           $item.remove()
@@ -83,14 +83,14 @@ $(document).ready(function () {
       formElements.push(item)
     })
     if (formElements.length === 0) {
-      RbHighbar.create('请至少布局 1 个字段')
+      RbHighbar.create($lang('PlsLayout1FieldsLeast'))
       return
     }
 
     if ($('.field-list .not-nullable').length > 0) {
-      RbAlert.create('有必填字段未被布局，这可能导致新建记录失败。是否仍要保存？', {
+      RbAlert.create($lang('HasRequiredFieldUnLayoutConfirm'), {
         type: 'warning',
-        confirmText: '保存',
+        confirmText: $lang('Save'),
         confirm: function () {
           this.hide()
           _handleSave(formElements)
@@ -107,9 +107,9 @@ $(document).ready(function () {
 
   $('.J_new-field').click(() => {
     if (wpc.isSuperAdmin) {
-      RbModal.create(`/p/admin/metadata/field-new?entity=${wpc.entityName}&ref=form-design`, '添加字段')
+      RbModal.create(`/p/admin/metadata/field-new?entity=${wpc.entityName}&ref=form-design`, $lang('AddField'))
     } else {
-      RbHighbar.error('仅超级管理员可添加字段')
+      RbHighbar.error($lang('OnlyAdminCanSome,AddField'))
     }
   })
 })
@@ -127,36 +127,38 @@ const render_item = function (data) {
   const action = $('<div class="dd-action"></div>').appendTo(handle)
   if (data.displayType) {
     $('<span class="ft">' + data.displayType + '</span>').appendTo(item)
-    $('<a class="rowspan mr-1" title="单列/双列"><i class="zmdi zmdi-unfold-more"></i></a>')
+    $(`<a class="rowspan mr-1" title="${$lang('Column1Or2')}"><i class="zmdi zmdi-unfold-more"></i></a>`)
       .appendTo(action)
       .click(function () {
         item.toggleClass('w-100')
       })
-    $('<a title="修改属性"><i class="zmdi zmdi-edit"></i></a>')
+    $(`<a title="${$lang('Modify')}"><i class="zmdi zmdi-edit"></i></a>`)
       .appendTo(action)
       .click(function () {
-        let call = function (nv) {
+        const call = function (nv) {
           // 字段名
           if (nv.fieldLabel) item.find('.dd-handle>span').text(nv.fieldLabel)
           else item.find('.dd-handle>span').text(item.find('.dd-handle').data('label'))
+
           // 填写提示
-          let tip = item.find('.dd-handle>span>i')
-          if (!nv.fieldTips) tip.remove()
+          let $tip = item.find('.dd-handle>span>i')
+          if (!nv.fieldTips) $tip.remove()
           else {
-            if (tip.length === 0) tip = $('<i class="J_tip zmdi zmdi-info-outline"></i>').appendTo(item.find('.dd-handle span'))
-            tip.attr('title', nv.fieldTips)
+            if ($tip.length === 0) $tip = $('<i class="J_tip zmdi zmdi-info-outline"></i>').appendTo(item.find('.dd-handle span'))
+            $tip.attr('title', nv.fieldTips)
           }
         }
         const ov = {
           fieldTips: item.find('.dd-handle>span>i').attr('title'),
           fieldLabel: item.find('.dd-handle>span').text(),
+          fieldLabelOld: item.find('.dd-handle').data('label'),
         }
-        ov.fieldLabelOld = item.find('.dd-handle').data('label')
         if (ov.fieldLabelOld === ov.fieldLabel) ov.fieldLabel = null
+
         renderRbcomp(<DlgEditField call={call} {...ov} />)
       })
 
-    $('<a><i class="zmdi zmdi-close"></i></a>')
+    $(`<a title="${$lang('Remove')}"><i class="zmdi zmdi-close"></i></a>`)
       .appendTo(action)
       .click(function () {
         render_unset(data)
@@ -167,7 +169,7 @@ const render_item = function (data) {
 
   if (data.fieldName === DIVIDER_LINE) {
     item.addClass('divider')
-    $('<a title="修改属性"><i class="zmdi zmdi-edit"></i></a>')
+    $(`<a title="${$lang('Modify')}"><i class="zmdi zmdi-edit"></i></a>`)
       .appendTo(action)
       .click(function () {
         const call = function (nv) {
@@ -177,7 +179,7 @@ const render_item = function (data) {
         renderRbcomp(<DlgEditDivider call={call} dividerName={ov || ''} />)
       })
 
-    $('<a><i class="zmdi zmdi-close"></i></a>')
+    $(`<a title="${$lang('Remove')}"><i class="zmdi zmdi-close"></i></a>`)
       .appendTo(action)
       .click(function () {
         item.remove()
@@ -187,10 +189,11 @@ const render_item = function (data) {
 }
 
 const render_unset = function (data) {
-  const item = $('<li class="dd-item"><div class="dd-handle">' + data.fieldLabel + '</div></li>').appendTo('.field-list')
-  $('<span class="ft">' + data.displayType + '</span>').appendTo(item)
+  const item = $(`<li class="dd-item"><div class="dd-handle">${data.fieldLabel}</div></li>`).appendTo('.field-list')
+  $(`<span class="ft">${data.displayType}</span>`).appendTo(item)
   if (data.creatable === false) item.find('.dd-handle').addClass('readonly')
   else if (data.nullable === false) item.find('.dd-handle').addClass('not-nullable')
+
   item.click(function () {
     render_item(data)
     item.remove()
@@ -202,6 +205,7 @@ const render_unset = function (data) {
 const check_empty = function () {
   if ($('.field-list .dd-item').length === 0) $('.field-list .nodata').show()
   else $('.field-list .nodata').hide()
+
   if ($('.form-preview .dd-item').length === 0) $('.form-preview .nodata').show()
   else $('.form-preview .nodata').hide()
 }
@@ -217,12 +221,12 @@ class DlgEditField extends RbAlert {
     return (
       <form className="field-attr">
         <div className="form-group">
-          <label>填写提示</label>
-          <input type="text" className="form-control form-control-sm" name="fieldTips" value={this.state.fieldTips || ''} onChange={this.handleChange} placeholder="输入填写提示" />
+          <label>{$lang('InputTips')}</label>
+          <input type="text" className="form-control form-control-sm" name="fieldTips" value={this.state.fieldTips || ''} onChange={this.handleChange} placeholder={$lang('InputSome,InputTips')} />
         </div>
         <div className="form-group">
           <label>
-            字段名称 <span>(部分内建字段不能修改)</span>
+            {$lang('FieldName')} <span>({$lang('SomeFieldsNotModify')})</span>
           </label>
           <input
             type="text"
@@ -230,12 +234,12 @@ class DlgEditField extends RbAlert {
             name="fieldLabel"
             value={this.state.fieldLabel || ''}
             onChange={this.handleChange}
-            placeholder={this.props.fieldLabelOld || '修改字段名称'}
+            placeholder={this.props.fieldLabelOld || $lang('ModifySome,FieldName')}
           />
         </div>
         <div className="form-group mb-1">
           <button type="button" className="btn btn-space btn-primary" onClick={this.confirm}>
-            确定
+            {$lang('Confirm')}
           </button>
         </div>
       </form>
@@ -265,12 +269,19 @@ class DlgEditDivider extends DlgEditField {
     return (
       <form className="field-attr">
         <div className="form-group">
-          <label>分栏名称</label>
-          <input type="text" className="form-control form-control-sm" name="dividerName" value={this.state.dividerName || ''} onChange={this.handleChange} placeholder="输入分栏名称" />
+          <label>{$lang('DividerName')}</label>
+          <input
+            type="text"
+            className="form-control form-control-sm"
+            name="dividerName"
+            value={this.state.dividerName || ''}
+            onChange={this.handleChange}
+            placeholder={$lang('InputSome,DividerName')}
+          />
         </div>
         <div className="form-group mb-1">
           <button type="button" className="btn btn-space btn-primary" onClick={this.confirm}>
-            确定
+            {$lang('Confirm')}
           </button>
         </div>
       </form>

@@ -24,17 +24,17 @@ const loadRules = () => {
       $('<td>' + this.sourceFieldLabel + '</div></td>').appendTo(tr)
       const extc = this.extConfig
       let extcLabel = []
-      if (extc.whenCreate) extcLabel.push('新建时')
-      if (extc.whenUpdate) extcLabel.push('更新时')
-      if (extc.fillinForce) extcLabel.push('强制回填')
+      if (extc.whenCreate) extcLabel.push($lang('WhenCreate'))
+      if (extc.whenUpdate) extcLabel.push($lang('WhenUpdate'))
+      if (extc.fillinForce) extcLabel.push($lang('ForceFillback'))
       $('<td>' + extcLabel.join(', ') + '</div></td>').appendTo(tr)
-      const act = $('<td class="actions"><a class="icon"><i class="zmdi zmdi-settings"></i></a><a class="icon"><i class="zmdi zmdi-delete"></i></a></td>').appendTo(tr)
-      act.find('a:eq(0)').click(() => {
+      const $act = $('<td class="actions"><a class="icon"><i class="zmdi zmdi-settings"></i></a><a class="icon"><i class="zmdi zmdi-delete"></i></a></td>').appendTo(tr)
+      $act.find('a:eq(0)').click(() => {
         renderRbcomp(<DlgRuleEdit {...bProps} {...extc} id={this.id} sourceField={this.sourceField} targetField={this.targetField} />)
       })
       const configId = this.id
-      act.find('a:eq(1)').click(() => {
-        RbAlert.create('确认删除此回填规则？', {
+      $act.find('a:eq(1)').click(() => {
+        RbAlert.create($lang('DeleteThisSomeConfirm,Fillback'), {
           type: 'danger',
           confirm: function () {
             this.disabled(true)
@@ -66,7 +66,7 @@ class DlgRuleEdit extends RbFormHandler {
       <RbModal title="回填规则" ref={(c) => (this._dlg = c)} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">源字段</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('SourceField')}</label>
             <div className="col-sm-7">
               <select className="form-control form-control-sm" ref={(c) => (this._sourceField = c)}>
                 {(this.state.sourceFields || []).map((item) => {
@@ -80,7 +80,7 @@ class DlgRuleEdit extends RbFormHandler {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">目标字段</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('TargetField')}</label>
             <div className="col-sm-7">
               <select className="form-control form-control-sm" ref={(c) => (this._targetField = c)}>
                 {(this.state.targetFields || []).map((item) => {
@@ -94,34 +94,34 @@ class DlgRuleEdit extends RbFormHandler {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right pt-1">何时回填</label>
+            <label className="col-sm-3 col-form-label text-sm-right pt-1">{$lang('HowFillback')}</label>
             <div className="col-sm-7">
               <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0">
                 <input className="custom-control-input" type="checkbox" checked={this.state.whenCreate === true} data-id="whenCreate" onChange={this.handleChange} />
-                <span className="custom-control-label">新建时</span>
+                <span className="custom-control-label">{$lang('WhenCreate')}</span>
               </label>
               <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0">
                 <input className="custom-control-input" type="checkbox" checked={this.state.whenUpdate === true} data-id="whenUpdate" onChange={this.handleChange} />
-                <span className="custom-control-label">更新时</span>
+                <span className="custom-control-label">{$lang('WhenUpdate')}</span>
               </label>
             </div>
           </div>
           <div className="form-group row pt-1">
-            <label className="col-sm-3 col-form-label text-sm-right pt-1">当目标字段非空时</label>
+            <label className="col-sm-3 col-form-label text-sm-right pt-1">{$lang('WhenTargetFieldNotEmpty')}</label>
             <div className="col-sm-7">
               <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0">
                 <input className="custom-control-input" type="checkbox" checked={this.state.fillinForce === true} data-id="fillinForce" onChange={this.handleChange} />
-                <span className="custom-control-label">强制回填</span>
+                <span className="custom-control-label">{$lang('ForceFillback')}</span>
               </label>
             </div>
           </div>
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref={(c) => (this._btns = c)}>
               <button className="btn btn-primary" type="button" onClick={this.save}>
-                确定
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link" onClick={this.hide}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>
@@ -136,7 +136,7 @@ class DlgRuleEdit extends RbFormHandler {
     $.get(`/commons/metadata/fields?entity=${this.props.targetEntity}`, (res) => {
       this.__targetFieldsCache = res.data
       const s2target = $(this._targetField).select2({
-        placeholder: '选择字段',
+        placeholder: $lang('SelectSome,Field'),
         allowClear: false,
       })
       this.__select2.push(s2target)
@@ -147,7 +147,7 @@ class DlgRuleEdit extends RbFormHandler {
         this.setState({ sourceFields: res.data }, () => {
           const s2source = $(this._sourceField)
             .select2({
-              placeholder: '选择字段',
+              placeholder: $lang('SelectSome,Field'),
               allowClear: false,
             })
             .on('change', (e) => this.__renderTargetFields(e.target.value))
@@ -213,12 +213,18 @@ class DlgRuleEdit extends RbFormHandler {
   }
 
   save = () => {
-    let _data = { field: this.props.field, sourceField: $(this._sourceField).val(), targetField: $(this._targetField).val() }
-    if (!_data.targetField) {
-      RbHighbar.create('请选择目标字段')
-      return
+    const _data = {
+      field: this.props.field,
+      sourceField: $(this._sourceField).val(),
+      targetField: $(this._targetField).val(),
     }
-    _data.extConfig = { whenCreate: this.state.whenCreate, whenUpdate: this.state.whenUpdate, fillinForce: this.state.fillinForce }
+    if (!_data.targetField) return RbHighbar.create($lang('PlsSelectSome,TargetField'))
+
+    _data.extConfig = {
+      whenCreate: this.state.whenCreate,
+      whenUpdate: this.state.whenUpdate,
+      fillinForce: this.state.fillinForce,
+    }
     if (this.props.id) _data.id = this.props.id
 
     this.disabled(true)

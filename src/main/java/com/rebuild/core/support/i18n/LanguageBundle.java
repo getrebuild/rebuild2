@@ -10,6 +10,7 @@ package com.rebuild.core.support.i18n;
 import cn.devezhao.commons.EncryptUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.JSONable;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -38,6 +39,8 @@ public class LanguageBundle implements JSONable {
     private static final Pattern LINK_PATT = Pattern.compile("\\[(.*?)]\\((.*?)\\)");
     // 换行
     private static final Pattern BR_PATT = Pattern.compile("\\[]");
+    // 加粗
+    private static final Pattern BOLD_PATT = Pattern.compile("\\*\\*(.*?)\\*\\*");
 
     private String locale;
     private JSONObject bundle;
@@ -65,10 +68,8 @@ public class LanguageBundle implements JSONable {
     private JSONObject merge(JSONObject bundle) {
         String bundleString = bundle.toJSONString();
 
-        // 换行
         bundleString = BR_PATT.matcher(bundleString).replaceAll("<br/>");
 
-        // 链接
         Matcher matcher = LINK_PATT.matcher(bundleString);
         while (matcher.find()) {
             String text = matcher.group(1);
@@ -77,11 +78,20 @@ public class LanguageBundle implements JSONable {
             String link = "<a href='%s'>%s</a>";
             if (url.startsWith("http:") || url.startsWith("https:")) {
                 link = "<a target='_blank' href='%s'>%s</a>";
+            } else if (url.startsWith("/")) {
+                link = "<a href='" + AppUtils.getContextPath() + "%s'>%s</a>";
             }
 
             bundleString = bundleString.replace(
                     String.format("[%s](%s)", text, url),
                     String.format(link, url, text));
+        }
+
+        matcher = BOLD_PATT.matcher(bundleString);
+        while (matcher.find()) {
+            String text = matcher.group(1);
+            String bold = "<b>%s</b>";
+            bundleString = bundleString.replace(String.format("**%s**", text), String.format(bold, text));
         }
 
         this.bundleHash = EncryptUtils.toMD5Hex(bundleString);

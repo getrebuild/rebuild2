@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>管理字段</title>
+    <title>[[${bundle.lang('SomeManage,Field')}]]</title>
   </head>
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-aside rb-color-header">
@@ -21,10 +21,10 @@
               </div>
               <div class="aside-nav collapse">
                 <ul class="nav">
-                  <li><a href="base">基本信息</a></li>
-                  <li class="active"><a href="fields">管理字段</a></li>
-                  <li><a href="form-design">表单布局</a></li>
-                  <li><a href="advanced">高级配置</a></li>
+                  <li><a href="base">[[${bundle.lang('BasicInfo')}]]</a></li>
+                  <li class="active"><a href="fields">[[${bundle.lang('SomeManage,Field')}]]</a></li>
+                  <li><a href="form-design">[[${bundle.lang('FormLayout')}]]</a></li>
+                  <li><a href="advanced">[[${bundle.lang('AdvConf')}]]</a></li>
                 </ul>
               </div>
             </div>
@@ -38,7 +38,7 @@
                   <div class="col-sm-6">
                     <div class="dataTables_filter">
                       <div class="input-group input-search">
-                        <input class="form-control" type="text" placeholder="查询字段" maxlength="40" />
+                        <input class="form-control" type="text" th:placeholder="${bundle.lang('Query')}" maxlength="40" />
                         <span class="input-group-btn"
                           ><button class="btn btn-secondary" type="button"><i class="icon zmdi zmdi-search"></i></button
                         ></span>
@@ -47,7 +47,7 @@
                   </div>
                   <div class="col-sm-6">
                     <div class="dataTables_oper">
-                      <button class="btn btn-primary btn-space J_new-field"><i class="icon zmdi zmdi-plus"></i> 添加</button>
+                      <button class="btn btn-primary btn-space J_new-field"><i class="icon zmdi zmdi-plus"></i> [[${bundle.lang('Add')}]]</button>
                     </div>
                   </div>
                 </div>
@@ -57,10 +57,10 @@
                       <table class="table table-hover table-striped" id="dataList">
                         <thead>
                           <tr>
-                            <th width="25%" data-filed="fieldLabel">字段名称</th>
-                            <th width="16%" data-field="fieldName">内部标识</th>
-                            <th width="16%" data-field="displayType">类型</th>
-                            <th data-field="comments">备注</th>
+                            <th width="25%" data-filed="fieldLabel">[[${bundle.lang('FieldName')}]]</th>
+                            <th width="16%" data-field="fieldName">[[${bundle.lang('MetaName')}]]</th>
+                            <th width="16%" data-field="displayType">[[${bundle.lang('Type')}]]</th>
+                            <th data-field="comments">[[${bundle.lang('Remark')}]]</th>
                             <th width="50"></th>
                           </tr>
                         </thead>
@@ -100,12 +100,12 @@
           if (event.which == 13) $('.input-search .btn').trigger('click')
         })
         $('.J_new-field').click(function () {
-          if (wpc.isSuperAdmin) RbModal.create(`${baseUrl}/p/admin/metadata/field-new?entity=${entityName}`, '添加字段')
-          else RbHighbar.error('仅超级管理员可添加字段')
+          if (wpc.isSuperAdmin) RbModal.create(`/p/admin/metadata/field-new?entity=${wpc.entityName}`, $lang('AddField'))
+          else RbHighbar.error($lang('OnlyAdminCanSome,AddField'))
         })
       })
 
-      let fields_data = null
+      let fields_data
       const loadFields = function () {
         $.get('../list-field?entity=' + wpc.entityName, function (res) {
           fields_data = res.data
@@ -123,7 +123,7 @@
           const $name = $('<td><a href="field/' + item.fieldName + '" class="column-main">' + item.fieldLabel + '</a></td>').appendTo($tr)
           if (item.fieldName == wpc.nameField) {
             $tr.addClass('primary')
-            $('<span class="badge badge-pill badge-secondary thin ml-1">名称</span>').appendTo($name)
+            $(`<span class="badge badge-pill badge-secondary thin ml-1">${$lang('Name')}</span>`).appendTo($name)
           } else if (item.creatable == false) {
             $tr.addClass('muted')
           } else if (item.nullable == false) {
@@ -135,7 +135,7 @@
           $('<td class="actions"><a class="icon J_edit" href="field/' + item.fieldName + '"><i class="zmdi zmdi-settings"></i></a></td>').appendTo($tr)
         })
 
-        $('.dataTables_info').text('共 ' + $tbody.find('tr').length + ' 个字段')
+        $('.dataTables_info').text($lang('CountRecords').replace('%d', $tbody.find('tr').length))
         $('#dataList').parent().removeClass('rb-loading-active')
       }
     </script>

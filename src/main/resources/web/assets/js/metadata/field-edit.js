@@ -9,6 +9,7 @@ const wpc = window.__PageConfig
 const __gExtConfig = {}
 
 const SHOW_REPEATABLE = ['TEXT', 'DATE', 'DATETIME', 'EMAIL', 'URL', 'PHONE', 'REFERENCE', 'CLASSIFICATION']
+const SHOW_QUERYABLE = []
 
 $(document).ready(function () {
   const dt = wpc.fieldType
@@ -16,24 +17,25 @@ $(document).ready(function () {
 
   const $btn = $('.J_save').click(function () {
     if (!wpc.metaId) return
-    let _data = {
+    let data = {
       fieldLabel: $val('#fieldLabel'),
       comments: $val('#comments'),
       nullable: $val('#fieldNullable'),
       creatable: $val('#fieldCreatable'),
       updatable: $val('#fieldUpdatable'),
       repeatable: $val('#fieldRepeatable'),
+      queryable: $val('#fieldQueryable'),
     }
-
-    if (_data.fieldLabel === '') return RbHighbar.create('请输入字段名称')
+    if (data.fieldLabel === '') return RbHighbar.create($lang('PlsInputSome,FieldName'))
 
     const dv = $val('#defaultValue')
     if (dv) {
       if (checkDefaultValue(dv, dt) === false) return
-      else _data.defaultValue = dv
-    } else if (dv === '') _data.defaultValue = dv
+      else data.defaultValue = dv
+    } else if (dv === '') data.defaultValue = dv
 
     const extConfigNew = { ...__gExtConfig }
+    // 不同类型的配置
     $(`.J_for-${dt} .form-control, .J_for-${dt} .custom-control-input`).each(function () {
       const k = $(this).attr('id')
       if (k && 'defaultValue' !== k) extConfigNew[k] = $val(this)
@@ -45,20 +47,20 @@ $(document).ready(function () {
     })
 
     if (!$same(extConfigNew, extConfig)) {
-      _data['extConfig'] = JSON.stringify(extConfigNew)
-      if (Object.keys(extConfigNew).length === 0) _data['extConfig'] = ''
+      data['extConfig'] = JSON.stringify(extConfigNew)
+      if (Object.keys(extConfigNew).length === 0) data['extConfig'] = ''
     }
 
-    _data = $cleanMap(_data)
-    if (Object.keys(_data).length === 0) {
+    data = $cleanMap(data)
+    if (Object.keys(data).length === 0) {
       location.href = '../fields'
       return
     }
 
     const save = function () {
-      _data.metadata = { entity: 'MetaField', id: wpc.metaId }
+      data.metadata = { entity: 'MetaField', id: wpc.metaId }
       $btn.button('loading')
-      $.post('/admin/entity/field-update', JSON.stringify(_data), function (res) {
+      $.post('/admin/entity/field-update', JSON.stringify(data), function (res) {
         if (res.error_code === 0) {
           location.href = '../fields'
         } else {
@@ -69,7 +71,7 @@ $(document).ready(function () {
     }
 
     if ($('#fieldNullable').prop('checked') === false && $('#fieldCreatable').prop('checked') === false) {
-      RbAlert.create('同时设置不允许为空和不允许创建可能导致新建记录失败。是否仍要保存？', {
+      RbAlert.create($lang('SetNullAndCreateTips'), {
         confirm: function () {
           this.disabled(true)
           save()
@@ -84,116 +86,47 @@ $(document).ready(function () {
   $('#fieldCreatable').attr('checked', $('#fieldCreatable').data('o') === true)
   $('#fieldUpdatable').attr('checked', $('#fieldUpdatable').data('o') === true)
   $('#fieldRepeatable').attr('checked', $('#fieldRepeatable').data('o') === true)
+  $('#fieldQueryable').attr('checked', $('#fieldQueryable').data('o') === true)
 
   $(`.J_for-${dt}`).removeClass('hide')
 
   // 设置扩展值
   for (let k in extConfig) {
-    const $extControl = $(`#${k}`)
-    if ($extControl.length === 1) {
-      if ($extControl.attr('type') === 'checkbox') $extControl.attr('checked', extConfig[k] === 'true' || extConfig[k] === true)
-      else if ($extControl.prop('tagName') === 'DIV') $extControl.text(extConfig[k])
-      else $extControl.val(extConfig[k])
+    const $control = $(`#${k}`)
+    if ($control.length === 1) {
+      if ($control.attr('type') === 'checkbox') $control.attr('checked', extConfig[k] === 'true' || extConfig[k] === true)
+      else if ($control.prop('tagName') === 'DIV') $control.text(extConfig[k])
+      else $control.val(extConfig[k])
     } else {
       $(`.custom-control-input[name="${k}"][value="${extConfig[k]}"]`).attr('checked', true)
     }
   }
 
-  // 特殊字段-审批
   if (wpc.fieldName === 'approvalState' || wpc.fieldName === 'approvalId') {
     $('.J_for-STATE, .J_for-REFERENCE').remove()
-  }
-  // 列表 & 多选
-  else if (dt === 'PICKLIST' || dt === 'MULTISELECT') {
-    $.get(`/admin/field/picklist-gets?entity=${wpc.entityName}&field=${wpc.fieldName}&isAll=false`, function (res) {
-      if (res.data.length === 0) {
-        $('#picklist-items li').text('请添加选项')
-        return
-      }
-      $('#picklist-items').empty()
-      $(res.data).each(function () {
-        picklistItemRender(this)
-      })
-      if (res.data.length > 5) $('#picklist-items').parent().removeClass('autoh')
-    })
-    $('.J_picklist-edit').click(() => RbModal.create(`/p/admin/metadata/picklist-editor?entity=${wpc.entityName}&field=${wpc.fieldName}&multi=${dt === 'MULTISELECT'}`, '配置选项'))
-  }
-  // 自动编号
-  else if (dt === 'SERIES') {
-    $('#defaultValue').parents('.form-group').remove()
-    $('.J_options input').attr('disabled', true)
-
-    $('.J_series-reindex').click(() => {
-      RbAlert.create('此操作将为空字段补充编号（空字段过多耗时会较长）。是否继续？', {
-        confirm: function () {
-          this.disabled(true)
-          $.post(`/admin/field/series-reindex?entity=${wpc.entityName}&field=${wpc.fieldName}`, () => {
-            this.hide()
-            RbHighbar.success('编号已补充')
-          })
-        },
-      })
-    })
-  }
-  // 日期时间
-  else if (dt === 'DATE' || dt === 'DATETIME') {
-    $('#defaultValue').datetimepicker({
-      format: dt === 'DATE' ? 'yyyy-mm-dd' : 'yyyy-mm-dd hh:ii:ss',
-      minView: dt === 'DATE' ? 2 : 0,
-    })
-    $('#defaultValue')
-      .next()
-      .removeClass('hide')
-      .find('button')
-      .click(() => renderRbcomp(<AdvDateDefaultValue type={dt} />))
-  }
-  // 文件 & 图片
-  else if (dt === 'FILE' || dt === 'IMAGE') {
-    let uploadNumber = [0, 9]
-    if (extConfig['uploadNumber']) {
-      uploadNumber = extConfig['uploadNumber'].split(',')
-      uploadNumber[0] = ~~uploadNumber[0]
-      uploadNumber[1] = ~~uploadNumber[1]
-      $('.J_minmax b').eq(0).text(uploadNumber[0])
-      $('.J_minmax b').eq(1).text(uploadNumber[1])
-    }
-
-    $('input.bslider')
-      .slider({ value: uploadNumber })
-      .on('change', function (e) {
-        const v = e.value.newValue
-        $setTimeout(
-          () => {
-            $('.J_minmax b').eq(0).text(v[0])
-            $('.J_minmax b').eq(1).text(v[1])
-            $('#fieldNullable').attr('checked', v[0] <= 0)
-          },
-          200,
-          'bslider-change'
-        )
-      })
-    $('#fieldNullable').attr('disabled', true)
-  }
-  // 分类
-  else if (dt === 'CLASSIFICATION') {
-    $.get(`/admin/metadata/classification/info?id=${extConfig.classification}`, function (res) {
-      $('#useClassification a')
-        .attr({ href: `${rb.baseUrl}/admin/metadata/classification/${extConfig.classification}` })
-        .text(res.data.name)
-    })
-  }
-  // 引用
-  else if (dt === 'REFERENCE') {
+  } else if (dt === 'PICKLIST' || dt === 'MULTISELECT') {
+    _handlePicklist(dt)
+  } else if (dt === 'SERIES') {
+    _handleSeries()
+  } else if (dt === 'DATE' || dt === 'DATETIME') {
+    _handleDate(dt)
+  } else if (dt === 'FILE' || dt === 'IMAGE') {
+    _handleFile(extConfig)
+  } else if (dt === 'CLASSIFICATION') {
+    _handleClassification(extConfig)
+  } else if (dt === 'REFERENCE') {
     _handleReference()
-  }
-  // 条形码
-  else if (dt === 'BARCODE') {
+  } else if (dt === 'BARCODE') {
     $('.J_options input').attr('disabled', true)
   }
 
   // 显示重复值选项
   if (SHOW_REPEATABLE.includes(dt) && wpc.fieldName !== 'approvalId') {
     $('#fieldRepeatable').parents('.custom-control').removeClass('hide')
+  }
+  // 显示可查询选项
+  if (SHOW_QUERYABLE.includes(dt)) {
+    $('#fieldQueryable').parents('.custom-control').removeClass('hide')
   }
 
   // 内建字段
@@ -210,27 +143,29 @@ $(document).ready(function () {
 
   $('.J_del').click(function () {
     if (!wpc.isSuperAdmin) {
-      RbHighbar.error('仅超级管理员可删除字段')
+      RbHighbar.error($lang('OnlyAdminCanSome,DeleteField'))
       return
     }
 
-    const alertExt = { type: 'danger', confirmText: '删除' }
-    alertExt.confirm = function () {
-      this.disabled(true)
-      $.post(`/admin/entity/field-drop?id=${wpc.metaId}`, (res) => {
-        if (res.error_code === 0) {
-          this.hide()
-          RbHighbar.success('字段已删除')
-          setTimeout(function () {
-            location.replace('../fields')
-          }, 1500)
-        } else RbHighbar.error(res.error_msg)
-      })
-    }
-    alertExt.call = function () {
-      $countdownButton($(this._dlg).find('.btn-danger'))
-    }
-    RbAlert.create('字段删除后将无法恢复，请务必谨慎操作。确认删除吗？', '删除字段', alertExt)
+    RbAlert.create($lang('DeleteFieldConfirm'), $lang('DeleteField'), {
+      type: 'danger',
+      confirmText: $lang('Delete'),
+      confirm: function () {
+        this.disabled(true)
+        $.post(`/admin/entity/field-drop?id=${wpc.metaId}`, (res) => {
+          if (res.error_code === 0) {
+            this.hide()
+            RbHighbar.success($lang('SomeDeleted,Field'))
+            setTimeout(function () {
+              location.replace('../fields')
+            }, 1500)
+          } else RbHighbar.error(res.error_msg)
+        })
+      },
+      call: function () {
+        $countdownButton($(this._dlg).find('.btn-danger'))
+      },
+    })
   })
 })
 
@@ -253,7 +188,7 @@ const checkDefaultValue = function (v, t) {
   } else if (t === 'PHONE') {
     valid = $regex.isTel(v)
   }
-  if (valid === false) RbHighbar.create('默认值设置有误')
+  if (valid === false) RbHighbar.create($lang('SomeInvalid,DefaultValue'))
   return valid
 }
 
@@ -269,25 +204,25 @@ class AdvDateDefaultValue extends RbAlert {
     return (
       <form className="ml-6 mr-6">
         <div className="form-group">
-          <label className="text-bold">设置日期公式</label>
+          <label className="text-bold">{$lang('SetSome,DateFormula')}</label>
           <div className="input-group">
             <select className="form-control form-control-sm" ref={(c) => (this._refs[0] = c)}>
-              <option value="NOW">当前日期</option>
+              <option value="NOW">{$lang('CurrentDate')}</option>
             </select>
             <select className="form-control form-control-sm ml-1" ref={(c) => (this._refs[1] = c)} onChange={(e) => this.setState({ uncalc: !e.target.value })}>
-              <option value="">不计算</option>
-              <option value="+">加上</option>
-              <option value="-">减去</option>
+              <option value="">{$lang('CalcNone')}</option>
+              <option value="+">{$lang('CalcPlus')}</option>
+              <option value="-">{$lang('CalcSubtract')}</option>
             </select>
             <input type="number" min="1" max="999999" className="form-control form-control-sm ml-1" defaultValue="1" disabled={this.state.uncalc} ref={(c) => (this._refs[2] = c)} />
             <select className="form-control form-control-sm ml-1" disabled={this.state.uncalc} ref={(c) => (this._refs[3] = c)}>
-              <option value="D">天</option>
-              <option value="M">月</option>
-              <option value="Y">年</option>
+              <option value="D">{$lang('Year')}</option>
+              <option value="M">{$lang('Month')}</option>
+              <option value="Y">{$lang('Day')}</option>
               {this.props.type === 'DATETIME' && (
                 <React.Fragment>
-                  <option value="H">小时</option>
-                  <option value="I">分钟</option>
+                  <option value="H">{$lang('Hour')}</option>
+                  <option value="I">{$lang('Minte')}</option>
                 </React.Fragment>
               )}
             </select>
@@ -295,7 +230,7 @@ class AdvDateDefaultValue extends RbAlert {
         </div>
         <div className="form-group mb-1">
           <button type="button" className="btn btn-space btn-primary" onClick={this.confirm}>
-            确定
+            {$lang('Confirm')}
           </button>
         </div>
       </form>
@@ -308,7 +243,7 @@ class AdvDateDefaultValue extends RbAlert {
     const num = $(this._refs[2]).val() || 1
     if (op) {
       if (isNaN(num)) {
-        RbHighbar.create('请输入数字')
+        RbHighbar.create($lang('PlsInputSome,Number'))
         return
       }
       expr += ` ${op} ${num}${$(this._refs[3]).val()}`
@@ -318,17 +253,16 @@ class AdvDateDefaultValue extends RbAlert {
   }
 }
 
-// 引用
 const _handleReference = function () {
   const referenceEntity = $('.J_referenceEntity').data('refentity')
 
   let dataFilter = (wpc.extConfig || {}).referenceDataFilter
   const saveFilter = function (res) {
     if (res && res.items && res.items.length > 0) {
-      $('#referenceDataFilter').text(`已设置条件 (${res.items.length})`)
+      $('#referenceDataFilter').text(`${$lang('AdvFiletrSeted')} (${res.items.length})`)
       dataFilter = res
     } else {
-      $('#referenceDataFilter').text('点击设置')
+      $('#referenceDataFilter').text($lang('ClickSet'))
       dataFilter = null
     }
     __gExtConfig.referenceDataFilter = dataFilter
@@ -337,10 +271,90 @@ const _handleReference = function () {
 
   let advFilter
   $('#referenceDataFilter').click(() => {
-    if (advFilter) advFilter.show()
-    else
-      renderRbcomp(<AdvFilter title="附加过滤条件" inModal={true} canNoFilters={true} entity={referenceEntity} filter={dataFilter} confirm={saveFilter} />, null, function () {
+    if (advFilter) {
+      advFilter.show()
+    } else {
+      renderRbcomp(<AdvFilter title={$lang('SetAdvFiletr')} inModal={true} canNoFilters={true} entity={referenceEntity} filter={dataFilter} confirm={saveFilter} />, null, function () {
         advFilter = this
       })
+    }
+  })
+}
+
+const _handlePicklist = function (dt) {
+  $.get(`/admin/field/picklist-gets?entity=${wpc.entityName}&field=${wpc.fieldName}&isAll=false`, function (res) {
+    if (res.data.length === 0) {
+      $('#picklist-items li').text($lang('PlsAddOption'))
+      return
+    }
+    $('#picklist-items').empty()
+    $(res.data).each(function () {
+      picklistItemRender(this)
+    })
+    if (res.data.length > 5) $('#picklist-items').parent().removeClass('autoh')
+  })
+  $('.J_picklist-edit').click(() => RbModal.create(`/p/admin/metadata/picklist-editor?entity=${wpc.entityName}&field=${wpc.fieldName}&multi=${dt === 'MULTISELECT'}`, $lang('SetOptionList')))
+}
+
+const _handleSeries = function () {
+  $('#defaultValue').parents('.form-group').remove()
+  $('.J_options input').attr('disabled', true)
+  $('.J_series-reindex').click(() => {
+    RbAlert.create($lang('AppendSeriesConfirm'), {
+      confirm: function () {
+        this.disabled(true)
+        $.post(`/admin/field/series-reindex?entity=${wpc.entityName}&field=${wpc.fieldName}`, () => {
+          this.hide()
+          RbHighbar.success($lang('SomeSuccess,AppendSeries'))
+        })
+      },
+    })
+  })
+}
+
+const _handleDate = function (dt) {
+  $('#defaultValue').datetimepicker({
+    format: dt === 'DATE' ? 'yyyy-mm-dd' : 'yyyy-mm-dd hh:ii:ss',
+    minView: dt === 'DATE' ? 2 : 0,
+  })
+  $('#defaultValue')
+    .next()
+    .removeClass('hide')
+    .find('button')
+    .click(() => renderRbcomp(<AdvDateDefaultValue type={dt} />))
+}
+
+const _handleFile = function (extConfig) {
+  let uploadNumber = [0, 9]
+  if (extConfig['uploadNumber']) {
+    uploadNumber = extConfig['uploadNumber'].split(',')
+    uploadNumber[0] = ~~uploadNumber[0]
+    uploadNumber[1] = ~~uploadNumber[1]
+    $('.J_minmax b').eq(0).text(uploadNumber[0])
+    $('.J_minmax b').eq(1).text(uploadNumber[1])
+  }
+
+  $('input.bslider')
+    .slider({ value: uploadNumber })
+    .on('change', function (e) {
+      const v = e.value.newValue
+      $setTimeout(
+        () => {
+          $('.J_minmax b').eq(0).text(v[0])
+          $('.J_minmax b').eq(1).text(v[1])
+          $('#fieldNullable').attr('checked', v[0] <= 0)
+        },
+        200,
+        'bslider-change'
+      )
+    })
+  $('#fieldNullable').attr('disabled', true)
+}
+
+const _handleClassification = function (extConfig) {
+  $.get(`/admin/metadata/classification/info?id=${extConfig.classification}`, function (res) {
+    $('#useClassification a')
+      .attr({ href: `${rb.baseUrl}/admin/metadata/classification/${extConfig.classification}` })
+      .text(res.data.name)
   })
 }

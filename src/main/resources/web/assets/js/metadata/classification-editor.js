@@ -13,12 +13,15 @@ $(document).ready(function () {
 
   let _dlgImports
   $('.J_imports').click(() => {
-    if (_dlgImports) _dlgImports.show()
-    else
+    if (_dlgImports) {
+      _dlgImports.show()
+    } else {
       renderRbcomp(<DlgImports id={wpc.id} />, null, function () {
         _dlgImports = this
       })
+    }
   })
+
   $addResizeHandler(() => $('#boxes .rb-scroller').css('max-height', $(window).height() - 310))()
 })
 
@@ -76,8 +79,6 @@ class LevelBoxes extends React.Component {
   }
 }
 
-const LNAME = ['一', '二', '三', '四']
-
 class LevelBox extends React.Component {
   constructor(props) {
     super(props)
@@ -89,14 +90,16 @@ class LevelBox extends React.Component {
     return (
       <div className={`col-md-3 ${this.state.turnOn ? '' : 'off'}`}>
         <div className="float-left">
-          <h5 className="text-bold">{LNAME[this.props.level]}级分类</h5>
+          <h5 className="text-bold">
+            {~~this.props.level + 1} {$lang('XLevelClass')}
+          </h5>
         </div>
         {this.props.level < 1 ? null : (
           <div className="float-right">
             <div className="switch-button switch-button-xs">
               <input type="checkbox" id={forId} onChange={this.turnToggle} checked={this.state.turnOn} />
               <span>
-                <label htmlFor={forId} title="启用/禁用"></label>
+                <label htmlFor={forId} title={$lang('EnableOrDisable')}></label>
               </span>
             </div>
           </div>
@@ -104,16 +107,16 @@ class LevelBox extends React.Component {
         <div className="clearfix"></div>
         <form className="mt-1" onSubmit={this.saveItem}>
           <div className="input-group input-group-sm">
-            <input className="form-control" type="text" maxLength="60" placeholder="名称" value={this.state.itemName || ''} data-id="itemName" onChange={this.changeVal} />
+            <input className="form-control" type="text" maxLength="60" placeholder={$lang('AddSome,ClassItem')} value={this.state.itemName || ''} data-id="itemName" onChange={this.changeVal} />
             {this.state.itemId && this.state.itemHide && (
               <label className="custom-control custom-control-sm custom-checkbox custom-control-inline">
                 <input className="custom-control-input" type="checkbox" data-id="itemUnhide" onChange={this.changeVal} />
-                <span className="custom-control-label">启用</span>
+                <span className="custom-control-label">{$lang('Enable')}</span>
               </label>
             )}
             <div className="input-group-append">
               <button className="btn btn-primary" type="submit" disabled={this.state.inSave === true}>
-                {this.state.itemId ? '保存' : '添加'}
+                {$lang(this.state.itemId ? 'Save' : 'Add')}
               </button>
             </div>
           </div>
@@ -130,10 +133,10 @@ class LevelBox extends React.Component {
                   </div>
                   <div className="dd-action">
                     <a>
-                      <i className="zmdi zmdi-edit" title="编辑" onClick={(e) => this.editItem(item, e)}></i>
+                      <i className="zmdi zmdi-edit" title={$lang('Modify')} onClick={(e) => this.editItem(item, e)}></i>
                     </a>
                     <a>
-                      <i className="zmdi zmdi-delete" title="删除" onClick={(e) => this.delItem(item, e)}></i>
+                      <i className="zmdi zmdi-delete" title={$lang('Delete')} onClick={(e) => this.delItem(item, e)}></i>
                     </a>
                   </div>
                   {active && <span className="zmdi zmdi-caret-right arrow hide"></span>}
@@ -180,12 +183,12 @@ class LevelBox extends React.Component {
     e.preventDefault()
     const name = $.trim(this.state.itemName)
     if (!name) return
-    if (this.props.level >= 1 && !this.parentId) return RbHighbar.create('请先选择上级分类项')
+    if (this.props.level >= 1 && !this.parentId) return RbHighbar.create($lang('PlsSelectPrevClassFirst'))
 
     const repeated = this.state.items.find((x) => {
       return x[1] === name && x[0] !== this.state.itemId
     })
-    if (repeated) return RbHighbar.create('存在同名分类项')
+    if (repeated) return RbHighbar.create($lang('SomeDuplicate,ClassItem'))
 
     let url = `/admin/metadata/classification/save-data-item?data_id=${wpc.id}&name=${name}`
     if (this.state.itemId) url += `&item_id=${this.state.itemId}`
@@ -226,6 +229,8 @@ class LevelBox extends React.Component {
     e.stopPropagation()
 
     const that = this
+
+    let alertMsg = $lang('DeleteClassOptionConfirm1')
     const alertExt = {
       type: 'danger',
       confirm: function () {
@@ -237,7 +242,7 @@ class LevelBox extends React.Component {
             return
           }
 
-          RbHighbar.success('分类项已删除')
+          RbHighbar.success($lang('SomeDeleted,ClassItem'))
           const ns = []
           that.state.items.forEach((i) => {
             if (i[0] !== item[0]) ns.push(i)
@@ -250,11 +255,10 @@ class LevelBox extends React.Component {
       },
     }
 
-    let alertMsg = '删除后其子分类项也将被一并删除。如果此分类项已被使用，使用了这些分类项的字段也将无法显示。确认删除吗？'
     if (item[3] !== true) {
-      alertMsg = '删除后其子分类项也将被一并删除。如果此分类项已被使用，建议你禁用，否则已使用这些分类项的字段将无法显示。'
-      alertExt.confirmText = '确认删除'
-      alertExt.cancelText = '禁用'
+      alertMsg = $lang('DeleteClassOptionConfirm2')
+      alertExt.confirmText = $lang('Delete')
+      alertExt.cancelText = $lang('Disable')
       alertExt.cancel = function () {
         this.disabled()
         const url = `/admin/metadata/classification/save-data-item?item_id=${item[0]}&hide=true`
@@ -265,7 +269,7 @@ class LevelBox extends React.Component {
             return
           }
 
-          RbHighbar.success('分类项已禁用')
+          RbHighbar.success($lang('SomeDisabled,ClassItem'))
           const ns = []
           $(that.state.items || []).each(function () {
             if (this[0] === item[0]) this[3] = true
@@ -292,14 +296,20 @@ const saveOpenLevel = function () {
       const level = ~~($('.switch-button input:checkbox:checked:last').attr('id') || 't-0').split('-')[1]
       if (saveOpenLevel_last === level) return
 
-      const data = { openLevel: level }
-      data.metadata = { entity: 'Classification', id: wpc.id }
+      const data = {
+        openLevel: level,
+        metadata: {
+          entity: 'Classification',
+          id: wpc.id,
+        },
+      }
+
       $.post('/app/entity/record-save', JSON.stringify(data), (res) => {
         if (res.error_code > 0) {
           RbHighbar.error(res.error_msg)
         } else {
           saveOpenLevel_last = level
-          RbHighbar.success('已启用' + LNAME[level] + '级分类')
+          RbHighbar.success($lang('EnabledXLevelClassData').replace('%d', level + 1))
         }
       })
     },
@@ -316,17 +326,18 @@ class DlgImports extends RbModalHandler {
 
   render() {
     return (
-      <RbModal title="导入分类数据" ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang('ImportSome,ClassData')} ref={(c) => (this._dlg = c)}>
         <div className="tab-container">
           <ul className="nav nav-tabs">
             <li className="nav-item">
               <a className="nav-link active" href="#FILE" data-toggle="tab">
-                文件导入
+                {$lang('FileImport')}
               </a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#RBSTORE" data-toggle="tab">
-                <i className="icon zmdi zmdi-cloud-outline-alt"></i> 从 RB 仓库导入
+                <i className="icon zmdi zmdi-cloud-outline-alt"></i>
+                {$lang('RbImport')}
               </a>
             </li>
           </ul>
@@ -334,14 +345,14 @@ class DlgImports extends RbModalHandler {
             <div className="tab-pane active" id="FILE">
               <div className="form">
                 <div className="form-group row">
-                  <label className="col-sm-3 col-form-label text-sm-right">上传文件</label>
+                  <label className="col-sm-3 col-form-label text-sm-right">{$lang('UploadSome,File')}</label>
                   <div className="col-sm-7">
                     <div className="float-left">
                       <div className="file-select">
                         <input type="file" className="inputfile" id="upload-input" accept=".xlsx,.xls,.csv" data-maxsize="20971520" data-temp="true" ref={(c) => (this._uploadInput = c)} />
                         <label htmlFor="upload-input" className="btn-secondary">
                           <i className="zmdi zmdi-upload"></i>
-                          <span>选择文件</span>
+                          <span>{$lang('SelectSome,File')}</span>
                         </label>
                       </div>
                     </div>
@@ -349,21 +360,16 @@ class DlgImports extends RbModalHandler {
                       <u className="text-bold">{$fileCutName(this.state.uploadFile || '')}</u>
                     </div>
                     <div className="clearfix"></div>
-                    <div className="form-text">
-                      支持 Excel 或 CSV 文件，文件格式请{' '}
-                      <a href="https://getrebuild.com/docs/admin/classifications" target="_blank" className="link">
-                        参考文档
-                      </a>
-                    </div>
+                    <div className="form-text link" dangerouslySetInnerHTML={{ __html: $lang('ImportClassDataTips') }}></div>
                   </div>
                 </div>
                 <div className="form-group row footer">
                   <div className="col-sm-7 offset-sm-3">
                     <button className="btn btn-primary" type="button" onClick={() => this.import4File()} disabled={this.state.inProgress}>
-                      开始导入
+                      {$lang('StartImport')}
                     </button>
                     <button className="btn btn-link" type="button" onClick={() => this._dlg.hide()} disabled={this.state.inProgress}>
-                      取消
+                      {$lang('Cancel')}
                     </button>
                   </div>
                 </div>
@@ -377,7 +383,7 @@ class DlgImports extends RbModalHandler {
                       <div className="float-left">
                         <h5>{item.name}</h5>
                         <div className="text-muted">
-                          数据来源{' '}
+                          {$lang('DataSource')}{' '}
                           <a target="_blank" className="link" rel="noopener noreferrer" href={item.source}>
                             {item.author || item.source}
                           </a>
@@ -386,7 +392,7 @@ class DlgImports extends RbModalHandler {
                       </div>
                       <div className="float-right">
                         <button disabled={this.state.inProgress === true} className="btn btn-sm btn-primary" data-file={item.file} data-name={item.name} onClick={this.import4Rbstore}>
-                          导入
+                          {$lang('Import')}
                         </button>
                       </div>
                       <div className="clearfix"></div>
@@ -396,7 +402,7 @@ class DlgImports extends RbModalHandler {
               </div>
               <div className="mt-2 mr-2 text-right">
                 <a href="https://github.com/getrebuild/rebuild-datas/" className="link" target="_blank" rel="noopener noreferrer">
-                  提交数据到 RB 仓库
+                  {$lang('RbSubmit')}
                 </a>
               </div>
             </div>
@@ -433,7 +439,7 @@ class DlgImports extends RbModalHandler {
 
   import4File() {
     if (!this.state.uploadFile) {
-      RbHighbar.create('请上传文件')
+      RbHighbar.create($lang('PlsUploadFile'))
       return
     }
 
@@ -441,7 +447,7 @@ class DlgImports extends RbModalHandler {
     const url = `/admin/metadata/classification/imports/file?dest=${this.props.id}&file=${$encode(this.state.uploadFile)}`
     $.post(url, (res) => {
       if (res.error_code === 0) this.__checkState(res.data)
-      else RbHighbar.error(res.error_msg || '导入失败')
+      else RbHighbar.error(res.error_msg)
     })
   }
 
@@ -450,14 +456,14 @@ class DlgImports extends RbModalHandler {
     const name = e.currentTarget.dataset.name
     const url = `/admin/metadata/classification/imports/start?dest=${this.props.id}&file=${$encode(file)}`
     const that = this
-    RbAlert.create(`<strong>${name}</strong><br>此导入为增量导入，不会对现有数据造成影响。开始导入吗？`, {
+    RbAlert.create(`<strong>${name}</strong><br>${$lang('ImportClassDataConfirm')}`, {
       html: true,
       confirm: function () {
         this.hide()
         that.setState({ inProgress: true })
         $.post(url, (res) => {
           if (res.error_code === 0) that.__checkState(res.data)
-          else RbHighbar.error(res.error_msg || '导入失败')
+          else RbHighbar.error(res.error_msg)
         })
       },
     })
@@ -476,7 +482,7 @@ class DlgImports extends RbModalHandler {
 
         const cp = res.data.progress
         if (cp >= 1) {
-          RbHighbar.success('导入完成')
+          RbHighbar.success($lang('SomeSuccess,Import'))
           this.__mp.end()
           setTimeout(() => location.reload(), 1500)
         } else {

@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>高级配置</title>
+    <title>[[${bundle.lang('AdvConf')}]]</title>
     <style type="text/css">
       a#entityIcon {
         display: inline-block;
@@ -39,50 +39,46 @@
               </div>
               <div class="aside-nav collapse">
                 <ul class="nav">
-                  <li><a href="base">基本信息</a></li>
-                  <li><a href="fields">管理字段</a></li>
-                  <li><a href="form-design">表单布局</a></li>
-                  <li class="active"><a href="advanced">高级配置</a></li>
+                  <li><a href="base">[[${bundle.lang('BasicInfo')}]]</a></li>
+                  <li><a href="fields">[[${bundle.lang('SomeManage,Field')}]]</a></li>
+                  <li><a href="form-design">[[${bundle.lang('FormLayout')}]]</a></li>
+                  <li class="active"><a href="advanced">[[${bundle.lang('AdvConf')}]]</a></li>
                 </ul>
               </div>
             </div>
           </div>
         </aside>
         <div class="page-head">
-          <div class="page-head-title">高级配置</div>
+          <div class="page-head-title">[[${bundle.lang('AdvConf')}]]</div>
         </div>
         <div class="main-content container-fluid pt-1">
           <div class="card">
-            <div class="card-header">删除[[${entityLabel}]]实体</div>
+            <div class="card-header">[[${bundle.lang('DeleteSome,Entity')}]]</div>
             <div class="card-body">
-              <p>
-                <strong>实体删除后将无法恢复，请务必谨慎操作。</strong>
-                <br />
-                删除前，必须将该实体下的记录全部清空。如果这是一个主实体，则需要先将明细实体删除。如果此实体已被其他实体（字段）引用，则需要先删除引用字段。
-              </p>
+              <p th:utext="${bundle.lang('DeleteEntityTips')}"></p>
               <div>
                 <label class="custom-control custom-control-sm custom-checkbox custom-control-inline mb-2">
-                  <input class="custom-control-input J_drop-check" type="checkbox" /><span class="custom-control-label"> 我已知晓风险</span>
+                  <input class="custom-control-input J_drop-check" type="checkbox" /><span class="custom-control-label"> [[${bundle.lang('IKnowRisks')}]]</span>
                 </label>
                 <label class="custom-control custom-control-sm custom-checkbox custom-control-inline mb-2 bosskey-show">
-                  <input class="custom-control-input J_drop-force" type="checkbox" /><span class="custom-control-label"> 强制删除</span>
+                  <input class="custom-control-input J_drop-force" type="checkbox" /><span class="custom-control-label"> [[${bundle.lang('ForceDelete')}]]</span>
                 </label>
               </div>
               <div class="mb-1">
-                <button type="button" class="btn btn-danger J_drop-confirm" disabled="disabled" data-loading-text="删除中"><i class="zmdi zmdi-delete icon"></i> 确认删除</button>
+                <button type="button" class="btn btn-danger J_drop-confirm" disabled="disabled"><i class="zmdi zmdi-delete icon"></i> [[${bundle.lang('ConfirmDelete')}]]</button>
                 <div class="alert alert-warning alert-icon hide col-sm-6 mb-0">
                   <div class="icon"><span class="zmdi zmdi-alert-triangle"></span></div>
-                  <div class="message">系统内建实体，不允许删除</div>
+                  <div class="message">[[${bundle.lang('BuiltInNotDelete')}]]</div>
                 </div>
               </div>
             </div>
           </div>
           <div class="card bosskey-show">
-            <div class="card-header">导出[[${entityLabel}]]实体</div>
+            <div class="card-header">[[${bundle.lang('ExportSome,Entity')}]]</div>
             <div class="card-body">
-              <p>将实体的元数据导出，方便与其他实例间共享。你也可以将导出文件发布到 <a class="link" href="https://github.com/getrebuild/rebuild-datas" target="_blank">RB 仓库</a>。</p>
+              <p class="link" th:utext="${bundle.lang('ExportEntityTips')}"></p>
               <div class="mb-1">
-                <a th:href="|../entity-export?id=${entityMetaId}|" target="_blank" class="btn btn-primary"><i class="zmdi zmdi-cloud-download icon"></i> 导出</a>
+                <a th:href="|../entity-export?id=${entityMetaId}|" target="_blank" class="btn btn-primary"><i class="zmdi zmdi-cloud-download icon"></i> [[${bundle.lang('Export')}]]</a>
               </div>
             </div>
           </div>
@@ -113,19 +109,19 @@
         const $drop = $('.J_drop-confirm').click(() => {
           if ($('.J_drop-check').prop('checked') == false) return
           if (!window.__PageConfig.isSuperAdmin) {
-            RbHighbar.error('仅超级管理员可删除实体')
+            RbHighbar.error($lang('OnlyAdminCanSome,DeleteEntity'))
             return
           }
 
-          RbAlert.create('实体删除后将无法恢复，请务必谨慎操作。确认删除吗？', '删除实体', {
+          RbAlert.create($lang('DeleteEntityConfirm'), $lang('DeleteEntity'), {
             type: 'danger',
-            confirmText: '删除',
+            confirmText: $lang('Delete'),
             confirm: function () {
               $drop.button('loading')
               this.disabled(true)
               $.post('../entity-drop?id=' + metaId + '&force=' + $('.J_drop-force').prop('checked'), (res) => {
                 if (res.error_code == 0) {
-                  RbHighbar.success('实体已删除')
+                  RbHighbar.success($lang('SomeDeleted,Entity'))
                   setTimeout(function () {
                     location.replace('../../entities')
                   }, 1500)

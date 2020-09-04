@@ -6,36 +6,39 @@ See LICENSE and COMMERCIAL in the project root for license information.
 */
 
 $(document).ready(function () {
-  const _btn = $('.btn-primary').click(function () {
+  const $btn = $('.btn-primary').click(function () {
     const entityLabel = $val('#entityLabel'),
       comments = $val('#comments')
     if (!entityLabel) {
-      RbHighbar.create('请输入实体名称')
+      RbHighbar.create($lang('PlsInputSome,EntityName'))
       return
     }
 
-    const _data = { label: entityLabel, comments: comments }
+    const data = {
+      label: entityLabel,
+      comments: comments,
+    }
     if ($val('#isSlave')) {
-      _data.masterEntity = $val('#masterEntity')
-      if (!_data.masterEntity) {
-        RbHighbar.create('请选择选择主实体')
+      data.masterEntity = $val('#masterEntity')
+      if (!data.masterEntity) {
+        RbHighbar.create($lang('PlsSelectSome,MasterEntity'))
         return
       }
     }
 
-    _btn.button('loading')
-    $.post('/admin/entity/entity-new?nameField=' + $val('#nameField'), JSON.stringify(_data), function (res) {
+    $btn.button('loading')
+    $.post('/admin/entity/entity-new?nameField=' + $val('#nameField'), JSON.stringify(data), function (res) {
       if (res.error_code === 0) parent.location.href = `${rb.baseUrl}/admin/entity/${res.data}/base`
       else RbHighbar.error(res.error_msg)
     })
   })
 
-  let entitiesLoaded = false
+  let entityLoaded = false
   $('#isSlave').click(function () {
     $('.J_masterEntity').toggleClass('hide')
     parent.RbModal.resize()
-    if (entitiesLoaded === false) {
-      entitiesLoaded = true
+    if (entityLoaded === false) {
+      entityLoaded = true
       $.get('/admin/entity/entity-list?nobizz=true', function (res) {
         $(res.data).each(function () {
           if (!this.slaveEntity) $(`<option value="${this.entityName}">${this.entityLabel}</option>`).appendTo('#masterEntity')
@@ -71,7 +74,7 @@ class MetaschemaList extends React.Component {
                   <div className="float-left">
                     <h5>{item.name}</h5>
                     <div className="text-muted">
-                      数据来源{' '}
+                      {$lang('DataSource')}{' '}
                       <a target="_blank" className="link" rel="noopener noreferrer" href={item.source}>
                         {item.author || item.source}
                       </a>
@@ -81,11 +84,11 @@ class MetaschemaList extends React.Component {
                   <div className="float-right">
                     {item.exists ? (
                       <button disabled className="btn btn-sm btn-primary">
-                        已存在
+                        {$lang('Exists')}
                       </button>
                     ) : (
                       <button disabled={this.state.inProgress === true} className="btn btn-sm btn-primary" onClick={() => this.imports(item)}>
-                        导入
+                        {$lang('Import')}
                       </button>
                     )}
                   </div>
@@ -112,19 +115,19 @@ class MetaschemaList extends React.Component {
   }
 
   imports(item) {
-    let tips = `<strong>导入 [ ${item.name} ]</strong><br>`
+    const tips = [`<strong>${$lang('Import')} [ ${item.name} ]</strong>`]
     if ((item.refs || []).length > 0) {
       const refNames = []
       this.state.indexes.forEach((bar) => {
         if (item.refs.includes(bar.key) && !bar.exists) refNames.push(bar.name)
       })
-      if (refNames.length > 0) tips += `导入本实体将同时导入 ${refNames.length} 个依赖实体（${refNames.join('、')}）。`
+      if (refNames.length > 0) tips.push($lang('ImportEntityTips1').replace('%s', refNames.join('、')))
     }
-    tips += '你可在导入后进行适当调整。开始导入吗？'
+    tips.push($lang('ImportEntityTips2'))
 
     const that = this
     const $mp2 = parent && parent.$mp ? parent.$mp : $mp
-    parent.RbAlert.create(tips, {
+    parent.RbAlert.create(tips.join('<br>'), {
       html: true,
       confirm: function () {
         this.hide()
@@ -135,9 +138,11 @@ class MetaschemaList extends React.Component {
           $mp2.end()
           that.setState({ inProgress: false })
           if (res.error_code === 0) {
-            RbHighbar.success('导入完成')
+            RbHighbar.success($lang('SomeSuccess,Import'))
             setTimeout(() => (parent.location.href = `${rb.baseUrl}/admin/entity/${res.data}/base`), 1500)
-          } else RbHighbar.error(res.error_msg)
+          } else {
+            RbHighbar.error(res.error_msg)
+          }
         })
       },
     })

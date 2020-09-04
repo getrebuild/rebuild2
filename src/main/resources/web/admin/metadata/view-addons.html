@@ -2,28 +2,28 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>视图配置</title>
+    <title>[[${bundle.lang('ConfSome,View')}]]</title>
   </head>
   <body class="dialog">
     <div class="main-content">
       <div class="row m-0">
         <div class="col-6 sortable-swap">
-          <h5 class="sortable-box-title">已显示</h5>
+          <h5 class="sortable-box-title">[[${bundle.lang('Showed')}]]</h5>
           <div class="sortable-box rb-scroller">
             <ol class="dd-list J_config"></ol>
           </div>
           <i class="zmdi zmdi-swap"></i>
         </div>
         <div class="col-6">
-          <h5 class="sortable-box-title">未显示</h5>
+          <h5 class="sortable-box-title">[[${bundle.lang('UnShow')}]]</h5>
           <div class="sortable-box rb-scroller">
             <ol class="dd-list unset-list"></ol>
           </div>
         </div>
       </div>
       <div class="dialog-footer">
-        <button class="btn btn-primary J_save" type="button">保存</button>
-        <button class="btn btn-secondary" onclick="parent.RbModal.hide()" type="button">取消</button>
+        <button class="btn btn-primary J_save" type="button">[[${bundle.lang('Save')}]]</button>
+        <button class="btn btn-secondary" onclick="parent.RbModal.hide()" type="button">[[${bundle.lang('Cancel')}]]</button>
       </div>
     </div>
     <th:block th:replace="~{/_include/footer}" />
@@ -41,7 +41,7 @@
           $(res.data.config).each(function () {
             $('.unset-list li[data-key="' + this + '"]').trigger('click')
           })
-          if (!res.data.refs || res.data.refs.length == 0) $('<li class="dd-item nodata">无可用相关项</li>').appendTo('.unset-list')
+          if (!res.data.refs || res.data.refs.length == 0) $(`<li class="dd-item nodata">${$lang('NoData')}</li>`).appendTo('.unset-list')
         })
 
         const $btn = $('.J_save').click(function () {

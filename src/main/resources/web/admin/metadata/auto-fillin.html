@@ -3,7 +3,8 @@
   <head>
     <th:block th:replace="~{/_include/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/lib/widget/bootstrap-slider.min.css}" />
-    <title>表单回填配置</title>
+    <meta name="page-help" content="https://getrebuild.com/docs/admin/meta-entity#%E5%BC%95%E7%94%A8%E5%AD%97%E6%AE%B5%E5%9B%9E%E5%A1%AB" />
+    <title>[[${bundle.lang('SomeConf,FormFillback')}]]</title>
     <style type="text/css">
       .dataTables_wrapper .rb-datatable-header {
         position: static;
@@ -44,22 +45,22 @@
               </div>
               <div class="aside-nav collapse">
                 <ul class="nav">
-                  <li><a href="../../base">基本信息</a></li>
-                  <li class="active"><a href="../../fields">管理字段</a></li>
-                  <li><a href="../../form-design">表单布局</a></li>
-                  <li><a href="../../advanced">高级配置</a></li>
+                  <li><a href="../../base">[[${bundle.lang('BasicInfo')}]]</a></li>
+                  <li class="active"><a href="../../fields">[[${bundle.lang('SomeManage,Field')}]]</a></li>
+                  <li><a href="../../form-design">[[${bundle.lang('FormLayout')}]]</a></li>
+                  <li><a href="../../advanced">[[${bundle.lang('AdvConf')}]]</a></li>
                 </ul>
               </div>
             </div>
           </div>
         </aside>
         <div class="page-head">
-          <div class="page-head-title">表单回填配置</div>
+          <div class="page-head-title">[[${bundle.lang('SomeConf,FormFillback')}]]</div>
         </div>
         <div class="main-content container-fluid pt-1">
           <ul class="nav nav-tabs nav-tabs-classic">
-            <li class="nav-item"><a th:href="|../${fieldName}|" class="nav-link">字段信息</a></li>
-            <li class="nav-item"><a href="./auto-fillin" class="nav-link active">表单回填配置</a></li>
+            <li class="nav-item"><a th:href="|../${fieldName}|" class="nav-link">[[${bundle.lang('FieldInfo')}]]</a></li>
+            <li class="nav-item"><a href="./auto-fillin" class="nav-link active">[[${bundle.lang('SomeConf,FormFillback')}]]</a></li>
           </ul>
           <div class="card">
             <div class="card-body">
@@ -72,10 +73,7 @@
                   </div>
                   <div class="col-sm-6">
                     <div class="dataTables_oper">
-                      <a class="link inline mr-3" target="_blank" href="https://getrebuild.com/docs/admin/meta-entity#%E5%BC%95%E7%94%A8%E5%AD%97%E6%AE%B5%E5%9B%9E%E5%A1%AB">
-                        如何使用 <i class="zmdi zmdi-help zicon"></i>
-                      </a>
-                      <button class="btn btn-primary J_add-rule"><i class="icon zmdi zmdi-plus"></i> 添加</button>
+                      <button class="btn btn-primary J_add-rule"><i class="icon zmdi zmdi-plus"></i> [[${bundle.lang('Add')}]]</button>
                     </div>
                   </div>
                 </div>
@@ -85,9 +83,9 @@
                       <table class="table table-hover table-striped table-fixed" id="dataList">
                         <thead>
                           <tr>
-                            <th>目标字段</th>
-                            <th>源字段</th>
-                            <th width="30%">回填规则</th>
+                            <th>[[${bundle.lang('TargetField')}]]</th>
+                            <th>[[${bundle.lang('SourceField')}]]</th>
+                            <th width="30%">[[${bundle.lang('FillbackRule')}]]</th>
                             <th width="100"></th>
                           </tr>
                         </thead>
@@ -96,7 +94,7 @@
                       <th:block th:replace="~{/_include/spinner}" />
                       <div class="list-nodata hide">
                         <span class="zmdi zmdi-info-outline"></span>
-                        <p>暂无配置</p>
+                        <p>[[${bundle.lang('NoConf')}]]</p>
                       </div>
                     </div>
                   </div>
@@ -104,7 +102,7 @@
               </div>
             </div>
           </div>
-          <p class="protips">通过 <a th:href="@{/admin/robot/triggers}">触发器 (数据转写)</a> 可以实现更加复杂的回填规则</p>
+          <p class="protips" th:utext="${bundle.lang('FillbackByTrigger')}"></p>
         </div>
       </div>
     </div>

@@ -24,7 +24,7 @@ class AppList extends React.Component {
         {(this.state.list || []).map((item) => {
           let secret = item[2].substr(0, 8) + '...' + item[2].substr(32)
           secret = (
-            <a href="#" title="点击显示" onClick={() => this.showSecret(item[2])}>
+            <a href="#" title={$lang('ClickShow')} onClick={() => this.showSecret(item[2])}>
               {secret}
             </a>
           )
@@ -34,7 +34,7 @@ class AppList extends React.Component {
             <tr key={'api-' + item[0]}>
               <td>{item[1]}</td>
               <td>{secret}</td>
-              <td>{item[4] || '无 (拥有全部权限)'}</td>
+              <td>{item[4] || $lang('UnBindApiUser')}</td>
               <td>{item[5]}</td>
               <td>{item[6] || 0}</td>
               <td className="actions">
@@ -53,7 +53,7 @@ class AppList extends React.Component {
     $.get('/admin/apis-manager/app-list', (res) => {
       this.setState({ list: res.data || [] }, () => {
         $('.rb-loading-active').removeClass('rb-loading-active')
-        $('.dataTables_info').text(`共 ${this.state.list.length} 个 API 秘钥`)
+        $('.dataTables_info').text($lang('CountRecords').replace('%d', this.state.list.length))
         if (this.state.list.length === 0) $('.list-nodata').removeClass('hide')
       })
     })
@@ -67,9 +67,9 @@ class AppList extends React.Component {
   }
 
   delete(app) {
-    RbAlert.create('删除后，使用此 API 秘钥的第三方应用功能将会失败', {
+    RbAlert.create($lang('DelApiTips'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.disabled(true)
         $.post(`/admin/apis-manager/app-delete?id=${app[0]}`, (res) => {
@@ -89,22 +89,22 @@ class DlgEdit extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title="添加 API 秘钥" ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang('AddSome,ApiKey')} ref={(c) => (this._dlg = c)}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">绑定用户 (权限)</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('BindApiUser')}</label>
             <div className="col-sm-7">
               <UserSelector hideDepartment={true} hideRole={true} hideTeam={true} multiple={false} ref={(c) => (this._UserSelector = c)} />
-              <p className="form-text mb-0">强烈建议为 API 秘钥绑定一个用户，此秘钥将拥有和其一样的权限。如不绑定则拥有全部权限</p>
+              <p className="form-text mb-0">{$lang('BindApiUserTips')}</p>
             </div>
           </div>
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref={(c) => (this._btns = c)}>
               <button className="btn btn-primary" type="button" onClick={this.save}>
-                确定
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link" onClick={this.hide}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>

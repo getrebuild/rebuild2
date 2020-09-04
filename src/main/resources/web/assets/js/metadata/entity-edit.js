@@ -5,8 +5,7 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-// eslint-disable-next-line no-unused-vars
-// eslint-disable-next-line no-undef
+// eslint-disable-next-line no-undef, no-unused-vars
 window.clickIcon = function (icon) {
   $('#entityIcon')
     .attr('value', icon)
@@ -25,33 +24,36 @@ $(document).ready(function () {
 
   const $btn = $('.J_save').click(function () {
     if (!wpc.metaId) return
-    let _data = {
+    let data = {
       entityLabel: $val('#entityLabel'),
       comments: $val('#comments'),
       nameField: $val('#nameField'),
     }
-    if (_data.label === '') {
-      RbHighbar.create('请输入实体名称')
-      return
-    }
-    let icon = $val('#entityIcon')
-    if (icon) _data.icon = icon
-    _data = $cleanMap(_data)
-    if (Object.keys(_data).length === 0) {
+    if (data.label === '') return RbHighbar.create($lang('PlsInoutSome,EntityName'))
+
+    const icon = $val('#entityIcon')
+    if (icon) data.icon = icon
+
+    data = $cleanMap(data)
+    if (Object.keys(data).length === 0) {
       location.reload()
       return
     }
 
-    _data.metadata = { entity: 'MetaEntity', id: wpc.metaId }
+    data.metadata = {
+      entity: 'MetaEntity',
+      id: wpc.metaId,
+    }
+
     $btn.button('loading')
-    $.post('../entity-update', JSON.stringify(_data), function (res) {
+    $.post('../entity-update', JSON.stringify(data), function (res) {
       if (res.error_code === 0) location.reload()
       else RbHighbar.error(res.error_msg)
     })
   })
 
   $('#entityIcon').click(function () {
-    RbModal.create('/p/commons/search-icon', '选择图标')
+    RbModal.create('/p/commons/search-icon', $lang('SelectSome,Icon'))
   })
 
   $.get('/commons/metadata/fields?entity=' + wpc.entity, function (d) {
@@ -72,10 +74,11 @@ $(document).ready(function () {
         id: item.name,
         text: item.label,
         disabled: canName === false,
-        title: canName === false ? '此字段（类型）不支持作为名称字段使用' : item.label,
+        title: canName === false ? $lang('NotBeNameFieldTips') : item.label,
       }
     })
-    let rsSort = []
+
+    const rsSort = []
     rs.forEach((item) => {
       if (item.disabled === false) rsSort.push(item)
     })
@@ -85,7 +88,7 @@ $(document).ready(function () {
 
     $('#nameField')
       .select2({
-        placeholder: '选择字段',
+        placeholder: $lang('SelectSome,Field'),
         allowClear: false,
         data: rsSort,
       })

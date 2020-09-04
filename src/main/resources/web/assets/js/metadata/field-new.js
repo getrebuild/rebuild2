@@ -16,17 +16,18 @@ $(document).ready(function () {
       refClassification = $val('#refClassification'),
       stateClass = $val('#stateClass') || 'com.rebuild.server.helper.state.HowtoState'
     if (!fieldLabel) {
-      RbHighbar.create('请输入字段名称')
+      RbHighbar.create($lang('PlsInputSome,FieldName'))
       return
     }
+
     if (type === 'REFERENCE' && !refEntity) {
-      RbHighbar.create('请选择引用实体')
+      RbHighbar.create('PlsSelectSome,RefEntity')
       return
     } else if (type === 'CLASSIFICATION' && !refClassification) {
-      RbHighbar.create('请选择分类数据')
+      RbHighbar.create('PlsSelectSome,ClassData')
       return
     } else if (type === 'STATE' && !stateClass) {
-      RbHighbar.create('请填写状态类')
+      RbHighbar.create('PlsInputSome,StateClass')
       return
     }
 
@@ -45,7 +46,7 @@ $(document).ready(function () {
       $btn.button('reset')
       if (res.error_code === 0) {
         if ($val('#saveAndNew')) {
-          RbHighbar.success('字段已添加')
+          RbHighbar.success($lang('SomeAdded,Field'))
           $('#fieldLabel, #comments').val('')
           $('#type').val('TEXT').trigger('change')
           $('#fieldLabel').focus()
@@ -74,9 +75,9 @@ $(document).ready(function () {
         referenceLoaded = true
         $.get('/admin/entity/entity-list?noslave=false', (res) => {
           $(res.data).each(function () {
-            $(`<option value="${this.entityName}">${this.entityLabel}${this.masterEntity ? ' (明细)' : ''}</option>`).appendTo('#refEntity')
+            $(`<option value="${this.entityName}">${this.entityLabel}${this.masterEntity ? ' (' + $lang('SlaveEntity') + ')' : ''}</option>`).appendTo('#refEntity')
           })
-          if (res.data.length === 0) $('<option value="">无可用实体</option>').appendTo('#refEntity')
+          if (res.data.length === 0) $(`<option value="">${$lang('NoAnySome,Entity')}</option>`).appendTo('#refEntity')
         })
       }
     } else if (dt === 'CLASSIFICATION') {
@@ -90,7 +91,7 @@ $(document).ready(function () {
               hasData = true
             }
           })
-          if (!hasData) $('<option value="">无可用分类数据</option>').appendTo('#refClassification')
+          if (!hasData) $(`<option value="">${$lang('NoAnySome,ClassData')}</option>`).appendTo('#refClassification')
         })
       }
     } else if (dt === 'STATE') {

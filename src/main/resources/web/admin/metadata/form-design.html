@@ -3,7 +3,7 @@
   <head>
     <th:block th:replace="~{/_include/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/form-design.css}" />
-    <title>表单布局</title>
+    <title>[[${bundle.lang('FormLayout')}]]</title>
   </head>
   <body class="open-right-sidebar">
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-aside rb-color-header">
@@ -22,10 +22,10 @@
               </div>
               <div class="aside-nav collapse">
                 <ul class="nav">
-                  <li><a href="base">基本信息</a></li>
-                  <li><a href="fields">管理字段</a></li>
-                  <li class="active"><a href="form-design">表单布局</a></li>
-                  <li><a href="advanced">高级配置</a></li>
+                  <li><a href="base">[[${bundle.lang('BasicInfo')}]]</a></li>
+                  <li><a href="fields">[[${bundle.lang('SomeManage,Field')}]]</a></li>
+                  <li class="active"><a href="form-design">[[${bundle.lang('FormLayout')}]]</a></li>
+                  <li><a href="advanced">[[${bundle.lang('AdvConf')}]]</a></li>
                 </ul>
               </div>
             </div>
@@ -34,42 +34,42 @@
         <div class="rb-right-sidebar field-aside">
           <div class="rb-content">
             <div class="field-head">
-              <h4 class="float-left">字段列表</h4>
+              <h4 class="float-left">[[${bundle.lang('SomeList,Field')}]]</h4>
               <div class="float-right">
-                <a class="btn btn-link btn-sm p-0 J_new-field" style="margin-top: 10px">+ 添加新字段</a>
+                <a class="btn btn-link btn-sm p-0 J_new-field" style="margin-top: 10px">+ [[${bundle.lang('AddSome,Field')}]]</a>
               </div>
             </div>
             <div class="rb-scroller">
               <div class="field-list dd-list">
-                <div class="nodata">全部字段已布局</div>
+                <div class="nodata">[[${bundle.lang('AllFieldsLayouted')}]]</div>
               </div>
             </div>
             <div class="field-legend">
-              <span class="not-nullable">必填</span>
-              <span class="readonly">只读</span>
+              <span class="not-nullable">[[${bundle.lang('Required')}]]</span>
+              <span class="readonly">[[${bundle.lang('Readonly')}]]</span>
             </div>
           </div>
         </div>
         <div class="main-content container-fluid">
           <div style="min-width: 400px">
             <div class="float-right" style="margin-top: -1px">
-              <a class="btn btn-link J_add-divider">+ 添加分栏</a>
-              <button class="btn btn-primary J_save" type="button">保存配置</button>
+              <a class="btn btn-link J_add-divider">+ [[${bundle.lang('AddSome,Divider')}]]</a>
+              <button class="btn btn-primary J_save" type="button">[[${bundle.lang('Save')}]]</button>
             </div>
             <div class="tab-container">
               <ul class="nav nav-tabs nav-tabs-classic">
-                <li class="nav-item"><a class="nav-link active" href="#form-design">表单/视图布局</a></li>
+                <li class="nav-item"><a class="nav-link active" href="#form-design">[[${bundle.lang('FormAndViewLayout')}]]</a></li>
               </ul>
               <div class="tab-content mb-5">
                 <div class="tab-pane active">
                   <div class="form-preview view-preview dd-list">
-                    <div class="nodata">点击右侧字段添加到布局</div>
+                    <div class="nodata">[[${bundle.lang('ClickFieldLayoutTips')}]]</div>
                   </div>
                   <div class="clearfix"></div>
                 </div>
               </div>
             </div>
-            <p class="protips">新建/编辑页暂不支持双列布局</p>
+            <p class="protips">[[${bundle.lang('FormAndViewLayoutTips1')}]]</p>
           </div>
         </div>
       </div>
