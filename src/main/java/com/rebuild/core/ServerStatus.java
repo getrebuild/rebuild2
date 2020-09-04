@@ -97,9 +97,7 @@ public final class ServerStatus {
      */
     protected static Status checkDatabase() {
         String name = "Database";
-        if (Installer.isUseH2()) {
-            return Status.success(name);
-        }
+        if (Installer.isUseH2()) return Status.success(name + "/H2");
 
         try {
             Connection c = DriverManager.getConnection(
@@ -146,7 +144,8 @@ public final class ServerStatus {
      */
     protected static Status checkCacheService() {
         CommonsCache cache = Application.getCommonsCache();
-        String name = "Cache/" + (Installer.isUseRedis() ? "REDIS" : "EHCACHE");
+        String name = "Cache";
+        if (!Installer.isUseRedis()) name += "/EHCACHE";
 
         try {
             cache.putx("ServerStatus.test", 1, 60);

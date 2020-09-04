@@ -8,6 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core;
 
 import cn.devezhao.bizz.security.AccessDeniedException;
+import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.commons.excel.Cell;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Query;
@@ -46,7 +47,9 @@ import org.apache.commons.lang.SystemUtils;
 import org.h2.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jdbc.JdbcRepositoriesAutoConfiguration;
@@ -77,7 +80,7 @@ public class Application {
     /**
      * Rebuild Version
      */
-    public static final String VER = "2.0.0-dev";
+    public static final String VER = "2.0.0-SNAPSHOT";
     /**
      * Rebuild Build
      */
@@ -109,6 +112,10 @@ public class Application {
 
     private static boolean serversReady;
 
+    private static Date startupTime;
+
+    private static WebApplicationType startupType;
+
     public static void main(String[] args) {
         if (APPLICATION_CONTEXT != null) throw new IllegalStateException("Rebuild already started");
 
@@ -116,7 +123,11 @@ public class Application {
 
         LOG.info("Initializing SpringBoot context ...");
         SpringApplication spring = new SpringApplication(Application.class);
-//        spring.setWebApplicationType(WebApplicationType.NONE);
+        spring.setBannerMode(Banner.Mode.OFF);
+        if (startupType != null) {
+            spring.setWebApplicationType(WebApplicationType.NONE);
+        }
+
         APPLICATION_CONTEXT = spring.run(args);
 
         String localUrl = String.format("http://localhost:%s%s",
@@ -150,6 +161,8 @@ public class Application {
                     LOG.error(null, ex);
                 }
             }
+
+            startupTime = CalendarUtils.now();
         }
     }
 
@@ -215,12 +228,23 @@ public class Application {
                 "\n\n###################################################################\n";
     }
 
+    public static void debug(WebApplicationType type, String ... args) {
+        if (type != null) startupType = type;
+        System.setProperty("rbdev", "true");
+
+        Application.main(args);
+    }
+
     public static boolean devMode() {
         return BooleanUtils.toBoolean(System.getProperty("rbdev"));
     }
 
     public static boolean serversReady() {
         return serversReady && APPLICATION_CONTEXT != null;
+    }
+
+    public static Date getStartupTime() {
+        return startupTime;
     }
 
     public static ConfigurableApplicationContext getApplicationContext() {

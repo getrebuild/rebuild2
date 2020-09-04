@@ -51,13 +51,13 @@
             </td>
           </tr>
           <tr>
-            <th>MemoryUsage</td>
+            <th>Memory Usage</td>
             <td>
               [[${MemoryUsage[1]}]]% ([[${MemoryUsage[0]}]]MB)
             </td>
           </tr>
           <tr>
-            <th>SystemLoad</td>
+            <th>System Load</td>
             <td>
               [[${SystemLoad}]]
             </td>
@@ -80,6 +80,14 @@
         <tr>
           <th>JVM</th>
           <td>[[${T(org.apache.commons.lang.SystemUtils).JAVA_VM_NAME}]] ([[${T(org.apache.commons.lang.SystemUtils).JAVA_VERSION}]])</td>
+        </tr>
+        <tr>
+          <th>System Time</th>
+          <td>[[${T(cn.devezhao.commons.CalendarUtils).now()}]]</td>
+        </tr>
+        <tr>
+          <th>Startup Time</th>
+          <td>[[${T(com.rebuild.core.Application).getStartupTime()}]]</td>
         </tr>
       </tbody>
       </table>

@@ -6,13 +6,12 @@ import cn.devezhao.persist4j.dialect.FieldType;
 import com.rebuild.core.TestSupport;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-class LanguageTest extends TestSupport {
+public class LanguageTest extends TestSupport {
 
     @Test
-    void genLangOfMetadata() {
-        setUp();
+    public void testLangOfMetadata() {
         for (Entity entity : MetadataHelper.getMetadataFactory().getEntities()) {
             if (!entity.isQueryable()) continue;
             if (EasyMeta.valueOf(entity).getMetaId() != null) continue;

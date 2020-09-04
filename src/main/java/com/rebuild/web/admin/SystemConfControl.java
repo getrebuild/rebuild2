@@ -20,6 +20,7 @@ import com.rebuild.core.support.*;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
+import com.rebuild.web.RebuildWebConfigurer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -46,11 +47,11 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/admin/")
-public class SystemSettingsControl extends BaseController {
+public class SystemConfControl extends BaseController {
 
     @GetMapping("systems")
     public ModelAndView pageSystems() {
-        ModelAndView mv = createModelAndView("/admin/system-settings");
+        ModelAndView mv = createModelAndView("/admin/system-conf");
         for (ConfigurationItem item : ConfigurationItem.values()) {
             mv.getModel().put(item.name(), RebuildConfiguration.get(item));
         }
@@ -87,6 +88,7 @@ public class SystemSettingsControl extends BaseController {
         }
 
         setValues(data);
+        Application.getBean(RebuildWebConfigurer.class).init();
 
         writeSuccess(response);
     }

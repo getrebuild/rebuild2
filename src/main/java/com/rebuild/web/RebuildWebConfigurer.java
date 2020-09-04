@@ -67,6 +67,7 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
         thymeleafViewResolver.addStaticVariable("appName", RebuildConfiguration.get(ConfigurationItem.AppName));
         thymeleafViewResolver.addStaticVariable("storageUrl", RebuildConfiguration.get(ConfigurationItem.StorageURL));
         thymeleafViewResolver.addStaticVariable("fileSharable", RebuildConfiguration.get(ConfigurationItem.FileSharable));
+        thymeleafViewResolver.addStaticVariable("markWatermark", RebuildConfiguration.get(ConfigurationItem.MarkWatermark));
     }
 
     /**
