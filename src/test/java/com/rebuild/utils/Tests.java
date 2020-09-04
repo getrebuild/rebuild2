@@ -1,4 +1,4 @@
-package com.rebuild.core;
+package com.rebuild.utils;
 
 import org.junit.Test;
 

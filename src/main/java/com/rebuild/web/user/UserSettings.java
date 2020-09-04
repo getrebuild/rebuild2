@@ -104,15 +104,12 @@ public class UserSettings extends EntityController {
     public void loginLogs(HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
         Object[][] logs = Application.createQueryNoFilter(
-                "select loginTime,userAgent,ipAddr,logoutTime from LoginLog where user = ? order by loginTime desc")
+                "select loginTime,ipAddr,userAgent from LoginLog where user = ? order by loginTime desc")
                 .setParameter(1, user)
                 .setLimit(100)
                 .array();
         for (Object[] o : logs) {
             o[0] = CalendarUtils.getUTCDateTimeFormat().format(o[0]);
-            if (o[3] != null) {
-                o[3] = CalendarUtils.getUTCDateTimeFormat().format(o[3]);
-            }
         }
         writeSuccess(response, logs);
     }

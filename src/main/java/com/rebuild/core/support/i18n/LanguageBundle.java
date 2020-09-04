@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.utils.JSONable;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -130,7 +131,7 @@ public class LanguageBundle implements JSONable {
         if (phKeys.length > 0) {
             Object[] phLangs = new Object[phKeys.length];
             for (int i = 0; i < phKeys.length; i++) {
-                phLangs[i] = getLangBase(phKeys[i]);
+                phLangs[i] = StringUtils.defaultIfBlank(getLangBase(phKeys[i]), StringUtils.EMPTY);
             }
             return MessageFormat.format(lang, phLangs);
         } else {
@@ -138,7 +139,13 @@ public class LanguageBundle implements JSONable {
         }
     }
 
-    private String getLangBase(String key) {
+    /**
+     * 直接获取不做任何加工处理
+     *
+     * @param key
+     * @return
+     */
+    public String getLangBase(String key) {
         return bundle.getString(key);
     }
 

@@ -51,15 +51,15 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
 
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
-        if (thymeleafViewResolver != null) {
-            this.init();
-        }
         WebMvcConfigurer.super.configureViewResolvers(registry);
     }
 
     @Override
     public void init() {
-        Assert.notNull(thymeleafViewResolver, "[thymeleafViewResolverHold] not be bull");
+        if (thymeleafViewResolver == null) {
+            LOG.warn("[thymeleafViewResolver] is null");
+            return;
+        }
 
         // ServletContext 共享变量
         thymeleafViewResolver.addStaticVariable("env", Application.devMode() ? "dev" : "prodution");

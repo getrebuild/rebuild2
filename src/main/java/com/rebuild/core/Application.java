@@ -17,13 +17,6 @@ import cn.devezhao.persist4j.query.QueryedRecord;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.ToStringSerializer;
 import com.rebuild.core.cache.CommonsCache;
-import com.rebuild.core.support.ConfigurationItem;
-import com.rebuild.core.support.License;
-import com.rebuild.core.support.RebuildConfiguration;
-import com.rebuild.core.support.i18n.Language;
-import com.rebuild.core.support.i18n.LanguageBundle;
-import com.rebuild.core.support.setup.Installer;
-import com.rebuild.core.support.setup.UpgradeDatabase;
 import com.rebuild.core.metadata.DynamicMetadataFactory;
 import com.rebuild.core.privileges.PrivilegesManager;
 import com.rebuild.core.privileges.RecordOwningCache;
@@ -35,6 +28,13 @@ import com.rebuild.core.service.general.EntityService;
 import com.rebuild.core.service.general.GeneralEntityService;
 import com.rebuild.core.service.notification.NotificationService;
 import com.rebuild.core.service.query.QueryFactory;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.License;
+import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.i18n.Language;
+import com.rebuild.core.support.i18n.LanguageBundle;
+import com.rebuild.core.support.setup.Installer;
+import com.rebuild.core.support.setup.UpgradeDatabase;
 import com.rebuild.utils.JSONable;
 import com.rebuild.utils.codec.RbDateCodec;
 import com.rebuild.utils.codec.RbRecordCodec;
@@ -46,7 +46,6 @@ import org.apache.commons.lang.SystemUtils;
 import org.h2.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
@@ -117,7 +116,7 @@ public class Application {
 
         LOG.info("Initializing SpringBoot context ...");
         SpringApplication spring = new SpringApplication(Application.class);
-        spring.setBannerMode(Banner.Mode.OFF);
+//        spring.setWebApplicationType(WebApplicationType.NONE);
         APPLICATION_CONTEXT = spring.run(args);
 
         String localUrl = String.format("http://localhost:%s%s",

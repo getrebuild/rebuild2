@@ -62,7 +62,6 @@ $(document).ready(function () {
         $(`<td>${this[0]}</td>`).appendTo($tr)
         $(`<td>${this[1]}</td>`).appendTo($tr)
         $(`<td>${this[2]}</td>`).appendTo($tr)
-        $(`<td>${this[3] || '--'}</td>`).appendTo($tr)
       })
 
       $('#logs tbody>tr').each(function () {
