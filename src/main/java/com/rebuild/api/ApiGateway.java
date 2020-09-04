@@ -7,10 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.api;
 
-import cn.devezhao.commons.CalendarUtils;
-import cn.devezhao.commons.EncryptUtils;
-import cn.devezhao.commons.ObjectUtils;
-import cn.devezhao.commons.ThreadPool;
+import cn.devezhao.commons.*;
 import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
@@ -77,12 +74,14 @@ public class ApiGateway extends Controller implements Initialization {
 
         final Date reuqestTime = CalendarUtils.now();
         final String remoteIp = ServletUtils.getRemoteAddr(request);
+        final String requestId = UUID.randomUUID().toString();
 
         response.setHeader("X-Powered", "RB/API-" + Application.VER);
+        response.setHeader("X-Request-Id", requestId);
 
         if (RRL.overLimitWhenIncremented("ip:" + remoteIp)) {
             JSON error = formatFailure("Request frequency exceeded", ApiInvokeException.ERR_FREQUENCY);
-            LOG.error(error.toJSONString());
+            LOG.error("{} : {}", requestId, error.toJSONString());
             return error;
         }
 
@@ -98,7 +97,7 @@ public class ApiGateway extends Controller implements Initialization {
             }
 
             JSON result = api.execute(context);
-            logRequestAsync(reuqestTime, remoteIp, apiName, context, result);
+            logRequestAsync(reuqestTime, remoteIp, requestId, apiName, context, result);
 
             return result;
 
@@ -117,13 +116,12 @@ public class ApiGateway extends Controller implements Initialization {
 
         JSON error = formatFailure(StringUtils.defaultIfBlank(errorMsg, "Server Internal Error"), errorCode);
         try {
-            logRequestAsync(reuqestTime, remoteIp, apiName, context, error);
+            logRequestAsync(reuqestTime, remoteIp, requestId, apiName, context, error);
         } catch (Exception ignored) {
         }
 
-        LOG.error(error.toJSONString());
+        LOG.error("{} : {}", requestId, error.toJSONString());
         return error;
-
     }
 
     /**
@@ -232,36 +230,34 @@ public class ApiGateway extends Controller implements Initialization {
      *
      * @param requestTime
      * @param remoteIp
+     * @param requestId
      * @param apiName
      * @param context
      * @param result
      */
-    protected void logRequestAsync(Date requestTime, String remoteIp, String apiName, ApiContext context, JSON result) {
-        if (context == null || result == null || !isLogRequest()) {
-            return;
-        }
-
+    protected void logRequestAsync(Date requestTime, String remoteIp, String requestId, String apiName, ApiContext context, JSON result) {
         ThreadPool.exec(() -> {
             Record record = EntityHelper.forNew(EntityHelper.RebuildApiRequest, UserService.SYSTEM_USER);
-            record.setString("appId", context.getAppId());
+            record.setString("requestUrl", apiName);
             record.setString("remoteIp", remoteIp);
-            record.setString("requestUrl", CommonsUtils.maxstr(apiName + "?" + context.getParameterMap(), 300));
-            if (context.getPostData() != null) {
-                record.setString("requestBody", CommonsUtils.maxstr(context.getPostData().toJSONString(), 10000));
-            }
-            record.setString("responseBody", CommonsUtils.maxstr(result.toJSONString(), 10000));
+            record.setString("responseBody", requestId + ":" + (result == null ? "{}" : CommonsUtils.maxstr(result.toJSONString(), 10000)));
             record.setDate("requestTime", requestTime);
             record.setDate("responseTime", CalendarUtils.now());
+
+            if (context != null) {
+                record.setString("appId", context.getAppId());
+                if (context.getPostData() != null) {
+                    record.setString("requestBody",
+                            CommonsUtils.maxstr(context.getPostData().toJSONString(), 10000));
+                }
+                if (!context.getParameterMap().isEmpty()) {
+                    record.setString("requestUrl",
+                            CommonsUtils.maxstr(apiName + "?" + context.getParameterMap(), 300));
+                }
+            } else {
+                record.setString("appId", "0");
+            }
             Application.getCommonsService().create(record, false);
         });
-    }
-
-    /**
-     * 是否记录日志
-     *
-     * @return
-     */
-    protected boolean isLogRequest() {
-        return true;
     }
 }
