@@ -15,7 +15,6 @@ import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.rebuild.core.Application;
 import com.rebuild.core.Initialization;
 import com.rebuild.core.RebuildException;
@@ -46,7 +45,6 @@ import java.util.*;
  * @since 05/19/2018
  */
 @RestController
-@CrossOrigin
 public class ApiGateway extends Controller implements Initialization {
 
     private static final RequestRateLimiter RRL = RateLimiters.createRateLimiter(1, 200);
@@ -70,8 +68,9 @@ public class ApiGateway extends Controller implements Initialization {
         LOG.info("Added {} API(s)", API_CLASSES.size());
     }
 
+    @CrossOrigin
     @RequestMapping("/gw/api/**")
-    public void api(HttpServletRequest request, HttpServletResponse response) {
+    public JSON api(HttpServletRequest request, HttpServletResponse response) {
         String path = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
         String bestMatchingPattern = request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString();
         final String apiName = new AntPathMatcher().extractPathWithinPattern(bestMatchingPattern, path);
@@ -82,10 +81,9 @@ public class ApiGateway extends Controller implements Initialization {
         response.setHeader("X-Powered", "RB/API-" + Application.VER);
 
         if (RRL.overLimitWhenIncremented("ip:" + remoteIp)) {
-            JSON err = formatFailure("Request frequency exceeded", ApiInvokeException.ERR_FREQUENCY);
-            LOG.error(err.toJSONString());
-            ServletUtils.writeJson(response, err.toJSONString());
-            return;
+            JSON error = formatFailure("Request frequency exceeded", ApiInvokeException.ERR_FREQUENCY);
+            LOG.error(error.toJSONString());
+            return error;
         }
 
         int errorCode;
@@ -100,11 +98,9 @@ public class ApiGateway extends Controller implements Initialization {
             }
 
             JSON result = api.execute(context);
-            ServletUtils.writeJson(response, JSON.toJSONString(result,
-                    SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.WriteMapNullValue));
             logRequestAsync(reuqestTime, remoteIp, apiName, context, result);
 
-            return;
+            return result;
 
         } catch (ApiInvokeException ex) {
             errorCode = ex.getErrorCode();
@@ -120,12 +116,14 @@ public class ApiGateway extends Controller implements Initialization {
         }
 
         JSON error = formatFailure(StringUtils.defaultIfBlank(errorMsg, "Server Internal Error"), errorCode);
-        LOG.error(error.toJSONString());
-        ServletUtils.writeJson(response, error.toJSONString());
         try {
             logRequestAsync(reuqestTime, remoteIp, apiName, context, error);
         } catch (Exception ignored) {
         }
+
+        LOG.error(error.toJSONString());
+        return error;
+
     }
 
     /**

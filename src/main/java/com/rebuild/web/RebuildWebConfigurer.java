@@ -61,8 +61,8 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
     public void init() {
         Assert.notNull(thymeleafViewResolver, "[thymeleafViewResolverHold] not be bull");
 
+        // ServletContext 共享变量
         thymeleafViewResolver.addStaticVariable("env", Application.devMode() ? "dev" : "prodution");
-//        thymeleafViewResolver.addStaticVariable("locale", RebuildConfiguration.get(ConfigurationItem.DefaultLanguage));
         thymeleafViewResolver.addStaticVariable("baseUrl", AppUtils.getContextPath());
         thymeleafViewResolver.addStaticVariable("appName", RebuildConfiguration.get(ConfigurationItem.AppName));
         thymeleafViewResolver.addStaticVariable("storageUrl", RebuildConfiguration.get(ConfigurationItem.StorageURL));

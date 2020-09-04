@@ -7,22 +7,24 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.web.commons;
 
-import com.rebuild.core.RebuildEnvironmentPostProcessor;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 外部 URL 监测跳转
@@ -50,7 +52,7 @@ public class UrlSafe extends BaseController {
         return mv;
     }
 
-    private static final Set<String> TRUSTED_URLS = new HashSet<>();
+    private static JSONArray TRUSTED_URLS;
 
     /**
      * 是否可信 URL
@@ -65,11 +67,16 @@ public class UrlSafe extends BaseController {
         }
 
         // 首次
-        if (TRUSTED_URLS.isEmpty()) {
-            TRUSTED_URLS.add("getrebuild.com");
+        if (TRUSTED_URLS == null) {
+            try {
+                File file = ResourceUtils.getFile("classpath:trusted-urls.json");
+                String s = FileUtils.readFileToString(file, "UTF-8");
+                TRUSTED_URLS = JSON.parseArray(s);
+            } catch (IOException ignored) {
+                TRUSTED_URLS = JSONUtils.EMPTY_ARRAY;
+            }
 
-            String trustedUrls = RebuildEnvironmentPostProcessor.getProperty("rebuild.TrustedUrls", "");
-            TRUSTED_URLS.addAll(Arrays.asList(trustedUrls.split(" ")));
+            TRUSTED_URLS.add("getrebuild.com");
         }
 
         String host = url;
@@ -78,10 +85,8 @@ public class UrlSafe extends BaseController {
         } catch (MalformedURLException ignored) {
         }
 
-        for (String t : TRUSTED_URLS) {
-            if (host.equals(t) || host.contains(t)) {
-                return true;
-            }
+        for (Object t : TRUSTED_URLS) {
+            if (host.equals(t) || host.contains((String) t)) return true;
         }
         return false;
     }

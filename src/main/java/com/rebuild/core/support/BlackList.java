@@ -33,37 +33,36 @@ public class BlackList {
     private static JSONArray BLACKLIST = null;
 
     /**
+     * 是否黑名单关键词
+     *
      * @param text
      * @return
      */
-    public static boolean isBlack(String text) {
-        loadBlackListIfNeed();
-        return BLACKLIST.contains(text.toLowerCase());
-    }
+    public static boolean isBlacked(String text) {
+        if (BLACKLIST == null) {
+            try {
+                File file = ResourceUtils.getFile("classpath:blacklist.json");
+                String s = FileUtils.readFileToString(file, "UTF-8");
+                BLACKLIST = JSON.parseArray(s);
 
-    /**
-     * @param text
-     * @return
-     */
-    public static boolean isSQLKeyword(String text) {
-        return ArrayUtils.contains(SQL_KWS, text.toUpperCase());
-    }
-
-    /**
-     * 加载黑名单列表
-     */
-    synchronized
-    private static void loadBlackListIfNeed() {
-        if (BLACKLIST != null) return;
-
-        try {
-            File file = ResourceUtils.getFile("classpath:blacklist.json");
-            String s = FileUtils.readFileToString(file, "UTF-8");
-            BLACKLIST = JSON.parseArray(s);
-        } catch (IOException e) {
-            LOG.error("Couldn't load [blacklist.json] file! This feature is missed : " + e);
-            BLACKLIST = JSONUtils.EMPTY_ARRAY;
+            } catch (IOException e) {
+                LOG.error("Couldn't load [blacklist.json] file! This feature is missed : " + e);
+                BLACKLIST = JSONUtils.EMPTY_ARRAY;
+            }
         }
+
+        return BLACKLIST.contains(text.toLowerCase())
+                || isSqlKeyword(text);
+    }
+
+    /**
+     * 是否 SQL 关键词
+     *
+     * @param text
+     * @return
+     */
+    public static boolean isSqlKeyword(String text) {
+        return ArrayUtils.contains(SQL_KWS, text.toUpperCase());
     }
 
     // SQL 关键字

@@ -24,10 +24,6 @@ rebuild:
   CacheHost: 127.0.0.1
   CachePort: 16379
   CachePassword: AES(vXwBKYUosMpJRO9jeG9+IA==)
-  # @see UrlSafe.java
-  TrustedUrls:
-    .baidu.com
-    qq.com
 
 # TOMCAT (Built-in)
 server:
@@ -37,6 +33,8 @@ server:
     encoding:
       charset: UTF-8
       force: true
+    session:
+      tracking-modes: cookie
   error:
     whitelabel.enabled: true
   tomcat:

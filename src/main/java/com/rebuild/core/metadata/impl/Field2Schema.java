@@ -317,8 +317,7 @@ public class Field2Schema {
 
         // 全英文直接返回
         if (identifier.matches("[a-zA-Z0-9]+")) {
-            if (!CharSet.ASCII_ALPHA.contains(identifier.charAt(0))
-                    || BlackList.isBlack(identifier) || BlackList.isSQLKeyword(identifier)) {
+            if (!CharSet.ASCII_ALPHA.contains(identifier.charAt(0)) || BlackList.isBlacked(identifier)) {
                 identifier = "rb" + identifier;
             }
             return identifier;

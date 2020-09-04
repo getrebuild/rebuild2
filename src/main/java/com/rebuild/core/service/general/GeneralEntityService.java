@@ -71,9 +71,12 @@ public class GeneralEntityService extends ObservableService implements EntitySer
 
         addObserver(new NotificationObserver());
         addObserver(new RobotTriggerObserver());
-//        addObserver(new RedisQueueObserver());
 
-        LOG.info("Add {} observers", countObservers());
+        // Redis 可用才有效
+        if (RebuildConfiguration.getBool(ConfigurationItem.RedisQueueEnable)) {
+            addObserver(new RedisQueueObserver());
+        }
+        LOG.info("Added {} observers", countObservers());
     }
 
     @Override

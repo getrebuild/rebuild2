@@ -140,7 +140,7 @@ public class UserService extends BaseServiceImpl {
             throw new DataSpecificationException(Language.getLang("SomeDuplicate", "Username"));
         }
 
-        if (!CommonsUtils.isPlainText(loginName) || BlackList.isBlack(loginName)) {
+        if (!CommonsUtils.isPlainText(loginName) || BlackList.isBlacked(loginName)) {
             throw new DataSpecificationException(Language.getLang("SomeInvalid", "Username"));
         }
     }

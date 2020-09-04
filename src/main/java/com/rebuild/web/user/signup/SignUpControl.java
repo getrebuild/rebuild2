@@ -123,7 +123,7 @@ public class SignUpControl extends BaseController {
         if (loginName.length() > 20) {
             loginName = loginName.substring(0, 20);
         }
-        if (BlackList.isBlack(loginName)) {
+        if (BlackList.isBlacked(loginName)) {
             writeSuccess(response);
             return;
         }
