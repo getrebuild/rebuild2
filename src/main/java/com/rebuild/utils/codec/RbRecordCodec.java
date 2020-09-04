@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
 import com.alibaba.fastjson.serializer.SerializeWriter;
-import com.rebuild.core.helper.general.FieldValueWrapper;
+import com.rebuild.core.support.general.FieldValueWrapper;
 
 import java.io.IOException;
 import java.lang.reflect.Type;

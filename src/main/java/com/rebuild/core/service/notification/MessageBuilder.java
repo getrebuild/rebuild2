@@ -9,7 +9,7 @@ package com.rebuild.core.service.notification;
 
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.general.FieldValueWrapper;
+import com.rebuild.core.support.general.FieldValueWrapper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.MarkdownUtils;

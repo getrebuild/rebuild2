@@ -10,7 +10,7 @@ package com.rebuild.core.privileges;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.task.HeavyTask;
+import com.rebuild.core.support.task.HeavyTask;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 

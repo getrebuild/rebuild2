@@ -7,10 +7,10 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.service;
 
-import com.rebuild.core.helper.ConfigurationItem;
-import com.rebuild.core.helper.DistributedJobBean;
-import com.rebuild.core.helper.RebuildConfiguration;
-import com.rebuild.core.helper.setup.DatabaseBackup;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.DistributedJobBean;
+import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.setup.DatabaseBackup;
 import com.rebuild.utils.FileFilterByLastModified;
 import org.springframework.scheduling.annotation.Scheduled;
 

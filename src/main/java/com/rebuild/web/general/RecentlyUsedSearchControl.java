@@ -10,7 +10,7 @@ package com.rebuild.web.general;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.helper.general.FieldValueWrapper;
+import com.rebuild.core.support.general.FieldValueWrapper;
 import com.rebuild.core.service.general.RecentlyUsedHelper;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;

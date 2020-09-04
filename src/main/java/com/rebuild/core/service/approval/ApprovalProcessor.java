@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.configuration.ConfigurationException;
-import com.rebuild.core.helper.SetUser;
+import com.rebuild.core.support.SetUser;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserHelper;

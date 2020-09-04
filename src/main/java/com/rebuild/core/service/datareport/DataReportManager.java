@@ -14,7 +14,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.configuration.ConfigurationException;
-import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.metadata.MetadataHelper;
 
 import java.io.File;

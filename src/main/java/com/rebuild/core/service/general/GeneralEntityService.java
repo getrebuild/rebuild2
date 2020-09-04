@@ -13,9 +13,9 @@ import cn.devezhao.persist4j.*;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
-import com.rebuild.core.helper.ConfigurationItem;
-import com.rebuild.core.helper.RebuildConfiguration;
-import com.rebuild.core.helper.task.TaskExecutors;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.task.TaskExecutors;
 import com.rebuild.core.metadata.DefaultValueHelper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -36,8 +36,6 @@ import com.rebuild.core.service.general.series.SeriesGeneratorFactory;
 import com.rebuild.core.service.notification.NotificationObserver;
 import com.rebuild.core.service.trigger.RobotTriggerObserver;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -54,8 +52,6 @@ import java.util.*;
  */
 @Service
 public class GeneralEntityService extends ObservableService implements EntityService {
-
-    private static final Logger LOG = LoggerFactory.getLogger(GeneralEntityService.class);
 
     /**
      * @param aPMFactory
@@ -76,6 +72,8 @@ public class GeneralEntityService extends ObservableService implements EntitySer
         addObserver(new NotificationObserver());
         addObserver(new RobotTriggerObserver());
 //        addObserver(new RedisQueueObserver());
+
+        LOG.info("Add {} observers", countObservers());
     }
 
     @Override

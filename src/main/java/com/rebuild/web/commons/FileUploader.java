@@ -8,15 +8,13 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web.commons;
 
 import cn.devezhao.commons.ObjectUtils;
-import com.rebuild.core.helper.QiniuCloud;
-import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.support.QiniuCloud;
+import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.service.files.FilesHelper;
 import com.rebuild.web.BaseController;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,8 +35,6 @@ import java.io.File;
 @Controller
 @RequestMapping("/filex/")
 public class FileUploader extends BaseController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FileUploader.class);
 
     @PostMapping("upload")
     public void upload(HttpServletRequest request, HttpServletResponse response) {

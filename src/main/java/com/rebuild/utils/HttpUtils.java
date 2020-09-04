@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.utils;
 
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.support.RebuildConfiguration;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

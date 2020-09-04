@@ -11,7 +11,7 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.metadata.MetadataHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

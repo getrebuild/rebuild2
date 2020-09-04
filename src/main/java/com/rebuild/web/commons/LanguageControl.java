@@ -10,8 +10,9 @@ package com.rebuild.web.commons;
 import cn.devezhao.commons.CodecUtils;
 import cn.devezhao.commons.web.ServletUtils;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.i18n.Language;
-import com.rebuild.core.helper.i18n.LanguageBundle;
+import com.rebuild.core.RebuildException;
+import com.rebuild.core.support.i18n.Language;
+import com.rebuild.core.support.i18n.LanguageBundle;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.web.BaseController;
 import org.apache.commons.lang.StringUtils;
@@ -88,7 +89,6 @@ public class LanguageControl extends BaseController {
      *
      * @param request
      * @return
-     * @see AppUtils#getReuqestLocale(HttpServletRequest)
      */
     public static boolean switchLanguage(HttpServletRequest request) {
         String locale = request.getParameter("locale");
@@ -101,7 +101,7 @@ public class LanguageControl extends BaseController {
             try {
                 language.init();
             } catch (Exception ex) {
-                LOG.error(null, ex);
+                throw new RebuildException(ex);
             }
         }
 

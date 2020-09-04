@@ -18,7 +18,7 @@ import com.rebuild.core.configuration.general.AdvFilterService;
 import com.rebuild.core.configuration.general.LayoutConfigService;
 import com.rebuild.core.configuration.general.PickListService;
 import com.rebuild.core.configuration.general.ShareToManager;
-import com.rebuild.core.helper.task.HeavyTask;
+import com.rebuild.core.support.task.HeavyTask;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.*;

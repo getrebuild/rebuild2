@@ -7,8 +7,8 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.service.approval;
 
-import com.rebuild.core.helper.state.StateHelper;
-import com.rebuild.core.helper.state.StateSpec;
+import com.rebuild.core.support.state.StateHelper;
+import com.rebuild.core.support.state.StateSpec;
 
 /**
  * 审批状态

@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.record.JsonRecordCreator;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.general.BatchOperatorQuery;
+import com.rebuild.core.support.general.BatchOperatorQuery;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.DataSpecificationException;
 import org.apache.commons.lang.StringUtils;

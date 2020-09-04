@@ -10,8 +10,8 @@ package com.rebuild.api.general;
 import cn.devezhao.persist4j.Query;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.helper.general.DataListWrapper;
-import com.rebuild.core.helper.general.DataListBuilderImpl;
+import com.rebuild.core.support.general.DataListWrapper;
+import com.rebuild.core.support.general.DataListBuilderImpl;
 
 /**
  * @author devezhao

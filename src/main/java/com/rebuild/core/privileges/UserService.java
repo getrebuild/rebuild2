@@ -16,12 +16,12 @@ import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.BlackList;
-import com.rebuild.core.helper.ConfigurationItem;
-import com.rebuild.core.helper.RebuildConfiguration;
-import com.rebuild.core.helper.SMSender;
-import com.rebuild.core.helper.i18n.Language;
-import com.rebuild.core.helper.task.TaskExecutors;
+import com.rebuild.core.support.BlackList;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.SMSender;
+import com.rebuild.core.support.i18n.Language;
+import com.rebuild.core.support.task.TaskExecutors;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.BaseServiceImpl;
 import com.rebuild.core.service.DataSpecificationException;
@@ -29,7 +29,6 @@ import com.rebuild.core.service.notification.Message;
 import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.CommonsUtils;
-import org.apache.commons.codec.language.bm.Lang;
 import org.springframework.stereotype.Service;
 
 /**

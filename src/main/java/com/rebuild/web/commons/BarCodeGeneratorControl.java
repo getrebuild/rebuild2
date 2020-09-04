@@ -10,7 +10,7 @@ package com.rebuild.web.commons;
 import cn.devezhao.commons.web.ServletUtils;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.helper.general.BarCodeGenerator;
+import com.rebuild.core.support.general.BarCodeGenerator;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.web.BaseController;

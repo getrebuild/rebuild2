@@ -18,6 +18,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.rebuild.core.Application;
 import com.rebuild.core.Initialization;
+import com.rebuild.core.RebuildException;
 import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.configuration.RebuildApiManager;
 import com.rebuild.core.metadata.EntityHelper;
@@ -27,12 +28,11 @@ import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.RateLimiters;
 import es.moki.ratelimitj.core.limiter.request.RequestRateLimiter;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cglib.core.ReflectUtils;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,10 +45,9 @@ import java.util.*;
  * @author zhaofang123@gmail.com
  * @since 05/19/2018
  */
-@org.springframework.stereotype.Controller
+@RestController
+@CrossOrigin
 public class ApiGateway extends Controller implements Initialization {
-
-    private static final Logger LOG = LoggerFactory.getLogger(ApiGateway.class);
 
     private static final RequestRateLimiter RRL = RateLimiters.createRateLimiter(1, 200);
 
@@ -60,11 +59,17 @@ public class ApiGateway extends Controller implements Initialization {
         Set<Class<?>> apiClasses = cn.devezhao.commons.ReflectUtils.getAllSubclasses(
                 ApiGateway.class.getPackage().getName(), BaseApi.class);
         for (Class<?> c : apiClasses) {
-            ApiGateway.registerApi((Class<? extends BaseApi>) c);
+            BaseApi api = (BaseApi) ReflectUtils.newInstance(c);
+            String apiName = api.getApiName();
+            if (API_CLASSES.containsKey(apiName)) {
+                throw new RebuildException("Api `" + apiName + "` already exists");
+            }
+            API_CLASSES.put(apiName, (Class<? extends BaseApi>) c);
         }
+
+        LOG.info("Added {} API(s)", API_CLASSES.size());
     }
 
-    @CrossOrigin
     @RequestMapping("/gw/api/**")
     public void api(HttpServletRequest request, HttpServletResponse response) {
         String path = request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
@@ -74,7 +79,7 @@ public class ApiGateway extends Controller implements Initialization {
         final Date reuqestTime = CalendarUtils.now();
         final String remoteIp = ServletUtils.getRemoteAddr(request);
 
-        response.setHeader("X-Powered", "RB/" + Application.VER);
+        response.setHeader("X-Powered", "RB/API-" + Application.VER);
 
         if (RRL.overLimitWhenIncremented("ip:" + remoteIp)) {
             JSON err = formatFailure("Request frequency exceeded", ApiInvokeException.ERR_FREQUENCY);
@@ -260,21 +265,5 @@ public class ApiGateway extends Controller implements Initialization {
      */
     protected boolean isLogRequest() {
         return true;
-    }
-
-    /**
-     * 注册 API
-     *
-     * @param clazz
-     */
-    public static void registerApi(Class<? extends BaseApi> clazz) {
-        BaseApi api = (BaseApi) ReflectUtils.newInstance(clazz);
-        String apiName = api.getApiName();
-        if (API_CLASSES.containsKey(apiName)) {
-            LOG.warn("Replaced API : " + apiName);
-        }
-
-        API_CLASSES.put(apiName, clazz);
-        LOG.info("New API registered : " + apiName + " : " + clazz.getName());
     }
 }

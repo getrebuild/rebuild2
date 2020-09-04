@@ -16,7 +16,7 @@ import cn.devezhao.commons.runtime.MemoryInformationBean;
 import cn.devezhao.persist4j.util.SqlHelper;
 import com.alibaba.fastjson.JSON;
 import com.rebuild.core.cache.CommonsCache;
-import com.rebuild.core.helper.setup.Installer;
+import com.rebuild.core.support.setup.Installer;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;

@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web.commons;
 
 import com.rebuild.core.RebuildEnvironmentPostProcessor;
-import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.web.BaseController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

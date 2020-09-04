@@ -20,9 +20,9 @@ package com.rebuild.web.commons;
 
 import cn.devezhao.commons.CodecUtils;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.ConfigurationItem;
-import com.rebuild.core.helper.QiniuCloud;
-import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.QiniuCloud;
+import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
 import org.springframework.stereotype.Controller;

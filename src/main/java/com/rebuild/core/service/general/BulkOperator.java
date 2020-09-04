@@ -13,7 +13,7 @@ import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.util.support.QueryHelper;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.task.HeavyTask;
+import com.rebuild.core.support.task.HeavyTask;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.query.AdvFilterParser;
 import org.slf4j.Logger;

@@ -9,8 +9,8 @@ package com.rebuild.web;
 
 import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.helper.ConfigurationItem;
-import com.rebuild.core.helper.RebuildConfiguration;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.privileges.CurrentCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,7 +141,7 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
 
     /**
      * @return Returns default if unset
-     * @see com.rebuild.core.helper.i18n.Language
+     * @see com.rebuild.core.support.i18n.Language
      */
     public String getLocale() {
         String locale = LOCALE.get();

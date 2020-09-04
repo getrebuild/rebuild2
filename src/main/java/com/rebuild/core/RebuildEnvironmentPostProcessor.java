@@ -7,8 +7,8 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core;
 
-import com.rebuild.core.helper.ConfigurationItem;
-import com.rebuild.core.helper.setup.InstallState;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.setup.InstallState;
 import com.rebuild.utils.AES;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;

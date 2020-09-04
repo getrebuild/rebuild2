@@ -8,9 +8,9 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web.admin;
 
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.ConfigurationItem;
-import com.rebuild.core.helper.RebuildConfiguration;
-import com.rebuild.core.helper.setup.Installer;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.setup.Installer;
 import org.apache.commons.lang.StringUtils;
 import redis.clients.jedis.Jedis;
 

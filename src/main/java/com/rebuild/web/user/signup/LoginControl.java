@@ -20,7 +20,7 @@ import com.rebuild.api.user.AuthTokenManager;
 import com.rebuild.api.user.LoginToken;
 import com.rebuild.core.Application;
 import com.rebuild.core.cache.CommonsCache;
-import com.rebuild.core.helper.*;
+import com.rebuild.core.support.*;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.privileges.bizz.User;
@@ -202,7 +202,7 @@ public class LoginControl extends BaseController {
      * @param request
      * @param user
      */
-    public static void createLoginLog(HttpServletRequest request, ID user) {
+    protected void createLoginLog(HttpServletRequest request, ID user) {
         String ipAddr = ServletUtils.getRemoteAddr(request);
         String UA = request.getHeader("user-agent");
         if (AppUtils.isRbMobile(request)) {

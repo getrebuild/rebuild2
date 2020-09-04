@@ -9,7 +9,7 @@ package com.rebuild.core.service.general;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
-import com.rebuild.core.helper.setup.Installer;
+import com.rebuild.core.support.setup.Installer;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
