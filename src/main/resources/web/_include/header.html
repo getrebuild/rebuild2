@@ -28,4 +28,6 @@
     window.rb.isAdminUser = '[[${user.isAdmin()}]]' === 'true'
     window.rb.isAdminVerified = '[[${T(com.rebuild.utils.AppUtils).isAdminVerified(#request)}]]' === 'true'
   </script>
+  <!--[if lt IE 10]><script>location.href='[[${baseUrl}]]/error/unsupported-browser'</script><![endif]-->
+  <!--[if lt IE 11]><script>location.href='[[${baseUrl}]]/assets/lib/react/polyfill.min.js?v=7.6.0'</script><![endif]-->
 </th:block>

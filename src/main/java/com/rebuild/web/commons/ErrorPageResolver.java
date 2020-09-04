@@ -28,8 +28,16 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class ErrorPageResolver extends BaseController {
 
+    @GetMapping("/error/unsupported-browser")
+    public ModelAndView pageUnsupportedBrowser(HttpServletRequest request) {
+        ModelAndView mv = createModelAndView("/error/error");
+        mv.getModelMap().put("error_code", 400);
+        mv.getModelMap().put("error_msg", getLang(request, "UnsupportIE10"));
+        return mv;
+    }
+
     @GetMapping("/error/server-status")
-    public ModelAndView pageServersStatus(HttpServletRequest request) {
+    public ModelAndView pageServerStatus(HttpServletRequest request) {
         if ("1".equals(request.getParameter("check"))) {
             ServerStatus.checkAll();
         }
@@ -44,7 +52,7 @@ public class ErrorPageResolver extends BaseController {
     }
 
     @GetMapping("/error/server-status.json")
-    public void apiServersStatus(HttpServletRequest request, HttpServletResponse response) {
+    public void apiServerStatus(HttpServletRequest request, HttpServletResponse response) {
         if ("1".equals(request.getParameter("check"))) {
             ServerStatus.checkAll();
         }
