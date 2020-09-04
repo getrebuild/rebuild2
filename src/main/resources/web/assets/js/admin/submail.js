@@ -76,16 +76,16 @@ class TestSend extends RbAlert {
   }
 
   renderContent() {
-    const typeName = this.props.type === 'email' ? '邮箱' : '手机'
+    const typeName = $lang(this.props.type === 'email' ? 'Email' : 'Sms')
     return (
       <form style={{ maxWidth: 400, margin: '0 auto' }}>
         <div className="form-group">
-          <label>输入接收{typeName}</label>
+          <label>{$lang('InputTestSome') + typeName}</label>
           <input type="text" className="form-control form-control-sm" placeholder={typeName} ref={(c) => (this._input = c)} />
         </div>
         <div className="form-group mb-1">
           <button type="button" className="btn btn-space btn-primary" onClick={() => this.confirm()} ref={(c) => (this._btn = c)}>
-            发送
+            {$lang('Send')}
           </button>
         </div>
       </form>
@@ -93,21 +93,23 @@ class TestSend extends RbAlert {
   }
 
   confirm() {
-    let receiver = $(this._input).val()
+    const receiver = $(this._input).val()
     if (!receiver) return
 
-    let conf = {}
+    const conf = {}
     $('.syscfg table td[data-id]').each(function () {
-      let $this = $(this)
+      const $this = $(this)
       conf[$this.data('id')] = $this.find('input').val()
     })
 
     $(this._btn).button('loading')
     $.post('./submail/test?type=' + this.props.type + '&receiver=' + $encode(receiver), JSON.stringify(conf), (res) => {
       if (res.error_code === 0) {
-        RbHighbar.success('测试发送成功')
+        RbHighbar.success($lang('SomeSuccess,Send'))
         // this.hide()
-      } else RbHighbar.create(res.error_msg || '测试发送失败')
+      } else {
+        RbHighbar.create(res.error_msg || $lang('SomeFailed,Send'))
+      }
       $(this._btn).button('reset')
     })
   }

@@ -70,7 +70,7 @@ public class SystemConfControl extends BaseController {
 
         String dHomeURL = defaultIfBlank(data, ConfigurationItem.HomeURL);
         if (!RegexUtils.isUrl(dHomeURL)) {
-            writeFailure(response, "无效主页地址/域名");
+            writeFailure(response, getLang(request, "SomeInvalid", "HomeUrl"));
             return;
         }
 
@@ -122,7 +122,7 @@ public class SystemConfControl extends BaseController {
             dStorageURL = "https:" + dStorageURL;
         }
         if (!RegexUtils.isUrl(dStorageURL)) {
-            writeFailure(response, "无效访问域名");
+            writeFailure(response, getLang(request, "SomeInvalid", "StorageDomain"));
             return;
         }
 
@@ -136,7 +136,7 @@ public class SystemConfControl extends BaseController {
             writeSuccess(response);
 
         } catch (QiniuException ex) {
-            writeFailure(response, "无效配置参数 : " + ex.response.error);
+            writeFailure(response, getLang(request, "ConfInvalid") + " : " + ex.response.error);
         } catch (Exception ex) {
             writeFailure(response, ThrowableUtils.getRootCause(ex).getLocalizedMessage());
         }
@@ -158,7 +158,7 @@ public class SystemConfControl extends BaseController {
 
         String dMailAddr = defaultIfBlank(data, ConfigurationItem.MailAddr);
         if (!RegexUtils.isEMail(dMailAddr)) {
-            writeFailure(response, "无效发件人地址");
+            writeFailure(response, getLang(request, "SomeInvalid", "EmailServAddr"));
             return;
         }
 
@@ -175,7 +175,7 @@ public class SystemConfControl extends BaseController {
         String sent = null;
         if ("SMS".equalsIgnoreCase(type)) {
             if (!RegexUtils.isCNMobile(receiver)) {
-                writeFailure(response, "无效接收手机");
+                writeFailure(response, getLang(request, "SomeInvalid", "Mobile"));
                 return;
             }
 
@@ -187,10 +187,12 @@ public class SystemConfControl extends BaseController {
                 specAccount[1] = RebuildConfiguration.get(ConfigurationItem.SmsPassword);
             }
 
-            sent = SMSender.sendSMS(receiver, "收到此消息说明你的短信服务配置正确", specAccount);
+            String content = getLang(request, "SendTestMessage", "Sms");
+            sent = SMSender.sendSMS(receiver, content, specAccount);
+
         } else if ("EMAIL".equalsIgnoreCase(type)) {
             if (!RegexUtils.isEMail(receiver)) {
-                writeFailure(response, "无效接收邮箱");
+                writeFailure(response, getLang(request, "SomeInvalid", "Email"));
                 return;
             }
 
@@ -202,13 +204,14 @@ public class SystemConfControl extends BaseController {
                 specAccount[1] = RebuildConfiguration.get(ConfigurationItem.MailPassword);
             }
 
-            sent = SMSender.sendMail(receiver, "测试邮件", "收到此消息说明你的邮件服务配置正确", true, specAccount);
+            String content = getLang(request, "SendTestMessage", "Email");
+            sent = SMSender.sendMail(receiver, content, content, true, specAccount);
         }
 
         if (sent != null) {
             writeSuccess(response, sent);
         } else {
-            writeFailure(response, "测试发送失败，请检查你的配置");
+            writeFailure(response, getLang(request, "SendTestError"));
         }
     }
 
@@ -228,7 +231,6 @@ public class SystemConfControl extends BaseController {
                 "select count(sendId) from SmsendLog where type = ?")
                 .setParameter(1, 1)
                 .unique();
-
 
         Object[][] email = Application.createQueryNoFilter(sql)
                 .setParameter(1, 2)
