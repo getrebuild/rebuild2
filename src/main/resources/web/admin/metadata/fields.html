@@ -135,7 +135,7 @@
           $('<td class="actions"><a class="icon J_edit" href="field/' + item.fieldName + '"><i class="zmdi zmdi-settings"></i></a></td>').appendTo($tr)
         })
 
-        $('.dataTables_info').text($lang('CountRecords').replace('%d', $tbody.find('tr').length))
+        $('.dataTables_info').text($lang('CountItems').replace('%d', $tbody.find('tr').length))
         $('#dataList').parent().removeClass('rb-loading-active')
       }
     </script>

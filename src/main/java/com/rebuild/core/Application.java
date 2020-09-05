@@ -115,7 +115,7 @@ public class Application {
 
     private static Date startupTime;
 
-    private static WebApplicationType startupType;
+    private static boolean debugMode = false;
 
     public static void main(String[] args) {
         if (APPLICATION_CONTEXT != null) throw new IllegalStateException("Rebuild already started");
@@ -125,7 +125,8 @@ public class Application {
         LOG.info("Initializing SpringBoot context ...");
         SpringApplication spring = new SpringApplication(Application.class);
         spring.setBannerMode(Banner.Mode.OFF);
-        if (startupType != null) {
+        // 不启动 WEB
+        if (debugMode) {
             spring.setWebApplicationType(WebApplicationType.NONE);
         }
 
@@ -218,15 +219,13 @@ public class Application {
         return true;
     }
 
-    public static void debug(WebApplicationType type, String ... args) {
-        if (type != null) startupType = type;
-        System.setProperty("rbdev", "true");
-
+    public static void debug(String ... args) {
+        debugMode = true;
         Application.main(args);
     }
 
     public static boolean devMode() {
-        return BooleanUtils.toBoolean(System.getProperty("rbdev"));
+        return debugMode || BooleanUtils.toBoolean(System.getProperty("rbdev"));
     }
 
     public static boolean serversReady() {

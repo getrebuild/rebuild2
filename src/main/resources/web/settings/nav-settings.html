@@ -60,19 +60,19 @@
               <div class="tab-content m-0 p-0 pt-3 pb-3">
                 <div class="tab-pane active" id="ENTITY">
                   <select class="form-control form-control-sm J_menuEntity">
-                    <option value="">[[${bundle.lang('PlsSelectSome,RelatedEntry')}]]</option>
+                    <option value="">[[${bundle.lang('SelectSome,RelatedEntry')}]]</option>
                     <optgroup th:label="${bundle.lang('BizEntity')}"></optgroup>
-                    <optgroup th:label="${bundle.lang('Builtin')}">
+                    <optgroup th:label="${bundle.lang('SysBuiltIn')}">
                       <option value="$FILEMRG$" data-icon="folder">[[${bundle.lang('e.Attachment')}]]</option>
                       <option value="$FEEDS$" data-icon="chart-donut">[[${bundle.lang('e.Feeds')}]]</option>
-                      <option value="$PROJECT$" data-icon="shape">[[${bundle.lang('Project')}]]</option>
+                      <option value="$PROJECT$" data-icon="shape">[[${bundle.lang('e.ProjectConfig')}]]</option>
                       <option value="$PARENT$" data-icon="menu">[[${bundle.lang('ParentMenu')}]]</option>
                     </optgroup>
                   </select>
                 </div>
                 <div class="tab-pane" id="URL">
-                  <input type="text" class="form-control form-control-sm J_menuUrl" th:placeholder="${bundle.lang('Input,URL')}" />
-                  <div class="form-text">[[${bundle.lang('SuprtEntryAndUrl')}]]</div>
+                  <input type="text" class="form-control form-control-sm J_menuUrl" th:placeholder="${bundle.lang('InputSome,OutUrl')}" />
+                  <div class="form-text">[[${bundle.lang('SupportEntryAndUrl')}]]</div>
                 </div>
               </div>
             </div>

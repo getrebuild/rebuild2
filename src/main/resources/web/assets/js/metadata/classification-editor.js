@@ -91,7 +91,8 @@ class LevelBox extends React.Component {
       <div className={`col-md-3 ${this.state.turnOn ? '' : 'off'}`}>
         <div className="float-left">
           <h5 className="text-bold">
-            {~~this.props.level + 1} {$lang('XLevelClass')}
+            {~~this.props.level + 1}
+            {$lang('XLevelClass')}
           </h5>
         </div>
         {this.props.level < 1 ? null : (
@@ -326,7 +327,7 @@ class DlgImports extends RbModalHandler {
 
   render() {
     return (
-      <RbModal title={$lang('ImportSome,ClassData')} ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang('ImportSome,e.Classification')} ref={(c) => (this._dlg = c)}>
         <div className="tab-container">
           <ul className="nav nav-tabs">
             <li className="nav-item">

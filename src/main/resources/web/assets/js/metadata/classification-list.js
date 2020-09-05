@@ -28,7 +28,7 @@ class GridList extends React.Component {
                     {item[1]}
                   </a>
                   <p className="text-muted text-truncate">
-                    {item[3]}
+                    {~~item[3] + 1}
                     {$lang('XLevelClass')}
                   </p>
                 </div>
@@ -69,7 +69,7 @@ class GridList extends React.Component {
         this.disabled(true)
         $.post(`/app/entity/record-delete?id=${dataId}`, (res) => {
           if (res.error_code === 0) {
-            RbHighbar.success($lang('SomeDeleted,ClassData'))
+            RbHighbar.success($lang('SomeDeleted,e.Classification'))
             setTimeout(() => location.reload(), 500)
           } else {
             this.disabled(false)
@@ -89,7 +89,7 @@ class DlgEdit extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={$lang((this.props.id ? 'ModifySome' : 'AddSome') + ',ClassData')} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
+      <RbModal title={$lang((this.props.id ? 'ModifySome' : 'AddSome') + ',e.Classification')} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
             <label className="col-sm-3 col-form-label text-sm-right">{$lang('ClassDataName')}</label>

@@ -53,7 +53,7 @@ class AppList extends React.Component {
     $.get('/admin/apis-manager/app-list', (res) => {
       this.setState({ list: res.data || [] }, () => {
         $('.rb-loading-active').removeClass('rb-loading-active')
-        $('.dataTables_info').text($lang('CountRecords').replace('%d', this.state.list.length))
+        $('.dataTables_info').text($lang('CountItems').replace('%d', this.state.list.length))
         if (this.state.list.length === 0) $('.list-nodata').removeClass('hide')
       })
     })
@@ -89,7 +89,7 @@ class DlgEdit extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={$lang('AddSome,ApiKey')} ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang('AddSome,e.RebuildApi')} ref={(c) => (this._dlg = c)}>
         <div className="form">
           <div className="form-group row">
             <label className="col-sm-3 col-form-label text-sm-right">{$lang('BindApiUser')}</label>

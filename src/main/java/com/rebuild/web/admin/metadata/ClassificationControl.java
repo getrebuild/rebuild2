@@ -43,13 +43,13 @@ public class ClassificationControl extends BaseController {
 
     @RequestMapping("classification/{id}")
     public ModelAndView page(@PathVariable String id,
-                             HttpServletResponse resp) throws IOException {
+                             HttpServletRequest request, HttpServletResponse resp) throws IOException {
         Object[] data = Application.createQuery(
                 "select name,openLevel from Classification where dataId = ?")
                 .setParameter(1, ID.valueOf(id))
                 .unique();
         if (data == null) {
-            resp.sendError(404, "分类数据不存在");
+            resp.sendError(404, getLang(request, "SomeNotExists", "e.Classification"));
             return null;
         }
 
@@ -60,19 +60,11 @@ public class ClassificationControl extends BaseController {
         return mv;
     }
 
-    private static final String[] CN_NUMBER = new String[]{"一", "二", "三", "四"};
-
     @RequestMapping("classification/list")
     public void list(HttpServletResponse resp) {
         Object[][] array = Application.createQuery(
                 "select dataId,name,isDisabled,openLevel from Classification order by name")
                 .array();
-        for (Object[] o : array) {
-            int level = (int) o[3];
-            if (level >= 0 && level <= 3) {
-                o[3] = CN_NUMBER[level];
-            }
-        }
         writeSuccess(resp, array);
     }
 
@@ -83,11 +75,12 @@ public class ClassificationControl extends BaseController {
                 "select name from Classification where dataId = ?")
                 .setParameter(1, dataId)
                 .unique();
+
         if (data == null) {
-            writeFailure(resp, "分类数据不存在");
-            return;
+            writeFailure(resp, getLang(request, "SomeNotExists", "e.Classification"));
+        } else {
+            writeSuccess(resp, JSONUtils.toJSONObject("name", data[0]));
         }
-        writeSuccess(resp, JSONUtils.toJSONObject("name", data[0]));
     }
 
     @RequestMapping("classification/save-data-item")
@@ -110,7 +103,7 @@ public class ClassificationControl extends BaseController {
             }
             item.setInt("level", level);
         } else {
-            writeFailure(response, "无效参数");
+            writeFailure(response, getLang(request, "InvalidArgs"));
             return;
         }
 
@@ -126,6 +119,7 @@ public class ClassificationControl extends BaseController {
         if (StringUtils.isNotBlank(hide)) {
             item.setBoolean("isHide", BooleanUtils.toBooleanObject(hide));
         }
+
         item = Application.getBean(ClassificationService.class).createOrUpdateItem(item);
         writeSuccess(response, item.getPrimary());
     }
@@ -155,7 +149,7 @@ public class ClassificationControl extends BaseController {
                     .setParameter(1, dataId)
                     .array();
         } else {
-            writeFailure(response, "无效参数");
+            writeFailure(response, getLang(request, "InvalidArgs"));
             return;
         }
         writeSuccess(response, child);

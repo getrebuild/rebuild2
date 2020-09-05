@@ -282,7 +282,7 @@ var _loadMessages = function () {
       $('<span class="date">' + $fromNow(item[2]) + '</span>').appendTo(o)
     })
     _loadMessages__state = true
-    if (res.data.length === 0) $('<li class="text-center mt-4 mb-4 text-muted">' + $lang('NoNotice') + '</li>').appendTo(dest)
+    if (res.data.length === 0) $('<li class="text-center mt-4 mb-4 text-muted">' + $lang('NoneSome,e.Notification') + '</li>').appendTo(dest)
   })
 }
 var _showNotification = function () {
@@ -686,7 +686,12 @@ var $lang = function () {
   return lang
 }
 var _$lang = function (key) {
-  return (window._LANGBUNDLE || {})[key] || '[' + key.toUpperCase() + ']'
+  var lang = (window._LANGBUNDLE || {})[key]
+  if (!lang) {
+    console.warn('Missing lang-key `' + key + '`')
+    lang = '[' + key.toUpperCase() + ']'
+  }
+  return lang
 }
 String.prototype.lang = function () {
   if (arguments.length > 0) return $lang(this, arguments[0], arguments[1], arguments[2])

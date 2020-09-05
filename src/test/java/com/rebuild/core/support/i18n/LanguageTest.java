@@ -13,10 +13,11 @@ public class LanguageTest extends TestSupport {
     @Test
     public void testLangOfMetadata() {
         for (Entity entity : MetadataHelper.getMetadataFactory().getEntities()) {
-            if (!entity.isQueryable()) continue;
             if (EasyMeta.valueOf(entity).getMetaId() != null) continue;
 
             System.out.printf("  \"e.%s\": \"%s\",\n", entity.getName(), entity.getDescription());
+
+            if (!entity.isQueryable()) continue;
 
             for (Field field : entity.getFields()) {
                 if (field.getType() == FieldType.PRIMARY || !field.isQueryable()) continue;
