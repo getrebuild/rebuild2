@@ -47,7 +47,7 @@ public class RobotTriggerControl extends BaseController {
 
     @GetMapping("trigger/{id}")
     public ModelAndView pageEditor(@PathVariable String id,
-                                   HttpServletResponse response) throws IOException {
+                                   HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID configId = ID.valueOf(id);
         Object[] config = Application.createQuery(
                 "select belongEntity,actionType,when,whenFilter,actionContent,priority,name,whenTimer from RobotTriggerConfig where configId = ?")
@@ -66,7 +66,7 @@ public class RobotTriggerControl extends BaseController {
         mv.getModel().put("sourceEntity", sourceEntity.getName());
         mv.getModel().put("sourceEntityLabel", EasyMeta.getLabel(sourceEntity));
         mv.getModel().put("actionType", actionType.name());
-        mv.getModel().put("actionTypeLabel", actionType.getDisplayName());
+        mv.getModel().put("actionTypeLabel", getLang(request, actionType.name()));
         mv.getModel().put("when", config[2]);
         mv.getModel().put("whenTimer", config[7] == null ? StringUtils.EMPTY : config[7]);
         mv.getModel().put("whenFilter", StringUtils.defaultIfBlank((String) config[3], JSONUtils.EMPTY_OBJECT_STR));
@@ -77,11 +77,11 @@ public class RobotTriggerControl extends BaseController {
     }
 
     @RequestMapping("trigger/available-actions")
-    public void getAvailableActions(HttpServletResponse response) {
+    public void getAvailableActions(HttpServletRequest request, HttpServletResponse response) {
         ActionType[] ts = ActionFactory.getAvailableActions();
         List<String[]> list = new ArrayList<>();
         for (ActionType t : ts) {
-            list.add(new String[]{t.name(), t.getDisplayName()});
+            list.add(new String[]{t.name(), getLang(request, t.name())});
         }
         writeSuccess(response, list);
     }
@@ -114,7 +114,7 @@ public class RobotTriggerControl extends BaseController {
 
         Object[][] array = ReportTemplateControl.queryListOfConfig(sql, belongEntity, q);
         for (Object[] o : array) {
-            o[7] = ActionType.valueOf((String) o[7]).getDisplayName();
+            o[7] = getLang(request, (String) o[7]);
         }
         writeSuccess(response, array);
     }

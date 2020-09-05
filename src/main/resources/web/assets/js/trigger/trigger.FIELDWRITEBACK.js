@@ -9,7 +9,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 const EXPR_SPLIT = '#'
 
-// ~~ 数据回填
+// ~~ 数据转写
 // eslint-disable-next-line no-undef
 class ContentFieldWriteback extends ActionContentSpec {
   constructor(props) {
@@ -21,14 +21,15 @@ class ContentFieldWriteback extends ActionContentSpec {
       <div className="field-aggregation field-writeback">
         <form className="simple">
           <div className="form-group row">
-            <label className="col-md-12 col-lg-3 col-form-label text-lg-right">转写目标实体</label>
+            <label className="col-md-12 col-lg-3 col-form-label text-lg-right">{$lang('TargetEntity')}</label>
             <div className="col-md-12 col-lg-9">
               <div className="row">
                 <div className="col-5">
                   <select className="form-control form-control-sm" ref={(c) => (this._targetEntity = c)}>
                     {(this.state.targetEntities || []).map((item) => {
+                      const val = item[2] + '.' + item[0]
                       return (
-                        <option key={'te-' + item[2] + item[0]} value={item[2] + '.' + item[0]}>
+                        <option key={val} value={val}>
                           {item[1]}
                         </option>
                       )
@@ -38,16 +39,17 @@ class ContentFieldWriteback extends ActionContentSpec {
               </div>
               {this.state.hadApproval && (
                 <div className="form-text text-danger">
-                  <i className="zmdi zmdi-alert-triangle fs-16 down-1"></i> 目标实体已启用审批流程，可能影响源实体操作（触发动作）
+                  <i className="zmdi zmdi-alert-triangle fs-16 down-1"></i>
+                  {$lang('TriggerTargetEntityTips')}
                 </div>
               )}
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-md-12 col-lg-3 col-form-label text-lg-right">转写规则</label>
+            <label className="col-md-12 col-lg-3 col-form-label text-lg-right">{$lang('WritebackRule')}</label>
             <div className="col-md-12 col-lg-9">
               <div className="items">
-                {!(this.state.items || []).length > 0 &&
+                {(this.state.items || []).length > 0 &&
                   this.state.items.map((item) => {
                     return (
                       <div key={'item-' + item.targetField}>
@@ -58,7 +60,7 @@ class ContentFieldWriteback extends ActionContentSpec {
                           <div className="col-5 del-wrap">
                             <span className="zmdi zmdi-forward zmdi-hc-rotate-180"></span>
                             <span className="badge badge-warning">{this.__fieldLabel(this.state.sourceFields, item.sourceField)}</span>
-                            <a className="del" title="移除" onClick={() => this.delItem(item.targetField)}>
+                            <a className="del" title={$lang('Remove')} onClick={() => this.delItem(item.targetField)}>
                               <span className="zmdi zmdi-close"></span>
                             </a>
                           </div>
@@ -78,7 +80,7 @@ class ContentFieldWriteback extends ActionContentSpec {
                       )
                     })}
                   </select>
-                  <p>目标字段</p>
+                  <p>{$lang('TargetField')}</p>
                 </div>
                 <div className="col-5">
                   <span className="zmdi zmdi-forward zmdi-hc-rotate-180"></span>
@@ -91,11 +93,11 @@ class ContentFieldWriteback extends ActionContentSpec {
                       )
                     })}
                   </select>
-                  <p>源字段</p>
+                  <p>{$lang('SourceField')}</p>
                 </div>
                 {this.state.showDateExpr && (
                   <div className="col-2 pl-0" style={{ marginLeft: -13 }}>
-                    <button type="button" ref={(c) => (this._btnDateExpr = c)} title="日期公式" className="btn btn-secondary mw-auto" onClick={(e) => this._showDateExpr(e)}>
+                    <button type="button" ref={(c) => (this._btnDateExpr = c)} title={$lang('DateFormula')} className="btn btn-secondary mw-auto" onClick={(e) => this._showDateExpr(e)}>
                       <i className="zmdi zmdi-settings-square icon" />
                     </button>
                   </div>
@@ -103,7 +105,7 @@ class ContentFieldWriteback extends ActionContentSpec {
               </div>
               <div className="mt-1">
                 <button type="button" className="btn btn-primary btn-sm bordered" onClick={() => this.addItem()}>
-                  添加
+                  + {$lang('Add')}
                 </button>
               </div>
             </div>
@@ -113,7 +115,7 @@ class ContentFieldWriteback extends ActionContentSpec {
             <div className="col-md-12 col-lg-9">
               <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0">
                 <input className="custom-control-input" type="checkbox" ref={(c) => (this._readonlyFields = c)} />
-                <span className="custom-control-label">自动设置目标字段为只读</span>
+                <span className="custom-control-label">{$lang('AutoSetTargetFieldReadonly')}</span>
               </label>
             </div>
           </div>
@@ -135,7 +137,7 @@ class ContentFieldWriteback extends ActionContentSpec {
     $.get(`/admin/robot/trigger/field-aggregation-entities?source=${this.props.sourceEntity}&self=false`, (res) => {
       this.setState({ targetEntities: res.data }, () => {
         const s2te = $(this._targetEntity)
-          .select2({ placeholder: '选择回填目标实体' })
+          .select2({ placeholder: $lang('SelectSome,TargetEntity') })
           .on('change', () => this.changeTargetEntity())
 
         if (content && content.targetEntity) {
@@ -167,10 +169,11 @@ class ContentFieldWriteback extends ActionContentSpec {
       } else {
         this.setState({ sourceFields: res.data.source, targetFields: [] }, () => {
           const s2sf = $(this._sourceField)
-            .select2({ placeholder: '选择源字段' })
+            .select2({ placeholder: $lang('SelectSome,SourceField') })
             .on('change', () => this.setState({ targetFields: this.selectTargetFields() }))
-          const s2tf = $(this._targetField).select2({ placeholder: '选择目标字段' })
+          const s2tf = $(this._targetField).select2({ placeholder: $lang('SelectSome,TargetField') })
           s2sf.trigger('change')
+
           this.__select2.push(s2sf)
           this.__select2.push(s2tf)
         })
@@ -241,17 +244,17 @@ class ContentFieldWriteback extends ActionContentSpec {
     const tf = $(this._targetField).val()
     const sf = $(this._sourceField).val()
     if (!tf) {
-      RbHighbar.create('请选择目标字段')
+      RbHighbar.create($lang('PlsSelectSome,TargetField'))
       return false
     }
     if (!sf) {
-      RbHighbar.create('请选择源字段')
+      RbHighbar.create($lang('PlsSelectSome,SourceField'))
       return false
     }
 
     // 目标字段=源字段
     if (sf === $(this._targetEntity).val().split('.')[0] + '.' + tf) {
-      RbHighbar.create('目标字段与源字段不能为同一字段')
+      RbHighbar.create($lang('TargetAndSourceNotSame'))
       return false
     }
 
@@ -260,7 +263,7 @@ class ContentFieldWriteback extends ActionContentSpec {
       return x.targetField === tf
     })
     if (found) {
-      RbHighbar.create('目标字段重复')
+      RbHighbar.create($lang('SomeDuplicate,TargetField'))
       return false
     }
 
@@ -284,11 +287,11 @@ class ContentFieldWriteback extends ActionContentSpec {
       readonlyFields: $(this._readonlyFields).prop('checked'),
     }
     if (!content.targetEntity) {
-      RbHighbar.create('请选择转写目标实体')
+      RbHighbar.create($lang('PlsSelectSome,TargetEntity'))
       return false
     }
     if (content.items.length === 0) {
-      RbHighbar.create('请至少添加 1 个转写规则')
+      RbHighbar.create($lang('PlsAdd1WritebackRuleLeast'))
       return false
     }
     return content
@@ -322,24 +325,24 @@ class AdvDateValue extends RbAlert {
     return (
       <form className="ml-6 mr-6">
         <div className="form-group">
-          <label className="text-bold">设置日期公式</label>
+          <label className="text-bold">{$lang('SetSome,DateFormula')}</label>
           <div className="input-group">
             <select className="form-control form-control-sm" ref={(c) => (this._refs[0] = c)}>
               <option value={this.props.field[0]}>{this.props.field[1]}</option>
             </select>
             <select className="form-control form-control-sm ml-1" ref={(c) => (this._refs[1] = c)}>
-              <option value="+">加上</option>
-              <option value="-">减去</option>
+              <option value="+">{$lang('CalcPlus')}</option>
+              <option value="-">{$lang('CalcSubtract')}</option>
             </select>
             <input type="number" min="1" max="999999" className="form-control form-control-sm ml-1" defaultValue="1" ref={(c) => (this._refs[2] = c)} />
             <select className="form-control form-control-sm ml-1" ref={(c) => (this._refs[3] = c)}>
-              <option value="D">天</option>
-              <option value="M">月</option>
-              <option value="Y">年</option>
+              <option value="D">{$lang('Day')}</option>
+              <option value="M">{$lang('Month')}</option>
+              <option value="Y">{$lang('Year')}</option>
               {this.props.field[2] === 'DATETIME' && (
                 <React.Fragment>
-                  <option value="H">小时</option>
-                  <option value="I">分钟</option>
+                  <option value="H">{$lang('Hour')}</option>
+                  <option value="I">{$lang('Minte')}</option>
                 </React.Fragment>
               )}
             </select>
@@ -347,10 +350,10 @@ class AdvDateValue extends RbAlert {
         </div>
         <div className="form-group mb-1">
           <button type="button" className="btn btn-space btn-primary" onClick={this.confirm}>
-            确定
+            {$lang('Confirm')}
           </button>
           <button type="button" className="btn btn-space btn-secondary" onClick={this.clean}>
-            清除
+            {$lang('Clear')}
           </button>
         </div>
       </form>
@@ -360,7 +363,7 @@ class AdvDateValue extends RbAlert {
   confirm = () => {
     const num = $(this._refs[2]).val() || 1
     if (isNaN(num)) {
-      RbHighbar.create('请输入数字')
+      RbHighbar.create($lang('PlsInputSome,Number'))
       return
     }
 

@@ -16,13 +16,13 @@ class ContentAutoShare extends ActionContentSpec {
       <div className="auto-share">
         <form className="simple">
           <div className="form-group row pt-1">
-            <label className="col-12 col-lg-3 col-form-label text-lg-right">共享给谁</label>
+            <label className="col-12 col-lg-3 col-form-label text-lg-right">{$lang('ShareToWho')}</label>
             <div className="col-12 col-lg-8">
               <UserSelectorWithField ref={(c) => (this._shareTo = c)} />
             </div>
           </div>
           <div className="form-group row pb-1">
-            <label className="col-12 col-lg-3 col-form-label text-lg-right">同时共享关联记录</label>
+            <label className="col-12 col-lg-3 col-form-label text-lg-right">{$lang('ShareCascade')}</label>
             <div className="col-12 col-lg-8">
               <div>
                 <select className="form-control form-control-sm" ref={(c) => (this._cascades = c)}>
@@ -64,7 +64,7 @@ class ContentAutoShare extends ActionContentSpec {
         this.__select2 = $(this._cascades)
           .select2({
             multiple: true,
-            placeholder: '选择关联实体 (可选)',
+            placeholder: `${$lang('SelectSome,RelatedEntity')} (${$lang('Optional')})`,
           })
           .val(cascades.length === 0 ? null : cascades)
           .trigger('change')
@@ -78,7 +78,7 @@ class ContentAutoShare extends ActionContentSpec {
       cascades: this.__select2.val().join(','),
     }
     if (!_data.shareTo || _data.shareTo.length === 0) {
-      RbHighbar.create('请选择共享给谁')
+      RbHighbar.create($lang('PlsSelectSome,ShareToWho'))
       return false
     }
     return _data

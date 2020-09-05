@@ -15,10 +15,12 @@ class ContentAutoApproval extends ActionContentSpec {
       <div className="auto-approval">
         <form className="simple">
           <div className="form-group row pt-1">
-            <label className="col-12 col-lg-3 col-form-label text-lg-right">使用审批流程 (可选)</label>
+            <label className="col-12 col-lg-3 col-form-label text-lg-right">
+              {$lang('UseSome,e.RobotApprovalConfig')} ({$lang('Optional')})
+            </label>
             <div className="col-12 col-lg-8">
               <select className="form-control form-control-sm" ref={(c) => (this._useApproval = c)}>
-                <option value="">不使用</option>
+                <option value="">{$lang('NotUse')}</option>
                 {(this.state.approvalList || []).map((item) => {
                   return (
                     <option key={item.id} value={item.id}>

@@ -10,7 +10,18 @@ $(document).ready(function () {
   renderRbcomp(<TriggerList />, 'dataList')
 })
 
-const WHENS = { 1: '新建', 4: '更新', 2: '删除', 16: '分派', 32: '共享', 64: '取消共享', 128: '审核通过', 256: '审批撤销', 512: '(定期执行)' }
+const WHENS = {
+  1: $lang('Permission1'),
+  2: $lang('Permission2'),
+  4: $lang('Permission4'),
+  16: $lang('Permission16'),
+  32: $lang('Permission32'),
+  64: $lang('Permission64'),
+  128: $lang('Permission128'),
+  256: $lang('Permission256'),
+  512: `(${$lang('JobExecution')})`,
+}
+
 const formatWhen = function (maskVal) {
   const as = []
   for (let k in WHENS) {
@@ -36,14 +47,14 @@ class TriggerList extends ConfigList {
                 <a href={`trigger/${item[0]}`}>{item[3] || item[2] + ' · ' + item[7]}</a>
               </td>
               <td>{item[2] || item[1]}</td>
-              <td>{item[6] > 0 ? '当' + formatWhen(item[6]) + '时' : <span className="text-warning">(无触发动作)</span>}</td>
-              <td>{item[4] ? <span className="badge badge-warning font-weight-light">否</span> : <span className="badge badge-success font-weight-light">是</span>}</td>
+              <td>{item[6] > 0 ? $lang('WhenXTime').replace('%s', formatWhen(item[6])) : <span className="text-warning">{$lang('NoTriggerAction')}</span>}</td>
+              <td>{item[4] ? <span className="badge badge-warning font-weight-light">{$lang('No')}</span> : <span className="badge badge-success font-weight-light">{$lang('Yes')}</span>}</td>
               <td>{item[5]}</td>
               <td className="actions">
-                <a className="icon" title="修改" onClick={() => this.handleEdit(item)}>
+                <a className="icon" title={$lang('Modify')} onClick={() => this.handleEdit(item)}>
                   <i className="zmdi zmdi-edit" />
                 </a>
-                <a className="icon" title="删除" onClick={() => this.handleDelete(item[0])}>
+                <a className="icon" title={$lang('Delete')} onClick={() => this.handleDelete(item[0])}>
                   <i className="zmdi zmdi-delete" />
                 </a>
               </td>
@@ -60,9 +71,9 @@ class TriggerList extends ConfigList {
 
   handleDelete(id) {
     const handle = super.handleDelete
-    RbAlert.create('确认删除此触发器吗？', {
+    RbAlert.create($lang('DeleteThisSomeConfirm,e.RobotTriggerConfig'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.disabled(true)
         handle(id)
@@ -74,7 +85,7 @@ class TriggerList extends ConfigList {
 class TriggerEdit extends ConfigFormDlg {
   constructor(props) {
     super(props)
-    this.subtitle = '触发器'
+    this.subtitle = $lang('e.RobotTriggerConfig')
   }
 
   renderFrom() {
@@ -83,7 +94,7 @@ class TriggerEdit extends ConfigFormDlg {
         {!this.props.id && (
           <React.Fragment>
             <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">触发器</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,e.RobotTriggerConfig')}</label>
               <div className="col-sm-7">
                 <select className="form-control form-control-sm" ref={(c) => (this._actionType = c)}>
                   {(this.state.actions || []).map((item) => {
@@ -97,7 +108,7 @@ class TriggerEdit extends ConfigFormDlg {
               </div>
             </div>
             <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">触发源实体</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SourceEntity')}</label>
               <div className="col-sm-7">
                 <select className="form-control form-control-sm" ref={(c) => (this._sourceEntity = c)}>
                   {(this.state.sourceEntities || []).map((item) => {
@@ -113,9 +124,11 @@ class TriggerEdit extends ConfigFormDlg {
           </React.Fragment>
         )}
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label text-sm-right">名称 (可选)</label>
+          <label className="col-sm-3 col-form-label text-sm-right">
+            {$lang('Name')} ({$lang('Optional')})
+          </label>
           <div className="col-sm-7">
-            <input type="text" className="form-control form-control-sm" data-id="name" onChange={this.handleChange} value={this.state.name || ''} placeholder={`${this.props.id ? '未命名' : ''}`} />
+            <input type="text" className="form-control form-control-sm" data-id="name" onChange={this.handleChange} value={this.state.name || ''} placeholder={$lang('Unname')} />
           </div>
         </div>
         {this.props.id && (
@@ -123,7 +136,7 @@ class TriggerEdit extends ConfigFormDlg {
             <div className="col-sm-7 offset-sm-3">
               <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0">
                 <input className="custom-control-input" type="checkbox" checked={this.state.isDisabled === true} data-id="isDisabled" onChange={this.handleChange} />
-                <span className="custom-control-label">是否禁用</span>
+                <span className="custom-control-label">{$lang('IsDisable')}</span>
               </label>
             </div>
           </div>
@@ -141,7 +154,7 @@ class TriggerEdit extends ConfigFormDlg {
       this.setState({ actions: res.data }, () => {
         const s2ot = $(this._actionType)
           .select2({
-            placeholder: '选择触发类型',
+            placeholder: $lang('SelectSome,TriggerType'),
             allowClear: false,
           })
           .on('change', () => {
@@ -151,7 +164,7 @@ class TriggerEdit extends ConfigFormDlg {
 
         // #2
         const s2se = $(this._sourceEntity).select2({
-          placeholder: '选择源实体',
+          placeholder: $lang('SelectSome,SourceEntity'),
           allowClear: false,
         })
         this.__select2.push(s2se)
@@ -168,20 +181,23 @@ class TriggerEdit extends ConfigFormDlg {
   }
 
   confirm = () => {
-    let post = { name: this.state['name'] || '' }
+    let data = { name: this.state['name'] || '' }
     if (this.props.id) {
-      post.isDisabled = this.state.isDisabled === true
+      data.isDisabled = this.state.isDisabled === true
     } else {
-      post = { ...post, actionType: this.__select2[0].val(), belongEntity: this.__select2[1].val() }
-      if (!post.actionType || !post.belongEntity) {
-        RbHighbar.create('请选择源触发实体')
+      data = { ...data, actionType: this.__select2[0].val(), belongEntity: this.__select2[1].val() }
+      if (!data.actionType || !data.belongEntity) {
+        RbHighbar.create($lang('PlsSelectSome,SourceEntity'))
         return
       }
     }
-    post.metadata = { entity: 'RobotTriggerConfig', id: this.props.id || null }
+    data.metadata = {
+      entity: 'RobotTriggerConfig',
+      id: this.props.id || null,
+    }
 
     this.disabled(true)
-    $.post('/app/entity/record-save', JSON.stringify(post), (res) => {
+    $.post('/app/entity/record-save', JSON.stringify(data), (res) => {
       if (res.error_code === 0) {
         if (this.props.id) location.reload()
         else location.href = 'trigger/' + res.data.id

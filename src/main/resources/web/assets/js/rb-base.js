@@ -97,6 +97,8 @@ See LICENSE and COMMERCIAL in the project root for license information.
     if (!(location.protocol === 'http:' || location.protocol === 'https:')) location.href = 'https://getrebuild.com/'
   }
 
+  rb.locale = rb.locale || 'zh_CN'
+
   // for `moment`
   if (window.moment) window.moment.locale(rb.locale)
 
@@ -115,7 +117,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
   // for `select2`
   $.fn.select2.defaults.set('width', '100%')
-  $.fn.select2.defaults.set('language', rb.locale)
+  $.fn.select2.defaults.set('language', rb.locale.replace('_', '-'))
   $.fn.select2.defaults.set('allowClear', true)
   $.fn.select2.defaults.set('placeholder', '')
 
