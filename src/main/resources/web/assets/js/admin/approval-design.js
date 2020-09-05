@@ -39,15 +39,15 @@ $(document).ready(() => {
 let isCanvasMounted = false
 // 节点类型
 const NTs = {
-  start: ['start', '发起人', '记录所属人'],
-  approver: ['approver', '审批人', '自选审批人'],
-  cc: ['cc', '抄送人', '自选抄送人'],
+  start: ['start', $lang('NodeStart'), $lang('NodeUserOwns')],
+  approver: ['approver', $lang('NodeApprover'), $lang('SelfSelectSome,NodeApprover')],
+  cc: ['cc', $lang('NodeCc'), $lang('SelfSelectSome,NodeCc')],
 }
 const UTs = {
-  ALL: '所有人',
-  OWNS: '记录所属人',
-  SELF: '发起人自己',
-  SPEC: '指定用户',
+  ALL: $lang('NodeUserAll'),
+  OWNS: $lang('NodeUserOwns'),
+  SELF: $lang('NodeUserSelf'),
+  SPEC: $lang('NodeUserSpec'),
 }
 // 添加节点按钮
 const AddNodeButton = function (props) {
@@ -195,21 +195,22 @@ class SimpleNode extends NodeSpec {
   render() {
     const NT = NTs[this.nodeType]
     const data = this.state.data || {}
-    let descs = NT[2]
-    if (data.users && data.users.length > 0) descs = UTs[data.users[0]] || '指定用户(' + data.users.length + ')'
-    if (data.selfSelecting && !descs.contains('自选')) descs += '/允许自选'
-    if (data.ccAutoShare) descs += '/自动共享'
-    if (this.nodeType === 'approver') descs += '/' + (data.signMode === 'AND' ? '会签' : data.signMode === 'ALL' ? '依次审批' : '或签')
+
+    const descs = data.users && data.users.length > 0 ? [UTs[data.users[0]] || `${$lang('SpecUser')}(${data.users.length})`] : [NT[2]]
+
+    if (data.selfSelecting) descs.push($lang('AllowSelfSelect'))
+    if (data.ccAutoShare) descs.push($lang('AutoShare'))
+    if (this.nodeType === 'approver') descs.push($lang(data.signMode === 'AND' ? 'SignAnd' : data.signMode === 'ALL' ? 'SignAll' : 'SignOr'))
 
     return (
       <div className="node-wrap">
         <div className={`node-wrap-box animated fadeIn ${NT[0]}-node ${this.state.hasError ? 'error' : ''} ${this.state.active ? 'active' : ''}`} title={rb.env === 'dev' ? this.props.nodeId : null}>
           <div className="title">
             <span>{data.nodeName || NT[1]}</span>
-            {this.props.nodeId !== 'ROOT' && <i className="zmdi zmdi-close aclose" title="移除" onClick={this.removeNodeQuick} />}
+            {this.props.nodeId !== 'ROOT' && <i className="zmdi zmdi-close aclose" title={$lang('Remove')} onClick={this.removeNodeQuick} />}
           </div>
           <div className="content" onClick={this.openConfig}>
-            <div className="text">{descs}</div>
+            <div className="text">{descs.join(' / ')}</div>
             <i className="zmdi zmdi-chevron-right arrow"></i>
           </div>
         </div>
@@ -235,7 +236,7 @@ class ConditionNode extends NodeSpec {
           <div className="branch-box-wrap">
             <div className="branch-box">
               <button className="add-branch" onClick={this.addBranch}>
-                添加分支
+                {$lang('AddBranch')}
               </button>
               {this.state.branches.map((item, idx) => {
                 return <ConditionBranch key={'kcb-' + item.nodeId} priority={idx + 1} isFirst={idx === 0} isLast={idx === bLen} $$$parent={this} {...item} />
@@ -288,7 +289,7 @@ class ConditionNode extends NodeSpec {
 
     // 至少两个分支
     if (bs.length < 2) {
-      RbHighbar.create('请至少设置两个并列条件分支')
+      RbHighbar.create($lang('Add2BranchLeast'))
       if (holdANode) holdANode.setState({ hasError: true })
       return false
     } else if (holdANode) holdANode.setState({ hasError: false })
@@ -314,13 +315,13 @@ class ConditionBranch extends NodeGroupSpec {
           <div className="condition-node-box animated fadeIn" title={rb.env === 'dev' ? this.props.nodeId : null}>
             <div className={`auto-judge ${this.state.hasError ? 'error' : ''} ${this.state.active ? 'active' : ''}`} onClick={this.openConfig}>
               <div className="title-wrapper">
-                <span className="editable-title float-left">{data.nodeName || '分支条件'}</span>
-                <span className="priority-title float-right">默认优先级</span>
-                <i className="zmdi zmdi-close aclose" title="移除" onClick={(e) => this.props.$$$parent.removeBranch(this.props.nodeId, e)} />
+                <span className="editable-title float-left">{data.nodeName || $lang('BranchCond')}</span>
+                <span className="priority-title float-right">{$lang('DefaultPiro')}</span>
+                <i className="zmdi zmdi-close aclose" title={$lang('Remove')} onClick={(e) => this.props.$$$parent.removeBranch(this.props.nodeId, e)} />
                 <div className="clearfix"></div>
               </div>
               <div className="content">
-                <div className="text">{this.state.isLast ? '其他条件' : filters > 0 ? `已设置条件 (${filters})` : '请设置条件'}</div>
+                <div className="text">{this.state.isLast ? $lang('OtherFilter') : filters > 0 ? `${$lang('AdvFiletrSeted')} (${filters})` : $lang('PlsSetFilter')}</div>
                 <i className="zmdi zmdi-chevron-right arrow"></i>
               </div>
             </div>
@@ -369,7 +370,7 @@ class ConditionBranch extends NodeGroupSpec {
     const s = super.serialize()
     if (!s || s.nodes.length === 0) {
       this.setState({ hasError: true })
-      if (s !== false) RbHighbar.create('请为分支添加审批人或抄送人')
+      if (s !== false) RbHighbar.create($lang('PlsSetApproverOrCc'))
       return false
     } else this.setState({ hasError: false })
 
@@ -409,7 +410,7 @@ class DlgAddNode extends React.Component {
                     <div>
                       <i className="zmdi zmdi-account"></i>
                     </div>
-                    <p>审批人</p>
+                    <p>{$lang('NodeApprover')}</p>
                   </a>
                 </div>
                 <div className="col-4">
@@ -417,7 +418,7 @@ class DlgAddNode extends React.Component {
                     <div>
                       <i className="zmdi zmdi-mail-send"></i>
                     </div>
-                    <p>抄送人</p>
+                    <p>{$lang('NodeCc')}</p>
                   </a>
                 </div>
                 <div className="col-4">
@@ -425,7 +426,7 @@ class DlgAddNode extends React.Component {
                     <div>
                       <i className="zmdi zmdi-usb zmdi-hc-rotate-180"></i>
                     </div>
-                    <p>条件分支</p>
+                    <p>{$lang('NodeBranch')}</p>
                   </a>
                 </div>
               </div>
@@ -477,22 +478,22 @@ class StartNodeConfig extends RbFormHandler {
     return (
       <div>
         <div className="header">
-          <h5>发起人</h5>
+          <h5>{$lang('NodeStart')}</h5>
         </div>
         <div className="form">
           <div className="form-group mb-0">
-            <label className="text-bold">谁可以发起这个审批</label>
+            <label className="text-bold">{$lang('WhoCanStart')}</label>
             <label className="custom-control custom-control-sm custom-radio mb-2">
               <input className="custom-control-input" type="radio" name="users" value="ALL" onChange={this.handleChange} checked={this.state.users === 'ALL'} />
-              <span className="custom-control-label">所有人</span>
+              <span className="custom-control-label">{$lang('NodeUserAll')}</span>
             </label>
             <label className="custom-control custom-control-sm custom-radio mb-2">
               <input className="custom-control-input" type="radio" name="users" value="OWNS" onChange={this.handleChange} checked={this.state.users === 'OWNS'} />
-              <span className="custom-control-label">记录所属人</span>
+              <span className="custom-control-label">{$lang('NodeUserOwns')}</span>
             </label>
             <label className="custom-control custom-control-sm custom-radio mb-2">
               <input className="custom-control-input" type="radio" name="users" value="SPEC" onChange={this.handleChange} checked={this.state.users === 'SPEC'} />
-              <span className="custom-control-label">指定用户</span>
+              <span className="custom-control-label">{$lang('NodeUserSpec')}</span>
             </label>
           </div>
           {this.state.users === 'SPEC' && (
@@ -510,10 +511,10 @@ class StartNodeConfig extends RbFormHandler {
     return (
       <div className="footer">
         <button type="button" className="btn btn-primary" onClick={this.save}>
-          确定
+          {$lang('Confirm')}
         </button>
         <button type="button" className="btn btn-secondary" onClick={this.cancel}>
-          取消
+          {$lang('Cancel')}
         </button>
       </div>
     )
@@ -533,7 +534,7 @@ class StartNodeConfig extends RbFormHandler {
       users: this.state.users === 'SPEC' ? this._UserSelector.getSelected() : [this.state.users],
     }
     if (this.state.users === 'SPEC' && d.users.length === 0) {
-      RbHighbar.create('请选择用户')
+      RbHighbar.create($lang('PlsSelectSome,e.User'))
       return
     }
     typeof this.props.call && this.props.call(d)
@@ -558,18 +559,18 @@ class ApproverNodeConfig extends StartNodeConfig {
     return (
       <div>
         <div className="header">
-          <input type="text" placeholder="审批人" data-id="nodeName" value={this.state.nodeName || ''} onChange={this.handleChange} maxLength="20" />
+          <input type="text" placeholder={$lang('NodeApprover')} data-id="nodeName" value={this.state.nodeName || ''} onChange={this.handleChange} maxLength="20" />
         </div>
         <div className="form rb-scroller">
           <div className="form-group mb-0">
-            <label className="text-bold">由谁审批</label>
+            <label className="text-bold">{$lang('WhoCanApproval')}</label>
             <label className="custom-control custom-control-sm custom-radio mb-2">
               <input className="custom-control-input" type="radio" name="users" value="SELF" onChange={this.handleChange} checked={this.state.users === 'SELF'} />
-              <span className="custom-control-label">发起人自己</span>
+              <span className="custom-control-label">{$lang('StartApproverSelf')}</span>
             </label>
             <label className="custom-control custom-control-sm custom-radio mb-2">
               <input className="custom-control-input" type="radio" name="users" value="SPEC" onChange={this.handleChange} checked={this.state.users === 'SPEC'} />
-              <span className="custom-control-label">指定审批人</span>
+              <span className="custom-control-label">{$lang('StartApproverSpec')}</span>
             </label>
           </div>
           {this.state.users === 'SPEC' && (
@@ -580,26 +581,26 @@ class ApproverNodeConfig extends StartNodeConfig {
           <div className="form-group mb-0">
             <label className="custom-control custom-control-sm custom-checkbox">
               <input className="custom-control-input" type="checkbox" name="selfSelecting" checked={this.state.selfSelecting} onChange={this.handleChange} />
-              <span className="custom-control-label">同时允许自选</span>
+              <span className="custom-control-label">{$lang('AllowSelfSelectYet')}</span>
             </label>
           </div>
           <div className="form-group mt-4">
-            <label className="text-bold">当有多人审批时</label>
+            <label className="text-bold">{$lang('WhenNUsersApproval')}</label>
             <label className="custom-control custom-control-sm custom-radio mb-2 hide">
               <input className="custom-control-input" type="radio" name="signMode" value="ALL" onChange={this.handleChange} checked={this.state.signMode === 'ALL'} />
-              <span className="custom-control-label">依次审批</span>
+              <span className="custom-control-label">{$lang('SignAll')}</span>
             </label>
             <label className="custom-control custom-control-sm custom-radio mb-2">
               <input className="custom-control-input" type="radio" name="signMode" value="AND" onChange={this.handleChange} checked={this.state.signMode === 'AND'} />
-              <span className="custom-control-label">会签（需所有审批人同意）</span>
+              <span className="custom-control-label">{$lang('SignAndTips')}</span>
             </label>
             <label className="custom-control custom-control-sm custom-radio mb-2">
               <input className="custom-control-input" type="radio" name="signMode" value="OR" onChange={this.handleChange} checked={this.state.signMode === 'OR'} />
-              <span className="custom-control-label">或签（一名审批人同意或拒绝）</span>
+              <span className="custom-control-label">{$lang('SignOrTips')}</span>
             </label>
           </div>
           <div className="form-group mt-4">
-            <label className="text-bold">可修改字段</label>
+            <label className="text-bold">{$lang('UpdatableFields')}</label>
             <div style={{ position: 'relative' }}>
               <table className={`table table-sm fields-table ${(this.state.editableFields || []).length === 0 && 'hide'}`}>
                 <tbody ref={(c) => (this._editableFields = c)}>
@@ -610,11 +611,11 @@ class ApproverNodeConfig extends StartNodeConfig {
                         <td width="100">
                           <label className="custom-control custom-control-sm custom-checkbox">
                             <input className="custom-control-input" type="checkbox" name="notNull" defaultChecked={item.notNull} data-field={item.field} />
-                            <span className="custom-control-label">必填</span>
+                            <span className="custom-control-label">{$lang('Required')}</span>
                           </label>
                         </td>
                         <td width="40">
-                          <a className="close" title="移除" onClick={() => this.removeEditableField(item.field)}>
+                          <a className="close" title={$lang('Remove')} onClick={() => this.removeEditableField(item.field)}>
                             &times;
                           </a>
                         </td>
@@ -625,7 +626,7 @@ class ApproverNodeConfig extends StartNodeConfig {
               </table>
               <div className="pb-4">
                 <button className="btn btn-secondary btn-sm" onClick={() => renderRbcomp(<DlgFields selected={this.state.editableFields} call={(fs) => this.setEditableFields(fs)} />)}>
-                  <i className="icon zmdi zmdi-plus up-1" /> 选择字段
+                  + {$lang('SelectSome,Field')}
                 </button>
               </div>
             </div>
@@ -667,7 +668,7 @@ class ApproverNodeConfig extends StartNodeConfig {
       editableFields: editableFields,
     }
     if (d.users.length === 0 && !d.selfSelecting) {
-      RbHighbar.create('请选择审批人或允许自选')
+      RbHighbar.create($lang('PlsSelectApprover'))
       return
     }
 
@@ -706,21 +707,21 @@ class CCNodeConfig extends StartNodeConfig {
     return (
       <div>
         <div className="header">
-          <input type="text" placeholder="抄送人" data-id="nodeName" value={this.state.nodeName || ''} onChange={this.handleChange} maxLength="20" />
+          <input type="text" placeholder={$lang('NodeCc')} data-id="nodeName" value={this.state.nodeName || ''} onChange={this.handleChange} maxLength="20" />
         </div>
         <div className="form">
           <div className="form-group mb-3">
-            <label className="text-bold">审批结果抄送给谁</label>
+            <label className="text-bold">{$lang('ApprovalCcToWho')}</label>
             <UserSelector selected={this.state.selectedUsers} ref={(c) => (this._UserSelector = c)} />
           </div>
           <div className="form-group mb-0">
             <label className="custom-control custom-control-sm custom-checkbox mb-2">
               <input className="custom-control-input" type="checkbox" name="selfSelecting" checked={this.state.selfSelecting} onChange={(e) => this.handleChange(e)} />
-              <span className="custom-control-label">同时允许自选</span>
+              <span className="custom-control-label">{$lang('AllowSelfSelectYet')}</span>
             </label>
             <label className="custom-control custom-control-sm custom-checkbox">
               <input className="custom-control-input" type="checkbox" name="ccAutoShare" checked={this.state.ccAutoShare} onChange={(e) => this.handleChange(e)} />
-              <span className="custom-control-label">抄送人无读取权限时自动共享</span>
+              <span className="custom-control-label">{$lang('ApprovalCcAutoShare')}</span>
             </label>
           </div>
         </div>
@@ -737,7 +738,7 @@ class CCNodeConfig extends StartNodeConfig {
       ccAutoShare: this.state.ccAutoShare,
     }
     if (d.users.length === 0 && !d.selfSelecting) {
-      RbHighbar.create('请选择抄送人或允许自选')
+      RbHighbar.create($lang('PlsSelectCc'))
       return
     }
     typeof this.props.call && this.props.call(d)
@@ -755,9 +756,9 @@ class ConditionBranchConfig extends StartNodeConfig {
     return (
       <div>
         <div className="header">
-          <input type="text" placeholder="分支条件" data-id="nodeName" value={this.state.nodeName || ''} onChange={this.handleChange} maxLength="20" />
+          <input type="text" placeholder={$lang('BranchCond')} data-id="nodeName" value={this.state.nodeName || ''} onChange={this.handleChange} maxLength="20" />
         </div>
-        {this.state.isLast && <div className="alert alert-warning">该分支将作为最终分支匹配其他条件</div>}
+        {this.state.isLast && <div className="alert alert-warning">{$lang('BranchCondDefaultTips')}</div>}
         <AdvFilter filter={this.state.filter} entity={this.props.entity} confirm={this.save} cancel={this.cancel} canNoFilters={true} />
       </div>
     )
@@ -793,7 +794,7 @@ class RbFlowCanvas extends NodeGroupSpec {
           {this.renderNodes()}
           <div className="end-node">
             <div className="end-node-circle"></div>
-            <div className="end-node-text">流程结束</div>
+            <div className="end-node-text">{$lang('ApprovalEnd')}</div>
           </div>
         </div>
       </div>
@@ -829,14 +830,15 @@ class RbFlowCanvas extends NodeGroupSpec {
       $btns.button('loading')
       $.post('/app/entity/record-save', data, (res) => {
         if (res.error_code === 0) {
-          RbAlert.create(`保存并发布成功${noApproverNode ? '（未添加审批节点，暂不可用）' : ''}`, {
-            type: 'primary',
-            cancelText: '返回列表',
+          RbAlert.create($lang('SaveAndPublishSuccess') + (noApproverNode ? $lang('NoAnyNodesTips') : ''), {
+            cancelText: $lang('ReturnList'),
             cancel: () => location.replace('../approvals'),
-            confirmText: '继续编辑',
+            confirmText: $lang('ReturnEdit'),
             confirm: () => location.reload(),
           })
-        } else RbHighbar.error(res.error_msg)
+        } else {
+          RbHighbar.error(res.error_msg)
+        }
         $btns.button('reset')
       })
     })
@@ -871,7 +873,7 @@ class DlgFields extends RbModalHandler {
 
   render() {
     return (
-      <RbModal title="选择可修改字段" ref={(c) => (this._dlg = c)} disposeOnHide={true} onHide={() => (donotCloseSidebar = false)}>
+      <RbModal title={$lang('SelectSome,UpdatableFields')} ref={(c) => (this._dlg = c)} disposeOnHide={true} onHide={() => (donotCloseSidebar = false)}>
         <div className="row p-1" ref={(c) => (this._fields = c)}>
           {fieldsCache.map((item) => {
             if (item.type === 'BARCODE') return null
@@ -887,10 +889,10 @@ class DlgFields extends RbModalHandler {
         </div>
         <div className="dialog-footer">
           <button className="btn btn-primary" type="button" onClick={this.confirm}>
-            确定
+            {$lang('Confirm')}
           </button>
           <button className="btn btn-secondary" type="button" onClick={this.hide}>
-            取消
+            {$lang('Cancel')}
           </button>
         </div>
       </RbModal>
@@ -914,14 +916,14 @@ class DlgFields extends RbModalHandler {
 class DlgCopy extends ConfigFormDlg {
   constructor(props) {
     super(props)
-    this.title = '另存为'
+    this.title = $lang('SaveAs')
   }
 
   renderFrom() {
     return (
       <React.Fragment>
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label text-sm-right">新流程名称</label>
+          <label className="col-sm-3 col-form-label text-sm-right">{$lang('NewApprovalName')}</label>
           <div className="col-sm-7">
             <input type="text" className="form-control form-control-sm" data-id="name" onChange={this.handleChange} value={this.state.name || ''} />
           </div>
@@ -930,7 +932,7 @@ class DlgCopy extends ConfigFormDlg {
           <div className="col-sm-7 offset-sm-3">
             <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0">
               <input className="custom-control-input" type="checkbox" checked={this.state.isDisabled === true} data-id="isDisabled" onChange={this.handleChange} />
-              <span className="custom-control-label">同时禁用当前流程</span>
+              <span className="custom-control-label">{$lang('NewAfterDisabled')}</span>
             </label>
           </div>
         </div>
@@ -941,16 +943,18 @@ class DlgCopy extends ConfigFormDlg {
   confirm = () => {
     const approvalName = this.state.name
     if (!approvalName) {
-      RbHighbar.create('请输入新流程名称')
+      RbHighbar.create($lang('PlsInputSome,NewApprovalName'))
       return
     }
 
     this.disabled(true)
     $.post(`/admin/robot/approval/copy?father=${this.props.father}&disabled=${this.state.isDisabled}&name=${$encode(approvalName)}`, (res) => {
       if (res.error_code === 0) {
-        RbHighbar.success('另存为成功')
+        RbHighbar.success($lang('SomeSuccess,SaveAs'))
         setTimeout(() => location.replace('./' + res.data.approvalId), 500)
-      } else RbHighbar.error(res.error_msg)
+      } else {
+        RbHighbar.error(res.error_msg)
+      }
       this.disabled()
     })
   }

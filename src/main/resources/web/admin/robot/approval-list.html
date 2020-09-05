@@ -3,7 +3,7 @@
   <head>
     <th:block th:replace="~{/_include/header}" />
     <meta name="page-help" content="https://getrebuild.com/docs/admin/approval" />
-    <title>审批流程</title>
+    <title>[[${bundle.lang('e.RobotApprovalConfig')}]]</title>
   </head>
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-color-header rb-aside">
@@ -13,17 +13,17 @@
         <aside class="page-aside">
           <div class="rb-scroller">
             <div class="aside-tree">
-              <h5 class="config-title">应用实体</h5>
+              <h5 class="config-title">[[${bundle.lang('ApplyEntity')}]]</h5>
               <ul class="list-unstyled">
-                <li class="active"><a>所有实体</a></li>
+                <li class="active"><a>[[${bundle.lang('AllEntity')}]]</a></li>
               </ul>
             </div>
           </div>
         </aside>
         <div class="page-head">
-          <div class="float-left"><div class="page-head-title">审批流程</div></div>
+          <div class="float-left"><div class="page-head-title">[[${bundle.lang('e.RobotApprovalConfig')}]]</div></div>
           <div class="float-right pt-1">
-            <button class="btn btn-primary J_add" type="button"><i class="icon zmdi zmdi-plus"></i> 添加</button>
+            <button class="btn btn-primary J_add" type="button"><i class="icon zmdi zmdi-plus"></i> [[${bundle.lang('Add')}]]</button>
           </div>
           <div class="float-right pt-1 mr-3">
             <div class="input-group input-search">
@@ -45,10 +45,10 @@
                       <table class="table table-hover table-striped table-fixed">
                         <thead>
                           <tr>
-                            <th>名称</th>
-                            <th>应用实体</th>
-                            <th width="80">启用</th>
-                            <th width="160">更新时间</th>
+                            <th>[[${bundle.lang('ApprovalName')}]]</th>
+                            <th>[[${bundle.lang('ApplyEntity')}]]</th>
+                            <th width="80">[[${bundle.lang('Enable')}]]</th>
+                            <th width="160">[[${bundle.lang('f.modifiedOn')}]]</th>
                             <th width="80"></th>
                           </tr>
                         </thead>
@@ -57,7 +57,7 @@
                       <th:block th:replace="~{/_include/spinner}" />
                       <div class="list-nodata hide">
                         <span class="zmdi zmdi-assignment-check"></span>
-                        <p>暂无审批流程</p>
+                        <p>[[${bundle.lang('NoneSome,e.RobotApprovalConfig')}]]</p>
                       </div>
                     </div>
                   </div>

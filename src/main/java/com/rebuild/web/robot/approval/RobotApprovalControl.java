@@ -42,14 +42,14 @@ public class RobotApprovalControl extends BaseController {
 
     @GetMapping("approval/{id}")
     public ModelAndView page(@PathVariable String id,
-                             HttpServletResponse response) throws IOException {
+                             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ID configId = ID.valueOf(id);
         Object[] config = Application.createQuery(
                 "select belongEntity,name,flowDefinition from RobotApprovalConfig where configId = ?")
                 .setParameter(1, configId)
                 .unique();
         if (config == null) {
-            response.sendError(404, "审批流程不存在");
+            response.sendError(404, getLang(request, "SomeNotExists", "e.RobotApprovalConfig"));
             return null;
         }
 
