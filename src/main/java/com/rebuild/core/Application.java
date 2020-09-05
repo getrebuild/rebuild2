@@ -37,13 +37,12 @@ import com.rebuild.core.support.i18n.LanguageBundle;
 import com.rebuild.core.support.setup.Installer;
 import com.rebuild.core.support.setup.UpgradeDatabase;
 import com.rebuild.utils.JSONable;
+import com.rebuild.utils.RebuildBanner;
 import com.rebuild.utils.codec.RbDateCodec;
 import com.rebuild.utils.codec.RbRecordCodec;
 import com.rebuild.web.OnlineSessionStore;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.h2.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +59,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.stereotype.Repository;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 后台类入口
@@ -145,12 +146,13 @@ public class Application {
                 }
 
             } else {
-                LOG.info(formatBootMsg("REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
+                LOG.warn(RebuildBanner.formatBanner(
+                        "REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
             }
 
         } catch (Exception ex) {
             serversReady = false;
-            LOG.error(formatBootMsg("REBUILD BOOTING FILAED !!!"), ex);
+            LOG.error(RebuildBanner.formatBanner("REBUILD BOOTING FILAED !!!"), ex);
 
         } finally {
             if (!success) {
@@ -175,7 +177,7 @@ public class Application {
         LOG.info("Initializing Rebuild context ...");
 
         if (!(serversReady = ServerStatus.checkAll())) {
-            LOG.error(formatBootMsg(
+            LOG.error(RebuildBanner.formatBanner(
                     "REBUILD BOOTING FAILURE DURING THE STATUS CHECK.", "PLEASE VIEW LOGS FOR MORE DETAILS."));
             return false;
         }
@@ -198,7 +200,9 @@ public class Application {
             ServiceSpec ss = e.getValue();
             if (ss.getEntityCode() > 0) {
                 ESS.put(ss.getEntityCode(), ss);
-                LOG.info("Service specification : " + ss.getClass().getName() + " for <" + ss.getEntityCode() + ">");
+                if (devMode()) {
+                    LOG.info("Service specification : " + ss.getClass().getName() + " for <" + ss.getEntityCode() + ">");
+                }
             }
         }
 
@@ -209,23 +213,9 @@ public class Application {
 
         APPLICATION_CONTEXT.registerShutdownHook();
 
-        LOG.info("REBUILD AUTHORITY : " + StringUtils.join(License.queryAuthority().values(), " | "));
+        LOG.info("\n  REBUILD AUTHORITY :\n  " + StringUtils.join(License.queryAuthority().values(), " | "));
 
         return true;
-    }
-
-    private static String formatBootMsg(String... msgs) {
-        List<String> banners = new ArrayList<>();
-        CollectionUtils.addAll(banners, msgs);
-        banners.add("\n  Version : " + VER);
-        banners.add("OS      : " + SystemUtils.OS_NAME + " (" + SystemUtils.OS_ARCH + ")");
-        banners.add("JVM     : " + SystemUtils.JAVA_VM_NAME + " (" + SystemUtils.JAVA_VERSION + ")");
-        banners.add("\n  Report an issue :");
-        banners.add("https://getrebuild.com/report-issue?title=boot");
-
-        return "\n\n###################################################################\n\n  "
-                + StringUtils.join(banners, "\n  ") +
-                "\n\n###################################################################\n";
     }
 
     public static void debug(WebApplicationType type, String ... args) {

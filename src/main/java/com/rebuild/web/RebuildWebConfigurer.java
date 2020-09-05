@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -80,7 +79,8 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
         registry.addInterceptor(new RebuildWebInterceptor())
                 .excludePathPatterns("/gw/**")
                 .excludePathPatterns("/language/**")
-                .excludePathPatterns("/assets/**");
+                .excludePathPatterns("/assets/**")
+                .excludePathPatterns("/*.txt");
     }
 
     /**

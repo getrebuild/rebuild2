@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author zhaofang123@gmail.com
+ * @see com.rebuild.web.RebuildWebConfigurer
  * @since 09/1/2020
  */
 @Controller
@@ -45,7 +46,7 @@ public class ErrorPageResolver extends BaseController {
         ModelAndView mv = createModelAndView("/error/server-status");
         mv.getModel().put("ok", ServerStatus.isStatusOK() && Application.serversReady());
         mv.getModel().put("status", ServerStatus.getLastStatus());
-        // Loads
+
         mv.getModel().put("MemoryUsage", ServerStatus.getHeapMemoryUsed());
         mv.getModel().put("SystemLoad", ServerStatus.getSystemLoad());
         return mv;
@@ -64,14 +65,13 @@ public class ErrorPageResolver extends BaseController {
         for (ServerStatus.Status s : ServerStatus.getLastStatus()) {
             stats.add(s.toJson());
         }
-        // Loads
+
         stats.add(JSONUtils.toJSONObject("MemoryUsage", ServerStatus.getHeapMemoryUsed()[1]));
         stats.add(JSONUtils.toJSONObject("SystemLoad", ServerStatus.getSystemLoad()));
-
         ServletUtils.writeJson(response, state.toJSONString());
     }
 
-    @GetMapping({ "/gw/server-status", "/gw/server-status.json" })
+    @GetMapping({"/gw/server-status", "/gw/server-status.json"})
     public String v1Fix(HttpServletRequest request) {
         String uri = request.getRequestURI();
         if (uri.endsWith("/server-status.json")) return "redirect:/error/server-status.json";

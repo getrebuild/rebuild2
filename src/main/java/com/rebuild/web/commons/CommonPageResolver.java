@@ -8,26 +8,42 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web.commons;
 
 import cn.devezhao.commons.web.ServletUtils;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.Application;
-import com.rebuild.core.ServerStatus;
-import com.rebuild.core.ServerStatus.Status;
-import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author zhaofang123@gmail.com
+ * @see com.rebuild.web.RebuildWebConfigurer
  * @since 09/20/2018
  */
 @Controller
 public class CommonPageResolver extends BaseController {
+
+    @GetMapping("/")
+    public String index() {
+        return "redirect:/user/login";
+    }
+
+    @GetMapping("/*.txt")
+    public void txtSuffix(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String url = request.getRequestURI();
+        url = url.substring(url.lastIndexOf("/") + 1);
+
+        File file = ResourceUtils.getFile("classpath:web/" + url);
+        String content = FileUtils.readFileToString(file, "utf-8");
+
+        ServletUtils.setContentType(response, ServletUtils.CT_PLAIN);
+        ServletUtils.write(response, content);
+    }
 
     @GetMapping("/p/**")
     public ModelAndView page(HttpServletRequest request) {
