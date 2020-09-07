@@ -13,10 +13,10 @@ class MemberAddDlg extends RbFormHandler {
 
   render() {
     return (
-      <RbModal ref={(c) => (this._dlg = c)} title="添加成员" disposeOnHide={true}>
+      <RbModal ref={(c) => (this._dlg = c)} title={$lang('AddMember')} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">选择用户</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,e.User')}</label>
             <div className="col-sm-7">
               <UserSelector ref={(c) => (this._UserSelector = c)} hideTeam={true} />
             </div>
@@ -24,7 +24,7 @@ class MemberAddDlg extends RbFormHandler {
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3">
               <button className="btn btn-primary" type="button" onClick={this._post}>
-                确定
+                {$lang('Confirm')}
               </button>
             </div>
           </div>
@@ -35,7 +35,7 @@ class MemberAddDlg extends RbFormHandler {
 
   _post = () => {
     const users = this._UserSelector.val()
-    if (users.length < 1) return RbHighbar.create('请选择用户')
+    if (users.length < 1) return RbHighbar.create($lang('PlsSelectSome,e.User'))
 
     this.disabled(true)
     $.post(`/admin/bizuser/team-members-add?team=${this.props.id}`, JSON.stringify(users), (res) => {
@@ -56,7 +56,7 @@ class MemberList extends React.Component {
       return (
         <div className="list-nodata">
           <span className="zmdi zmdi-info-outline"></span>
-          <p>请添加成员</p>
+          <p>{$lang('PlsAddSome,e.TeamMember')}</p>
         </div>
       )
     return (
@@ -71,7 +71,7 @@ class MemberList extends React.Component {
                   <span className="cell-detail-description">{item[2] || '-'}</span>
                 </td>
                 <td className="actions">
-                  <a className="icon" title="移除" onClick={() => this._removeMember(item[0])}>
+                  <a className="icon" title={$lang('Delete')} onClick={() => this._removeMember(item[0])}>
                     <i className="zmdi zmdi-delete"></i>
                   </a>
                 </td>
@@ -91,7 +91,7 @@ class MemberList extends React.Component {
 
   _removeMember(user) {
     let that = this
-    RbAlert.create('确认将用户移出当前团队？', {
+    RbAlert.create($lang('DeleteTeamMemberConfirm'), {
       confirm: function () {
         this.disabled(true)
         $.post(`/admin/bizuser/team-members-del?team=${that.props.id}&user=${user}`, (res) => {
@@ -120,9 +120,9 @@ $(document).ready(() => {
   $('.J_delete')
     .off('click')
     .click(() => {
-      RbAlert.create('如果此团队已被使用则不允许被删除', '删除团队', {
+      RbAlert.create($lang('DeleteTeamConfirm'), $lang('DeleteSome,e.Team'), {
         type: 'danger',
-        confirmText: '删除',
+        confirmText: $lang('Delete'),
         confirm: function () {
           this.disabled(true)
           $.post(`/app/entity/record-delete?id=${teamId}`, (res) => {

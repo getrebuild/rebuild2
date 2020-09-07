@@ -3,7 +3,7 @@
   <head>
     <th:block th:replace="~{/_include/header}" />
     <meta name="page-help" content="https://getrebuild.com/docs/admin/privileges" />
-    <title>角色权限</title>
+    <title>[[${bundle.lang('e.RolePrivileges')}]]</title>
     <style type="text/css">
       .priv {
         width: 36px;
@@ -95,26 +95,26 @@
             </div>
           </div>
           <div class="float-right" style="margin-top: -1px">
-            <button class="btn btn-secondary btn-space J_new-role" type="button"><i class="icon zmdi zmdi-plus"></i> 新建角色</button>
-            <button class="btn btn-primary btn-space J_save mr-0" type="button" disabled="disabled">保存</button>
+            <button class="btn btn-secondary btn-space J_new-role" type="button"><i class="icon zmdi zmdi-plus"></i> [[${bundle.lang('NewSome,e.Role')}]]</button>
+            <button class="btn btn-primary btn-space J_save mr-0" type="button" disabled="disabled">[[${bundle.lang('Save')}]]</button>
           </div>
           <div class="tab-container">
             <ul class="nav nav-tabs nav-tabs-classic">
-              <li class="nav-item"><a data-toggle="tab" href="#priv-entity" class="nav-link active">实体权限</a></li>
-              <li class="nav-item"><a data-toggle="tab" href="#priv-zero" class="nav-link">扩展权限</a></li>
+              <li class="nav-item"><a data-toggle="tab" href="#priv-entity" class="nav-link active">[[${bundle.lang('EntityPrivileges')}]]</a></li>
+              <li class="nav-item"><a data-toggle="tab" href="#priv-zero" class="nav-link">[[${bundle.lang('ZeroPrivileges')}]]</a></li>
             </ul>
             <div class="tab-content mb-0" style="border-top: 0px solid #4285f4">
               <div class="tab-pane active" id="priv-entity">
                 <table class="table table-hover table-priv">
                   <thead>
                     <tr>
-                      <th width="25%">业务实体</th>
-                      <th class="text-center unselect"><a data-action="C">新建</a></th>
-                      <th class="text-center unselect"><a data-action="R">读取</a></th>
-                      <th class="text-center unselect"><a data-action="U">修改</a></th>
-                      <th class="text-center unselect"><a data-action="D">删除</a></th>
-                      <th class="text-center unselect"><a data-action="A">分派</a></th>
-                      <th class="text-center unselect"><a data-action="S">共享</a></th>
+                      <th width="25%">[[${bundle.lang('BizEntity')}]]</th>
+                      <th class="text-center unselect"><a data-action="C">[[${bundle.lang('Permission1')}]]</a></th>
+                      <th class="text-center unselect"><a data-action="R">[[${bundle.lang('Permission8')}]]</a></th>
+                      <th class="text-center unselect"><a data-action="U">[[${bundle.lang('Permission4')}]]</a></th>
+                      <th class="text-center unselect"><a data-action="D">[[${bundle.lang('Permission2')}]]</a></th>
+                      <th class="text-center unselect"><a data-action="A">[[${bundle.lang('Permission16')}]]</a></th>
+                      <th class="text-center unselect"><a data-action="S">[[${bundle.lang('Permission32')}]]</a></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -131,12 +131,12 @@
                 </table>
                 <div class="legend-wrap">
                   <div class="legend">
-                    图例
-                    <label><i class="priv R0"></i> 无权限</label>
-                    <label><i class="priv R1"></i> 本人</label>
-                    <label><i class="priv R2"></i> 本部门</label>
-                    <label><i class="priv R3"></i> 本部门及子部门</label>
-                    <label><i class="priv R4"></i> 全部</label>
+                    [[${bundle.lang('Legend')}]]
+                    <label><i class="priv R0"></i> [[${bundle.lang('DepthEntry0')}]]</label>
+                    <label><i class="priv R1"></i> [[${bundle.lang('DepthEntry1')}]]</label>
+                    <label><i class="priv R2"></i> [[${bundle.lang('DepthEntry2')}]]</label>
+                    <label><i class="priv R3"></i> [[${bundle.lang('DepthEntry3')}]]</label>
+                    <label><i class="priv R4"></i> [[${bundle.lang('DepthEntry4')}]]</label>
                   </div>
                 </div>
               </div>
@@ -144,9 +144,9 @@
                 <table class="table table-hover table-priv">
                   <thead>
                     <tr>
-                      <th width="25%">权限项</th>
-                      <th class="text-center unselect"><a data-action="Z">允许</a></th>
-                      <th>前置条件</th>
+                      <th width="25%">[[${bundle.lang('PermissionItem')}]]</th>
+                      <th class="text-center unselect"><a data-action="Z">[[${bundle.lang('Allow')}]]</a></th>
+                      <th>[[${bundle.lang('PrePermission')}]]</th>
                       <th></th>
                       <th></th>
                       <th></th>
@@ -155,42 +155,42 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td class="name"><a data-name="AllowLogin">允许登录</a></td>
+                      <td class="name"><a data-name="AllowLogin">[[${bundle.lang('AllowSome,Login')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R4"></i></td>
-                      <td colspan="5" class="text-muted">无</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('Null')}]]</td>
                     </tr>
                     <tr>
-                      <td class="name"><a data-name="AllowCustomNav">允许自定义导航菜单</a></td>
+                      <td class="name"><a data-name="AllowCustomNav">[[${bundle.lang('AllowSetSome,NavMenu')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R4"></i></td>
-                      <td colspan="5" class="text-muted">无</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('Null')}]]</td>
                     </tr>
                     <tr>
-                      <td class="name"><a data-name="AllowCustomDataList">允许自定义列表列显示</a></td>
+                      <td class="name"><a data-name="AllowCustomDataList">[[${bundle.lang('AllowSetSome,FieldShow')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R4"></i></td>
-                      <td colspan="5" class="text-muted">需具备相应实体的读取权限</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Permission8')}]]</td>
                     </tr>
                     <tr>
-                      <td class="name"><a data-name="AllowBatchUpdate">允许批量修改</a></td>
+                      <td class="name"><a data-name="AllowBatchUpdate">[[${bundle.lang('AllowSome,BatchUpdate')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R0"></i></td>
-                      <td colspan="5" class="text-muted">需具备相应实体的修改权限</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Permission4')}]]</td>
                     </tr>
-                    <tr class="hide">
-                      <td class="name"><a data-name="AllowDataImport">允许导入数据</a></td>
+                    <tr class="hide0">
+                      <td class="name"><a data-name="AllowDataImport">[[${bundle.lang('AllowSome,DataImport')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R0"></i></td>
-                      <td colspan="5" class="text-muted">需具备相应实体的创建权限</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Permission1')}]]</td>
                     </tr>
                     <tr>
-                      <td class="name"><a data-name="AllowDataExport">允许导出数据</a></td>
+                      <td class="name"><a data-name="AllowDataExport">[[${bundle.lang('AllowSome,DataExport')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R0"></i></td>
-                      <td colspan="5" class="text-muted">需具备相应实体的读取权限</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Permission8')}]]</td>
                     </tr>
                   </tbody>
                 </table>
                 <div class="legend-wrap">
                   <div class="legend">
-                    图例
-                    <label><i class="priv R4"></i> 是</label>
-                    <label><i class="priv R0"></i> 否</label>
+                    [[${bundle.lang('Legend')}]]
+                    <label><i class="priv R4"></i> [[${bundle.lang('True')}]]</label>
+                    <label><i class="priv R0"></i> [[${bundle.lang('False')}]]</label>
                   </div>
                 </div>
               </div>

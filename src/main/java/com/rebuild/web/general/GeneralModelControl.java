@@ -61,7 +61,7 @@ public class GeneralModelControl extends EntityController {
         if (thatEntity.getMasterEntity() != null) {
             mv = createModelAndView("/general/slave-view", record, user);
         } else {
-            mv = createModelAndView("/general/entity-view", record, user);
+            mv = createModelAndView("/general/record-view", record, user);
 
             JSON vtab = ViewAddonsManager.instance.getViewTab(entity, user);
             mv.getModel().put("ViewTabs", vtab);

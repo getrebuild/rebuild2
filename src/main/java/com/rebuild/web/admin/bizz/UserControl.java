@@ -119,10 +119,10 @@ public class UserControl extends EntityController {
                     .unique();
             if (did == null) {
                 String homeUrl = RebuildConfiguration.getHomeUrl();
-                String content = String.format(
-                        "%s 你的账户已激活！现在你可以登陆并使用系统。登录地址 [%s](%s) <br>首次登陆，建议你立即修改密码！如有任何登陆或使用问题，请与系统管理员联系。",
-                        u.getFullName(), homeUrl, homeUrl);
-                SMSender.sendMailAsync(u.getEmail(), "你的账户已激活", content);
+                String subject = getLang(request, "YourAccountActive");
+                String content = String.format(getLang(request, "NewUserAccountActive"), u.getFullName(), homeUrl, homeUrl);
+
+                SMSender.sendMailAsync(u.getEmail(), subject, content);
             }
         }
 

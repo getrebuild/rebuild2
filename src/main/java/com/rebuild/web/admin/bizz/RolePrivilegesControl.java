@@ -80,7 +80,7 @@ public class RolePrivilegesControl extends EntityController {
     public void privilegesList(HttpServletRequest request, HttpServletResponse response) {
         ID roleId = getIdParameterNotNull(request, "role");
         if (RoleService.ADMIN_ROLE.equals(roleId)) {
-            writeFailure(response, "系统内建管理员角色，不允许修改。此角色拥有高级系统权限，请谨慎使用");
+            writeFailure(response, getLang(request, "NotModifyAdminRole"));
             return;
         }
 

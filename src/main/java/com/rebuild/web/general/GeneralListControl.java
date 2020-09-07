@@ -65,7 +65,7 @@ public class GeneralListControl extends EntityController {
         if (thatEntity.getMasterEntity() != null) {
             mv = createModelAndView("/general/slave-list", entity, user);
         } else {
-            mv = createModelAndView("/general/entity-list", entity, user);
+            mv = createModelAndView("/general/record-list", entity, user);
         }
 
         JSON config = DataListManager.instance.getFieldsLayout(entity, user);

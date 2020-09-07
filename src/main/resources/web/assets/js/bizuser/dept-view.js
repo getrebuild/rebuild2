@@ -28,21 +28,21 @@ $(document).ready(function () {
     .off('click')
     .click(() => {
       $.get(`/admin/bizuser/delete-checks?id=${dept_id}`, (res) => {
-        if (res.data.hasMember === 0 && res.data.hasChild === 0) {
-          RbAlert.create('此部门可以被安全的删除', '删除部门', {
+        const limits = []
+        if (res.data.hasMember > 0) limits.push($lang('HasNUsers').replace('%d', res.data.hasMember))
+        if (res.data.hasChild > 0) limits.push($lang('HasNSubdepts').replace('%d', res.data.hasChild))
+
+        if (limits.length === 0) {
+          RbAlert.create($lang('DeleteDeptSafeConfirm'), $lang('DeleteSome,e.Department'), {
             icon: 'alert-circle-o',
             type: 'danger',
-            confirmText: '删除',
+            confirmText: $lang('Delete'),
             confirm: function () {
               deleteDept(this)
             },
           })
         } else {
-          let msg = '此部门下有 '
-          if (res.data.hasMember > 0) msg += '<b>' + res.data.hasMember + '</b> 个用户' + (res.data.hasChild > 0 ? '和 ' : ' ')
-          if (res.data.hasChild > 0) msg += '<b>' + res.data.hasChild + '</b> 个子部门'
-          msg += '<br>需要先将他们转移至其他部门，然后才能安全删除'
-          RbAlert.create(msg, '无法删除', {
+          RbAlert.create($lang('DeleteDeptUnSafeConfirm').replace('%s', limits.join(' / ')), $lang('NotDelete'), {
             type: 'danger',
             html: true,
           })

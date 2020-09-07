@@ -12,7 +12,7 @@ RbForm.postAfter = function (data) {
 
 const roleId = window.__PageConfig.recordId
 $(document).ready(function () {
-  $('.J_new-role').click(() => RbFormModal.create({ title: '新建角色', entity: 'Role', icon: 'lock' }))
+  $('.J_new-role').click(() => RbFormModal.create({ title: $lang('NewSome,e.Role'), entity: 'Role', icon: 'lock' }))
 
   if (roleId) {
     $('.J_save').attr('disabled', false).click(updatePrivileges)
@@ -94,7 +94,7 @@ const loadRoles = function () {
 
       $action.find('a.J_edit').click(() =>
         RbFormModal.create({
-          title: '编辑角色',
+          title: $lang('EditSome,e.Role'),
           entity: 'Role',
           icon: 'lock',
           id: _id,
@@ -104,7 +104,7 @@ const loadRoles = function () {
       $action.find('a.J_del').click(function () {
         const alertExt = {
           type: 'danger',
-          confirmText: '删除',
+          confirmText: $lang('Delete'),
           confirm: function () {
             deleteRole(_id, this)
           },
@@ -112,10 +112,9 @@ const loadRoles = function () {
 
         $.get(`/admin/bizuser/delete-checks?id=${_id}`, function (res) {
           if (res.data.hasMember === 0) {
-            RbAlert.create('此角色可以被安全的删除', '删除角色', { ...alertExt, icon: 'alert-circle-o' })
+            RbAlert.create($lang('DeleteRoleSafeConfirm'), $lang('DeleteSome,e.Role'), { ...alertExt, icon: 'alert-circle-o' })
           } else {
-            const msg = '有 <b>' + res.data.hasMember + '</b> 个用户使用了此角色<br>删除将导致这些用户被禁用，直到你为他们指定了新的角色'
-            RbAlert.create(msg, '删除角色', { ...alertExt, html: true })
+            RbAlert.create($lang('DeleteRoleUnSafeConfirm').replace('%d', res.data.hasMember), $lang('DeleteSome,e.Role'), { ...alertExt, html: true })
           }
         })
       })

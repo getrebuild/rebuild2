@@ -13,19 +13,19 @@ $(document).ready(function () {
     .click(function () {
       $.get(`/admin/bizuser/delete-checks?id=${userId}`, (res) => {
         if (res.data.hasMember === 0) {
-          RbAlert.create('此用户可以被安全的删除', '删除用户', {
+          RbAlert.create($lang('DeleteUserSafeConfirm'), $lang('DeleteSome,e.User'), {
             icon: 'alert-circle-o',
             type: 'danger',
-            confirmText: '删除',
+            confirmText: $lang('Delete'),
             confirm: function () {
               deleteUser(userId, this)
             },
           })
         } else {
-          RbAlert.create('此用户已被使用过，因此不能删除。如不再使用可将其停用', '无法删除', {
+          RbAlert.create($lang('DeleteUserUnSafeConfirm'), $lang('NotDelete'), {
             icon: 'alert-circle-o',
             type: 'danger',
-            confirmText: '停用',
+            confirmText: $lang('NotDelete'),
             confirm: function () {
               toggleDisabled(true, this)
             },
@@ -35,8 +35,8 @@ $(document).ready(function () {
     })
 
   $('.J_disable').click(() => {
-    RbAlert.create('确定要停用此用户吗？', {
-      confirmText: '停用',
+    RbAlert.create($lang('DisableUserConfirm'), {
+      confirmText: $lang('Disable'),
       confirm: function () {
         toggleDisabled(true, this)
       },
@@ -49,14 +49,14 @@ $(document).ready(function () {
 
   $('.J_resetpwd').click(() => {
     const newpwd = $random(null, true, 8) + '!8'
-    RbAlert.create(`密码将重置为 <code class="fs-13 text-bold">${newpwd}</code> 是否确认？`, {
+    RbAlert.create($lang('ResetPasswdConfirm').replace('%s', newpwd), {
       html: true,
       confirm: function () {
         this.disabled(true)
         $.post(`/admin/bizuser/user-resetpwd?id=${userId}&newp=${$decode(newpwd)}`, (res) => {
           this.disabled()
           if (res.error_code === 0) {
-            RbHighbar.success('密码重置成功')
+            RbHighbar.success($lang('SomeSuccess,ResetPassword'))
             this.hide()
           } else RbHighbar.error(res.error_code)
         })
@@ -69,7 +69,7 @@ $(document).ready(function () {
       if (res.error_code > 0) return
       if (res.data.system === true && rb.isAdminVerified === true) {
         $('.view-action').remove()
-        $('.J_tips').removeClass('hide').find('.message p').text('系统内建超级管理员，不允许修改。此用户拥有最高级系统权限，请谨慎使用')
+        $('.J_tips').removeClass('hide').find('.message p').text($lang('NotModifyAdminUser'))
         return
       }
 
@@ -88,15 +88,15 @@ $(document).ready(function () {
       if (res.data.active === true) return
 
       const reasons = []
-      if (!res.data.role) reasons.push('未指定角色')
-      else if (res.data.roleDisabled) reasons.push('所属角色已停用')
-      if (!res.data.dept) reasons.push('未指定部门')
-      else if (res.data.deptDisabled) reasons.push('所在部门已停用')
-      if (res.data.disabled === true) reasons.push('已停用')
+      if (!res.data.role) reasons.push($lang('NotSpecRole'))
+      else if (res.data.roleDisabled) reasons.push($lang('OwningRoleDisabled'))
+      if (!res.data.dept) reasons.push($lang('NotSpecDept'))
+      else if (res.data.deptDisabled) reasons.push($lang('OwningDeptDisabled'))
+      if (res.data.disabled === true) reasons.push($lang('Disabled'))
       $('.J_tips')
         .removeClass('hide')
         .find('.message p')
-        .text('当前用户处于未激活状态，因为其 ' + reasons.join(' / '))
+        .text($lang('UserUnactiveReason').replace('%s', reasons.join(' / ')))
     })
   }
 })
@@ -111,7 +111,7 @@ const toggleDisabled = function (disabled, alert) {
   }
   $.post('/admin/bizuser/enable-user', JSON.stringify(data), (res) => {
     if (res.error_code === 0) {
-      RbHighbar.success('用户已' + (disabled ? '停用' : '启用'))
+      RbHighbar.success($lang('e.User') + ' ' + $lang(disabled ? 'Disabled' : 'Enabled'))
       _reload(200)
     } else RbHighbar.error(res.error_msg)
   })
@@ -134,8 +134,8 @@ class DlgEnableUser extends RbModalHandler {
   constructor(props) {
     super(props)
 
-    this.__title = '用户激活'
-    if (!props.enable) this.__title = '变更' + (props.dept === true ? '部门' : '角色')
+    this.__title = $lang('ActiveUser')
+    if (!props.enable) this.__title = $lang('ChangeSome,' + (props.dept === true ? 'e.Department' : 'e.Role'))
   }
 
   render() {
@@ -144,7 +144,7 @@ class DlgEnableUser extends RbModalHandler {
         <div className="form">
           {this.props.dept === true && (
             <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">用户部门</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,f.User.deptId')}</label>
               <div className="col-sm-7">
                 <UserSelector hideUser={true} hideRole={true} hideTeam={true} multiple={false} ref={(c) => (this._deptNew = c)} />
               </div>
@@ -152,7 +152,7 @@ class DlgEnableUser extends RbModalHandler {
           )}
           {this.props.role === true && (
             <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">用户角色</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,f.User.roleId')}</label>
               <div className="col-sm-7">
                 <UserSelector hideUser={true} hideDepartment={true} hideTeam={true} multiple={false} ref={(c) => (this._roleNew = c)} />
               </div>
@@ -161,10 +161,10 @@ class DlgEnableUser extends RbModalHandler {
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref={(c) => (this._btns = c)}>
               <button className="btn btn-primary btn-space" type="button" onClick={() => this.post()}>
-                确定
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link btn-space" onClick={() => this.hide()}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>
@@ -181,19 +181,19 @@ class DlgEnableUser extends RbModalHandler {
     }
     if (this._deptNew) {
       const v = this._deptNew.val()
-      if (v.length === 0) return RbHighbar.create('请选择部门')
+      if (v.length === 0) return RbHighbar.create($lang('PlsSelectSome,e.Department'))
       data.dept = v[0]
     }
     if (this._roleNew) {
       const v = this._roleNew.val()
-      if (v.length === 0) return RbHighbar.create('请选择角色')
+      if (v.length === 0) return RbHighbar.create($lang('PlsSelectSome,e.Role'))
       data.role = v[0]
     }
 
     const $btns = $(this._btns).find('.btn').button('loading')
     $.post('/admin/bizuser/enable-user', JSON.stringify(data), (res) => {
       if (res.error_code === 0) {
-        if (data.enable === true) RbHighbar.success('用户已激活')
+        if (data.enable === true) RbHighbar.success($lang('SomeEnabled,e.User'))
         _reload(data.enable ? 200 : 0)
       } else {
         RbHighbar.error(res.error_msg)

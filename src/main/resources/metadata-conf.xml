@@ -21,7 +21,7 @@
         <field name="workphone" type="string" max-length="100" description="电话" extra-attrs="{displayType:'PHONE'}"/>
         <field name="deptId" type="reference" ref-entity="Department" updatable="false" description="部门"/>
         <field name="roleId" type="reference" ref-entity="Role" updatable="false" description="角色"/>
-        <field name="isDisabled" type="bool" default-value="F" description="是否停用"/>
+        <field name="isDisabled" type="bool" default-value="F" description="是否禁用"/>
         <field name="quickCode" type="string" max-length="70" queryable="false"/>
         <index type="unique" field-list="loginName"/>
         <index type="unique" field-list="email"/>
@@ -33,14 +33,14 @@
         <field name="name" type="string" max-length="100" nullable="false" description="部门名称"/>
         <field name="parentDept" type="reference" ref-entity="Department" description="父级部门"/>
         <field name="principalId" type="reference" ref-entity="User" description="负责人"/>
-        <field name="isDisabled" type="bool" default-value="F" description="是否停用"/>
+        <field name="isDisabled" type="bool" default-value="F" description="是否禁用"/>
         <field name="quickCode" type="string" max-length="70" queryable="false"/>
     </entity>
 
     <entity name="Role" type-code="003" description="角色" name-field="name" extra-attrs="{icon:'lock'}">
         <field name="roleId" type="primary"/>
         <field name="name" type="string" max-length="100" nullable="false" description="角色名称"/>
-        <field name="isDisabled" type="bool" default-value="F" description="是否停用"/>
+        <field name="isDisabled" type="bool" default-value="F" description="是否禁用"/>
         <field name="quickCode" type="string" max-length="70" queryable="false"/>
     </entity>
 
@@ -64,7 +64,7 @@
         <field name="teamId" type="primary"/>
         <field name="name" type="string" max-length="100" nullable="false" description="团队名称"/>
         <field name="principalId" type="reference" ref-entity="User" description="负责人"/>
-        <field name="isDisabled" type="bool" default-value="F" description="是否停用"/>
+        <field name="isDisabled" type="bool" default-value="F" description="是否禁用"/>
         <field name="quickCode" type="string" max-length="70" queryable="false"/>
     </entity>
 
@@ -257,7 +257,7 @@
         <field name="actionContent" type="text" description="预定义的触发操作类型 (JSON Map)"/>
         <field name="priority" type="int" default-value="1" description="执行优先级 (越大越高越先执行)"/>
         <field name="name" type="string" max-length="100" description="触发器名称"/>
-        <field name="isDisabled" type="bool" default-value="F" description="是否停用"/>
+        <field name="isDisabled" type="bool" default-value="F" description="是否禁用"/>
     </entity>
 
     <entity name="RobotApprovalConfig" type-code="028" name-field="name" description="审批流程" queryable="false">
@@ -265,7 +265,7 @@
         <field name="belongEntity" type="string" max-length="100" nullable="false" updatable="false" description="应用实体"/>
         <field name="name" type="string" max-length="100" nullable="false" description="流程名称"/>
         <field name="flowDefinition" type="text" description="流程定义"/>
-        <field name="isDisabled" type="bool" default-value="F" description="是否停用"/>
+        <field name="isDisabled" type="bool" default-value="F" description="是否禁用"/>
     </entity>
 
     <entity name="RobotApprovalStep" type-code="029" description="审批步骤" queryable="false">
@@ -310,7 +310,7 @@
         <field name="name" type="string" max-length="100" nullable="false" description="报表名称"/>
         <field name="templateFile" type="string" max-length="200" description="模板文件"/>
         <field name="templateContent" type="text" max-length="20000" description="模板内容"/>
-        <field name="isDisabled" type="bool" default-value="F" description="是否停用"/>
+        <field name="isDisabled" type="bool" default-value="F" description="是否禁用"/>
     </entity>
 
     <entity name="RecycleBin" type-code="033" name-field="recordName" description="回收站" queryable="false" parent="false">

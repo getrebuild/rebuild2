@@ -3,7 +3,7 @@
   <head>
     <th:block th:replace="~{/_include/header}" />
     <meta name="page-help" content="https://getrebuild.com/docs/admin/users" />
-    <title>[[${entityLabel}]]管理</title>
+    <title>[[${bundle.lang('SomeManage,e.Department')}]]</title>
   </head>
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-aside rb-color-header">
@@ -27,10 +27,10 @@
         <div class="main-content container-fluid">
           <ul class="nav nav-tabs nav-tabs-classic">
             <li class="nav-item">
-              <a href="users" class="nav-link"><span class="icon zmdi zmdi-account"></span> 用户</a>
+              <a href="users" class="nav-link"><span class="icon zmdi zmdi-account"></span> [[${bundle.lang('e.User')}]]</a>
             </li>
             <li class="nav-item">
-              <a href="departments" class="nav-link active"><span class="icon zmdi zmdi-accounts"></span> [[${entityLabel}]]</a>
+              <a href="departments" class="nav-link active"><span class="icon zmdi zmdi-accounts"></span> [[${bundle.lang('e.Department')}]]</a>
             </li>
           </ul>
           <div class="card card-table">
@@ -40,7 +40,7 @@
                   <div class="col-12 col-lg-6">
                     <div class="dataTables_filter">
                       <div class="input-group input-search">
-                        <input class="form-control" type="text" th:placeholder="|查询${entityLabel}|" maxlength="40" />
+                        <input class="form-control" type="text" th:placeholder="${bundle.lang('Query')}" maxlength="40" />
                         <span class="input-group-btn">
                           <button class="btn btn-secondary" type="button"><i class="icon zmdi zmdi-search"></i></button>
                         </span>
@@ -49,12 +49,12 @@
                   </div>
                   <div class="col-12 col-lg-6">
                     <div class="dataTables_oper">
-                      <button class="btn btn-space btn-secondary J_view" type="button" disabled="disabled"><i class="icon zmdi zmdi-folder"></i> 打开</button>
-                      <button class="btn btn-primary btn-space J_new" type="button"><i class="icon zmdi zmdi-accounts-add"></i> 新建[[${entityLabel}]]</button>
+                      <button class="btn btn-space btn-secondary J_view" type="button" disabled="disabled"><i class="icon zmdi zmdi-folder"></i> [[${bundle.lang('Open')}]]</button>
+                      <button class="btn btn-primary btn-space J_new" type="button"><i class="icon zmdi zmdi-accounts-add"></i> [[${bundle.lang('NewSome,e.Department')}]]</button>
                       <div class="btn-group btn-space">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">更多 <i class="icon zmdi zmdi-more-vert"></i></button>
+                        <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">[[${bundle.lang('More')}]] <i class="icon zmdi zmdi-more-vert"></i></button>
                         <div class="dropdown-menu dropdown-menu-right">
-                          <a class="dropdown-item J_columns"><i class="icon zmdi zmdi-code-setting"></i> 列显示</a>
+                          <a class="dropdown-item J_columns"><i class="icon zmdi zmdi-code-setting"></i> [[${bundle.lang('FieldShow')}]]</a>
                         </div>
                       </div>
                     </div>
