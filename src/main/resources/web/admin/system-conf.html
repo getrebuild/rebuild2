@@ -48,6 +48,10 @@
                         <td data-id="HomeURL" th:data-value="${HomeURL}">[[${HomeURL}]]</td>
                       </tr>
                       <tr>
+                        <td>[[${bundle.lang('DefaultLanguage')}]]</td>
+                        <td data-id="DefaultLanguage" th:data-value="${DefaultLanguage}" id="_DefaultLanguage">[[${DefaultLanguage}]]</td>
+                      </tr>
+                      <tr>
                         <td>[[${bundle.lang('OpenSignUp')}]]</td>
                         <td data-id="OpenSignUp" th:data-value="${OpenSignUp}">[[${bundle.lang(OpenSignUp ? 'True' : 'False')}]]</td>
                       </tr>
@@ -114,6 +118,15 @@
     <th:block th:replace="~{/_include/footer}" />
     <script th:src="@{/assets/js/admin/syscfg.js}" type="text/babel"></script>
     <script type="text/babel">
+      const _LANGS = {
+        zh_CN: '中文 (zh_CN)',
+        en: 'English (en)',
+      }
+      $(document).ready(() => {
+        const $L = $('#_DefaultLanguage')
+        $L.text(_LANGS[$L.text()])
+      })
+
       useEditComp = function (name, value) {
         if (['OpenSignUp', 'LiveWallpaper', 'FileSharable', 'MarkWatermark', 'DBBackupsEnable'].includes(name)) {
           return (
@@ -123,12 +136,19 @@
             </select>
           )
         } else if ('PasswordPolicy' === name) {
-          console.log(value)
           return (
             <select name={name} className="form-control form-control-sm" onChange={changeValue} defaultValue={value}>
               <option value="1">{$lang('PasswordPolicyL1')}</option>
               <option value="2">{$lang('PasswordPolicyL2')}</option>
               <option value="3">{$lang('PasswordPolicyL3')}</option>
+            </select>
+          )
+        } else if ('DefaultLanguage' === name) {
+          const options = []
+          for (let k in _LANGS) options.push(<option value={k}>{_LANGS[k]}</option>)
+          return (
+            <select name={name} className="form-control form-control-sm" onChange={changeValue} defaultValue={value}>
+              {options}
             </select>
           )
         }

@@ -60,7 +60,7 @@ public class DataImportControl extends BaseController {
         String file = getParameterNotNull(request, "file");
         File tmp = getFileOfImport(file);
         if (tmp == null) {
-            writeFailure(response, "无效数据文件");
+            writeFailure(response, getLang(request, "SomeInvalid,DataFile"));
             return;
         }
 
@@ -72,7 +72,7 @@ public class DataImportControl extends BaseController {
             preview = parser.parse(11);
         } catch (Exception ex) {
             LOG.error("Parse excel error : " + file, ex);
-            writeFailure(response, "无法解析数据，请检查数据文件格式");
+            writeFailure(response, getLang(request, "NotParseDataFile"));
             return;
         }
 
@@ -123,11 +123,11 @@ public class DataImportControl extends BaseController {
 
             String defaultValue = null;
             if (EntityHelper.CreatedOn.equals(fieldName) || EntityHelper.ModifiedOn.equals(fieldName)) {
-                defaultValue = "当前时间";
+                defaultValue = getLang(request, "CurrentTime");
             } else if (EntityHelper.CreatedBy.equals(fieldName) || EntityHelper.ModifiedBy.equals(fieldName) || EntityHelper.OwningUser.equals(fieldName)) {
-                defaultValue = "当前用户";
+                defaultValue = getLang(request, "CurrentUser");
             } else if (easyMeta.getDisplayType() == DisplayType.SERIES) {
-                defaultValue = "自动编号";
+                defaultValue = getLang(request, "AutoNumber");
             }
             if (defaultValue != null) {
                 map.put("defaultValue", defaultValue);

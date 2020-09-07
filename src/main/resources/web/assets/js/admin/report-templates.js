@@ -142,7 +142,7 @@ class ReporEdit extends ConfigFormDlg {
         postUrl: rb.baseUrl + '/filex/upload',
         onSelectError: function (field, error) {
           if (error === 'ErrorType') RbHighbar.create($lang('PlsUploadSomeFile').replace('%s', ' EXCEL '))
-          else if (error === 'ErrorMaxSize') RbHighbar.create($lang('ExceedMaxLimit'))
+          else if (error === 'ErrorMaxSize') RbHighbar.create($lang('ExceedMaxLimit') + ' (5MB)')
         },
         onClientLoad: function () {
           $mp.start()

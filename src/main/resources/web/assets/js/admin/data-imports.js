@@ -13,6 +13,7 @@ const ientry = {
   owning_user: null,
   fields_mapping: null,
 }
+
 let fields_cached
 let import_inprogress = false
 let import_taskid
@@ -22,19 +23,21 @@ $(document).ready(() => {
 
   const fileds_render = (entity) => {
     if (!entity) return
-    let el = $('#repeatFields').empty()
+    const $el = $('#repeatFields').empty()
     $.get(`/admin/data/data-imports/import-fields?entity=${entity}`, (res) => {
       $(res.data).each(function () {
         if (this.name === 'createdBy' || this.name === 'createdOn' || this.name === 'modifiedOn' || this.name === 'modifiedBy') return
-        $('<option value="' + this.name + '">' + this.label + '</option>').appendTo(el)
+        $('<option value="' + this.name + '">' + this.label + '</option>').appendTo($el)
       })
 
-      el.select2({
-        maximumSelectionLength: 3,
-        placeholder: '选择字段',
-      }).on('change', function () {
-        ientry.repeat_fields = $(this).val()
-      })
+      $el
+        .select2({
+          maximumSelectionLength: 3,
+          placeholder: $lang('SelectSome,Field'),
+        })
+        .on('change', function () {
+          ientry.repeat_fields = $(this).val()
+        })
 
       fields_cached = res.data
       ientry.entity = entity
@@ -46,7 +49,7 @@ $(document).ready(() => {
       $('<option value="' + this.name + '">' + this.label + '</option>').appendTo('#toEntity')
     })
 
-    const entityS2 = $('#toEntity')
+    const $toe = $('#toEntity')
       .select2({
         allowClear: false,
       })
@@ -54,8 +57,8 @@ $(document).ready(() => {
         fileds_render($(this).val())
         check_user()
       })
-    if ($urlp('entity')) entityS2.val($urlp('entity'))
-    entityS2.trigger('change')
+    if ($urlp('entity')) $toe.val($urlp('entity'))
+    $toe.trigger('change')
   })
 
   $('input[name=repeatOpt]').click(function () {
@@ -66,7 +69,7 @@ $(document).ready(() => {
 
   $('#toUser')
     .select2({
-      placeholder: '默认',
+      placeholder: $lang('Default'),
       minimumInputLength: 1,
       ajax: {
         url: '/commons/search/search',
@@ -112,8 +115,8 @@ const init_upload = () => {
   $('#upload-input').html5Uploader({
     postUrl: rb.baseUrl + '/filex/upload?temp=yes',
     onSelectError: function (field, error) {
-      if (error === 'ErrorType') RbHighbar.create('请上传 Excel/CSV 文件')
-      else if (error === 'ErrorMaxSize') RbHighbar.create('文件不能大于 50M')
+      if (error === 'ErrorType') RbHighbar.create($lang('PlsUploadSomeFile').replace('%s', 'EXCEL/CSV '))
+      else if (error === 'ErrorMaxSize') RbHighbar.create($lang('ExceedMaxLimit') + ' (50MB)')
     },
     onClientLoad: function () {
       $mp.start()
@@ -124,7 +127,9 @@ const init_upload = () => {
       if (d.error_code === 0) {
         ientry.file = d.data
         $('.J_upload-input').text($fileCutName(ientry.file))
-      } else RbHighbar.error('上传失败，请稍后重试')
+      } else {
+        RbHighbar.error($lang('ErrorUpload'))
+      }
     },
   })
 }
@@ -135,10 +140,10 @@ const check_user0 = () => {
   if (!ientry.entity || !ientry.owning_user) return
   $.get(`/admin/data/data-imports/check-user?user=${ientry.owning_user}&entity=${ientry.entity}`, (res) => {
     let hasError = []
-    if (res.data.canCreate !== true) hasError.push('新建')
-    if (res.data.canUpdate !== true) hasError.push('更新')
+    if (res.data.canCreate !== true) hasError.push($lang('Permission1'))
+    if (res.data.canUpdate !== true) hasError.push($lang('Permission4'))
     if (hasError.length > 0) {
-      renderRbcomp(<RbAlertBox message={`选择的用户无 ${hasError.join('/')} 权限。但作为管理员，你可以强制导入`} />, 'user-warn')
+      renderRbcomp(<RbAlertBox message={$lang('SelectUserNoPermissionConfirm').replace('%s', hasError.join('/'))} />, 'user-warn')
     } else {
       $('#user-warn').empty()
     }
@@ -151,15 +156,15 @@ const step_upload = () => {
 }
 const step_mapping = () => {
   if (!ientry.entity) {
-    RbHighbar.create('请选择导入实体')
+    RbHighbar.create($lang('PlsSelectSome,ImportEntity'))
     return
   }
   if (!ientry.file) {
-    RbHighbar.create('请上传数据文件')
+    RbHighbar.create($lang('PlsUploadSome,DataFile'))
     return
   }
   if (ientry.repeat_opt !== 3 && (!ientry.repeat_fields || ientry.repeat_fields.length === 0)) {
-    RbHighbar.create('请选择重复判断字段')
+    RbHighbar.create($lang('PlsSelectSome,DuplicateFields'))
     return
   }
 
@@ -173,7 +178,7 @@ const step_mapping = () => {
 
     const _data = res.data
     if (_data.preview.length < 2 || _data.preview[0].length === 0) {
-      RbHighbar.create('上传的文件无有效数据')
+      RbHighbar.create($lang('UploadedFileNoData'))
       return
     }
 
@@ -195,7 +200,7 @@ const step_import = () => {
     if (item.nullable === true || !!item.defaultValue) {
       // Not be must
     } else if (fm[item.name] === undefined) {
-      RbHighbar.create(item.label + ' 为必填字段，请选择')
+      RbHighbar.create(item.label + ' ' + $lang('SomeRequiredField'))
       fm = null
       return false
     }
@@ -203,7 +208,7 @@ const step_import = () => {
   if (!fm) return
   ientry.fields_mapping = fm
 
-  RbAlert.create('请再次确认导入选项和字段映射。开始导入吗？', {
+  RbAlert.create($lang('DataImportConfirm'), {
     confirm: function () {
       this.disabled(true)
       $.post('/admin/data/data-imports/import-submit', JSON.stringify(ientry), (res) => {
@@ -242,19 +247,19 @@ const import_state = (taskid, inLoad) => {
 
     if (_data.isCompleted === true) {
       $('.J_import-bar').css('width', '100%')
-      $('.J_import_state').text('导入完成。共成功导入 ' + _data.succeeded + ' 条数据')
+      $('.J_import_state').text($lang('ImportFinshedTips').replace('%d', _data.succeeded))
     } else if (_data.isInterrupted === true) {
-      $('.J_import_state').text('导入被终止。已成功导入 ' + _data.succeeded + ' 条数据')
+      $('.J_import_state').text($lang('ImportInterrupttedTips').replace('%d', _data.succeeded))
     }
     if (_data.isCompleted === true || _data.isInterrupted === true) {
-      $('.J_step3-cancel').attr('disabled', true).text('导入完成')
+      $('.J_step3-cancel').attr('disabled', true).text($lang('ImportFinshed'))
       $('.J_step3-logs').removeClass('hide')
       import_inprogress = false
       return
     }
 
     if (_data.total > -1) {
-      $('.J_import_state').text('正在导入 ... ' + _data.completed + ' / ' + _data.total)
+      $('.J_import_state').text($lang('DataImporting') + ' ' + _data.completed + '/' + _data.total)
       $('.J_import-bar').css('width', _data.progress * 100 + '%')
     }
     setTimeout(() => {
@@ -263,9 +268,8 @@ const import_state = (taskid, inLoad) => {
   })
 }
 const import_cancel = () => {
-  RbAlert.create('确认终止导入？请注意已导入数据无法自动删除', {
+  RbAlert.create($lang('ImportInterrupttedConfirm'), {
     type: 'danger',
-    confirmText: '确认终止',
     confirm: function () {
       $.post(`/commons/task/cancel?taskid=${import_taskid}`, (res) => {
         if (res.error_code > 0) RbHighbar.error(res.error_msg)
@@ -277,13 +281,14 @@ const import_cancel = () => {
 
 // 渲染字段映射
 const render_fieldsMapping = (columns, fields) => {
-  const fields_map = {}
-  const fields_select = $('<select><option value="">无</option></select>')
+  const fieldMap = {}
+  const fieldSelect = $(`<select><option value="">${$lang('None2')}</option></select>`)
+
   $(fields).each((idx, item) => {
-    let canNull = item.nullable === false ? ' [必填]' : ''
+    let canNull = item.nullable === false ? ` [${$lang('Required')}]` : ''
     if (item.defaultValue) canNull = ''
-    $('<option value="' + item.name + '">' + item.label + canNull + '</option>').appendTo(fields_select)
-    fields_map[item.name] = item
+    $('<option value="' + item.name + '">' + item.label + canNull + '</option>').appendTo(fieldSelect)
+    fieldMap[item.name] = item
   })
 
   const $tbody = $('#fieldsMapping tbody').empty()
@@ -291,24 +296,25 @@ const render_fieldsMapping = (columns, fields) => {
     const $tr = $('<tr data-col="' + idx + '"></tr>').appendTo($tbody)
     $('<td><em>#' + (idx + 1) + '</em> ' + item + '<i class="zmdi zmdi-arrow-right"></i></td>').appendTo($tr)
     const $td = $('<td></td>').appendTo($tr)
-    fields_select.clone().appendTo($td)
+    fieldSelect.clone().appendTo($td)
     $('<td class="pl-3"></td>').appendTo($tr)
   })
+
   $('#fieldsMapping tbody select')
     .select2({
-      placeholder: '无',
+      placeholder: $lang('None2'),
     })
     .on('change', function () {
       const val = $(this).val()
-      const toel = $(this).parents('td').next()
+      const $toe = $(this).parents('td').next()
       if (val) {
-        toel.parent().addClass('table-active')
-        const meta = fields_map[val]
-        if (meta.defaultValue) toel.text('默认 : ' + meta.defaultValue)
-        else toel.text('')
+        $toe.parent().addClass('table-active')
+        const field = fieldMap[val]
+        if (field.defaultValue) $toe.text($lang('Default') + ' : ' + field.defaultValue)
+        else $toe.text('')
       } else {
-        toel.parent().removeClass('table-active')
-        toel.text('')
+        $toe.parent().removeClass('table-active')
+        $toe.text('')
       }
     })
 }

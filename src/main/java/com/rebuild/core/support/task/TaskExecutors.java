@@ -103,15 +103,16 @@ public class TaskExecutors extends DistributedJobBean {
     public void shutdown() {
         List<Runnable> runs = EXECS.shutdownNow();
         if (!runs.isEmpty()) {
-            LOG.warn(runs.size() + " tasks interrupted");
+            LOG.warn("{} task(s) were interrupted", runs.size());
         }
     }
-
-    // --
 
     @Scheduled(cron = "0 15,35,55 * * * ?")
     public void executeJob() {
         if (isRunning()) return;
+        if (TASKS.isEmpty()) return;
+
+        LOG.info("{} task(s) in the queue", TASKS.size());
 
         for (Map.Entry<String, HeavyTask<?>> e : TASKS.entrySet()) {
             HeavyTask<?> task = e.getValue();

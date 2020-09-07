@@ -207,7 +207,7 @@ public class Application {
             }
         }
 
-        // 初始化业务
+        // 初始化业务组件
         for (Initialization bean : APPLICATION_CONTEXT.getBeansOfType(Initialization.class).values()) {
             bean.init();
         }
