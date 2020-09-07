@@ -21,23 +21,23 @@ $(document).ready(() => {
 const ListConfig = {
   entity: 'RevisionHistory',
   fields: [
-    { field: 'belongEntity', label: '所属实体', unsort: true },
-    { field: 'revisionType', label: '变更类型' },
-    { field: 'revisionOn', label: '变更时间', type: 'DATETIME' },
-    { field: 'revisionBy.fullName', label: '操作人' },
-    { field: 'channelWith', label: '操作方式', unsort: true },
-    { field: 'recordId', label: '记录ID', unsort: true },
+    { field: 'belongEntity', label: $lang('f.RevisionHistory.belongEntity'), unsort: true },
+    { field: 'revisionType', label: $lang('f.RevisionHistory.revisionType') },
+    { field: 'revisionOn', label: $lang('f.RevisionHistory.revisionOn'), type: 'DATETIME' },
+    { field: 'revisionBy.fullName', label: $lang('f.RevisionHistory.revisionBy') },
+    { field: 'channelWith', label: $lang('f.RevisionHistory.channelWith'), unsort: true },
+    { field: 'recordId', label: $lang('f.RevisionHistory.recordId'), unsort: true },
   ],
 }
 
 // 操作类型
 const RevTypes = {
-  1: '新建',
-  2: '删除',
-  4: '更新',
-  16: '分派',
-  32: '共享',
-  64: '取消共享',
+  1: $lang('Permission1'),
+  2: $lang('Permission2'),
+  4: $lang('Permission4'),
+  16: $lang('Permission16'),
+  32: $lang('Permission32'),
+  64: $lang('Permission64'),
 }
 
 class DataList extends React.Component {
@@ -94,20 +94,25 @@ class DataList extends React.Component {
 
 // eslint-disable-next-line react/display-name
 CellRenders.renderSimple = function (v, s, k) {
-  if (k.endsWith('.channelWith'))
+  if (k.endsWith('.channelWith')) {
     v = v ? (
       <React.Fragment>
-        关联操作{' '}
-        <span className="badge text-id ml-1" title="关联主记录ID">
+        {$lang('CasOperation')}
+        <span className="badge text-id ml-1" title={$lang('CasMainId')}>
           {v}
         </span>
       </React.Fragment>
     ) : (
-      '直接操作'
+      $lang('DirectOperation')
     )
-  else if (k.endsWith('.recordId')) v = <span className="badge text-id">{v}</span>
-  else if (k.endsWith('.belongEntity')) v = _entities[v] || `[${v.toUpperCase()}]`
-  else if (k.endsWith('.revisionType')) v = RevTypes[v] || '未知'
+  } else if (k.endsWith('.recordId')) {
+    v = <span className="badge text-id">{v}</span>
+  } else if (k.endsWith('.belongEntity')) {
+    v = _entities[v] || `[${v.toUpperCase()}]`
+  } else if (k.endsWith('.revisionType')) {
+    v = RevTypes[v] || 'N'
+  }
+
   return (
     <td key={k}>
       <div style={s}>{v || ''}</div>
@@ -121,14 +126,14 @@ class DlgDetails extends RbAlert {
   }
 
   renderContent() {
-    if (!this.state.data || this.state.data.length === 0) return <div>无变更详情</div>
+    if (!this.state.data || this.state.data.length === 0) return <div>{$lang('NoHistoryDetails')}</div>
     return (
       <table className="table table-fixed">
         <thead>
           <tr>
-            <th width="22%">字段</th>
-            <th>变更前</th>
-            <th>变更后</th>
+            <th width="22%">{$lang('Field')}</th>
+            <th>{$lang('UpdateBefore')}</th>
+            <th>{$lang('UpdateAfter')}</th>
           </tr>
         </thead>
         <tbody>
@@ -137,10 +142,10 @@ class DlgDetails extends RbAlert {
               <tr key={`fk-${item.field}`}>
                 <td>{item.field}</td>
                 <td>
-                  <div>{item.before || <span className="text-muted">空</span>}</div>
+                  <div>{item.before || <span className="text-muted">{$lang('Empty')}</span>}</div>
                 </td>
                 <td>
-                  <div>{item.after || <span className="text-muted">空</span>}</div>
+                  <div>{item.after || <span className="text-muted">{$lang('Empty')}</span>}</div>
                 </td>
               </tr>
             )
@@ -153,7 +158,7 @@ class DlgDetails extends RbAlert {
   componentDidMount() {
     $.get(`/admin/audit/revision-history/details?id=${this.props.id}`, (res) => {
       if (res.data.length === 0) {
-        RbHighbar.create('选中纪录无变更详情')
+        RbHighbar.create($lang('SelectNoHistoryDetails'))
         this.hide()
       } else {
         super.componentDidMount()

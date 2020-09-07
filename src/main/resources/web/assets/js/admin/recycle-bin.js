@@ -21,12 +21,12 @@ $(document).ready(() => {
 const ListConfig = {
   entity: 'RecycleBin',
   fields: [
-    { field: 'belongEntity', label: '所属实体', unsort: true },
-    { field: 'recordName', label: '记录名称', width: 300 },
-    { field: 'deletedOn', label: '删除时间', type: 'DATETIME' },
-    { field: 'deletedBy.fullName', label: '删除人' },
-    { field: 'channelWith', label: '删除方式', unsort: true },
-    { field: 'recordId', label: '记录ID', unsort: true },
+    { field: 'belongEntity', label: $lang('f.RecycleBin.belongEntity'), unsort: true },
+    { field: 'recordName', label: $lang('f.RecycleBin.recordName'), width: 300 },
+    { field: 'deletedOn', label: $lang('f.RecycleBin.deletedOn'), type: 'DATETIME' },
+    { field: 'deletedBy.fullName', label: $lang('f.RecycleBin.deletedBy') },
+    { field: 'channelWith', label: $lang('f.RecycleBin.channelWith'), unsort: true },
+    { field: 'recordId', label: $lang('f.RecycleBin.recordId'), unsort: true },
   ],
 }
 
@@ -42,7 +42,7 @@ class DataList extends React.Component {
   componentDidMount() {
     const select2 = $('#belongEntity')
       .select2({
-        placeholder: '选择实体',
+        placeholder: $lang('SelectSome,Entity'),
         width: 220,
         allowClear: false,
       })
@@ -84,10 +84,14 @@ class DataList extends React.Component {
     const ids = this._List.getSelectedIds()
     if (!ids || ids.length === 0) return
 
+    const cont =
+      `<div class="text-bold mb-2">${$lang('RestoreConfirm').replace('%d', ids.length)}</div>` +
+      '<label class="custom-control custom-control-sm custom-checkbox custom-control-inline mb-2">' +
+      '<input class="custom-control-input" type="checkbox">' +
+      `<span class="custom-control-label">${$lang('RestoreCasTips')}</span>` +
+      '</label>'
+
     const that = this
-    let cont = `<div class="text-bold mb-2">是否恢复选中的 ${ids.length} 条记录？</div>`
-    cont +=
-      '<label class="custom-control custom-control-sm custom-checkbox custom-control-inline mb-2"><input class="custom-control-input" type="checkbox"><span class="custom-control-label"> 同时恢复关联删除的记录 (如有)</span></label>'
     RbAlert.create(cont, {
       html: true,
       confirm: function () {
@@ -97,9 +101,11 @@ class DataList extends React.Component {
           this.hide()
           this.disabled()
           if (res.error_code === 0 && res.data.restored > 0) {
-            RbHighbar.success(`成功恢复 ${res.data.restored} 条记录`)
+            RbHighbar.success($lang('RestoreSuccessTips').replace('%d', res.data.restored))
             that.queryList()
-          } else RbHighbar.error(res.error_code > 0 ? res.error_msg : '无法恢复选中记录')
+          } else {
+            RbHighbar.error(res.error_code > 0 ? res.error_msg : $lang('RestoreFailedTips'))
+          }
         })
       },
     })
@@ -111,13 +117,13 @@ CellRenders.renderSimple = function (v, s, k) {
   if (k.endsWith('.channelWith'))
     v = v ? (
       <React.Fragment>
-        关联删除{' '}
-        <span className="badge text-id ml-1" title="关联主记录ID">
+        {$lang('CasDelete')}
+        <span className="badge text-id ml-1" title={$lang('CasMainId')}>
           {v.toUpperCase()}
         </span>
       </React.Fragment>
     ) : (
-      '直接删除'
+      $lang('DirectDelete')
     )
   else if (k.endsWith('.recordId')) v = <span className="badge text-id">{v.toUpperCase()}</span>
   else if (k.endsWith('.belongEntity')) v = _entities[v] || `[${v.toUpperCase()}]`

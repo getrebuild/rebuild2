@@ -3,7 +3,7 @@
   <head>
     <th:block th:replace="~{/_include/header}" />
     <meta name="page-help" content="https://getrebuild.com/docs/admin/auditing" />
-    <title>变更历史</title>
+    <title>[[${bundle.lang('e.RevisionHistory')}]]</title>
     <style type="text/css">
       .table.table-fixed td {
         vertical-align: text-top;
@@ -29,11 +29,11 @@
                     <div class="dataTables_filter">
                       <div class="float-left mr-2 select2-sm">
                         <select class="form-control form-control-sm" id="belongEntity" style="width: 220px">
-                          <option value="$ALL$">全部实体</option>
+                          <option value="$ALL$">[[${bundle.lang('AllEntity')}]]</option>
                         </select>
                       </div>
                       <div class="input-group input-search">
-                        <input class="form-control" type="text" placeholder="查询记录ID" maxlength="40" />
+                        <input class="form-control" type="text" th:placeholder="${bundle.lang('Query')}" maxlength="40" />
                         <span class="input-group-btn"
                           ><button class="btn btn-secondary" type="button"><i class="icon zmdi zmdi-search"></i></button
                         ></span>
@@ -42,7 +42,7 @@
                   </div>
                   <div class="col-12 col-md-6">
                     <div class="dataTables_oper">
-                      <button class="btn btn-space btn-secondary J_details"><i class="icon zmdi zmdi-search-in-file"></i> 详情</button>
+                      <button class="btn btn-space btn-secondary J_details"><i class="icon zmdi zmdi-search-in-file"></i> [[${bundle.lang('Details')}]]</button>
                     </div>
                   </div>
                 </div>

@@ -13,12 +13,12 @@ class OnlineUserViewer extends RbModalHandler {
 
   render() {
     return (
-      <RbModal ref={(c) => (this._dlg = c)} title="在线用户" disposeOnHide={true}>
+      <RbModal ref={(c) => (this._dlg = c)} title={$lang('ViewOnlineUsers')} disposeOnHide={true}>
         <table className="table table-striped table-hover table-sm dialog-table">
           <thead>
             <tr>
-              <th style={{ minWidth: 150 }}>用户</th>
-              <th style={{ minWidth: 150 }}>最近活跃</th>
+              <th style={{ minWidth: 150 }}>{$lang('e.User')}</th>
+              <th style={{ minWidth: 150 }}>{$lang('LastActive')}</th>
               <th width="90"></th>
             </tr>
           </thead>
@@ -31,14 +31,12 @@ class OnlineUserViewer extends RbModalHandler {
                     <span className="pt-1">{item.fullName}</span>
                   </td>
                   <td className="cell-detail">
-                    <a href="###" className="text-break">
-                      {item.activeUrl || '无'}
-                    </a>
+                    <code className="text-break">{item.activeUrl || $lang('None')}</code>
                     <span className="cell-detail-description">{item.activeTime}</span>
                   </td>
                   <td className="actions text-right">
                     <button className="btn btn-danger btn-sm bordered" type="button" onClick={() => this._killSession(item.user)}>
-                      强退
+                      {$lang('KillSession')}
                     </button>
                   </td>
                 </tr>
@@ -63,7 +61,7 @@ class OnlineUserViewer extends RbModalHandler {
 
   _killSession(user) {
     const that = this
-    RbAlert.create('确认强制退出该用户？', {
+    RbAlert.create($lang('KillSessionConfirm'), {
       confirm: function () {
         $.post(`/admin/bizuser/kill-session?user=${user}`, () => {
           this.hide()
