@@ -59,8 +59,13 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         Application.getSessionStore().setLocale(locale);
 
         if (htmlRequest) {
-            request.setAttribute("locale", locale);
-            request.setAttribute("bundle", Application.getCurrentBundle());
+            request.setAttribute(RebuildWebConstants.LOCALE, locale);
+            request.setAttribute(RebuildWebConstants.$BUNDLE, Application.getCurrentBundle());
+        }
+
+        // TODO CSRF
+        if (htmlRequest) {
+            request.setAttribute(RebuildWebConstants.CSRF_TOKEN, CodecUtils.randomCode(60));
         }
 
         // 服务状态
@@ -105,7 +110,7 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
                 Application.getSessionStore().storeLastActive(request);
 
                 // 前端使用
-                request.setAttribute("user", Application.getUserStore().getUser(requestUser));
+                request.setAttribute(RebuildWebConstants.$USER, Application.getUserStore().getUser(requestUser));
                 request.setAttribute("AllowCustomNav",
                         Application.getPrivilegesManager().allow(requestUser, ZeroEntry.AllowCustomNav));
             }

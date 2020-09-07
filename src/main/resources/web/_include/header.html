@@ -13,22 +13,26 @@
   <link rel="stylesheet" type="text/css" th:href="@{/assets/lib/jquery-ui.min.css}" />
   <link rel="stylesheet" type="text/css" th:href="@{/assets/css/rb-base.css}" />
   <link rel="stylesheet" type="text/css" th:href="@{/assets/css/rb-page.css}" />
-  <script>
-    window.rb = {
-      env: '[[${env}]]',
-      locale: '[[${locale}]]',
-      baseUrl: '[[${baseUrl}]]',
-      appName: '[[${appName}]]',
-      storageUrl: '[[${storageUrl}]]',
-      fileSharable: '[[${fileSharable}]]' === 'true',
-    }
-  </script>
-  <script th:if="${user != null}">
-    window.rb.currentUser = '[[${user.getId()}]]'
-    window.rb.isAdminUser = '[[${user.isAdmin()}]]' === 'true'
-    window.rb.isAdminVerified = '[[${T(com.rebuild.utils.AppUtils).isAdminVerified(#request)}]]' === 'true'
-  </script>
+  <meta name="rb.dev" th:content="${env}" />
+  <meta name="rb.baseUrl" th:content="${baseUrl}" />
+  <meta name="rb.appName" th:content="${appName}" />
+  <meta name="rb.storageUrl" th:content="${storageUrl}" />
+  <meta name="rb.fileSharable" th:content="${fileSharable}" />
+  <meta name="rb.locale" th:content="${locale}" />
+  <meta name="rb.csrfToken" th:content="${csrfToken}" />
+  <meta name="rb.accessToken" th:content="${accessToken}" />
+  <th:block th:if="${user != null}">
+    <meta name="rb.currentUser" th:content="${user.getId()}" />
+    <meta name="rb.isAdminUser" th:content="${user.isAdmin()}" />
+    <meta name="rb.isAdminVerified" th:content="${T(com.rebuild.utils.AppUtils).isAdminVerified(#request)}" />
+  </th:block>
   <script th:if="${markWatermark == 'true'}" th:src="@{/assets/lib/watermark.js?v=2.3.2.2}"></script>
-  <!--[if lt IE 10]><script>location.href='[[${baseUrl}]]/error/unsupported-browser'</script><![endif]-->
-  <!--[if lt IE 11]><script>location.href='[[${baseUrl}]]/assets/lib/react/polyfill.min.js?v=7.6.0'</script><![endif]-->
+  <!--[if lt IE 11]>
+    <script th:src="@{/assets/lib/react/polyfill.min.js?v=7.6.0}"></script>
+  <![endif]-->
+  <!--[if lt IE 10]>
+    <script>
+      location.href = '[[${baseUrl}]]/error/unsupported-browser'
+    </script>
+  <![endif]-->
 </th:block>

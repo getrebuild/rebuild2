@@ -72,6 +72,15 @@ See LICENSE and COMMERCIAL in the project root for license information.
     },
   })
 
+  window.rb = window.rb || {}
+  $('meta[name^="rb."]').each(function (idx, item) {
+    var k = $(item).attr('name').substr(3) // remove `rb.`
+    var v = $(item).attr('content')
+    if (v === 'true') v = true
+    else if (v === 'false') v = false
+    window.rb[k] = v
+  })
+
   if (rb.appName && rb.appName !== document.title) document.title = document.title + ' · ' + rb.appName
   if (rb.env === 'dev') $('html').addClass('dev')
   setTimeout(function () {

@@ -61,12 +61,12 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
         }
 
         // ServletContext 共享变量
-        thymeleafViewResolver.addStaticVariable("env", Application.devMode() ? "dev" : "prodution");
-        thymeleafViewResolver.addStaticVariable("baseUrl", AppUtils.getContextPath());
-        thymeleafViewResolver.addStaticVariable("appName", RebuildConfiguration.get(ConfigurationItem.AppName));
-        thymeleafViewResolver.addStaticVariable("storageUrl", RebuildConfiguration.get(ConfigurationItem.StorageURL));
-        thymeleafViewResolver.addStaticVariable("fileSharable", RebuildConfiguration.get(ConfigurationItem.FileSharable));
-        thymeleafViewResolver.addStaticVariable("markWatermark", RebuildConfiguration.get(ConfigurationItem.MarkWatermark));
+        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.ENV, Application.devMode() ? "dev" : "prodution");
+        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.BASE_URL, AppUtils.getContextPath());
+        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.APP_NAME, RebuildConfiguration.get(ConfigurationItem.AppName));
+        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.STORAGE_URL, RebuildConfiguration.get(ConfigurationItem.StorageURL));
+        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.FILE_SHARABLE, RebuildConfiguration.get(ConfigurationItem.FileSharable));
+        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.MARK_WATERMARK, RebuildConfiguration.get(ConfigurationItem.MarkWatermark));
     }
 
     /**
