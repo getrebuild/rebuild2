@@ -24,16 +24,16 @@ class ReportList extends ConfigList {
             <tr key={'k-' + item[0]}>
               <td>{item[3]}</td>
               <td>{item[2] || item[1]}</td>
-              <td>{item[4] ? <span className="badge badge-warning font-weight-normal">否</span> : <span className="badge badge-success font-weight-light">是</span>}</td>
+              <td>{item[4] ? <span className="badge badge-warning font-weight-normal">{$lang('False')}</span> : <span className="badge badge-success font-weight-light">{$lang('True')}</span>}</td>
               <td>{item[5]}</td>
               <td className="actions">
-                <a className="icon" title="预览" href={`${rb.baseUrl}/admin/data/report-templates/preview?id=${item[0]}`} target="_blank">
+                <a className="icon" title={$lang('Preview')} href={`${rb.baseUrl}/admin/data/report-templates/preview?id=${item[0]}`} target="_blank">
                   <i className="zmdi zmdi-eye" />
                 </a>
-                <a className="icon" title="修改" onClick={() => this.handleEdit(item)}>
+                <a className="icon" title={$lang('Modify')} onClick={() => this.handleEdit(item)}>
                   <i className="zmdi zmdi-edit" />
                 </a>
-                <a className="icon" title="删除" onClick={() => this.handleDelete(item[0])}>
+                <a className="icon" title={$lang('Delete')} onClick={() => this.handleDelete(item[0])}>
                   <i className="zmdi zmdi-delete" />
                 </a>
               </td>
@@ -50,9 +50,9 @@ class ReportList extends ConfigList {
 
   handleDelete(id) {
     const handle = super.handleDelete
-    RbAlert.create('确认删除此报表模板？', {
+    RbAlert.create($lang('DeleteThisSomeConfirm,e.DataReportConfig'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.disabled(true)
         handle(id)
@@ -64,7 +64,7 @@ class ReportList extends ConfigList {
 class ReporEdit extends ConfigFormDlg {
   constructor(props) {
     super(props)
-    this.subtitle = '报表模板'
+    this.subtitle = $lang('e.DataReportConfig')
   }
 
   renderFrom() {
@@ -73,12 +73,12 @@ class ReporEdit extends ConfigFormDlg {
         {!this.props.id && (
           <React.Fragment>
             <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">选择应用实体</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,ApplyEntity')}</label>
               <div className="col-sm-7">
                 <select className="form-control form-control-sm" ref={(c) => (this._entity = c)}>
                   {(this.state.entities || []).map((item) => {
                     return (
-                      <option key={'e-' + item.name} value={item.name}>
+                      <option key={item.name} value={item.name}>
                         {item.label}
                       </option>
                     )
@@ -87,14 +87,14 @@ class ReporEdit extends ConfigFormDlg {
               </div>
             </div>
             <div className="form-group row pb-1">
-              <label className="col-sm-3 col-form-label text-sm-right">模板文件</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('TemplateFile')}</label>
               <div className="col-sm-9">
                 <div className="float-left">
                   <div className="file-select">
                     <input type="file" className="inputfile" id="upload-input" accept=".xlsx,.xls" data-maxsize="5000000" ref={(c) => (this.__upload = c)} />
                     <label htmlFor="upload-input" className="btn-secondary">
                       <i className="zmdi zmdi-upload"></i>
-                      <span>选择文件</span>
+                      <span>{$lang('SelectFile')}</span>
                     </label>
                   </div>
                 </div>
@@ -102,19 +102,16 @@ class ReporEdit extends ConfigFormDlg {
                   {this.state.uploadFileName && <u className="text-bold">{this.state.uploadFileName}</u>}
                 </div>
                 <div className="clearfix"></div>
-                <p className="form-text mt-0 mb-1">
-                  如何编写模板文件？
-                  <a href="https://getrebuild.com/docs/admin/excel-admin" target="_blank" className="link">
-                    查看帮助
-                  </a>
-                </p>
-                {(this.state.invalidVars || []).length > 0 && <p className="form-text text-danger mt-0 mb-1">存在无效字段 {`{${this.state.invalidVars.join('} {')}}`} 建议修改</p>}
+                <p className="form-text mt-0 mb-1 link" dangerouslySetInnerHTML={{ __html: $lang('HowWriteTemplateTips') }}></p>
+                {(this.state.invalidVars || []).length > 0 && (
+                  <p className="form-text text-danger mt-0 mb-1">{$lang('ExistsInvalidFields').replace('%s', `{${this.state.invalidVars.join('} {')}}`)}</p>
+                )}
               </div>
             </div>
           </React.Fragment>
         )}
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label text-sm-right">报表名称</label>
+          <label className="col-sm-3 col-form-label text-sm-right">{$lang('Name')}</label>
           <div className="col-sm-7">
             <input type="text" className="form-control form-control-sm" data-id="name" onChange={this.handleChange} value={this.state.name || ''} />
           </div>
@@ -124,7 +121,7 @@ class ReporEdit extends ConfigFormDlg {
             <div className="col-sm-7 offset-sm-3">
               <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0">
                 <input className="custom-control-input" type="checkbox" checked={this.state.isDisabled === true} data-id="isDisabled" onChange={this.handleChange} />
-                <span className="custom-control-label">是否禁用</span>
+                <span className="custom-control-label">{$lang('IsDisable')}</span>
               </label>
             </div>
           </div>
@@ -144,8 +141,8 @@ class ReporEdit extends ConfigFormDlg {
       $(this.__upload).html5Uploader({
         postUrl: rb.baseUrl + '/filex/upload',
         onSelectError: function (field, error) {
-          if (error === 'ErrorType') RbHighbar.create('请上传 Excel 文件')
-          else if (error === 'ErrorMaxSize') RbHighbar.create('文件不能大于 5M')
+          if (error === 'ErrorType') RbHighbar.create($lang('PlsUploadSomeFile').replace('%s', ' EXCEL '))
+          else if (error === 'ErrorMaxSize') RbHighbar.create($lang('ExceedMaxLimit'))
         },
         onClientLoad: function () {
           $mp.start()
@@ -155,7 +152,7 @@ class ReporEdit extends ConfigFormDlg {
           if (d.error_code === 0) {
             that.__lastFile = d.data
             that.checkTemplate()
-          } else RbHighbar.error('上传失败，请稍后重试')
+          } else RbHighbar.error($lang('ErrorUpload'))
         },
       })
     }
@@ -191,7 +188,7 @@ class ReporEdit extends ConfigFormDlg {
   confirm = () => {
     const post = { name: this.state['name'] }
     if (!post.name) {
-      RbHighbar.create('请输入报表名称')
+      RbHighbar.create($lang('PlsInputSome,Name'))
       return
     }
     if (this.props.id) {
@@ -199,12 +196,12 @@ class ReporEdit extends ConfigFormDlg {
     } else {
       post.belongEntity = this.__select2.val()
       if (!post.belongEntity) {
-        RbHighbar.create('请选择应用实体')
+        RbHighbar.create($lang('PlsSelectSome,ApplyEntity'))
         return
       }
       post.templateFile = this.state.templateFile
       if (!post.templateFile) {
-        RbHighbar.create('请上传模板文件')
+        RbHighbar.create($lang('PlsUploadFile'))
         return
       }
     }

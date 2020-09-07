@@ -381,7 +381,7 @@ class FormulaCalc extends RbAlert {
       const $field = $(`<span class="v field"><i data-toggle="dropdown" data-v="{${v[0]}}" data-name="${v[1]}">{${v[1]}}<i></span>`)
       const $menu = $('<div class="dropdown-menu"></div>').appendTo($field)
       $(['', 'SUM', 'COUNT', 'COUNT2', 'AVG', 'MAX', 'MIN']).each(function () {
-        const $a = $(`<a class="dropdown-item" data-mode="${this}">${CALC_MODES[this] || $lang('Non')}</a>`).appendTo($menu)
+        const $a = $(`<a class="dropdown-item" data-mode="${this}">${CALC_MODES[this] || $lang('Null')}</a>`).appendTo($menu)
         $a.click(function () {
           FormulaCalc._changeCalcMode(this)
         })

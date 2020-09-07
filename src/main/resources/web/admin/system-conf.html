@@ -49,11 +49,11 @@
                       </tr>
                       <tr>
                         <td>[[${bundle.lang('OpenSignUp')}]]</td>
-                        <td data-id="OpenSignUp" th:data-value="${OpenSignUp}">[[${bundle.lang(OpenSignUp ? 'Yes' : 'No')}]]</td>
+                        <td data-id="OpenSignUp" th:data-value="${OpenSignUp}">[[${bundle.lang(OpenSignUp ? 'True' : 'False')}]]</td>
                       </tr>
                       <tr>
                         <td>[[${bundle.lang('LiveWallpaper')}]]</td>
-                        <td data-id="LiveWallpaper" th:data-value="${LiveWallpaper}">[[${bundle.lang(LiveWallpaper ? 'Yes' : 'No')}]]</td>
+                        <td data-id="LiveWallpaper" th:data-value="${LiveWallpaper}">[[${bundle.lang(LiveWallpaper ? 'True' : 'False')}]]</td>
                       </tr>
                     </tbody>
                   </table>
@@ -70,18 +70,18 @@
                       </tr>
                       <tr>
                         <td>[[${bundle.lang('FileSharable')}]]</td>
-                        <td data-id="FileSharable" th:data-value="${FileSharable}">[[${bundle.lang(FileSharable ? 'Yes' : 'No')}]]</td>
+                        <td data-id="FileSharable" th:data-value="${FileSharable}">[[${bundle.lang(FileSharable ? 'True' : 'False')}]]</td>
                       </tr>
                       <tr>
                         <td>[[${bundle.lang('MarkWatermark')}]]</td>
-                        <td data-id="MarkWatermark" th:data-value="${MarkWatermark}">[[${bundle.lang(MarkWatermark ? 'Yes' : 'No')}]]</td>
+                        <td data-id="MarkWatermark" th:data-value="${MarkWatermark}">[[${bundle.lang(MarkWatermark ? 'True' : 'False')}]]</td>
                       </tr>
                       <tr>
                         <td>
                           [[${bundle.lang('DBBackupsEnable')}]]
                           <p>[[${bundle.lang('DBBackupsEnableTips')}]]</p>
                         </td>
-                        <td data-id="DBBackupsEnable" th:data-value="${DBBackupsEnable}">[[${bundle.lang(DBBackupsEnable ? 'Yes' : 'No')}]]</td>
+                        <td data-id="DBBackupsEnable" th:data-value="${DBBackupsEnable}">[[${bundle.lang(DBBackupsEnable ? 'True' : 'False')}]]</td>
                       </tr>
                     </tbody>
                   </table>
@@ -118,8 +118,8 @@
         if (['OpenSignUp', 'LiveWallpaper', 'FileSharable', 'MarkWatermark', 'DBBackupsEnable'].includes(name)) {
           return (
             <select name={name} className="form-control form-control-sm" onChange={changeValue} defaultValue={value}>
-              <option value="true">{$lang('Yes')}</option>
-              <option value="false">{$lang('No')}</option>
+              <option value="true">{$lang('True')}</option>
+              <option value="false">{$lang('False')}</option>
             </select>
           )
         } else if ('PasswordPolicy' === name) {
