@@ -44,7 +44,7 @@ class GridList extends React.Component {
             </div>
           )
         })}
-        {this.state.list && this.state.list.length === 0 && <div className="text-muted">尚未配置任何项目</div>}
+        {this.state.list && this.state.list.length === 0 && <div className="text-muted">{$lang('NoConf')}</div>}
       </div>
     )
   }
@@ -58,15 +58,15 @@ class GridList extends React.Component {
   }
 
   _handleDelete(projectId) {
-    RbAlert.create('只有空项目（项目下无任务）才能被删除。确认吗？', {
+    RbAlert.create($lang('DeleteProjectConfirm'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.disabled(true)
         $.post(`/app/entity/record-delete?id=${projectId}`, (res) => {
           this.hide()
           if (res.error_code === 0) {
-            RbHighbar.success('项目已删除')
+            RbHighbar.success($lang('SomeDeleted,e.ProjectConfig'))
             setTimeout(() => location.reload(), 500)
           } else RbHighbar.error(res.error_msg)
         })
@@ -80,10 +80,10 @@ class DlgEdit extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={`${this.props.id ? '修改' : '添加'}项目`} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
+      <RbModal title={`${$lang(this.props.id ? 'Modify' : 'Add')}${$lang('e.ProjectConfig')}`} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">图标</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('Icon')}</label>
             <div className="col-sm-7">
               <a className="project-icon" title="选择图标" onClick={() => this._selectIcon()}>
                 <i className={`icon zmdi zmdi-${this.state.iconName || 'texture'}`}></i>
@@ -91,7 +91,7 @@ class DlgEdit extends RbFormHandler {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">项目名称</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('ProjectName')}</label>
             <div className="col-sm-7">
               <input className="form-control form-control-sm" value={this.state.projectName || ''} data-id="projectName" onChange={this.handleChange} maxLength="60" />
             </div>
@@ -99,10 +99,10 @@ class DlgEdit extends RbFormHandler {
           {!this.props.id && (
             <React.Fragment>
               <div className="form-group row">
-                <label className="col-sm-3 col-form-label text-sm-right">项目 ID</label>
+                <label className="col-sm-3 col-form-label text-sm-right">{$lang('ProjectCode')}</label>
                 <div className="col-sm-7">
                   <input className="form-control form-control-sm " value={this.state.projectCode || ''} data-id="projectCode" onChange={this.handleChange} maxLength="6" />
-                  <div className="form-text">任务编号将以项目 ID 作为前缀，用以区别不同项目。支持 2-6 位字母</div>
+                  <div className="form-text">{$lang('ProjectCodeTips')}</div>
                 </div>
               </div>
               <div className="form-group row">
@@ -110,7 +110,7 @@ class DlgEdit extends RbFormHandler {
                 <div className="col-sm-7">
                   <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0">
                     <input className="custom-control-input" type="checkbox" value="1" defaultChecked ref={(c) => (this._useTemplate = c)} />
-                    <span className="custom-control-label"> 使用默认项目模板</span>
+                    <span className="custom-control-label">{$lang('UseProjectTemplate')}</span>
                   </label>
                 </div>
               </div>
@@ -119,10 +119,10 @@ class DlgEdit extends RbFormHandler {
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref={(c) => (this._btns = c)}>
               <button className="btn btn-primary" type="button" onClick={this.save}>
-                确定
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link" onClick={this.hide}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>
@@ -137,22 +137,27 @@ class DlgEdit extends RbFormHandler {
       that.setState({ iconName: s })
       RbModal.hide()
     }
-    RbModal.create('/p/commons/search-icon', '选择图标')
+    RbModal.create('/p/commons/search-icon', $lang('SelectSome,Icon'))
   }
 
   save = () => {
-    if (!this.state.projectName) return RbHighbar.create('请输入项目名称')
+    if (!this.state.projectName) return RbHighbar.create($lang('PlsInputSome,ProjectName'))
     const _data = {
       projectName: this.state.projectName,
       iconName: this.state.iconName,
     }
 
     if (!this.props.id) {
-      if (!this.state.projectCode || !/^[a-zA-Z]{2,6}$/.test(this.state.projectCode)) return RbHighbar.create('项目 ID 无效，请输入 2-6 位字母')
+      if (!this.state.projectCode || !/^[a-zA-Z]{2,6}$/.test(this.state.projectCode)) {
+        return RbHighbar.create($lang('ProjectCodeInvalid'))
+      }
       _data.projectCode = this.state.projectCode.toUpperCase()
       _data._useTemplate = this._useTemplate.checked ? 1 : 0
     }
-    _data.metadata = { entity: 'ProjectConfig', id: this.props.id || null }
+    _data.metadata = {
+      entity: 'ProjectConfig',
+      id: this.props.id || null,
+    }
 
     this.disabled(true)
     $.post('/admin/projects/post', JSON.stringify(_data), (res) => {

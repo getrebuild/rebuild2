@@ -34,7 +34,7 @@ $(document).ready(() => {
       members: _Members.val().join(','),
       metadata: { id: wpc.id },
     }
-    if (!_data.members) return RbHighbar.create('请选择项目成员')
+    if (!_data.members) return RbHighbar.create($lang('PlsSelectSome,ProjectMembers'))
 
     $btn.button('loading')
     $.post('/admin/projects/post', JSON.stringify(_data), (res) => {
@@ -80,7 +80,7 @@ class PlanList extends React.Component {
             </div>
           )
         })}
-        {this.state.plans && this.state.plans.length === 0 && <p className="text-muted m-3">请添加任务面板</p>}
+        {this.state.plans && this.state.plans.length === 0 && <p className="text-muted m-3">{$lang('PlsAddSome,TaskPlan')}</p>}
       </React.Fragment>
     )
   }
@@ -139,16 +139,16 @@ class PlanList extends React.Component {
 
   _handleDelete(planId) {
     const that = this
-    RbAlert.create('只有空面板（面板下无任务）才能被删除。确认吗？', {
+    RbAlert.create($lang('DeletePlanConfirm'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.disabled(true)
         $.post(`/app/entity/record-delete?id=${planId}`, (res) => {
           this.hide()
           if (res.error_code === 0) {
             that.loadPlans()
-            RbHighbar.success('面板已删除')
+            RbHighbar.success($lang('SomeDeleted,TaskPlan'))
           } else RbHighbar.error(res.error_msg)
         })
       },
@@ -166,10 +166,10 @@ class PlanEdit extends RbFormHandler {
   render() {
     const selectedFlowNexts = this.props.selectedFlowNexts || []
     return (
-      <RbModal title={`${this.props.id ? '修改' : '添加'}面板`} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
+      <RbModal title={`${$lang(this.props.id ? 'Modify' : 'Add')}${$lang('TaskPlan')}`} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">面板名称</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('PlanName')}</label>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="planName" value={this.state.planName || ''} onChange={this.handleChange} maxLength="60" autoFocus />
             </div>
@@ -180,26 +180,26 @@ class PlanEdit extends RbFormHandler {
               <label className="custom-control custom-control-sm custom-radio mb-1 mt-1">
                 <input className="custom-control-input" type="radio" name="flowStatus" value="1" checked={~~this.state.flowStatus === 1} onChange={this.handleChange} />
                 <span className="custom-control-label">
-                  开始状态 <p className="text-muted mb-0 fs-12">该状态下可新建任务</p>
+                  {$lang('FlowStatus1')} <p className="text-muted mb-0 fs-12">{$lang('FlowStatus1Tips')}</p>
                 </span>
               </label>
               <label className="custom-control custom-control-sm custom-radio mb-1">
                 <input className="custom-control-input" type="radio" name="flowStatus" value="2" checked={~~this.state.flowStatus === 2} onChange={this.handleChange} />
                 <span className="custom-control-label">
-                  进行中 <p className="text-muted mb-0 fs-12">该状态下不可新建任务，不可完成任务</p>
+                  {$lang('FlowStatus2')} <p className="text-muted mb-0 fs-12">{$lang('FlowStatus2Tips')}</p>
                 </span>
               </label>
               <label className="custom-control custom-control-sm custom-radio mb-1">
                 <input className="custom-control-input" type="radio" name="flowStatus" value="3" checked={~~this.state.flowStatus === 3} onChange={this.handleChange} />
                 <span className="custom-control-label">
-                  结束状态 <p className="text-muted mb-0 fs-12">该状态下任务自动标记完成</p>
+                  {$lang('FlowStatus3')} <p className="text-muted mb-0 fs-12">{$lang('FlowStatus3Tips')}</p>
                 </span>
               </label>
             </div>
           </div>
           {this.props.flowNexts && this.props.flowNexts.length > 0 && (
             <div className="form-group row pt-0">
-              <label className="col-sm-3 col-form-label text-sm-right">可流转到</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('FlowNexts')}</label>
               <div className="col-sm-7 pt-1" ref={(c) => (this._flowNexts = c)}>
                 {this.props.flowNexts.map((item) => {
                   return (
@@ -215,10 +215,10 @@ class PlanEdit extends RbFormHandler {
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref={(c) => (this._btns = c)}>
               <button className="btn btn-primary" type="button" onClick={this.save}>
-                确定
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link" onClick={this.hide}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>
@@ -228,7 +228,7 @@ class PlanEdit extends RbFormHandler {
   }
 
   save = () => {
-    if (!this.state.planName) return RbHighbar.create('请输入面板名称')
+    if (!this.state.planName) return RbHighbar.create($lang('PlsInputSome,PlanName'))
 
     const _data = {
       planName: this.state.planName,

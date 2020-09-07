@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>项目管理</title>
+    <title>[[${bundle.lang('SomeManage,e.ProjectConfig')}]]</title>
     <style type="text/css">
       .project-icon {
         display: inline-block;
@@ -38,9 +38,9 @@
       <th:block th:replace="~{/_include/nav-left-admin :: nav(active='projects')}" />
       <div class="rb-content">
         <div class="page-head">
-          <div class="float-left"><div class="page-head-title">项目管理</div></div>
+          <div class="float-left"><div class="page-head-title">[[${bundle.lang('SomeManage,e.ProjectConfig')}]]</div></div>
           <div class="float-right pt-1">
-            <button class="btn btn-primary J_add" type="button"><i class="icon zmdi zmdi-plus"></i> 添加</button>
+            <button class="btn btn-primary J_add" type="button"><i class="icon zmdi zmdi-plus"></i> [[${bundle.lang('Add')}]]</button>
           </div>
           <div class="clearfix"></div>
         </div>
