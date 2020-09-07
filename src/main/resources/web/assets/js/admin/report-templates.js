@@ -87,7 +87,7 @@ class ReporEdit extends ConfigFormDlg {
               </div>
             </div>
             <div className="form-group row pb-1">
-              <label className="col-sm-3 col-form-label text-sm-right">{$lang('TemplateFile')}</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.DataReportConfig.templateFile')}</label>
               <div className="col-sm-9">
                 <div className="float-left">
                   <div className="file-select">
@@ -111,7 +111,7 @@ class ReporEdit extends ConfigFormDlg {
           </React.Fragment>
         )}
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label text-sm-right">{$lang('Name')}</label>
+          <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.DataReportConfig.name')}</label>
           <div className="col-sm-7">
             <input type="text" className="form-control form-control-sm" data-id="name" onChange={this.handleChange} value={this.state.name || ''} />
           </div>
@@ -188,7 +188,7 @@ class ReporEdit extends ConfigFormDlg {
   confirm = () => {
     const post = { name: this.state['name'] }
     if (!post.name) {
-      RbHighbar.create($lang('PlsInputSome,Name'))
+      RbHighbar.create($lang('PlsInputSome,f.DataReportConfig.name'))
       return
     }
     if (this.props.id) {

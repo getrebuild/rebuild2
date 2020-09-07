@@ -125,7 +125,7 @@ class TriggerEdit extends ConfigFormDlg {
         )}
         <div className="form-group row">
           <label className="col-sm-3 col-form-label text-sm-right">
-            {$lang('Name')} ({$lang('Optional')})
+            {$lang('f.RobotTriggerConfig.name')} ({$lang('Optional')})
           </label>
           <div className="col-sm-7">
             <input type="text" className="form-control form-control-sm" data-id="name" onChange={this.handleChange} value={this.state.name || ''} placeholder={$lang('Unname')} />
