@@ -71,7 +71,7 @@ class TriggerList extends ConfigList {
 
   handleDelete(id) {
     const handle = super.handleDelete
-    RbAlert.create($lang('DeleteThisSomeConfirm,e.RobotTriggerConfig'), {
+    RbAlert.create($lang('DeleteSomeConfirm,e.RobotTriggerConfig'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {

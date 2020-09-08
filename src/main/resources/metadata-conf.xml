@@ -420,7 +420,7 @@
         <field name="projectId" type="reference" ref-entity="ProjectConfig" nullable="false" updatable="false" description="相关项目"/>
         <field name="projectPlanId" type="reference" ref-entity="ProjectPlanConfig" nullable="false" description="相关面板"/>
         <field name="taskNumber" type="long" nullable="false" updatable="false" description="任务编号"/>
-        <field name="taskName" type="string" max-length="191" nullable="false" description="任务名称"/>
+        <field name="taskName" type="string" max-length="191" nullable="false" description="任务标题"/>
         <field name="executor" type="reference" ref-entity="User" description="执行人"/>
         <field name="partners" type="string" max-length="420" default-value="ALL" description="参与者 (可选值: $UserID)" queryable="false"/>
         <field name="priority" type="small-int" default-value="1" description="优先级 (0=较低 1=普通 2=紧急 3=非常紧急)" queryable="false"/>
@@ -428,7 +428,7 @@
         <field name="deadline" type="timestamp" description="截至时间"/>
         <field name="startTime" type="timestamp" description="开始时间"/>
         <field name="endTime" type="timestamp" description="完成时间"/>
-        <field name="description" type="text" max-length="10000" description="详情" queryable="false"/>
+        <field name="description" type="text" max-length="10000" description="备注" queryable="false"/>
         <field name="attachments" type="string" max-length="700" description="附件" extra-attrs="{displayType:'FILE'}"/>
         <field name="parentTaskId" type="reference" ref-entity="ProjectTask" description="父级任务"/>
         <field name="seq" type="int" default-value="0" description="排序 (小到大)" queryable="false"/>

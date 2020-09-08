@@ -48,11 +48,11 @@ class TaskForm extends React.Component {
           {this.props.editable && this.props.manageable && (
             <div className="col-2 text-right">
               <button className="btn btn-secondary" style={{ minWidth: 80, marginTop: 2 }} data-toggle="dropdown">
-                操作 <i className="icon zmdi zmdi-more-vert"></i>
+                {$lang('Operation')} <i className="icon zmdi zmdi-more-vert"></i>
               </button>
               <div className="dropdown-menu dropdown-menu-right">
-                <a className="dropdown-item text-muted" onClick={() => this._handleDelete()}>
-                  删除
+                <a className="dropdown-item" onClick={() => this._handleDelete()}>
+                  {$lang('Delete')}
                 </a>
               </div>
             </div>
@@ -60,7 +60,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-square-o" /> 状态
+            <i className="icon zmdi zmdi-square-o" /> {$lang('f.ProjectTask.status')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueStatus status={this.state.status} $$$parent={this} />
@@ -68,7 +68,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-account-o" /> 执行人
+            <i className="icon zmdi zmdi-account-o" /> {$lang('f.ProjectTask.executor')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueExecutor executor={this.state.executor} $$$parent={this} />
@@ -76,7 +76,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-time" /> 截至时间
+            <i className="icon zmdi zmdi-time" /> {$lang('f.ProjectTask.deadline')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueDeadline deadline={this.state.deadline} $$$parent={this} />
@@ -84,7 +84,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-comment-more" /> 备注
+            <i className="icon zmdi zmdi-comment-more" /> {$lang('f.ProjectTask.description')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueDescription description={this.state.description} $$$parent={this} />
@@ -92,7 +92,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-circle-o" /> 优先级
+            <i className="icon zmdi zmdi-circle-o" /> {$lang('f.ProjectTask.priority')}
           </label>
           <div className="col-12 col-sm-9">
             <ValuePriority priority={this.state.priority} $$$parent={this} />
@@ -100,7 +100,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-attachment-alt zmdi-hc-rotate-45 mt-1" /> 附件
+            <i className="icon zmdi zmdi-attachment-alt zmdi-hc-rotate-45 mt-1" /> {$lang('f.ProjectTask.attachments')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueAttachments attachments={this.state.attachments} $$$parent={this} />
@@ -125,15 +125,15 @@ class TaskForm extends React.Component {
 
   _handleDelete() {
     const that = this
-    RbAlert.create('确认删除该任务？', {
+    RbAlert.create($lang('DeleteSomeConfirm,e.ProjectTask'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.disabled(true)
         $.post(`/app/entity/record-delete?id=${that.props.id}`, (res) => {
           if (res.error_code === 0) {
             this.hide()
-            RbHighbar.success('任务已删除')
+            RbHighbar.success($lang('SomeDeleted,e.ProjectTask'))
             __TaskViewer.refreshTask('DELETE')
             __TaskViewer.hide()
           } else RbHighbar.error(res.error_msg)
@@ -223,7 +223,7 @@ class ValueTaskName extends ValueComp {
   handleChange(e) {
     const value = e.target.value
     if (!value) {
-      RbHighbar.create('任务标题不能为空')
+      RbHighbar.create($lang('SomeNotEmpty,f.ProjectTask.taskName'))
       this._taskName.focus()
     } else {
       super.handleChange(e, () => this.setState({ editMode: false }))
@@ -241,7 +241,7 @@ class ValueStatus extends ValueComp {
         <span className="status-checkbox">
           <label className="custom-control custom-checkbox custom-control-inline" onClick={(e) => $stopEvent(e)}>
             <input className="custom-control-input" type="checkbox" ref={(c) => (this._status = c)} onChange={(e) => this._handleChangeStatus(e)} />
-            <span className="custom-control-label">{this.state.status > 0 ? '已完成' : '未完成'}</span>
+            <span className="custom-control-label">{$lang(this.state.status > 0 ? 'Finished' : 'UnFinished')}</span>
           </label>
         </span>
       </div>
@@ -249,7 +249,7 @@ class ValueStatus extends ValueComp {
   }
 
   renderViewElement() {
-    return <div className="form-control-plaintext">{this.state.status > 0 ? '已完成' : '未完成'}</div>
+    return <div className="form-control-plaintext">{$lang(this.state.status > 0 ? 'Finished' : 'UnFinished')}</div>
   }
 
   _handleChangeStatus(e) {
@@ -290,7 +290,7 @@ class ValueExecutor extends ValueComp {
               }
               onSelectItem={(s) => this.handleChange(s)}
             />
-            <a className="close" onClick={() => this.handleChange(null)} title="移除执行人">
+            <a className="close" onClick={() => this.handleChange(null)} title={$lang('RemoveSome,f.ProjectTask.executor')}>
               &times;
             </a>
           </div>
@@ -304,7 +304,7 @@ class ValueExecutor extends ValueComp {
               ref={(c) => (this._UserSelector = c)}
               compToggle={
                 <a className="tag-value arrow placeholder" data-toggle="dropdown">
-                  选择执行人
+                  {$lang('SelectSome,f.ProjectTask.executor')}
                 </a>
               }
               onSelectItem={(s) => this.handleChange(s)}
@@ -316,7 +316,7 @@ class ValueExecutor extends ValueComp {
   }
 
   renderViewElement() {
-    return this._renderValue() || <div className="form-control-plaintext text-muted">无</div>
+    return this._renderValue() || <div className="form-control-plaintext text-muted">{$lang('Null')}</div>
   }
 
   _renderValue(call) {
@@ -339,14 +339,14 @@ class ValueDeadline extends ValueComp {
     return (
       <div className="form-control-plaintext" ref={(c) => (this._deadline = c)}>
         <a className={`tag-value arrow ${this.state.deadline ? 'plaintext' : 'placeholder'}`} name="deadline" title={this.state.deadline}>
-          {this._renderValue('选择截至时间')}
+          {this._renderValue($lang('SelectSome,f.ProjectTask.deadline'))}
         </a>
       </div>
     )
   }
 
   renderViewElement() {
-    return this._renderValue(<div className="form-control-plaintext text-muted">无</div>)
+    return this._renderValue(<div className="form-control-plaintext text-muted">{$lang('Null')}</div>)
   }
 
   _renderValue(defaultValue) {
@@ -382,10 +382,10 @@ class ValueDescription extends ValueComp {
           <TextEditor hideToolbar={true} ref={(c) => (this._editor = c)} />
           <div className="mt-2 text-right">
             <button onClick={() => this._handleEditMode(false)} className="btn btn-sm btn-link">
-              取消
+              {$lang('Cancel')}
             </button>
             <button className="btn btn-sm btn-primary" onClick={() => this.handleChange()}>
-              确定
+              {$lang('Confirm')}
             </button>
           </div>
         </div>
@@ -393,14 +393,18 @@ class ValueDescription extends ValueComp {
     } else {
       return (
         <div className="form-control-plaintext desc hover" onClick={() => this._handleEditMode(true)}>
-          {this.state.description ? TextEditor.renderRichContent({ content: this.state.description }) : <span className="text-muted">点击添加</span>}
+          {this.state.description ? TextEditor.renderRichContent({ content: this.state.description }) : <span className="text-muted">{$lang('ClickAdd')}</span>}
         </div>
       )
     }
   }
 
   renderViewElement() {
-    return <div className="form-control-plaintext desc">{this.state.description ? TextEditor.renderRichContent({ content: this.state.description }) : <span className="text-muted">无</span>}</div>
+    return (
+      <div className="form-control-plaintext desc">
+        {this.state.description ? TextEditor.renderRichContent({ content: this.state.description }) : <span className="text-muted">{$lang('Null')}</span>}
+      </div>
+    )
   }
 
   _handleEditMode(editMode) {
@@ -413,7 +417,12 @@ class ValueDescription extends ValueComp {
   }
 }
 
-const __PRIORITIES = { 0: '较低', 1: '普通', 2: '紧急', 3: '非常紧急' }
+const __PRIORITIES = {
+  0: $lang('TaskPriority0'),
+  1: $lang('TaskPriority1'),
+  2: $lang('TaskPriority2'),
+  3: $lang('TaskPriority3'),
+}
 
 // 优先级
 class ValuePriority extends ValueComp {
@@ -427,16 +436,16 @@ class ValuePriority extends ValueComp {
         </a>
         <div className="dropdown-menu">
           <a className="dropdown-item text-muted" onClick={() => this.handleChange(0)}>
-            较低
+            {__PRIORITIES[0]}
           </a>
           <a className="dropdown-item text-primary" onClick={() => this.handleChange(1)}>
-            普通
+            {__PRIORITIES[1]}
           </a>
           <a className="dropdown-item text-warning" onClick={() => this.handleChange(2)}>
-            紧急
+            {__PRIORITIES[2]}
           </a>
           <a className="dropdown-item text-danger" onClick={() => this.handleChange(3)}>
-            非常紧急
+            {__PRIORITIES[3]}
           </a>
         </div>
       </div>
@@ -468,7 +477,7 @@ class ValueAttachments extends ValueComp {
         <div className="form-control-plaintext">
           <input type="file" className="inputfile" id="attachments" ref={(c) => (this._attachments = c)} data-maxsize="102400000" />
           <label htmlFor="attachments" style={{ padding: 0, border: 0, lineHeight: 1 }}>
-            <a className="tag-value upload hover">+ 上传</a>
+            <a className="tag-value upload hover">+ {$lang('Upload')}</a>
           </label>
         </div>
         {this._renderValue(true)}
@@ -477,7 +486,7 @@ class ValueAttachments extends ValueComp {
   }
 
   renderViewElement() {
-    return this._renderValue() || <div className="form-control-plaintext text-muted">无</div>
+    return this._renderValue() || <div className="form-control-plaintext text-muted">{$lang('Null')}</div>
   }
 
   _renderValue(del) {
@@ -491,7 +500,7 @@ class ValueAttachments extends ValueComp {
                 <i className="file-icon" data-type={$fileExtName(fileName)} />
                 <span>{fileName}</span>
                 {del && (
-                  <b title="删除" onClick={(e) => this._deleteAttachment(item, e)}>
+                  <b title={$lang('Delete')} onClick={(e) => this._deleteAttachment(item, e)}>
                     <span className="zmdi zmdi-delete"></span>
                   </b>
                 )}
@@ -506,9 +515,9 @@ class ValueAttachments extends ValueComp {
   _deleteAttachment(item, e) {
     $stopEvent(e)
     const that = this
-    RbAlert.create('确认删除该附件？', {
+    RbAlert.create($lang('DeleteSomeConfirm,f.ProjectTask.attachments'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.hide()
         const s = that.state.attachments.filter((x) => x !== item)
@@ -547,7 +556,7 @@ class TaskCommentsList extends React.Component {
     if ((this.state.comments || []).length === 0) return null
     return (
       <div className="comment-list-wrap">
-        <h4>评论列表</h4>
+        <h4>{$lang('SomeList,Comment')}</h4>
         <div className="feeds-list comment-list">
           {this.state.comments.map((item) => {
             const id = `comment-${item.id}`
@@ -574,13 +583,13 @@ class TaskCommentsList extends React.Component {
                         {item.self && (
                           <li className="list-inline-item mr-2">
                             <a href="#reply" onClick={() => this._handleDelete(item)} className="fixed-icon">
-                              <i className="zmdi zmdi-delete" /> 删除
+                              <i className="zmdi zmdi-delete" /> {$lang('Delete')}
                             </a>
                           </li>
                         )}
                         <li className="list-inline-item">
                           <a href="#reply" onClick={() => this._handleReply(item)} className="fixed-icon">
-                            <i className="zmdi zmdi-mail-reply" /> 回复
+                            <i className="zmdi zmdi-mail-reply" /> {$lang('Reply')}
                           </a>
                         </li>
                       </ul>
@@ -607,9 +616,9 @@ class TaskCommentsList extends React.Component {
 
   _handleDelete(item) {
     const that = this
-    RbAlert.create('确认删除该评论？', {
+    RbAlert.create($lang('DeleteSomeConfirm,Comment'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         $.post(`/app/entity/record-delete?id=${item.id}`, (res) => {
           this.hide()
@@ -631,16 +640,16 @@ class TaskComment extends React.Component {
       <div className="comments">
         <div className="comment-reply">
           <div onClick={() => this.commentState(true)} className={`reply-mask ${this.state.openComment && 'hide'}`}>
-            添加评论
+            {$lang('AddSome,Comment')}
           </div>
           <span className={`${!this.state.openComment && 'hide'}`}>
-            <TextEditor placeholder="添加评论" ref={(c) => (this._editor = c)} />
+            <TextEditor placeholder={$lang('AddSome,Comment')} ref={(c) => (this._editor = c)} />
             <div className="mt-2 text-right" ref={(c) => (this._btns = c)}>
               <button onClick={() => this.commentState(false)} className="btn btn-sm btn-link">
-                取消
+                {$lang('Cancel')}
               </button>
               <button className="btn btn-sm btn-primary" ref={(c) => (this._btn = c)} onClick={() => this._post()}>
-                评论
+                {$lang('Comment')}
               </button>
             </div>
           </span>
@@ -655,7 +664,7 @@ class TaskComment extends React.Component {
 
   _post() {
     const _data = this._editor.vals()
-    if (!_data.content) return RbHighbar.create('请输入评论内容')
+    if (!_data.content) return RbHighbar.create($lang('PlsInputSome,CommentContent'))
 
     _data.taskId = this.props.id
     _data.metadata = { entity: 'ProjectTaskComment' }
@@ -705,7 +714,7 @@ class TextEditor extends React.Component {
             <div className="action-btns">
               <ul className="list-unstyled list-inline m-0 p-0">
                 <li className="list-inline-item use-dropdown">
-                  <a title="表情" data-toggle="dropdown">
+                  <a title={$lang('Emoji')} data-toggle="dropdown">
                     <i className="zmdi zmdi-mood" />
                   </a>
                   <div className="dropdown-menu">
@@ -721,7 +730,7 @@ class TextEditor extends React.Component {
                     multiple={false}
                     ref={(c) => (this._UserSelector = c)}
                     compToggle={
-                      <a title="@用户" data-toggle="dropdown">
+                      <a title={'@' + $lang('e.User')} data-toggle="dropdown">
                         <i className="zmdi at-text">@</i>
                       </a>
                     }
@@ -729,7 +738,7 @@ class TextEditor extends React.Component {
                   />
                 </li>
                 <li className="list-inline-item">
-                  <a title="附件" onClick={() => this._fileInput.click()}>
+                  <a title={$lang('Attachment')} onClick={() => this._fileInput.click()}>
                     <i className="zmdi zmdi-attachment-alt zmdi-hc-rotate-45" />
                   </a>
                 </li>
@@ -746,7 +755,7 @@ class TextEditor extends React.Component {
                   <div key={'file-' + item} className="img-thumbnail" title={fileName}>
                     <i className="file-icon" data-type={$fileExtName(fileName)} />
                     <span>{fileName}</span>
-                    <b title="移除" onClick={() => this._removeFile(item)}>
+                    <b title={$lang('Remove')} onClick={() => this._removeFile(item)}>
                       <span className="zmdi zmdi-close"></span>
                     </b>
                   </div>
@@ -839,7 +848,7 @@ class TextEditor extends React.Component {
    */
   static renderRichContent(data) {
     // 表情和换行不在后台转换，因为不同客户端所需的格式不同
-    const contentHtml = data.content ? converEmoji(data.content.replace(/\n/g, '<br />')) : '点击添加'
+    const contentHtml = data.content ? converEmoji(data.content.replace(/\n/g, '<br />')) : $lang('ClickAdd')
     return (
       <div className="rich-content">
         <div className="texts text-break" dangerouslySetInnerHTML={{ __html: contentHtml }} />

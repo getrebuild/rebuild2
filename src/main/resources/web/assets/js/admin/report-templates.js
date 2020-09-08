@@ -50,7 +50,7 @@ class ReportList extends ConfigList {
 
   handleDelete(id) {
     const handle = super.handleDelete
-    RbAlert.create($lang('DeleteThisSomeConfirm,e.DataReportConfig'), {
+    RbAlert.create($lang('DeleteSomeConfirm,e.DataReportConfig'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {

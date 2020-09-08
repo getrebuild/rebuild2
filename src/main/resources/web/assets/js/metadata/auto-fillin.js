@@ -34,7 +34,7 @@ const loadRules = () => {
       })
       const configId = this.id
       $act.find('a:eq(1)').click(() => {
-        RbAlert.create($lang('DeleteThisSomeConfirm,Fillback'), {
+        RbAlert.create($lang('DeleteSomeConfirm,Fillback'), {
           type: 'danger',
           confirm: function () {
             this.disabled(true)

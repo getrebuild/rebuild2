@@ -227,7 +227,7 @@ class FeedsList extends React.Component {
   _handleDelete(id) {
     event.preventDefault()
     const that = this
-    RbAlert.create($lang('DeleteThisSomeConfirm,e.Feeds'), {
+    RbAlert.create($lang('DeleteSomeConfirm,e.Feeds'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {
@@ -431,7 +431,7 @@ class FeedsComments extends React.Component {
   _handleDelete = (id) => {
     event.preventDefault()
     const that = this
-    RbAlert.create($lang('DeleteThisSomeConfirm,Comment'), {
+    RbAlert.create($lang('DeleteSomeConfirm,Comment'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {
