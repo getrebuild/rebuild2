@@ -21,6 +21,7 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.general.EntityService;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -75,7 +76,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
     public boolean submit(JSONObject selectNextUsers) throws ApprovalException {
         final ApprovalState currentState = ApprovalHelper.getApprovalState(this.record);
         if (currentState == ApprovalState.PROCESSING || currentState == ApprovalState.APPROVED) {
-            throw new ApprovalException("当前记录已经" + (currentState == ApprovalState.PROCESSING ? "提交审批" : "审批完成"));
+            throw new ApprovalException(Language.getLang("InvalidapprovalStateTips"));
         }
 
         FlowNodeGroup nextNodes = getNextNodes(FlowNode.NODE_ROOT);
@@ -133,7 +134,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
         final ApprovalStatus status = ApprovalHelper.getApprovalStatus(this.record);
         ApprovalState currentState = status.getCurrentState();
         if (currentState != ApprovalState.PROCESSING) {
-            throw new ApprovalException("当前记录审批已" + currentState.getName());
+            throw new ApprovalException(Language.getLang("InvalidapprovalStateTips"));
         }
 
         final Object[] stepApprover = Application.createQueryNoFilter(
@@ -143,7 +144,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
                 .setParameter(3, getCurrentNodeId(status))
                 .unique();
         if (stepApprover == null || (Integer) stepApprover[1] != ApprovalState.DRAFT.getState()) {
-            throw new ApprovalException(stepApprover == null ? "当前流程已经被他人审批" : "你已经审批过当前流程");
+            throw new ApprovalException(Language.getLang(stepApprover == null ? "ApprovalStepApprovedByOther" : "ApprovalStepYouApproved"));
         }
 
         Record approvedStep = EntityHelper.forUpdate((ID) stepApprover[0], approver);
@@ -162,7 +163,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
         if (state == ApprovalState.APPROVED && !nextNodes.isLastStep()) {
             nextApprovers = nextNodes.getApproveUsers(this.getUser(), this.record, selectNextUsers);
             if (nextApprovers.isEmpty()) {
-                throw new ApprovalException("无下一步审批人可用，请联系管理员配置");
+                throw new ApprovalException(Language.getLang("NoNextApproversTips"));
             }
 
             FlowNode nextApprovalNode = nextNodes.getApprovalNode();
@@ -189,7 +190,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
         final ApprovalStatus status = ApprovalHelper.getApprovalStatus(this.record);
         ApprovalState currentState = status.getCurrentState();
         if (currentState != ApprovalState.PROCESSING) {
-            throw new ApprovalException("已" + currentState.getName() + "审批不能撤回");
+            throw new ApprovalException(Language.getLang("InvalidapprovalStateTips"));
         }
 
         Application.getBean(ApprovalStepService.class).txCancel(
@@ -204,7 +205,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
     public void revoke() throws ApprovalException {
         final ApprovalStatus status = ApprovalHelper.getApprovalStatus(this.record);
         if (status.getCurrentState() != ApprovalState.APPROVED) {
-            throw new ApprovalException("未完成审批无需撤销");
+            throw new ApprovalException(Language.getLang("InvalidapprovalStateTips"));
         }
 
         Object[] count = Application.createQueryNoFilter(
@@ -213,7 +214,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
                 .setParameter(2, ApprovalState.REVOKED.getState())
                 .unique();
         if (ObjectUtils.toInt(count[0]) >= MAX_REVOKED) {
-            throw new ApprovalException("记录撤销次数已达 " + MAX_REVOKED + " 次，不能再次撤销");
+            throw new ApprovalException(Language.formatLang("AdminRevokeOutLimitTips", MAX_REVOKED));
         }
 
         Application.getBean(ApprovalStepService.class).txCancel(
@@ -386,7 +387,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
             stepGroup.add(o);
         }
         if (firstStep == null) {
-            throw new RebuildException("无效审批记录 : " + this.record);
+            throw new RebuildException(Language.formatLang("InvalidapprovalRecordX", this.record));
         }
 
         JSONArray steps = new JSONArray();

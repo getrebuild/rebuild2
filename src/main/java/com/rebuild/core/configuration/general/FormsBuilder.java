@@ -18,10 +18,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigBean;
-import com.rebuild.core.support.ConfigurationItem;
-import com.rebuild.core.support.RebuildConfiguration;
-import com.rebuild.core.support.general.FieldValueWrapper;
-import com.rebuild.core.support.state.StateManager;
 import com.rebuild.core.metadata.DefaultValueHelper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -34,6 +30,11 @@ import com.rebuild.core.service.NoRecordFoundException;
 import com.rebuild.core.service.approval.ApprovalState;
 import com.rebuild.core.service.approval.RobotApprovalManager;
 import com.rebuild.core.service.trigger.RobotTriggerManager;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.general.FieldValueWrapper;
+import com.rebuild.core.support.i18n.Language;
+import com.rebuild.core.support.state.StateManager;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
@@ -58,17 +59,6 @@ public class FormsBuilder extends FormsManager {
     public static final String DV_MASTER = "$MASTER$";
     // 引用记录
     public static final String DV_REFERENCE_PREFIX = "&";
-
-    /**
-     * 表单-新建
-     *
-     * @param entity
-     * @param user
-     * @return
-     */
-    public JSON buildForm(String entity, ID user) {
-        return buildForm(entity, user, null);
-    }
 
     /**
      * 表单-编辑
@@ -125,18 +115,18 @@ public class FormsBuilder extends FormsManager {
                 MASTERID4NEWSLAVE.set(null);
 
                 if ((approvalState == ApprovalState.PROCESSING || approvalState == ApprovalState.APPROVED)) {
-                    String stateType = approvalState == ApprovalState.APPROVED ? "已完成审批" : "正在审批中";
-                    return formatModelError("主记录" + stateType + "，不能添加明细");
+                    String stateType = approvalState == ApprovalState.APPROVED ? "RecordApproved" : "RecordInApproval";
+                    return formatModelError(Language.getLang("MasterRecordApprovedTips", stateType));
                 }
 
                 // 明细无需审批
                 approvalState = null;
 
                 if (!Application.getPrivilegesManager().allowUpdate(user, masterRecordId)) {
-                    return formatModelError("你没有权限向此记录添加明细");
+                    return formatModelError(Language.formatLang("NoSomePrivileges", "AddSlave"));
                 }
             } else if (!Application.getPrivilegesManager().allowCreate(user, entityMeta.getEntityCode())) {
-                return formatModelError("没有新建权限");
+                return formatModelError(Language.getLang("NoSomePrivileges", "Create"));
             } else {
                 approvalState = getHadApproval(entityMeta, null);
             }
@@ -144,7 +134,7 @@ public class FormsBuilder extends FormsManager {
         // 查看（视图）
         else if (viewMode) {
             if (!Application.getPrivilegesManager().allowRead(user, record)) {
-                return formatModelError("你无权读取此记录或记录已被删除");
+                return formatModelError(Language.getLang("NotReadRecordTips"));
             }
 
             approvalState = getHadApproval(entityMeta, record);
@@ -153,16 +143,16 @@ public class FormsBuilder extends FormsManager {
         // 编辑
         else {
             if (!Application.getPrivilegesManager().allowUpdate(user, record)) {
-                return formatModelError("你没有编辑此记录的权限");
+                return formatModelError(Language.getLang("NoSomeRecordPrivilehes", "Update"));
             }
 
             approvalState = getHadApproval(entityMeta, record);
             if (approvalState != null) {
-                String masterType = masterEntity == null ? StringUtils.EMPTY : "主";
+                String recordType = masterEntity == null ? "Record" : "MasterRecord";
                 if (approvalState == ApprovalState.APPROVED) {
-                    return formatModelError(masterType + "记录已完成审批，不能编辑");
+                    return formatModelError(Language.getLang("SomeRecordApprovedTips", recordType));
                 } else if (approvalState == ApprovalState.PROCESSING) {
-                    return formatModelError(masterType + "记录正在审批中，不能编辑");
+                    return formatModelError(Language.getLang("SomeRecordInApprovalTips", recordType));
                 }
             }
         }
@@ -170,14 +160,14 @@ public class FormsBuilder extends FormsManager {
         ConfigBean model = getFormLayout(entity, user);
         JSONArray elements = (JSONArray) model.getJSON("elements");
         if (elements == null || elements.isEmpty()) {
-            return formatModelError("表单布局尚未配置，请配置后使用");
+            return formatModelError(Language.getLang("FormUnLayoutTips"));
         }
 
         Record data = null;
         if (record != null) {
             data = findRecord(record, user, elements);
             if (data == null) {
-                return formatModelError("记录已被删除，或你对此记录没有读取权限");
+                return formatModelError(Language.getLang("NotReadRecordTips"));
             }
         }
 
@@ -193,7 +183,7 @@ public class FormsBuilder extends FormsManager {
         buildModelElements(elements, entityMeta, data, user);
 
         if (elements.isEmpty()) {
-            return formatModelError("此表单布局尚未配置，请配置后使用");
+            return formatModelError(Language.getLang("FormUnLayoutTips"));
         }
 
         // 主/明细实体处理
@@ -363,7 +353,7 @@ public class FormsBuilder extends FormsManager {
                             el.put("value", FieldValueWrapper.wrapMixValue((ID) dept.getIdentity(), dept.getName()));
                             break;
                         case EntityHelper.ApprovalId:
-                            el.put("value", FieldValueWrapper.wrapMixValue(null, "自动值 (审批流程)"));
+                            el.put("value", FieldValueWrapper.wrapMixValue(null, Language.getLang("AutoValue")));
                             break;
                         case EntityHelper.ApprovalState:
                             el.put("value", ApprovalState.DRAFT.getState());
@@ -374,7 +364,7 @@ public class FormsBuilder extends FormsManager {
                 }
 
                 if (dt == DisplayType.SERIES) {
-                    el.put("value", "自动值 (自动编号)");
+                    el.put("value", Language.getLang("AutoValue"));
                 } else if (dt == DisplayType.BOOL) {
                     el.put("value", BoolEditor.FALSE);
                 } else {
@@ -389,12 +379,12 @@ public class FormsBuilder extends FormsManager {
 
                 if (roViaTriggers && el.get("value") == null) {
                     if (dt == DisplayType.REFERENCE || dt == DisplayType.CLASSIFICATION) {
-                        el.put("value", FieldValueWrapper.wrapMixValue(null, "自动值 (触发器)"));
+                        el.put("value", FieldValueWrapper.wrapMixValue(null, Language.getLang("AutoValue")));
                     } else if (dt == DisplayType.TEXT || dt == DisplayType.NTEXT
                             || dt == DisplayType.EMAIL || dt == DisplayType.URL || dt == DisplayType.PHONE
                             || dt == DisplayType.NUMBER || dt == DisplayType.DECIMAL
                             || dt == DisplayType.DATETIME || dt == DisplayType.DATE) {
-                        el.put("value", "自动值 (触发器)");
+                        el.put("value", Language.getLang("AutoValue"));
                     }
                 }
             }
