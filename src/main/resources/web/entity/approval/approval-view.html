@@ -4,12 +4,12 @@
     <th:block th:replace="~{/_include/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/view-page.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/approvals.css}" />
-    <title>审批流程图</title>
+    <title>[[${bundle.lang('ApprovalDiagram')}]]</title>
   </head>
   <body class="view-body" style="background-color: #f5f5f7">
     <div class="view-header">
       <i class="header-icon zmdi zmdi-usb zmdi-hc-rotate-180"></i>
-      <h3 class="title">审批流程图</h3>
+      <h3 class="title">[[${bundle.lang('ApprovalDiagram')}]]</h3>
       <span>
         <a class="close J_close"><i class="zmdi zmdi-close"></i></a>
       </span>
@@ -19,7 +19,7 @@
     </div>
     <th:block th:replace="~{/_include/footer}" />
     <script th:src="@{/assets/js/admin/config-comps.js}" type="text/babel"></script>
-    <script th:src="@{/assets/js/metadata/approval-design.js}" type="text/babel"></script>
+    <script th:src="@{/assets/js/admin/approval-design.js}" type="text/babel"></script>
     <script>
       window.__PageConfig = {
         id: '[[${approvalId}]]',

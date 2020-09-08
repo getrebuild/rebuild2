@@ -15,6 +15,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.task.TaskExecutors;
 import com.rebuild.core.metadata.DefaultValueHelper;
 import com.rebuild.core.metadata.EntityHelper;
@@ -384,8 +385,8 @@ public class GeneralEntityService extends ObservableService implements EntitySer
                 ApprovalState state = ApprovalHelper.getApprovalState(record.getID(stmField.getName()));
 
                 if (state == ApprovalState.APPROVED || state == ApprovalState.PROCESSING) {
-                    String stateType = state == ApprovalState.APPROVED ? "已完成审批" : "正在审批中";
-                    throw new DataSpecificationException("主记录" + stateType + "，不能添加明细");
+                    String stateType = state == ApprovalState.APPROVED ? "RecordApproved" : "RecordInApproval";
+                    throw new DataSpecificationException(Language.getLang("MasterRecordApprovedTips", stateType));
                 }
             }
 
@@ -395,10 +396,10 @@ public class GeneralEntityService extends ObservableService implements EntitySer
 
             if (checkEntity.containsField(EntityHelper.ApprovalId)) {
                 // 需要验证主记录
-                String recordType = StringUtils.EMPTY;
+                String recordType = "Record";
                 if (masterEntity != null) {
                     recordId = getMasterId(entity, recordId);
-                    recordType = "主";
+                    recordType = "MasterRecord";
                 }
 
                 ApprovalState currentState;
@@ -423,12 +424,17 @@ public class GeneralEntityService extends ObservableService implements EntitySer
                 }
 
                 if (rejected) {
-                    String actionType = action == BizzPermission.UPDATE ? "修改" : "删除";
-                    String stateType = currentState == ApprovalState.APPROVED ? "已完成审批" : "正在审批中";
                     if (RobotTriggerObserver.getTriggerSource() != null) {
-                        recordType = "关联" + recordType;
+                        recordType = "RelatedRecord";
                     }
-                    throw new DataSpecificationException(recordType + "记录" + stateType + "，禁止" + actionType);
+
+                    String errorMsg;
+                    if (currentState == ApprovalState.APPROVED) {
+                        errorMsg = Language.getLang("SomeRecordApprovedTips", recordType);
+                    } else {
+                        errorMsg = Language.getLang("SomeRecordInApprovalTips", recordType);
+                    }
+                    throw new DataSpecificationException(errorMsg);
                 }
             }
         }

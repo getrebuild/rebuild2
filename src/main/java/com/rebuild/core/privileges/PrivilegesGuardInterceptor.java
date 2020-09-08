@@ -19,9 +19,9 @@ import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.service.CommonsService;
-import com.rebuild.core.service.ServiceSpec;
 import com.rebuild.core.service.general.BulkContext;
 import com.rebuild.core.service.general.EntityService;
+import com.rebuild.core.support.i18n.Language;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.slf4j.Logger;
@@ -62,7 +62,7 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
         Class<?> invocationClass = invocation.getThis().getClass();
         // 验证管理员操作
         if (AdminGuard.class.isAssignableFrom(invocationClass) && !UserHelper.isAdmin(caller)) {
-            throw new AccessDeniedException("非法操作请求 (E" + ((ServiceSpec) invocation.getThis()).getEntityCode() + ")");
+            throw new AccessDeniedException(Language.getLang("Error403"));
         }
         // 仅 EntityService 或子类会验证角色权限
         if (!EntityService.class.isAssignableFrom(invocationClass)) {
@@ -114,7 +114,7 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
                 Field stmField = MetadataHelper.getSlaveToMasterField(entity);
                 ID masterId = ((Record) idOrRecord).getID(stmField.getName());
                 if (masterId == null || !Application.getPrivilegesManager().allowUpdate(caller, masterId)) {
-                    throw new AccessDeniedException("你没有添加明细的权限");
+                    throw new AccessDeniedException(Language.getLang("NoSomePrivileges", "AddSlave"));
                 }
                 allowed = true;
 
@@ -135,7 +135,8 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
         }
 
         if (!allowed) {
-            LOG.error("User [ " + caller + " ] not allowed execute action [ " + action + " ]. " + (recordId == null ? "Entity : " + entity : "Record : " + recordId));
+            LOG.error("User [ " + caller + " ] not allowed execute action [ " + action + " ]. "
+                    + (recordId == null ? "Entity : " + entity : "Record : " + recordId));
             throw new AccessDeniedException(formatHumanMessage(action, entity, recordId));
         }
     }
@@ -187,25 +188,26 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
      * @return
      */
     private String formatHumanMessage(Permission action, Entity entity, ID target) {
-        String actionHuman = null;
+        String actionKey = null;
         if (action == BizzPermission.CREATE) {
-            actionHuman = "新建";
+            actionKey = "Create";
         } else if (action == BizzPermission.UPDATE) {
-            actionHuman = "修改";
+            actionKey = "Update";
         } else if (action == BizzPermission.DELETE) {
-            actionHuman = "删除";
+            actionKey = "Delete";
         } else if (action == BizzPermission.ASSIGN) {
-            actionHuman = "分派";
+            actionKey = "Assign";
         } else if (action == BizzPermission.SHARE) {
-            actionHuman = "共享";
+            actionKey = "Share";
         } else if (action == EntityService.UNSHARE) {
-            actionHuman = "取消共享";
+            actionKey = "UnShare";
         }
 
         if (target == null) {
-            return String.format("你没有%s%s权限", actionHuman, EasyMeta.getLabel(entity));
+            return String.format(Language.formatLang("NoSomeXPrivilehes", actionKey), EasyMeta.getLabel(entity));
+        } else {
+            return Language.formatLang("NoSomeRecordPrivilehes", actionKey);
         }
-        return String.format("你没有%s此记录的权限", actionHuman);
     }
 
     // --

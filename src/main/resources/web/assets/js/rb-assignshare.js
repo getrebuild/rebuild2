@@ -11,7 +11,7 @@ class DlgAssign extends RbModalHandler {
   constructor(props) {
     super(props)
     this.onView = !!window.RbViewPage
-    this.specs = ['assign', '分派']
+    this.specs = ['assign', $lang('Assign')]
   }
 
   render() {
@@ -20,32 +20,32 @@ class DlgAssign extends RbModalHandler {
         <div className="form">
           {this.onView === true ? null : (
             <div className="form-group row pb-0">
-              <label className="col-sm-3 col-form-label text-sm-right">{this.specs[1]}哪些记录</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SomeWhichRecords').replace('{0}', this.specs[1])}</label>
               <div className="col-sm-7">
-                <div className="form-control-plaintext">{'选中的记录 (' + this.state.ids.length + '条)'}</div>
+                <div className="form-control-plaintext">{`${$lang('DatasSelected')} (${this.state.ids.length})`}</div>
               </div>
             </div>
           )}
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">{this.specs[1]}给谁</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('XToWho').replace('%s', this.specs[1])}</label>
             <div className="col-sm-7">{this._useUserSelector()}</div>
           </div>
           {this.state.cascadesShow !== true ? (
             <div className="form-group row">
               <div className="col-sm-7 offset-sm-3">
                 <a href="#" onClick={this._showCascade}>
-                  同时{this.specs[1]}关联记录
+                  {$lang('SameXRelatedRecords').replace('%s', this.specs[1])}
                 </a>
               </div>
             </div>
           ) : (
             <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">选择关联记录</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,RelatedRecord')}</label>
               <div className="col-sm-7">
                 <select className="form-control form-control-sm" ref={(c) => (this._cascades = c)}>
                   {(this.state.cascadesEntity || []).map((item) => {
                     return (
-                      <option key={'option-' + item[0]} value={item[0]}>
+                      <option key={item[0]} value={item[0]}>
                         {item[1]}
                       </option>
                     )
@@ -56,11 +56,11 @@ class DlgAssign extends RbModalHandler {
           )}
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref={(c) => (this._btns = c)}>
-              <button className="btn btn-primary btn-space" type="button" data-loading-text="请稍后" onClick={() => this.post()}>
-                确定
+              <button className="btn btn-primary btn-space" type="button" onClick={() => this.post()}>
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link btn-space" onClick={() => this.hide()}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>
@@ -76,7 +76,7 @@ class DlgAssign extends RbModalHandler {
         $(this._cascades)
           .select2({
             multiple: true,
-            placeholder: '选择关联实体 (可选)',
+            placeholder: $lang('SelectCasEntity'),
           })
           .val(null)
           .trigger('change')
@@ -91,7 +91,7 @@ class DlgAssign extends RbModalHandler {
   post() {
     let users = this._UserSelector.val()
     if (!users || users.length === 0) {
-      RbHighbar.create('请选择' + this.specs[1] + '给谁')
+      RbHighbar.create($lang('PlsSelectXToWho').replace('%s', this.specs[1]))
       return
     }
     if ($.type(users) === 'array') users = users.join(',')
@@ -105,9 +105,7 @@ class DlgAssign extends RbModalHandler {
         $(this._cascades).val(null).trigger('change')
 
         this.hide()
-        const affected = res.data.assigned || res.data.shared || 0
-        if (affected > 0 && rb.env === 'dev') RbHighbar.success('已成功' + this.specs[1] + ' ' + affected + ' 条记录')
-        else RbHighbar.success('记录已' + this.specs[1])
+        RbHighbar.success($lang('SomeSuccess').replace('{0}', this.specs[1]))
 
         setTimeout(() => {
           if (window.RbListPage) RbListPage._RbList.reload()
@@ -138,7 +136,7 @@ class DlgAssign extends RbModalHandler {
 class DlgShare extends DlgAssign {
   constructor(props) {
     super(props)
-    this.specs = ['share', '共享']
+    this.specs = ['share', $lang('Share')]
   }
 
   _useUserSelector() {
@@ -168,25 +166,25 @@ class DlgUnshare extends RbModalHandler {
 
   render() {
     return (
-      <RbModal title="取消共享" ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang('UnShare')} ref={(c) => (this._dlg = c)}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">取消共享哪些记录</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('SomeWhichRecords,UnShare')}</label>
             <div className="col-sm-7">
-              <div className="form-control-plaintext">{'选中的记录 (' + this.state.ids.length + '条)'}</div>
+              <div className="form-control-plaintext">{`${$lang('DatasSelected')} (${this.state.ids.length})`}</div>
             </div>
           </div>
           <div className="form-group row pt-0 pb-0">
-            <label className="col-sm-3 col-form-label text-sm-right">取消哪些用户</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('CancelWhichUsers')}</label>
             <div className="col-sm-7">
               <div className="mt-1">
                 <label className="custom-control custom-control-sm custom-radio custom-control-inline mb-2">
                   <input className="custom-control-input" name="whichUsers" type="radio" checked={this.state.whichUsers === 'ALL'} onChange={() => this.whichMode(true)} />
-                  <span className="custom-control-label">全部用户</span>
+                  <span className="custom-control-label">{$lang('AllUser')}</span>
                 </label>
                 <label className="custom-control custom-control-sm custom-radio custom-control-inline mb-2">
                   <input className="custom-control-input" name="whichUsers" type="radio" checked={this.state.whichUsers === 'SPEC'} onChange={() => this.whichMode()} />
-                  <span className="custom-control-label">指定用户</span>
+                  <span className="custom-control-label">{$lang('SpecUser')}</span>
                 </label>
               </div>
               <div className={'mb-2 ' + (this.state.whichUsers === 'ALL' ? 'hide' : '')}>
@@ -196,11 +194,11 @@ class DlgUnshare extends RbModalHandler {
           </div>
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref={(c) => (this._btns = c)}>
-              <button className="btn btn-primary btn-space" type="button" data-loading-text="请稍后" onClick={() => this.post()}>
-                确定
+              <button className="btn btn-primary btn-space" type="button" onClick={() => this.post()}>
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link btn-space" onClick={() => this.hide()}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>
@@ -219,7 +217,7 @@ class DlgUnshare extends RbModalHandler {
       users = '$ALL$'
     } else {
       if (!users || users.length === 0) {
-        RbHighbar.create('请选择取消用户')
+        RbHighbar.create($lang('PlsSelectSome,CancelWhichUsers'))
         return
       }
       users = users.join(',')
@@ -231,8 +229,7 @@ class DlgUnshare extends RbModalHandler {
         this._UserSelector.clearSelection()
 
         this.hide()
-        if (res.data.unshared > 0 && rb.env === 'dev') RbHighbar.success('成功取消共享 ' + res.data.unshared + ' 条记录')
-        else RbHighbar.success('已取消共享')
+        RbHighbar.success($lang('SomeSuccess,UnShare'))
 
         setTimeout(() => {
           if (window.RbListPage) RbListPage._RbList.reload()
@@ -267,13 +264,13 @@ class DlgShareManager extends RbModalHandler {
 
   render() {
     return (
-      <RbModal title={(this.props.unshare === true ? '管理' : '查看') + '共享用户'} ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang('ShareUsers')} ref={(c) => (this._dlg = c)}>
         <div className="sharing-list">
           <ul className="list-unstyled list-inline">
             {(this.state.sharingList || []).map((item) => {
               return (
                 <li className={`list-inline-item ${this.state.selectedAccess.includes(item[1]) ? 'active' : ''}`} key={`access-${item[1]}`}>
-                  <div onClick={() => this.clickUser(item[1])} title={`由 ${item[3]} 共享于 ${item[2]}`}>
+                  <div onClick={() => this.clickUser(item[1])} title={$lang('ByXSharedOnX').replace('%s', item[3]).replace('%s', item[2])}>
                     <UserShow id={item[0][0]} name={item[0][1]} showName={true} />
                     <i className="zmdi zmdi-check" />
                   </div>
@@ -285,11 +282,11 @@ class DlgShareManager extends RbModalHandler {
         <div className="dialog-footer" ref={(c) => (this._btns = c)}>
           {this.props.unshare === true && (
             <button className="btn btn-primary btn-space" type="button" onClick={() => this.post()}>
-              取消共享
+              {$lang('UnShare')}
             </button>
           )}
           <button className="btn btn-secondary btn-space" type="button" onClick={() => this.hide()}>
-            取消
+            {$lang('Cancel')}
           </button>
         </div>
       </RbModal>
@@ -313,7 +310,7 @@ class DlgShareManager extends RbModalHandler {
   post() {
     const s = this.state.selectedAccess
     if (s.length === 0) {
-      RbHighbar.create('请选择需要取消共享的用户')
+      RbHighbar.create($lang('PlsSelectSome,CancelWhichUsers'))
       return
     }
 
@@ -321,8 +318,8 @@ class DlgShareManager extends RbModalHandler {
     $.post(`/app/entity/record-unshare?id=${s.join(',')}&record=${this.props.id}`, (res) => {
       if (res.error_code === 0) {
         this.hide()
-        if (rb.env === 'dev') RbHighbar.success('已取消 ' + res.data.unshared + ' 位用户的共享')
-        else RbHighbar.success('共享已取消')
+        RbHighbar.success($lang('SomeSuccess,UnShare'))
+
         setTimeout(() => {
           if (window.RbViewPage) location.reload()
         }, 500)

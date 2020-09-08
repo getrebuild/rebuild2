@@ -22,7 +22,7 @@ class ContentAutoShare extends ActionContentSpec {
             </div>
           </div>
           <div className="form-group row pb-1">
-            <label className="col-12 col-lg-3 col-form-label text-lg-right">{$lang('ShareCascade')}</label>
+            <label className="col-12 col-lg-3 col-form-label text-lg-right">{$lang('SameXRelatedRecords,Share')}</label>
             <div className="col-12 col-lg-8">
               <div>
                 <select className="form-control form-control-sm" ref={(c) => (this._cascades = c)}>

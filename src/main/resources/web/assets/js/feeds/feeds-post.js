@@ -514,7 +514,7 @@ class AnnouncementOptions extends React.Component {
     return (
       <div className="feed-options announcement">
         <dl className="row mb-1">
-          <dt className="col-12 col-lg-3">{$lang('WhenAnnouncementPos')}</dt>
+          <dt className="col-12 col-lg-3">{$lang('SameAnnouncementPos')}</dt>
           <dd className="col-12 col-lg-9 mb-0" ref={(c) => (this._showWhere = c)}>
             <label className="custom-control custom-checkbox custom-control-inline">
               <input className="custom-control-input" name="showOn" type="checkbox" value={1} disabled={this.props.readonly} />

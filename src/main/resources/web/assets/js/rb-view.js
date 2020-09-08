@@ -37,7 +37,7 @@ class RbViewForm extends React.Component {
 
       let hadApproval = res.data.hadApproval
       if (wpc.type === 'SlaveView') {
-        if (hadApproval === 2) $('.J_edit, .J_delete').attr({ disabled: true, title: $lang('SomeInApproval,MainRecord') })
+        if (hadApproval === 2) $('.J_edit, .J_delete').attr({ disabled: true, title: $lang('SomeInApproval,MasterRecord') })
         else if (hadApproval === 10) $('.J_edit, .J_delete').remove()
         hadApproval = null
       }
@@ -506,7 +506,7 @@ const RbViewPage = {
                 />,
                 item_op
               )
-            else renderRbcomp(<UserShow name={$lang('ManageSome,ShareUsers')} icon="zmdi zmdi-more" onClick={() => DlgShareManager.create(this.__id)} />, item_op)
+            else renderRbcomp(<UserShow name={$lang('SomeManage,ShareUsers')} icon="zmdi zmdi-more" onClick={() => DlgShareManager.create(this.__id)} />, item_op)
           } else if (v.length > 0) {
             const item_op = $('<li class="list-inline-item"></li>').appendTo(list)[0]
             renderRbcomp(<UserShow name={$lang('ViewSome,ShareUsers')} icon="zmdi zmdi-more" onClick={() => DlgShareManager.create(this.__id, false)} />, item_op)
