@@ -413,8 +413,8 @@ class FilterItem extends React.Component {
         <div className="val-range">
           <input className="form-control form-control-sm" ref={(c) => (this._filterVal = c)} onChange={this.valueHandle} onBlur={this.valueCheck} value={this.state.value || ''} />
           <input className="form-control form-control-sm" ref={(c) => (this._filterVal2 = c)} onChange={this.valueHandle} onBlur={this.valueCheck} value={this.state.value2 || ''} data-at="2" />
-          <span>起</span>
-          <span className="end">止</span>
+          <span>{$lang('T1Start')}</span>
+          <span className="end">{$lang('T1End')}</span>
         </div>
       )
     } else if (this.state.type === 'PICKLIST' || this.state.type === 'STATE' || this.state.type === 'MULTISELECT') {

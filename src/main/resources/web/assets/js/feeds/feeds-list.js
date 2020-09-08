@@ -126,7 +126,7 @@ class FeedsList extends React.Component {
               <p className="text-muted fs-12 m-0">
                 <DateShow date={item.createdOn} />
                 {item.createdOn !== item.modifedOn && (
-                  <span className="text-danger" title={`${$lang('f.modifiedOn')} ${item.modifedOn}`}>
+                  <span className="text-danger ml-1" title={`${$lang('f.modifiedOn')} ${item.modifedOn}`}>
                     ({$lang('Modified')})
                   </span>
                 )}

@@ -47,7 +47,7 @@ class FeedsPost extends React.Component {
         <div className="mt-3">
           <div className="float-right">
             <button className="btn btn-primary" ref={(c) => (this._btn = c)} onClick={this._post}>
-              {$lang('Puhlish')}
+              {$lang('Publish')}
             </button>
           </div>
           <div className="float-right mr-4">
