@@ -23,11 +23,9 @@ class AnnouncementModal extends React.Component {
             <div className="modal-body">
               <div className="text-break announcement-contents" dangerouslySetInnerHTML={{ __html: contentHtml }} />
               <div>
-                <span className="float-left text-muted">
-                  由 {this.props.publishBy} 发布于 {this.props.publishOn}
-                </span>
+                <span className="float-left text-muted">{$lang('PublishedTips').replace('%s', this.props.publishBy).replace('%s', this.props.publishOn)}</span>
                 <span className="float-right">
-                  <a href={`${rb.baseUrl}/app/list-and-view?id=${this.props.id}`}>前往动态查看</a>
+                  <a href={`${rb.baseUrl}/app/list-and-view?id=${this.props.id}`}>{$lang('GoFeedsView')}</a>
                 </span>
                 <span className="clearfi"></span>
               </div>
@@ -55,7 +53,7 @@ var $showAnnouncement = function () {
     if (res.error_code !== 0 || !res.data || res.data.length === 0) return
     const as = res.data.map((item, idx) => {
       return (
-        <div className="bg-warning" key={'a-' + idx} title="查看详情" onClick={() => renderRbcomp(<AnnouncementModal {...item} />)}>
+        <div className="bg-warning" key={'a-' + idx} title={$lang('ViewDetail')} onClick={() => renderRbcomp(<AnnouncementModal {...item} />)}>
           <i className="icon zmdi zmdi-notifications-active" />
           <p dangerouslySetInnerHTML={{ __html: item.content }}></p>
         </div>

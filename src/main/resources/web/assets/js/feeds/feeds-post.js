@@ -19,23 +19,23 @@ class FeedsPost extends React.Component {
         <ul className="list-unstyled list-inline mb-1 pl-1" ref={(c) => (this._activeType = c)}>
           <li className="list-inline-item">
             <a onClick={() => this.setState({ type: 1 })} className={`${activeType === 1 ? activeClass : ''}`}>
-              动态
+              {$lang('FeedsType1')}
             </a>
           </li>
           <li className="list-inline-item">
             <a onClick={() => this.setState({ type: 2 })} className={`${activeType === 2 ? activeClass : ''}`}>
-              跟进
+              {$lang('FeedsType2')}
             </a>
           </li>
           <li className="list-inline-item">
             <a onClick={() => this.setState({ type: 4 })} className={`${activeType === 4 ? activeClass : ''}`}>
-              日程
+              {$lang('FeedsType3')}
             </a>
           </li>
           {rb.isAdminUser && (
             <li className="list-inline-item">
               <a onClick={() => this.setState({ type: 3 })} className={`${activeType === 3 ? activeClass : ''}`}>
-                公告
+                {$lang('FeedsType4')}
               </a>
             </li>
           )}
@@ -47,27 +47,27 @@ class FeedsPost extends React.Component {
         <div className="mt-3">
           <div className="float-right">
             <button className="btn btn-primary" ref={(c) => (this._btn = c)} onClick={this._post}>
-              发布
+              {$lang('Puhlish')}
             </button>
           </div>
           <div className="float-right mr-4">
             <div className="btn-group" style={{ border: '0 none' }}>
               <button className="btn btn-scope btn-link" data-toggle="dropdown" ref={(c) => (this._scopeBtn = c)}>
                 <i className="icon up-1 zmdi zmdi-chart-donut" />
-                公开
+                {$lang('Public')}
               </button>
               <div className="dropdown-menu dropdown-menu-right">
-                <a className="dropdown-item" onClick={this._selectScope} data-scope="ALL" title="全部可见">
+                <a className="dropdown-item" onClick={this._selectScope} data-scope="ALL" title={$lang('FeedsScopeAll')}>
                   <i className="icon up-1 zmdi zmdi-chart-donut" />
-                  公开
+                  {$lang('Public')}
                 </a>
-                <a className="dropdown-item" onClick={this._selectScope} data-scope="SELF" title="仅自己可见">
+                <a className="dropdown-item" onClick={this._selectScope} data-scope="SELF" title={$lang('FeedsScopePrivate')}>
                   <i className="icon up-1 zmdi zmdi-lock" />
-                  私密
+                  {$lang('FeedsTabPrivate')}
                 </a>
-                <a className="dropdown-item" onClick={this._selectScope} data-scope="GROUP" title="团队成员可见">
+                <a className="dropdown-item" onClick={this._selectScope} data-scope="GROUP" title={$lang('FeedsScopeGroup')}>
                   <i className="icon up-1 zmdi zmdi-accounts" />
-                  团队
+                  {$lang('e.Team')}
                 </a>
               </div>
             </div>
@@ -112,14 +112,14 @@ class FeedsPost extends React.Component {
     const _data = this._editor.vals()
     if (!_data) return
     if (!_data.content) {
-      RbHighbar.create('请输入动态内容')
+      RbHighbar.create($lang('PlsInputSome,FeedsContent'))
       return
     }
 
     _data.scope = this.state.scope
     if (_data.scope === 'GROUP') {
       if (!this.__group) {
-        RbHighbar.create('请选择团队')
+        RbHighbar.create($lang('PlsSelectSome,e.Team'))
         return
       }
       _data.scope = this.__group.id
@@ -164,13 +164,20 @@ class FeedsEditor extends React.Component {
 
     return (
       <React.Fragment>
-        {isFinish && <RbAlertBox message="此日程已完成，编辑后你需要重新将其完成" />}
+        {isFinish && <RbAlertBox message={$lang('ReFinshScheduleConfirm')} />}
         <div className={`rich-editor ${this.state.focus ? 'active' : ''}`}>
-          <textarea ref={(c) => (this._editor = c)} placeholder={this.props.placeholder} maxLength="2000" onFocus={() => this.setState({ focus: true })} onBlur={() => this.setState({ focus: false })} defaultValue={this.props.initValue} />
+          <textarea
+            ref={(c) => (this._editor = c)}
+            placeholder={this.props.placeholder}
+            maxLength="2000"
+            onFocus={() => this.setState({ focus: true })}
+            onBlur={() => this.setState({ focus: false })}
+            defaultValue={this.props.initValue}
+          />
           <div className="action-btns">
             <ul className="list-unstyled list-inline m-0 p-0">
               <li className="list-inline-item use-dropdown">
-                <a onClick={() => this.setState({ renderEmoji: true })} title="表情" data-toggle="dropdown">
+                <a onClick={() => this.setState({ renderEmoji: true })} title={$lang('Emoji')} data-toggle="dropdown">
                   <i className="zmdi zmdi-mood" />
                 </a>
                 <div className="dropdown-menu">{this.state.renderEmoji && <div className="emoji-wrapper">{this.__es}</div>}</div>
@@ -184,7 +191,7 @@ class FeedsEditor extends React.Component {
                   multiple={false}
                   ref={(c) => (this._UserSelector = c)}
                   compToggle={
-                    <a title="@用户" data-toggle="dropdown">
+                    <a title={`@${$lang('e.User')}`} data-toggle="dropdown">
                       <i className="zmdi at-text">@</i>
                     </a>
                   }
@@ -192,12 +199,12 @@ class FeedsEditor extends React.Component {
                 />
               </li>
               <li className="list-inline-item">
-                <a title="图片" onClick={() => this._imageInput.click()}>
+                <a title={$lang('Image')} onClick={() => this._imageInput.click()}>
                   <i className="zmdi zmdi-image-o" />
                 </a>
               </li>
               <li className="list-inline-item">
-                <a title="附件" onClick={() => this._fileInput.click()} style={{ marginLeft: -5 }}>
+                <a title={$lang('Attachment')} onClick={() => this._fileInput.click()} style={{ marginLeft: -5 }}>
                   <i className="zmdi zmdi-attachment-alt zmdi-hc-rotate-45" />
                 </a>
               </li>
@@ -215,7 +222,7 @@ class FeedsEditor extends React.Component {
                   <span key={'img-' + item}>
                     <a title={$fileCutName(item)} className="img-thumbnail img-upload">
                       <img src={`${rb.baseUrl}/filex/img/${item}?imageView2/2/w/100/interlace/1/q/100`} />
-                      <b title="移除" onClick={() => this._removeImage(item)}>
+                      <b title={$lang('Remove')} onClick={() => this._removeImage(item)}>
                         <span className="zmdi zmdi-close"></span>
                       </b>
                     </a>
@@ -230,7 +237,7 @@ class FeedsEditor extends React.Component {
                   <div key={'file-' + item} className="img-thumbnail" title={fileName}>
                     <i className="file-icon" data-type={$fileExtName(fileName)} />
                     <span>{fileName}</span>
-                    <b title="移除" onClick={() => this._removeFile(item)}>
+                    <b title={$lang('Remove')} onClick={() => this._removeFile(item)}>
                       <span className="zmdi zmdi-close"></span>
                     </b>
                   </div>
@@ -364,8 +371,8 @@ class SelectGroup extends React.Component {
               </button>
             </div>
             <div className="modal-body">
-              <h5 className="mt-0 text-bold">选择团队</h5>
-              {this.state.groups && this.state.groups.length === 0 && <p className="text-muted">你未加入任何团队</p>}
+              <h5 className="mt-0 text-bold">{$lang('SelectSome,e.Team')}</h5>
+              {this.state.groups && this.state.groups.length === 0 && <p className="text-muted">{$lang('YouNotJoinAnyTeams')}</p>}
               <div>
                 <ul className="list-unstyled">
                   {(this.state.groups || []).map((item) => {
@@ -409,11 +416,11 @@ class SelectRelated extends React.Component {
     return (
       <div className="feed-options related">
         <dl className="row">
-          <dt className="col-12 col-lg-3 pt-2">相关记录</dt>
+          <dt className="col-12 col-lg-3 pt-2">{$lang('ReleatedRecord')}</dt>
           <dd className="col-12 col-lg-9">
             <span className="float-left" style={{ width: 200 }}>
               <select className="form-control form-control-sm" ref={(c) => (this._entity = c)}>
-                {(this.state.entities || []).length === 0 && <option>无可用实体</option>}
+                {(this.state.entities || []).length === 0 && <option>{$lang('NoAnySome,Entity')}</option>}
                 {(this.state.entities || []).map((item) => {
                   return (
                     <option key={item.name} value={item.name}>
@@ -461,7 +468,7 @@ class SelectRelated extends React.Component {
     const that = this
     let search_input = null
     $(this._record).select2({
-      placeholder: '选择相关记录 (可选)',
+      placeholder: `${$lang('SelectSome,ReleatedRecord')} (${$lang('Optional')})`,
       minimumInputLength: 0,
       maximumSelectionLength: 1,
       ajax: {
@@ -477,16 +484,16 @@ class SelectRelated extends React.Component {
       },
       language: {
         noResults: () => {
-          return (search_input || '').length > 0 ? '未找到结果' : '输入关键词搜索'
+          return (search_input || '').length > 0 ? $lang('NoResults') : $lang('InputForSearch')
         },
         inputTooShort: () => {
-          return '输入关键词搜索'
+          return $lang('InputForSearch')
         },
         searching: () => {
-          return '搜索中...'
+          return $lang('Searching')
         },
         maximumSelected: () => {
-          return '只能选择 1 项'
+          return $lang('OnlyXSelected').replace('%d', 1)
         },
       },
     })
@@ -507,33 +514,33 @@ class AnnouncementOptions extends React.Component {
     return (
       <div className="feed-options announcement">
         <dl className="row mb-1">
-          <dt className="col-12 col-lg-3">同时公示在</dt>
+          <dt className="col-12 col-lg-3">{$lang('WhenAnnouncementPos')}</dt>
           <dd className="col-12 col-lg-9 mb-0" ref={(c) => (this._showWhere = c)}>
             <label className="custom-control custom-checkbox custom-control-inline">
               <input className="custom-control-input" name="showOn" type="checkbox" value={1} disabled={this.props.readonly} />
-              <span className="custom-control-label">动态页</span>
+              <span className="custom-control-label">{$lang('AnnouncementPos1')}</span>
             </label>
             <label className="custom-control custom-checkbox custom-control-inline">
               <input className="custom-control-input" name="showOn" type="checkbox" value={2} disabled={this.props.readonly} />
-              <span className="custom-control-label">首页</span>
+              <span className="custom-control-label">{$lang('AnnouncementPos2')}</span>
             </label>
             <label className="custom-control custom-checkbox custom-control-inline">
               <input className="custom-control-input" name="showOn" type="checkbox" value={4} disabled={this.props.readonly} />
               <span className="custom-control-label">
-                登录页 <i className="zmdi zmdi-help zicon down-3" data-toggle="tooltip" title="选择登录页公示请注意不要发布敏感信息" />
+                {$lang('AnnouncementPos4')} <i className="zmdi zmdi-help zicon down-3" data-toggle="tooltip" title={$lang('AnnouncementPos4Tips')} />
               </span>
             </label>
           </dd>
         </dl>
         <dl className="row">
-          <dt className="col-12 col-lg-3 pt-2">公示时间</dt>
+          <dt className="col-12 col-lg-3 pt-2"> {$lang('AnnouncementTime')}</dt>
           <dd className="col-12 col-lg-9" ref={(c) => (this._showTime = c)}>
             <div className="input-group">
-              <input type="text" className="form-control form-control-sm" placeholder="现在" />
+              <input type="text" className="form-control form-control-sm" placeholder={$lang('Now')} />
               <div className="input-group-prepend input-group-append">
-                <span className="input-group-text">至</span>
+                <span className="input-group-text">~</span>
               </div>
-              <input type="text" className="form-control form-control-sm" placeholder="选择结束时间" />
+              <input type="text" className="form-control form-control-sm" placeholder={$lang('SelectSome,EdnTime')} />
             </div>
           </dd>
         </dl>
@@ -576,7 +583,7 @@ class AnnouncementOptions extends React.Component {
     const timeStart = $(this._showTime).find('.form-control:eq(0)').val()
     const timeEnd = $(this._showTime).find('.form-control:eq(1)').val()
     if (where > 0 && !timeEnd) {
-      RbHighbar.create('请选择结束时间')
+      RbHighbar.create($lang('PlsSelectSome,EdnTime'))
       return
     }
 
@@ -603,25 +610,31 @@ class ScheduleOptions extends React.Component {
     return (
       <div className="feed-options schedule">
         <dl className="row">
-          <dt className="col-12 col-lg-3 pt-2">日程时间</dt>
+          <dt className="col-12 col-lg-3 pt-2">{$lang('ScheduleTime')}</dt>
           <dd className="col-12 col-lg-9" ref={(c) => (this._scheduleTime = c)}>
-            <input type="text" className="form-control form-control-sm" placeholder="选择日程时间" />
+            <input type="text" className="form-control form-control-sm" placeholder={$lang('SelectSome,ScheduleTime')} />
           </dd>
         </dl>
         <dl className="row mb-1">
-          <dt className="col-12 col-lg-3">发送提醒给我</dt>
+          <dt className="col-12 col-lg-3">{$lang('SendRemindToMe')}</dt>
           <dd className="col-12 col-lg-9 mb-0" ref={(c) => (this._scheduleRemind = c)}>
             <label className="custom-control custom-checkbox custom-control-inline">
               <input className="custom-control-input" name="showOn" type="checkbox" value={1} disabled={this.props.readonly} />
-              <span className="custom-control-label">消息通知</span>
+              <span className="custom-control-label">{$lang('SendRemind1')}</span>
             </label>
             <label className="custom-control custom-checkbox custom-control-inline" title={email}>
               <input className="custom-control-input" name="showOn" type="checkbox" value={2} disabled={this.props.readonly} />
-              <span className="custom-control-label">邮件{!email && <span> (未设置)</span>}</span>
+              <span className="custom-control-label">
+                {$lang('SendRemind2')}
+                {!email && <span> ({$lang('Unavailable')})</span>}
+              </span>
             </label>
             <label className="custom-control custom-checkbox custom-control-inline" title={mobile}>
               <input className="custom-control-input" name="showOn" type="checkbox" value={4} disabled={this.props.readonly} />
-              <span className="custom-control-label">短信{!mobile && <span> (未设置)</span>}</span>
+              <span className="custom-control-label">
+                {$lang('SendRemind4')}
+                {!mobile && <span> ({$lang('Unavailable')})</span>}
+              </span>
             </label>
           </dd>
         </dl>
@@ -655,7 +668,7 @@ class ScheduleOptions extends React.Component {
       })
     const time = $(this._scheduleTime).find('.form-control:eq(0)').val()
     if (!time) {
-      RbHighbar.create('请选择日程时间')
+      RbHighbar.create($lang('PlsSelectSome,ScheduleTime'))
       return
     }
 
@@ -688,16 +701,16 @@ class FeedsEditDlg extends RbModalHandler {
       contentMore: this.props.contentMore,
     }
     return (
-      <RbModal ref={(c) => (this._dlg = c)} title="编辑动态" disposeOnHide={true}>
+      <RbModal ref={(c) => (this._dlg = c)} title={$lang('EditSome,e.Feeds')} disposeOnHide={true}>
         <div className="m-1">
           <FeedsEditor ref={(c) => (this._editor = c)} {..._data} />
         </div>
         <div className="mt-3 text-right" ref={(c) => (this._btns = c)}>
           <button className="btn btn-primary btn-space" type="button" onClick={this._post}>
-            保存
+            {$lang('Save')}
           </button>
           <button className="btn btn-secondary btn-space" type="button" onClick={this.hide}>
-            取消
+            {$lang('Cancel')}
           </button>
         </div>
       </RbModal>
@@ -708,7 +721,7 @@ class FeedsEditDlg extends RbModalHandler {
     const _data = this._editor.vals()
     if (!_data) return
     if (!_data.content) {
-      RbHighbar.create('请输入动态内容')
+      RbHighbar.create($lang('PlsInputSome,FeedsContent'))
       return
     }
     _data.metadata = { entity: 'Feeds', id: this.props.id }

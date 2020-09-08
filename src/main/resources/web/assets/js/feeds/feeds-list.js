@@ -6,8 +6,17 @@ See LICENSE and COMMERCIAL in the project root for license information.
 */
 /* global converEmoji, FeedsEditor */
 
-const FeedsSorts = { newer: '最近发布', older: '最早发布', modified: '最近修改' }
-const FeedsTypes = { 1: '动态', 2: '跟进', 3: '公告', 4: '日程' }
+const FeedsSorts = {
+  newer: $lang('FeedsSortNewer'),
+  older: $lang('FeedsSortOlder'),
+  modified: $lang('FeedsSortModified'),
+}
+const FeedsTypes = {
+  1: $lang('FeedsType1'),
+  2: $lang('FeedsType2'),
+  3: $lang('FeedsType3'),
+  4: $lang('FeedsType4'),
+}
 
 // ~ 动态列表
 // eslint-disable-next-line no-unused-vars
@@ -25,48 +34,48 @@ class FeedsList extends React.Component {
           <ul className="nav nav-tabs">
             <li className="nav-item">
               <a onClick={() => this._switchTab(0)} className={`nav-link ${this.state.tabType === 0 && 'active'}`}>
-                全部
+                {$lang('All')}
               </a>
             </li>
             <li className="nav-item">
               <a onClick={() => this._switchTab(1)} className={`nav-link ${this.state.tabType === 1 && 'active'}`}>
-                @我的
+                {$lang('FeedsTabAtMe')}
               </a>
             </li>
             <li className="nav-item">
               <a onClick={() => this._switchTab(10)} className={`nav-link ${this.state.tabType === 10 && 'active'}`}>
-                我发布的
+                {$lang('FeedsTabMy')}
               </a>
             </li>
             <li className="nav-item">
               <a onClick={() => this._switchTab(2)} className={`nav-link ${this.state.tabType === 2 && 'active'}`}>
-                我评论的
+                {$lang('FeedsTabMyComment')}
               </a>
             </li>
             <li className="nav-item">
               <a onClick={() => this._switchTab(3)} className={`nav-link ${this.state.tabType === 3 && 'active'}`}>
-                我点赞的
+                {$lang('FeedsTabMyLike')}
               </a>
             </li>
             <li className="nav-item">
               <a onClick={() => this._switchTab(11)} className={`nav-link ${this.state.tabType === 11 && 'active'}`}>
-                私密
+                {$lang('FeedsTabPrivate')}
               </a>
             </li>
             <span className="float-right">
               <div className="btn-group">
                 <button type="button" className="btn btn-link pr-0 text-right" data-toggle="dropdown">
-                  {FeedsSorts[this.state.sort] || '默认排序'} <i className="icon zmdi zmdi-chevron-down up-1"></i>
+                  {FeedsSorts[this.state.sort] || $lang('DefaultSort')} <i className="icon zmdi zmdi-chevron-down up-1"></i>
                 </button>
                 <div className="dropdown-menu dropdown-menu-right">
                   <a className="dropdown-item" data-sort="newer" onClick={this._sortFeeds}>
-                    最近发布
+                    {FeedsSorts['newer']}
                   </a>
                   <a className="dropdown-item" data-sort="modified" onClick={this._sortFeeds}>
-                    最近修改
+                    {FeedsSorts['modified']}
                   </a>
                   <a className="dropdown-item" data-sort="older" onClick={this._sortFeeds}>
-                    最早发布
+                    {FeedsSorts['older']}
                   </a>
                 </div>
               </div>
@@ -78,11 +87,11 @@ class FeedsList extends React.Component {
             <div className="list-nodata pt-8 pb-8">
               <i className="zmdi zmdi-chart-donut"></i>
               <p>
-                暂无相关动态
+                {$lang('NoSome,e.Feeds')}
                 {this.state.tabType === 11 && (
                   <React.Fragment>
                     <br />
-                    即使管理员也不能查看他人的私密动态
+                    {$lang('PrivateFeedTips')}
                   </React.Fragment>
                 )}
               </p>
@@ -112,14 +121,13 @@ class FeedsList extends React.Component {
           </div>
           <div className="content">
             <div className="meta">
-              <span className="float-right badge">{FeedsTypes[item.type] || '动态'}</span>
+              <span className="float-right badge">{FeedsTypes[item.type] || FeedsTypes[1]}</span>
               <a>{item.createdBy[1]}</a>
               <p className="text-muted fs-12 m-0">
                 <DateShow date={item.createdOn} />
                 {item.createdOn !== item.modifedOn && (
-                  <span className="text-danger" title={`编辑于 ${item.modifedOn}`}>
-                    {' '}
-                    (已编辑)
+                  <span className="text-danger" title={`${$lang('f.modifiedOn')} ${item.modifedOn}`}>
+                    ({$lang('Modified')})
                   </span>
                 )}
                 &nbsp;&nbsp;·&nbsp;&nbsp;
@@ -127,7 +135,7 @@ class FeedsList extends React.Component {
                   item.scope
                 ) : (
                   <span>
-                    {item.scope[1]} <i title="团队成员可见" className="zmdi zmdi-accounts fs-14 down-1"></i>
+                    {item.scope[1]} <i title={$lang('FeedsScopeGroup')} className="zmdi zmdi-accounts fs-14 down-1"></i>
                   </span>
                 )}
               </p>
@@ -139,29 +147,29 @@ class FeedsList extends React.Component {
           <ul className="list-unstyled m-0">
             {item.self && (
               <li className="list-inline-item mr-2">
-                <a data-toggle="dropdown" href="#mores" className="fixed-icon" title="更多">
+                <a data-toggle="dropdown" href="#mores" className="fixed-icon" title={$lang('More')}>
                   <i className="zmdi zmdi-more"></i>&nbsp;
                 </a>
                 <div className="dropdown-menu dropdown-menu-right">
                   {this._renderMoreMenu(item)}
                   <a className="dropdown-item" onClick={() => this._handleEdit(item)}>
-                    <i className="icon zmdi zmdi-edit" /> 编辑
+                    <i className="icon zmdi zmdi-edit" /> {$lang('Edit')}
                   </a>
                   <a className="dropdown-item" onClick={() => this._handleDelete(item.id)}>
                     <i className="icon zmdi zmdi-delete" />
-                    删除
+                    {$lang('Delete')}
                   </a>
                 </div>
               </li>
             )}
             <li className="list-inline-item mr-3">
               <a href="#thumbup" onClick={() => this._handleLike(item.id)} className={`fixed-icon ${item.myLike && 'text-primary'}`}>
-                <i className="zmdi zmdi-thumb-up"></i>赞 {item.numLike > 0 && <span>({item.numLike})</span>}
+                <i className="zmdi zmdi-thumb-up"></i> {$lang('Like')} {item.numLike > 0 && <span>({item.numLike})</span>}
               </a>
             </li>
             <li className="list-inline-item">
               <a href="#comments" onClick={() => this._toggleComment(item.id)} className={`fixed-icon ${item.shownComments && 'text-primary'}`}>
-                <i className="zmdi zmdi-comment-outline"></i>评论 {item.numComments > 0 && <span>({item.numComments})</span>}
+                <i className="zmdi zmdi-comment-outline"></i> {$lang('Comment')} {item.numComments > 0 && <span>({item.numComments})</span>}
               </a>
             </li>
           </ul>
@@ -219,9 +227,9 @@ class FeedsList extends React.Component {
   _handleDelete(id) {
     event.preventDefault()
     const that = this
-    RbAlert.create('确认删除该动态？', {
+    RbAlert.create($lang('DeleteThisSomeConfirm,e.Feeds'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.disabled(true)
         $.post(`/feeds/post/delete?id=${id}`, () => {
@@ -244,7 +252,7 @@ class FeedsList extends React.Component {
       return (
         <React.Fragment>
           <a className="dropdown-item" onClick={() => this._handleFinish(item.id)}>
-            <i className="icon zmdi zmdi-check" /> 完成
+            <i className="icon zmdi zmdi-check" /> {$lang('Finish')}
           </a>
           <div className="dropdown-divider"></div>
         </React.Fragment>
@@ -255,13 +263,13 @@ class FeedsList extends React.Component {
 
   _handleFinish(id) {
     const that = this
-    RbAlert.create('确认完成该日程？', {
+    RbAlert.create($lang('FinshScheduleConfirm'), {
       confirm: function () {
         this.disabled(true)
         $.post(`/feeds/post/finish-schedule?id=${id}`, (res) => {
           if (res.error_code === 0) {
             this.hide()
-            RbHighbar.success('日程已完成')
+            RbHighbar.success($lang('SomeFinished,FeedsType4'))
             that.fetchFeeds()
           } else RbHighbar.error(res.error_msg)
         })
@@ -283,16 +291,16 @@ class FeedsComments extends React.Component {
       <div className="comments">
         <div className="comment-reply">
           <div onClick={() => this._commentState(true)} className={`reply-mask ${this.state.openComment && 'hide'}`}>
-            添加评论
+            {$lang('AddSome,Comment')}
           </div>
           <span className={`${!this.state.openComment && 'hide'}`}>
-            <FeedsEditor placeholder="添加评论" ref={(c) => (this._editor = c)} />
+            <FeedsEditor placeholder={$lang('AddSome,Comment')} ref={(c) => (this._editor = c)} />
             <div className="mt-2 text-right">
               <button onClick={() => this._commentState(false)} className="btn btn-sm btn-link">
-                取消
+                {$lang('Cancel')}
               </button>
               <button className="btn btn-sm btn-primary" ref={(c) => (this._btn = c)} onClick={() => this._post()}>
-                评论
+                {$lang('Comment')}
               </button>
             </div>
           </span>
@@ -323,37 +331,37 @@ class FeedsComments extends React.Component {
                       <ul className="list-unstyled m-0">
                         {item.self && (
                           <li className="list-inline-item mr-2">
-                            <a data-toggle="dropdown" href="#mores" className="fixed-icon" title="更多">
+                            <a data-toggle="dropdown" href="#mores" className="fixed-icon" title={$lang('More')}>
                               <i className="zmdi zmdi-more"></i>&nbsp;
                             </a>
                             <div className="dropdown-menu dropdown-menu-right">
                               <a className="dropdown-item" onClick={() => this._handleDelete(item.id)}>
                                 <i className="icon zmdi zmdi-delete" />
-                                删除
+                                {$lang('Delete')}
                               </a>
                             </div>
                           </li>
                         )}
                         <li className="list-inline-item mr-3">
                           <a href="#thumbup" onClick={() => this._handleLike(item.id)} className={`fixed-icon ${item.myLike && 'text-primary'}`}>
-                            <i className="zmdi zmdi-thumb-up"></i>赞 {item.numLike > 0 && <span>({item.numLike})</span>}
+                            <i className="zmdi zmdi-thumb-up"></i> {$lang('Like')} {item.numLike > 0 && <span>({item.numLike})</span>}
                           </a>
                         </li>
                         <li className="list-inline-item">
                           <a href="#reply" onClick={() => this._toggleReply(item.id)} className={`fixed-icon ${item.shownReply && 'text-primary'}`}>
-                            <i className="zmdi zmdi-mail-reply"></i>回复
+                            <i className="zmdi zmdi-mail-reply"></i> {$lang('Reply')}
                           </a>
                         </li>
                       </ul>
                     </div>
                     <div className={`comment-reply ${!item.shownReply && 'hide'}`}>
-                      {item.shownReplyReal && <FeedsEditor placeholder="添加回复" initValue={`回复 @${item.createdBy[1]} : `} ref={(c) => (item._editor = c)} />}
+                      {item.shownReplyReal && <FeedsEditor placeholder={$lang('AddSome,Reply')} initValue={`@${item.createdBy[1]} : `} ref={(c) => (item._editor = c)} />}
                       <div className="mt-2 text-right">
                         <button onClick={() => this._toggleReply(item.id, false)} className="btn btn-sm btn-link">
-                          取消
+                          {$lang('Cancel')}
                         </button>
                         <button className="btn btn-sm btn-primary" ref={(c) => (this._btn = c)} onClick={() => this._post(item._editor)}>
-                          回复
+                          {$lang('Reply')}
                         </button>
                       </div>
                     </div>
@@ -382,7 +390,7 @@ class FeedsComments extends React.Component {
     if (!whichEditor) whichEditor = this._editor
     const _data = whichEditor.vals()
     if (!_data.content) {
-      RbHighbar.create('请输入评论内容')
+      RbHighbar.create($lang('PlsInputSome,CommentContent'))
       return
     }
     _data.feedsId = this.props.feeds
@@ -423,9 +431,9 @@ class FeedsComments extends React.Component {
   _handleDelete = (id) => {
     event.preventDefault()
     const that = this
-    RbAlert.create('确认删除该评论？', {
+    RbAlert.create($lang('DeleteThisSomeConfirm,Comment'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.disabled(true)
         $.post(`/feeds/post/delete?id=${id}`, () => {
@@ -465,7 +473,7 @@ class Pagination extends React.Component {
     return (
       <div className="feeds-pages">
         <div className="float-left">
-          <p className="text-muted">共 {this.state.rowsTotal} 条动态</p>
+          <p className="text-muted">{$lang('CountXFeeds').replace('%d', this.state.rowsTotal)}</p>
         </div>
         <div className="float-right">
           <ul className={`pagination ${this.props.comment && 'pagination-sm'}`}>
@@ -533,16 +541,16 @@ function __renderRichContent(e) {
         {e.type === 4 && (
           <div>
             <div>
-              <span>日程时间 : </span> {contentMore.scheduleTime}
+              <span>{$lang('ScheduleTime')} : </span> {contentMore.scheduleTime}
             </div>
             {contentMore.finishTime && (
               <div>
-                <span>完成时间 : </span> {contentMore.finishTime.substr(0, 16)}
+                <span>{$lang('FinishedTime')} : </span> {contentMore.finishTime.substr(0, 16)}
               </div>
             )}
             {contentMore.scheduleRemind > 0 && (
               <div>
-                <span>发送提醒 : </span> {__findMaskTexts(contentMore.scheduleRemind, REM_OPTIONS).join('、')}
+                <span>{$lang('SendRemind')} : </span> {__findMaskTexts(contentMore.scheduleRemind, REM_OPTIONS).join(' / ')}
               </div>
             )}
           </div>
@@ -552,7 +560,7 @@ function __renderRichContent(e) {
             <span>
               <i className={`icon zmdi zmdi-${e.relatedRecord.icon}`} /> {e.relatedRecord.entityLabel} :{' '}
             </span>
-            <a href={`${rb.baseUrl}/app/list-and-view?id=${e.relatedRecord.id}`} title="查看相关记录">
+            <a href={`${rb.baseUrl}/app/list-and-view?id=${e.relatedRecord.id}`} title={$lang('ClickViewReleated')}>
               {e.relatedRecord.text}
             </a>
           </div>
@@ -561,12 +569,12 @@ function __renderRichContent(e) {
           <div>
             {contentMore.showWhere > 0 && (
               <div>
-                <span>公示位置 : </span> {__findMaskTexts(contentMore.showWhere, ANN_OPTIONS).join('、')}
+                <span>{$lang('AnnouncementPos')} : </span> {__findMaskTexts(contentMore.showWhere, ANN_OPTIONS).join('、')}
               </div>
             )}
             {(contentMore.timeStart || contentMore.timeEnd) && (
               <div>
-                <span>公示时间 : </span> {contentMore.timeStart || ''} 至 {contentMore.timeEnd}
+                <span>{$lang('AnnouncementTime')} : </span> {contentMore.timeStart || ''} ~ {contentMore.timeEnd}
               </div>
             )}
           </div>
@@ -603,14 +611,14 @@ function __renderRichContent(e) {
 }
 
 const ANN_OPTIONS = [
-  [1, '动态页'],
-  [2, '首页'],
-  [4, '登录页'],
+  [1, $lang('AnnouncementPos1')],
+  [2, $lang('AnnouncementPos2')],
+  [4, $lang('AnnouncementPos4')],
 ]
 const REM_OPTIONS = [
-  [1, '消息通知'],
-  [2, '邮件'],
-  [4, '短信'],
+  [1, $lang('SendRemind1')],
+  [2, $lang('SendRemind2')],
+  [4, $lang('SendRemind4')],
 ]
 
 function __findMaskTexts(mask, options) {

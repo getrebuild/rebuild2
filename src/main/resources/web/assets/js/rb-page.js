@@ -471,7 +471,7 @@ var $unmount = function (container, delay, keepContainer) {
 var $initReferenceSelect2 = function (el, field) {
   var search_input = null
   return $(el).select2({
-    placeholder: $lang('Select').replace('{0}', field.label),
+    placeholder: $lang('SelectSome').replace('{0}', field.label),
     minimumInputLength: 0,
     maximumSelectionLength: 2,
     ajax: {
@@ -496,7 +496,7 @@ var $initReferenceSelect2 = function (el, field) {
         return $lang('Searching')
       },
       maximumSelected: function () {
-        return $lang('InputKeySearch').replace('%d', 1)
+        return $lang('OnlyXSelected').replace('%d', 1)
       },
       removeAllItems: function () {
         return $lang('Clean')
