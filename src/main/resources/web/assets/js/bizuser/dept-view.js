@@ -29,8 +29,8 @@ $(document).ready(function () {
     .click(() => {
       $.get(`/admin/bizuser/delete-checks?id=${dept_id}`, (res) => {
         const limits = []
-        if (res.data.hasMember > 0) limits.push($lang('HasNUsers').replace('%d', res.data.hasMember))
-        if (res.data.hasChild > 0) limits.push($lang('HasNSubdepts').replace('%d', res.data.hasChild))
+        if (res.data.hasMember > 0) limits.push($lang('HasXUsers').replace('%d', res.data.hasMember))
+        if (res.data.hasChild > 0) limits.push($lang('HasXSubdepts').replace('%d', res.data.hasChild))
 
         if (limits.length === 0) {
           RbAlert.create($lang('DeleteDeptSafeConfirm'), $lang('DeleteSome,e.Department'), {

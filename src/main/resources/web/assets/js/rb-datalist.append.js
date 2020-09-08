@@ -23,25 +23,31 @@ class BatchOperator extends RbFormHandler {
       <RbModal title={this.state.title} disposeOnHide={true} ref={(c) => (this._dlg = c)}>
         <div className="form batch-form">
           <div className="form-group">
-            <label className="text-bold">选择数据范围</label>
+            <label className="text-bold">{$lang('SelectDataRange')}</label>
             <div>
               {selectedRows > 0 && (
                 <label className="custom-control custom-control-sm custom-radio mb-2">
                   <input className="custom-control-input" name="dataRange" type="radio" checked={~~this.state.dataRange === 1} value="1" onChange={this.handleChange} />
-                  <span className="custom-control-label">选中的数据 ({selectedRows}条)</span>
+                  <span className="custom-control-label">
+                    {$lang('DatasSelected')} ({selectedRows})
+                  </span>
                 </label>
               )}
               <label className="custom-control custom-control-sm custom-radio mb-2">
                 <input className="custom-control-input" name="dataRange" type="radio" checked={~~this.state.dataRange === 2} value="2" onChange={this.handleChange} />
-                <span className="custom-control-label">当前页的数据 ({pageRows}条)</span>
+                <span className="custom-control-label">
+                  {$lang('DatasPaged')} ({pageRows})
+                </span>
               </label>
               <label className="custom-control custom-control-sm custom-radio mb-2">
                 <input className="custom-control-input" name="dataRange" type="radio" checked={~~this.state.dataRange === 3} value="3" onChange={this.handleChange} />
-                <span className="custom-control-label">查询后的数据 ({queryRows}条)</span>
+                <span className="custom-control-label">
+                  {$lang('DatasQueryed')} ({queryRows})
+                </span>
               </label>
               <label className="custom-control custom-control-sm custom-radio mb-1">
                 <input className="custom-control-input" name="dataRange" type="radio" checked={~~this.state.dataRange === 10} value="10" onChange={this.handleChange} />
-                <span className="custom-control-label">全部数据</span>
+                <span className="custom-control-label">{$lang('AllDatas')}</span>
               </label>
             </div>
           </div>
@@ -49,10 +55,10 @@ class BatchOperator extends RbFormHandler {
         </div>
         <div className="dialog-footer" ref={(c) => (this._btns = c)}>
           <a className="btn btn-link btn-space" onClick={this.hide}>
-            取消
+            {$lang('Cancel')}
           </a>
-          <button className="btn btn-primary btn-space" type="button" data-loading-text="请稍后" onClick={this.confirm}>
-            确定
+          <button className="btn btn-primary btn-space" type="button" onClick={this.confirm}>
+            {$lang('Confirm')}
           </button>
         </div>
       </RbModal>
@@ -78,7 +84,7 @@ class BatchOperator extends RbFormHandler {
 class DataExport extends BatchOperator {
   constructor(props) {
     super(props)
-    this.state.title = '数据导出'
+    this.state.title = $lang('DataExport')
   }
 
   confirm = () => {
@@ -101,7 +107,7 @@ class DataExport extends BatchOperator {
 class BatchUpdate extends BatchOperator {
   constructor(props) {
     super(props)
-    this.state.title = '批量修改'
+    this.state.title = $lang('BatchUpdate')
   }
 
   componentDidMount() {
@@ -111,7 +117,7 @@ class BatchUpdate extends BatchOperator {
   renderOperator() {
     return (
       <div className="form-group">
-        <label className="text-bold">修改内容</label>
+        <label className="text-bold">{$lang('UpdateContents')}</label>
         <div>
           <div className="batch-contents">
             {(this.state.updateContents || []).map((item) => {
@@ -139,7 +145,7 @@ class BatchUpdate extends BatchOperator {
             {this.state.fields && <BatchUpdateEditor ref={(c) => (this._editor = c)} fields={this.state.fields} entity={this.props.entity} />}
             <div className="mt-1">
               <button className="btn btn-primary btn-sm bordered" onClick={this.addItem}>
-                添加
+                {$lang('Add')}
               </button>
             </div>
           </div>
@@ -164,7 +170,7 @@ class BatchUpdate extends BatchOperator {
       return item.field === x.field
     })
     if (found) {
-      RbHighbar.create('修改字段已经存在')
+      RbHighbar.create($lang('UpdateFieldExists'))
       return
     }
 
@@ -182,7 +188,7 @@ class BatchUpdate extends BatchOperator {
 
   confirm = () => {
     if (!this.state.updateContents || this.state.updateContents.length === 0) {
-      RbHighbar.create('请添加修改内容')
+      RbHighbar.create($lang('PlsAddSome,UpdateContents'))
       return
     }
     const _data = { queryData: this.getQueryData(), updateContents: this.state.updateContents }
@@ -190,7 +196,7 @@ class BatchUpdate extends BatchOperator {
     if (rb.env === 'dev') console.log(JSON.stringify(_data))
 
     const that = this
-    RbAlert.create('请再次确认修改数据范围和修改内容。开始修改吗？', {
+    RbAlert.create($lang('BatchUpdateConfirm'), {
       confirm: function () {
         this.hide()
         that.disabled(true)
@@ -219,8 +225,8 @@ class BatchUpdate extends BatchOperator {
         const cp = res.data.progress
         if (cp >= 1) {
           mp && mp.end()
-          $(this._btns).find('.btn-primary').text('修改成功')
-          RbHighbar.success(`成功修改 ${res.data.succeeded} 条记录`)
+          $(this._btns).find('.btn-primary').text($lang('Finished'))
+          RbHighbar.success($lang('BatchUpdateSuccessTips').replace('%d', res.data.succeeded))
           setTimeout(() => {
             this.hide()
             window.RbListPage && window.RbListPage.reload()
@@ -236,7 +242,14 @@ class BatchUpdate extends BatchOperator {
   }
 }
 
-const BUE_OPTYPES = { SET: '修改为', NULL: '置空', PREFIX: '前添加', SUFFIX: '后添加', PLUS: '加上', MINUS: '减去' }
+const BUE_OPTYPES = {
+  SET: $lang('BatchUpdateOpSET'),
+  NULL: $lang('BatchUpdateOpNULL'),
+  PREFIX: $lang('BatchUpdateOpPREFIX'),
+  SUFFIX: $lang('BatchUpdateOpSUFFIX'),
+  PLUS: $lang('CalcPlus'),
+  MINUS: $lang('CalcMinus'),
+}
 
 // ~ 批量修改编辑器
 class BatchUpdateEditor extends React.Component {
@@ -269,7 +282,7 @@ class BatchUpdateEditor extends React.Component {
 
   render() {
     if (this.props.fields.length === 0) {
-      return <div className="text-danger">没有可修改字段</div>
+      return <div className="text-danger">{$lang('NoUpdateFields')}</div>
     }
 
     return (
@@ -296,8 +309,8 @@ class BatchUpdateEditor extends React.Component {
   renderOp() {
     return (
       <select className="form-control form-control-sm" ref={(c) => (this._op = c)}>
-        <option value="SET">修改为</option>
-        <option value="NULL">置空</option>
+        <option value="SET">{BUE_OPTYPES['BatchUpdateOpSET']}</option>
+        <option value="NULL">{BUE_OPTYPES['BatchUpdateOpNULL']}</option>
       </select>
     )
   }
@@ -324,7 +337,7 @@ class BatchUpdateEditor extends React.Component {
         </select>
       )
     } else {
-      return <input className="form-control form-control-sm" placeholder="新值" ref={(c) => (this._value = c)} key={fieldKey} maxLength="255" />
+      return <input className="form-control form-control-sm" placeholder={$lang('NewValue')} ref={(c) => (this._value = c)} key={fieldKey} maxLength="255" />
     }
   }
 
@@ -358,7 +371,7 @@ class BatchUpdateEditor extends React.Component {
         })
       } else {
         this.__lastSelect2 = $(this._value).select2({
-          placeholder: '新值',
+          placeholder: $lang('NewValue'),
         })
       }
       this.__lastSelect2.val(null).trigger('change')
@@ -377,7 +390,7 @@ class BatchUpdateEditor extends React.Component {
     })
     if (item.op === 'NULL') {
       if (!field.nullable) {
-        RbHighbar.create(`${field.label}不允许为空`)
+        RbHighbar.create($lang('SomeNotEmpty').replace('{0}', field.label))
         return null
       } else {
         return item
@@ -386,7 +399,7 @@ class BatchUpdateEditor extends React.Component {
 
     item.value = $(this._value).val()
     if (!item.value || item.value.length === 0) {
-      RbHighbar.create('修改值不能为空')
+      RbHighbar.create($lang('SomeNotEmpty,ModifyValue'))
       return null
     }
 
@@ -396,25 +409,25 @@ class BatchUpdateEditor extends React.Component {
       item.value = maskTotal
     } else if (field.type === 'NUMBER' || field.type === 'DECIMAL') {
       if (isNaN(item.value)) {
-        RbHighbar.create(`${field.label}格式不正确`)
+        RbHighbar.create($lang('SomeNotFormatWell').replace('{0}', field.label))
         return null
       } else if (field.notNegative === 'true' && ~~item.value < 0) {
-        RbHighbar.create(`${field.label}不允许为负数`)
+        RbHighbar.create($lang('SomeNotBeNegative').replace('{0}', field.label))
         return null
       }
     } else if (field.type === 'EMAIL') {
       if (!$regex.isMail(item.value)) {
-        RbHighbar.create(`${field.label}格式不正确`)
+        RbHighbar.create($lang('SomeNotFormatWell').replace('{0}', field.label))
         return null
       }
     } else if (field.type === 'URL') {
       if (!$regex.isUrl(item.value)) {
-        RbHighbar.create(`${field.label}格式不正确`)
+        RbHighbar.create($lang('SomeNotFormatWell').replace('{0}', field.label))
         return null
       }
     } else if (field.type === 'PHONE') {
       if (!$regex.isTel(item.value)) {
-        RbHighbar.create(`${field.label}格式不正确`)
+        RbHighbar.create($lang('SomeNotFormatWell').replace('{0}', field.label))
         return null
       }
     }

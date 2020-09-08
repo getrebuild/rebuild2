@@ -332,7 +332,7 @@ class AdvDateValue extends RbAlert {
             </select>
             <select className="form-control form-control-sm ml-1" ref={(c) => (this._refs[1] = c)}>
               <option value="+">{$lang('CalcPlus')}</option>
-              <option value="-">{$lang('CalcSubtract')}</option>
+              <option value="-">{$lang('CalcMinus')}</option>
             </select>
             <input type="number" min="1" max="999999" className="form-control form-control-sm ml-1" defaultValue="1" ref={(c) => (this._refs[2] = c)} />
             <select className="form-control form-control-sm ml-1" ref={(c) => (this._refs[3] = c)}>

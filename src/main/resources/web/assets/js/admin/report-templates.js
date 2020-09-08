@@ -104,7 +104,7 @@ class ReporEdit extends ConfigFormDlg {
                 <div className="clearfix"></div>
                 <p className="form-text mt-0 mb-1 link" dangerouslySetInnerHTML={{ __html: $lang('HowWriteTemplateTips') }}></p>
                 {(this.state.invalidVars || []).length > 0 && (
-                  <p className="form-text text-danger mt-0 mb-1">{$lang('ExistsInvalidFields').replace('%s', `{${this.state.invalidVars.join('} {')}}`)}</p>
+                  <p className="form-text text-danger mt-0 mb-1">{$lang('ExistsInvalidFieldsX').replace('%s', `{${this.state.invalidVars.join('} {')}}`)}</p>
                 )}
               </div>
             </div>

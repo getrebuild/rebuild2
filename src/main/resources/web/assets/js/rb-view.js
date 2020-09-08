@@ -37,7 +37,7 @@ class RbViewForm extends React.Component {
 
       let hadApproval = res.data.hadApproval
       if (wpc.type === 'SlaveView') {
-        if (hadApproval === 2) $('.J_edit, .J_delete').attr({ disabled: true, title: '主记录正在审批中' })
+        if (hadApproval === 2) $('.J_edit, .J_delete').attr({ disabled: true, title: $lang('SomeInApproval,MainRecord') })
         else if (hadApproval === 10) $('.J_edit, .J_delete').remove()
         hadApproval = null
       }
@@ -80,7 +80,7 @@ class RbViewForm extends React.Component {
           setTimeout(() => location.reload(), window.VIEW_LOAD_DELAY || 200)
         }
       } else if (res.error_msg === 'NO_EXISTS') {
-        this.renderViewError('此记录已被删除')
+        this.renderViewError($lang('ThisRecordDeleted'))
         $('.view-operating').empty()
       }
     })
@@ -154,7 +154,7 @@ const _renderError = (message) => {
       <div className="icon">
         <i className="zmdi zmdi-alert-triangle"></i>
       </div>
-      <div className="message" dangerouslySetInnerHTML={{ __html: `<strong>抱歉!</strong> ${message}` }}></div>
+      <div className="message" dangerouslySetInnerHTML={{ __html: `<strong>${$lang('Opps')}!</strong> ${message}` }}></div>
     </div>
   )
 }
@@ -174,13 +174,13 @@ class SelectReport extends React.Component {
               </button>
             </div>
             <div className="modal-body">
-              <h5 className="mt-0 text-bold">选择报表</h5>
+              <h5 className="mt-0 text-bold">{$lang('SelectSome,Report')}</h5>
               {this.state.reports && this.state.reports.length === 0 && (
                 <p className="text-muted">
-                  无可用报表{' '}
+                  {$lang('NoAnySome,Report')}
                   {rb.isAdminUser && (
                     <a className="icon-link ml-1" target="_blank" href={`${rb.baseUrl}/admin/datas/data-reports`}>
-                      <i className="zmdi zmdi-settings"></i> 点击配置
+                      <i className="zmdi zmdi-settings"></i> {$lang('ClickConf')}
                     </a>
                   )}
                 </p>
@@ -242,7 +242,7 @@ class RelatedList extends React.Component {
         {this.state.list && this.state.list.length === 0 && (
           <div className="list-nodata">
             <span className="zmdi zmdi-info-outline" />
-            <p>暂无相关数据</p>
+            <p>{$lang('NoData')}</p>
           </div>
         )}
         {(this.state.list || []).map((item) => {
@@ -250,12 +250,12 @@ class RelatedList extends React.Component {
             <div className={`card ${this.state.viewOpens[item[0]] ? 'active' : ''}`} key={`rr-${item[0]}`}>
               <div className="row header-title" onClick={() => this._toggleInsideView(item[0])}>
                 <div className="col-10">
-                  <a href={`#!/View/${this.props.entity.split('.')[0]}/${item[0]}`} onClick={(e) => this._handleView(e)} title="打开">
+                  <a href={`#!/View/${this.props.entity.split('.')[0]}/${item[0]}`} onClick={(e) => this._handleView(e)} title={$lang('Open')}>
                     {item[1]}
                   </a>
                 </div>
                 <div className="col-2 text-right">
-                  <span className="fs-12 text-muted" title={`修改时间 ${item[2]}`}>
+                  <span className="fs-12 text-muted" title={`${$lang('f.modifiedOn')} ${item[2]}`}>
                     {$fromNow(item[2])}
                   </span>
                 </div>
@@ -268,7 +268,7 @@ class RelatedList extends React.Component {
           <div className="text-center load-mores">
             <div>
               <button type="button" className="btn btn-secondary" onClick={() => this.fetchList(1)}>
-                加载更多
+                {$lang('LoadMore')}
               </button>
             </div>
           </div>
@@ -337,7 +337,7 @@ class ReducedFeedsList extends FeedsList {
         {this.state.data && this.state.data.length === 0 && (
           <div className="list-nodata">
             <span className="zmdi zmdi-chart-donut" />
-            <p>暂无相关跟进</p>
+            <p>{$lang('NoData')}</p>
           </div>
         )}
         <div className="feeds-list inview">
@@ -349,7 +349,7 @@ class ReducedFeedsList extends FeedsList {
           <div className="text-center load-mores">
             <div>
               <button type="button" className="btn btn-secondary" onClick={() => this.fetchFeeds(1)}>
-                加载更多
+                {$lang('LoadMore')}
               </button>
             </div>
           </div>
@@ -359,9 +359,14 @@ class ReducedFeedsList extends FeedsList {
   }
 
   fetchFeeds(append) {
-    const filter = { entity: 'Feeds', equation: 'AND', items: [] }
-    filter.items.push({ field: 'type', op: 'EQ', value: 2 })
-    filter.items.push({ field: 'relatedRecord', op: 'EQ', value: wpc.recordId })
+    const filter = {
+      entity: 'Feeds',
+      equation: 'AND',
+      items: [
+        { field: 'type', op: 'EQ', value: 2 },
+        { field: 'relatedRecord', op: 'EQ', value: wpc.recordId },
+      ],
+    }
 
     this.__pageNo = this.__pageNo || 1
     if (append) this.__pageNo += append
@@ -433,7 +438,7 @@ const RbViewPage = {
     $('.J_edit').click(() =>
       RbFormModal.create({
         id: id,
-        title: `编辑${entity[1]}`,
+        title: $lang('EditSome').replace('{0}', entity[1]),
         entity: entity[0],
         icon: entity[2],
       })
@@ -444,7 +449,7 @@ const RbViewPage = {
       const iv = { $MASTER$: id }
       const $this = $(this)
       RbFormModal.create({
-        title: '添加明细',
+        title: $lang('AddSlave'),
         entity: $this.data('entity'),
         icon: $this.data('icon'),
         initialValue: iv,
@@ -493,7 +498,7 @@ const RbViewPage = {
             if (v.length === 0)
               renderRbcomp(
                 <UserShow
-                  name="添加共享"
+                  name={$lang('AddShare')}
                   icon="zmdi zmdi-plus"
                   onClick={() => {
                     $('.J_share').trigger('click')
@@ -501,10 +506,10 @@ const RbViewPage = {
                 />,
                 item_op
               )
-            else renderRbcomp(<UserShow name="管理共享用户" icon="zmdi zmdi-more" onClick={() => DlgShareManager.create(this.__id)} />, item_op)
+            else renderRbcomp(<UserShow name={$lang('ManageSome,ShareUsers')} icon="zmdi zmdi-more" onClick={() => DlgShareManager.create(this.__id)} />, item_op)
           } else if (v.length > 0) {
             const item_op = $('<li class="list-inline-item"></li>').appendTo(list)[0]
-            renderRbcomp(<UserShow name="查看共享用户" icon="zmdi zmdi-more" onClick={() => DlgShareManager.create(this.__id, false)} />, item_op)
+            renderRbcomp(<UserShow name={$lang('ViewSome,ShareUsers')} icon="zmdi zmdi-more" onClick={() => DlgShareManager.create(this.__id, false)} />, item_op)
           } else {
             $('.J_sharingList').parent().remove()
           }
@@ -543,7 +548,7 @@ const RbViewPage = {
     if (rb.isAdminUser) {
       $('.J_view-addons').click(function () {
         const type = $(this).data('type')
-        RbModal.create(`/p/admin/metadata/view-addons?entity=${that.__entity[0]}&type=${type}`, '配置' + (type === 'TAB' ? '显示项' : '新建项'))
+        RbModal.create(`/p/admin/metadata/view-addons?entity=${that.__entity[0]}&type=${type}`, $lang('ConfSome,' + type === 'TAB' ? 'ViewShowAddon' : 'ViewNewAddon'))
       })
     }
   },
@@ -568,13 +573,14 @@ const RbViewPage = {
     const that = this
     $(config).each(function () {
       const e = this
-      const $item = $(`<a class="dropdown-item"><i class="icon zmdi zmdi-${e.icon}"></i>新建${e.entityLabel}</a>`)
+      const title = $lang('NewSome').replace('{0}', e.entityLabel)
+      const $item = $(`<a class="dropdown-item"><i class="icon zmdi zmdi-${e.icon}"></i>${title}</a>`)
       $item.click(function () {
         const iv = {}
         const entity = e.entity.split('.')
         if (entity.length > 1) iv[entity[1]] = that.__id
         else iv['&' + that.__entity[0]] = that.__id
-        RbFormModal.create({ title: `新建${e.entityLabel}`, entity: entity[0], icon: e.icon, initialValue: iv })
+        RbFormModal.create({ title: `${title}`, entity: entity[0], icon: e.icon, initialValue: iv })
       })
       $('.J_adds .dropdown-divider').before($item)
     })

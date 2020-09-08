@@ -108,7 +108,7 @@ class RbList extends React.Component {
               {this.state.inLoad === false && this.state.rowsData.length === 0 && (
                 <div className="list-nodata">
                   <span className="zmdi zmdi-info-outline" />
-                  <p>暂无数据</p>
+                  <p>{$lang('NoData')}</p>
                 </div>
               )}
             </div>
@@ -398,7 +398,7 @@ class RbList extends React.Component {
       .each(function () {
         selected.push($(this).parents('tr').data('id'))
       })
-    if (selected.length === 0 && noWarn !== true) RbHighbar.create('未选中任何记录')
+    if (selected.length === 0 && noWarn !== true) RbHighbar.create($lang('NoAnySelected'))
     return selected
   }
 
@@ -453,8 +453,8 @@ const CellRenders = {
    */
   renderSimple(v, s, k) {
     if (typeof v === 'string' && v.length > 300) v = v.sub(0, 300)
-    else if (k.endsWith('.approvalId') && !v) v = '未提交'
-    else if (k.endsWith('.approvalState') && !v) v = '草稿'
+    else if (k.endsWith('.approvalId') && !v) v = $lang('UnSubmit')
+    else if (k.endsWith('.approvalState') && !v) v = $lang('Draft')
     return (
       <td key={k}>
         <div style={s} title={v}>
@@ -482,8 +482,8 @@ CellRenders.addRender('$NAME$', function (v, s, k) {
 CellRenders.addRender('$NOPRIVILEGES$', function (v, s, k) {
   return (
     <td key={k}>
-      <div style={s} className="column-nopriv" title="你无权读取此数据">
-        [无权限]
+      <div style={s} className="column-nopriv" title={$lang('NoRPrivilegesTips')}>
+        [{$lang('NoPrivileges')}]
       </div>
     </td>
   )
@@ -493,14 +493,14 @@ CellRenders.addRender('IMAGE', function (v, s, k) {
   v = v || []
   return (
     <td key={k} className="td-min">
-      <div className="column-imgs" style={s} title={'共 ' + v.length + ' 个图片'}>
+      <div className="column-imgs" style={s} title={$lang('CountXImgs').replace('%d', v.length)}>
         {v.map((item, idx) => {
           if (idx > 2) return null
           const imgUrl = rb.baseUrl + '/filex/img/' + item
           const imgName = $fileCutName(item)
           return (
             <a key={'k-' + item} title={imgName} onClick={(e) => CellRenders.clickPreview(v, idx, e)}>
-              <img alt="图片" src={imgUrl + '?imageView2/2/w/100/interlace/1/q/100'} />
+              <img alt={$lang('t.IMAGE')} src={imgUrl + '?imageView2/2/w/100/interlace/1/q/100'} />
             </a>
           )
         })}
@@ -514,7 +514,7 @@ CellRenders.addRender('FILE', function (v, s, k) {
   return (
     <td key={k} className="td-min">
       <div style={s} className="column-files">
-        <ul className="list-unstyled" title={'共 ' + v.length + ' 个文件'}>
+        <ul className="list-unstyled" title={$lang('CountXFiles').replace('%d', v.length)}>
           {v.map((item, idx) => {
             if (idx > 0) return null
             const fileName = $fileCutName(item)
@@ -580,7 +580,14 @@ CellRenders.addRender('PHONE', function (v, s, k) {
   )
 })
 
-const APPROVAL_STATE_CLAZZs = { 审批中: 'warning', 驳回: 'danger', 通过: 'success' }
+const APPROVAL_STATE_CLAZZs = {
+  审批中: 'warning',
+  驳回: 'danger',
+  通过: 'success',
+  APPROVING: 'warning',
+  REJECTED: 'danger',
+  APPROVED: 'success',
+}
 CellRenders.addRender('STATE', function (v, s, k) {
   if (k.endsWith('.approvalState')) {
     const badge = APPROVAL_STATE_CLAZZs[v]
@@ -646,19 +653,19 @@ class RbListPagination extends React.Component {
       <div className="row rb-datatable-footer">
         <div className="col-12 col-md-4">
           <div className="dataTables_info" key="page-rowsTotal">
-            {this.state.selectedTotal > 0 && <span className="mr-2">已选中 {this.state.selectedTotal} 条.</span>}
-            {this.state.rowsTotal > 0 && <span>共 {this.state.rowsTotal} 条数据</span>}
+            {this.state.selectedTotal > 0 && <span className="mr-2">{$lang('SelectedXRecords').replace('%d', this.state.selectedTotal)}.</span>}
+            {this.state.rowsTotal > 0 && <span>{$lang('CountXRecords').replace('%d', this.state.rowsTotal)}</span>}
           </div>
         </div>
         <div className="col-12 col-md-8">
           <div className="float-right paging_sizes">
-            <select className="form-control form-control-sm" title="每页显示" onChange={this.setPageSize} value={this.state.pageSize || 20}>
-              {rb.env === 'dev' && <option value="5">5 条</option>}
-              <option value="20">20 条</option>
-              <option value="40">40 条</option>
-              <option value="80">80 条</option>
-              <option value="100">100 条</option>
-              <option value="200">200 条</option>
+            <select className="form-control form-control-sm" title={$lang('PerPageShow')} onChange={this.setPageSize} value={this.state.pageSize || 20}>
+              {rb.env === 'dev' && <option value="5">5</option>}
+              <option value="20">20</option>
+              <option value="40">40</option>
+              <option value="80">80</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
             </select>
           </div>
           <div className="float-right dataTables_paginate paging_simple_numbers">
@@ -741,11 +748,11 @@ const RbListPage = {
 
     const that = this
 
-    $('.J_new').click(() => RbFormModal.create({ title: `新建${entity[1]}`, entity: entity[0], icon: entity[2] }))
+    $('.J_new').click(() => RbFormModal.create({ title: $lang('NewSome').replace('{0}', entity[1]), entity: entity[0], icon: entity[2] }))
     $('.J_edit').click(() => {
       const ids = this._RbList.getSelectedIds()
       if (ids.length >= 1) {
-        RbFormModal.create({ id: ids[0], title: `编辑${entity[1]}`, entity: entity[0], icon: entity[2] })
+        RbFormModal.create({ id: ids[0], title: $lang('EditSome').replace('{0}', entity[1]), entity: entity[0], icon: entity[2] })
       }
     })
     $('.J_delete').click(() => {
@@ -765,7 +772,7 @@ const RbListPage = {
         RbViewModal.create({ id: ids[0], entity: entity[0] })
       }
     })
-    $('.J_columns').click(() => RbModal.create(`/p/general/show-fields?entity=${entity[0]}`, '设置列显示'))
+    $('.J_columns').click(() => RbModal.create(`/p/general/show-fields?entity=${entity[0]}`, $lang('SetSome,FieldShow')))
 
     // 权限实体才有
     $('.J_assign').click(() => {
@@ -862,9 +869,9 @@ const AdvFilters = {
           })
 
           $action.find('a:eq(1)').click(function () {
-            RbAlert.create('确认删除此查询项吗？', {
+            RbAlert.create($lang('DeleteFilterConfirm'), {
               type: 'danger',
-              confirmText: '删除',
+              confirmText: $lang('Delete'),
               confirm: function () {
                 this.disabled(true)
                 $.post(`/app/entity/record-delete?id=${item.id}`, (res) => {
@@ -873,9 +880,11 @@ const AdvFilters = {
                     that.loadFilters()
                     if (lastFilter === item.id) {
                       RbListPage._RbList.setAdvFilter(null)
-                      $('.adv-search .J_name').text('全部数据')
+                      $('.adv-search .J_name').text($lang('AllDatas'))
                     }
-                  } else RbHighbar.error(res.error_msg)
+                  } else {
+                    RbHighbar.error(res.error_msg)
+                  }
                 })
               },
             })
@@ -945,7 +954,7 @@ const AdvFilters = {
     } else {
       this.current = id
       this.__getFilter(id, (res) => {
-        renderRbcomp(<AdvFilter {...props} title="修改查询条件" filter={res.filter} filterName={res.name} shareTo={res.shareTo} />)
+        renderRbcomp(<AdvFilter {...props} title={$lang('ModifyFilterItem')} filter={res.filter} filterName={res.name} shareTo={res.shareTo} />)
       })
     }
   },
@@ -977,7 +986,7 @@ $(document).ready(() => {
   const via = $urlp('via', location.hash)
   if (via) {
     wpc.protocolFilter = `via:${via}`
-    const $cleanVia = $('<div class="badge badge-border filter-tips">当前数据已过滤<a class="close" title="查看全部数据">&times;</a></div>').appendTo('.dataTables_filter')
+    const $cleanVia = $(`<div class="badge badge-border filter-tips">${$lang('DatasFiltered')}<a class="close" title="${$lang('ViewAllDatas')}">&times;</a></div>`).appendTo('.dataTables_filter')
     $cleanVia.find('a').click(() => {
       wpc.protocolFilter = null
       RbListPage.reload()

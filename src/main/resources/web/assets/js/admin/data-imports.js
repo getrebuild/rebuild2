@@ -282,7 +282,7 @@ const import_cancel = () => {
 // 渲染字段映射
 const render_fieldsMapping = (columns, fields) => {
   const fieldMap = {}
-  const fieldSelect = $(`<select><option value="">${$lang('None2')}</option></select>`)
+  const fieldSelect = $(`<select><option value="">${$lang('Null')}</option></select>`)
 
   $(fields).each((idx, item) => {
     let canNull = item.nullable === false ? ` [${$lang('Required')}]` : ''
@@ -302,7 +302,7 @@ const render_fieldsMapping = (columns, fields) => {
 
   $('#fieldsMapping tbody select')
     .select2({
-      placeholder: $lang('None2'),
+      placeholder: $lang('Null'),
     })
     .on('change', function () {
       const val = $(this).val()

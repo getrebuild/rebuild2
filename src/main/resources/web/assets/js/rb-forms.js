@@ -22,9 +22,9 @@ class RbFormModal extends React.Component {
               <div className="modal-content">
                 <div className="modal-header modal-header-colored">
                   {this.state.icon && <span className={'icon zmdi zmdi-' + this.state.icon} />}
-                  <h3 className="modal-title">{this.state.title || '新建'}</h3>
+                  <h3 className="modal-title">{this.state.title || $lang('New')}</h3>
                   {rb.isAdminUser && (
-                    <a className="close s" href={rb.baseUrl + '/admin/entity/' + this.state.entity + '/form-design'} title="配置布局" target="_blank">
+                    <a className="close s" href={rb.baseUrl + '/admin/entity/' + this.state.entity + '/form-design'} title={$lang('ConfSome,FormLayout')} target="_blank">
                       <span className="zmdi zmdi-settings"></span>
                     </a>
                   )}
@@ -89,7 +89,7 @@ class RbFormModal extends React.Component {
         <div className="icon">
           <i className="zmdi zmdi-alert-triangle"></i>
         </div>
-        <div className="message" dangerouslySetInnerHTML={{ __html: '<strong>抱歉!</strong> ' + message }}></div>
+        <div className="message" dangerouslySetInnerHTML={{ __html: `<strong>${$lang('Opps')}</strong> ` + message }}></div>
       </div>
     )
     this.setState({ formComponent: error }, () => this.setState({ inLoad: false }))
@@ -128,7 +128,7 @@ class RbFormModal extends React.Component {
           this._refresh()
         }
       } else if (res.error_msg === 'NO_EXISTS') {
-        this.setState({ alertMessage: '记录已经不存在，可能已被其他用户删除' })
+        this.setState({ alertMessage: $lang('RecordNotExistsTips') })
       }
     })
   }
@@ -200,32 +200,32 @@ class RbForm extends React.Component {
     if (pmodel.hadApproval)
       moreActions.push(
         <a key="Action103" className="dropdown-item" onClick={() => this.post(103)}>
-          保存并提交
+          {$lang('SaveAndSubmit')}
         </a>
       )
     if (pmodel.isMaster === true)
       moreActions.push(
         <a key="Action102" className="dropdown-item" onClick={() => this.post(102)}>
-          保存并添加明细
+          {$lang('SaveAndAddSlave')}
         </a>
       )
     else if (pmodel.isSlave === true)
       moreActions.push(
         <a key="Action101" className="dropdown-item" onClick={() => this.post(101)}>
-          保存并继续添加
+          {$lang('SaveAndAdd')}
         </a>
       )
 
     let actionBtn = (
       <button className="btn btn-primary btn-space" type="button" onClick={() => this.post()}>
-        保存
+        {$lang('Save')}
       </button>
     )
     if (moreActions.length > 0) {
       actionBtn = (
         <div className="btn-group dropup btn-space">
           <button className="btn btn-primary" type="button" onClick={() => this.post()}>
-            保存
+            {$lang('Save')}
           </button>
           <button className="btn btn-primary dropdown-toggle auto" type="button" data-toggle="dropdown">
             <span className="icon zmdi zmdi-chevron-up"></span>
@@ -244,7 +244,7 @@ class RbForm extends React.Component {
         <div className="col-12 col-sm-8 offset-sm-3" ref={(c) => (this._formAction = c)}>
           {actionBtn}
           <button className="btn btn-secondary btn-space" type="button" onClick={() => this.props.$$$parent.hide()}>
-            取消
+            {$lang('Cancel')}
           </button>
         </div>
       </div>
@@ -303,20 +303,23 @@ class RbForm extends React.Component {
   post = (next) => setTimeout(() => this._post(next), 30)
 
   _post(next) {
-    const _data = {}
+    const data = {}
     for (let k in this.__FormData) {
       const err = this.__FormData[k].error
       if (err) return RbHighbar.create(err)
-      else _data[k] = this.__FormData[k].value
+      else data[k] = this.__FormData[k].value
     }
-    _data.metadata = { entity: this.state.entity, id: this.state.id }
-    if (RbForm.postBefore(_data) === false) return
+    data.metadata = {
+      entity: this.state.entity,
+      id: this.state.id,
+    }
+    if (RbForm.postBefore(data) === false) return
 
     const $btns = $(this._formAction).find('.btn').button('loading')
-    $.post('/app/entity/record-save', JSON.stringify(_data), (res) => {
+    $.post('/app/entity/record-save', JSON.stringify(data), (res) => {
       $btns.button('reset')
       if (res.error_code === 0) {
-        RbHighbar.success('保存成功')
+        RbHighbar.success($lang('SomeSuccess,Save'))
         setTimeout(() => {
           this.props.$$$parent.hide(true)
           RbForm.postAfter(res.data, next)
@@ -333,7 +336,7 @@ class RbForm extends React.Component {
             const iv = { $MASTER$: res.data.id }
             const sm = this.props.$$$parent.state.__formModel.slaveMeta
             RbFormModal.create({
-              title: `添加${sm.entityLabel}`,
+              title: $lang('AddSome').replace('{0}', sm.entityLabel),
               entity: sm.entity,
               icon: sm.icon,
               initialValue: iv,
@@ -395,7 +398,7 @@ class RbFormElement extends React.Component {
         <div ref={(c) => (this._fieldText = c)} className={'col-12 col-sm-' + colWidths[1]}>
           {!props.onView || (editable && this.state.editMode) ? this.renderElement() : this.renderViewElement()}
           {!props.onView && props.tip && <p className="form-text">{props.tip}</p>}
-          {editable && !this.state.editMode && <a className="edit" title="编辑" onClick={() => this.toggleEditMode(true)} />}
+          {editable && !this.state.editMode && <a className="edit" title={$lang('Edit')} onClick={() => this.toggleEditMode(true)} />}
           {editable && this.state.editMode && (
             <div className="edit-oper">
               <div className="btn-group shadow-sm">
@@ -446,7 +449,7 @@ class RbFormElement extends React.Component {
     const props = this.props
     if (!props.onView) {
       // 必填字段
-      if (!props.nullable && !props.readonly && $empty(props.value)) props.$$$parent.setFieldValue(props.field, null, props.label + '不能为空')
+      if (!props.nullable && !props.readonly && $empty(props.value)) props.$$$parent.setFieldValue(props.field, null, $lang('SomeNotEmpty').replace('{0}', props.label))
       props.tip && $(this._fieldLabel).find('i.zmdi').tooltip({ placement: 'right' })
     }
     if (!props.onView && !this.props.readonly) this.onEditModeChanged()
@@ -515,8 +518,8 @@ class RbFormElement extends React.Component {
   isValueError() {
     if (this.props.nullable === false) {
       const v = this.state.value
-      if (v && $.type(v) === 'array') return v.length === 0 ? '不能为空' : null
-      else return !v ? '不能为空' : null
+      if (v && $.type(v) === 'array') return v.length === 0 ? $lang('SomeNotEmpty').replace('{0}', '') : null
+      else return !v ? $lang('SomeNotEmpty').replace('{0}', '') : null
     }
   }
 
@@ -562,7 +565,7 @@ class RbFormUrl extends RbFormText {
   isValueError() {
     const err = super.isValueError()
     if (err) return err
-    return !!this.state.value && $regex.isUrl(this.state.value) === false ? '链接格式不正确' : null
+    return !!this.state.value && $regex.isUrl(this.state.value) === false ? $lang('SomeNotFormatWell').replace('{0}', '') : null
   }
 }
 
@@ -575,7 +578,7 @@ class RbFormEMail extends RbFormText {
     if (!this.state.value) return super.renderViewElement()
     return (
       <div className="form-control-plaintext">
-        <a title="发送邮件" href={'mailto:' + this.state.value} className="link">
+        <a title={$lang('SendEmail')} href={'mailto:' + this.state.value} className="link">
           {this.state.value}
         </a>
       </div>
@@ -585,7 +588,7 @@ class RbFormEMail extends RbFormText {
   isValueError() {
     const err = super.isValueError()
     if (err) return err
-    return !!this.state.value && $regex.isMail(this.state.value) === false ? '邮箱格式不正确' : null
+    return !!this.state.value && $regex.isMail(this.state.value) === false ? $lang('SomeNotFormatWell').replace('{0}', '') : null
   }
 }
 
@@ -608,7 +611,7 @@ class RbFormPhone extends RbFormText {
   isValueError() {
     const err = super.isValueError()
     if (err) return err
-    return !!this.state.value && $regex.isTel(this.state.value) === false ? '电话/手机格式不正确' : null
+    return !!this.state.value && $regex.isTel(this.state.value) === false ? $lang('SomeNotFormatWell').replace('{0}', '') : null
   }
 }
 
@@ -621,8 +624,8 @@ class RbFormNumber extends RbFormText {
   isValueError() {
     const err = super.isValueError()
     if (err) return err
-    if (!!this.state.value && $regex.isNumber(this.state.value) === false) return '整数格式不正确'
-    if (!!this.state.value && this.props.notNegative === 'true' && parseFloat(this.state.value) < 0) return '不允许为负数'
+    if (!!this.state.value && $regex.isNumber(this.state.value) === false) return $lang('SomeNotFormatWell').replace('{0}', '')
+    if (!!this.state.value && this.props.notNegative === 'true' && parseFloat(this.state.value) < 0) return $lang('SomeNotNegative').replace('{0}', '')
     return null
   }
 
@@ -658,8 +661,8 @@ class RbFormDecimal extends RbFormNumber {
   isValueError() {
     const err = super._isValueError()
     if (err) return err
-    if (!!this.state.value && $regex.isDecimal(this.state.value) === false) return '货币格式不正确'
-    if (!!this.state.value && this.props.notNegative === 'true' && parseFloat(this.state.value) < 0) return '不允许为负数'
+    if (!!this.state.value && $regex.isDecimal(this.state.value) === false) return $lang('SomeNotFormatWell').replace('{0}', '')
+    if (!!this.state.value && this.props.notNegative === 'true' && parseFloat(this.state.value) < 0) return $lang('SomeNotNegative').replace('{0}', '')
     return null
   }
 }
@@ -793,7 +796,7 @@ class RbFormImage extends RbFormElement {
               <a title={$fileCutName(item)} className="img-thumbnail img-upload">
                 <img src={`${rb.baseUrl}/filex/img/${item}?imageView2/2/w/100/interlace/1/q/100`} />
                 {!this.props.readonly && (
-                  <b title="移除" onClick={() => this.removeItem(item)}>
+                  <b title={$lang('Remove')} onClick={() => this.removeItem(item)}>
                     <span className="zmdi zmdi-close"></span>
                   </b>
                 )}
@@ -802,7 +805,7 @@ class RbFormImage extends RbFormElement {
           )
         })}
         {showUpload && (
-          <span title={`上传图片。需要 ${this.__minUpload}~${this.__maxUpload} 个`}>
+          <span title={$lang('UploadImgNeedX').replace('%d', `${this.__minUpload}~${this.__maxUpload}`)}>
             <input ref={(c) => (this._fieldValue__input = c)} type="file" className="inputfile" id={`${this.props.field}-input`} accept="image/*" data-maxsize="10240000" />
             <label htmlFor={`${this.props.field}-input`} className="img-thumbnail img-upload">
               <span className="zmdi zmdi-image-alt"></span>
@@ -869,8 +872,8 @@ class RbFormImage extends RbFormElement {
     const err = super.isValueError()
     if (err) return err
     const ups = (this.state.value || []).length
-    if (this.__minUpload > 0 && ups < this.__minUpload) return `至少需要上传 ${this.__minUpload} 个`
-    if (this.__maxUpload < ups) return `最多允许上传 ${this.__maxUpload} 个`
+    if (this.__minUpload > 0 && ups < this.__minUpload) return $lang('UploadMinXTips').replace('%d', this.__minUpload)
+    if (this.__maxUpload < ups) return $lang('UploadMaxXTips').replace('%d', this.__maxUpload)
   }
 }
 
@@ -892,7 +895,7 @@ class RbFormFile extends RbFormImage {
               <i className="file-icon" data-type={$fileExtName(fileName)} />
               <span>{fileName}</span>
               {!this.props.readonly && (
-                <b title="移除" onClick={() => this.removeItem(item)}>
+                <b title={$lang('Remove')} onClick={() => this.removeItem(item)}>
                   <span className="zmdi zmdi-close"></span>
                 </b>
               )}
@@ -902,9 +905,9 @@ class RbFormFile extends RbFormImage {
         {showUpload && (
           <div className="file-select">
             <input type="file" className="inputfile" ref={(c) => (this._fieldValue__input = c)} id={`${this.props.field}-input`} data-maxsize="102400000" />
-            <label htmlFor={`${this.props.field}-input`} title={`上传文件。需要 ${this.__minUpload}~${this.__maxUpload} 个`} className="btn-secondary">
+            <label htmlFor={`${this.props.field}-input`} title={$lang('UploadFileNeedX').replace('%d', `${this.__minUpload}~${this.__maxUpload}`)} className="btn-secondary">
               <i className="zmdi zmdi-upload"></i>
-              <span>上传文件</span>
+              <span>{$lang('UploadFile')}</span>
             </label>
           </div>
         )}
@@ -983,7 +986,7 @@ class RbFormPickList extends RbFormElement {
       super.onEditModeChanged(destroy)
     } else {
       this.__select2 = $(this._fieldValue).select2({
-        placeholder: '选择' + this.props.label,
+        placeholder: $lang('SelectSome').replace('{0}', '') + this.props.label,
       })
 
       const that = this
@@ -1126,7 +1129,7 @@ class RbFormReference extends RbFormElement {
     if (this.__searcher) this.__searcher.show()
     else {
       const searchUrl = `${rb.baseUrl}/commons/search/reference-search-list?field=${this.props.field}.${this.props.$$$parent.props.entity}`
-      renderRbcomp(<ReferenceSearcher url={searchUrl} title={`查询${this.props.label}`} />, function () {
+      renderRbcomp(<ReferenceSearcher url={searchUrl} title={$lang('QuerySome').replace('{0}', this.props.label)} />, function () {
         that.__searcher = this
       })
     }
@@ -1228,7 +1231,7 @@ class RbFormMultiSelect extends RbFormElement {
     const name = `checkbox-${this.props.field}`
     return (
       <div className="mt-1" ref={(c) => (this._fieldValue__wrap = c)}>
-        {(this.props.options || []).length === 0 && <div className="text-danger">选项未配置</div>}
+        {(this.props.options || []).length === 0 && <div className="text-danger">{$lang('NoConf')}</div>}
         {(this.props.options || []).map((item) => {
           return (
             <label key={name + item.mask} className="custom-control custom-checkbox custom-control-inline">
@@ -1276,8 +1279,10 @@ class RbFormMultiSelect extends RbFormElement {
   }
 }
 
-const BoolOptions = { T: '是', F: '否' }
-
+const BoolOptions = {
+  T: $lang('True'),
+  F: $lang('False'),
+}
 class RbFormBool extends RbFormElement {
   constructor(props) {
     super(props)
@@ -1296,7 +1301,7 @@ class RbFormBool extends RbFormElement {
             onChange={this.changeValue}
             disabled={this.props.readonly}
           />
-          <span className="custom-control-label">是</span>
+          <span className="custom-control-label">{$lang('True')}</span>
         </label>
         <label className="custom-control custom-radio custom-control-inline">
           <input
@@ -1308,7 +1313,7 @@ class RbFormBool extends RbFormElement {
             onChange={this.changeValue}
             disabled={this.props.readonly}
           />
-          <span className="custom-control-label">否</span>
+          <span className="custom-control-label">{$lang('False')}</span>
         </label>
       </div>
     )
@@ -1337,7 +1342,7 @@ class RbFormBarcode extends RbFormElement {
 
   renderElement() {
     if (this.state.value) return this.renderViewElement()
-    else return <div className="form-control-plaintext barcode text-muted">{`自动值 (${this.props.barcodeType === 'QRCODE' ? '二维码' : '条形码'})`}</div>
+    else return <div className="form-control-plaintext barcode text-muted">{`${$lang('AutoValue')} (${$lang(this.props.barcodeType === 'QRCODE' ? 'QrCode' : 'BarCode')})`}</div>
   }
 
   renderViewElement() {
@@ -1494,7 +1499,7 @@ class ClassificationSelector extends React.Component {
               </button>
             </div>
             <div className="modal-body">
-              <h5 className="mt-0 text-bold">选择{this.props.label}</h5>
+              <h5 className="mt-0 text-bold">{$lang('SelectSome').replace('{0}', this.props.label)}</h5>
               <div>
                 <select ref={(c) => this._select.push(c)} className="form-control form-control-sm">
                   {(this.state.datas[0] || []).map((item) => {
@@ -1547,7 +1552,7 @@ class ClassificationSelector extends React.Component {
               )}
               <div>
                 <button className="btn btn-primary w-100" onClick={() => this.confirm()}>
-                  确定
+                  {$lang('Confirm')}
                 </button>
               </div>
             </div>
@@ -1563,12 +1568,11 @@ class ClassificationSelector extends React.Component {
       $(document.body).addClass('modal-open') // keep scroll
     })
 
-    const LN = ['一', '二', '三', '四']
     const that = this
     $(this._select).each(function (idx) {
       const s = $(this)
         .select2({
-          placeholder: '选择' + LN[idx] + '分类',
+          placeholder: '选择' + (idx + 1) + '分类',
           allowClear: false,
         })
         .on('change', () => {
@@ -1597,7 +1601,7 @@ class ClassificationSelector extends React.Component {
     const last = this._select2[this.state.openLevel]
     const v = last.val()
     if (!v) {
-      RbHighbar.create('选择有误')
+      RbHighbar.create($lang('SelectError'))
     } else {
       const text = []
       $(this._select2).each(function () {
@@ -1637,7 +1641,7 @@ class ReferenceSearcher extends RbModal {
         <div className="modal-dialog modal-lg">
           <div className="modal-content">
             <div className="modal-header modal-header-colored">
-              <h3 className="modal-title">{this.props.title || '查询'}</h3>
+              <h3 className="modal-title">{this.props.title || $lang('Query')}</h3>
               <button className="close" type="button" onClick={() => this.hide()}>
                 <span className="zmdi zmdi-close" />
               </button>
@@ -1668,7 +1672,7 @@ class DeleteConfirm extends RbAlert {
 
   render() {
     let message = this.props.message
-    if (!message) message = this.props.ids ? `确认删除选中的 ${this.props.ids.length} 条记录？` : '确认删除当前记录？'
+    if (!message) message = this.props.ids ? $lang('DeleteSelectConfirm', this.props.ids.length) : $lang('DeleteConfirm')
 
     return (
       <div className="modal rbalert" ref={(c) => (this._dlg = c)} tabIndex="-1">
@@ -1689,7 +1693,7 @@ class DeleteConfirm extends RbAlert {
                   <div className="mt-2">
                     <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mb-2">
                       <input className="custom-control-input" type="checkbox" checked={this.state.enableCascade === true} onChange={() => this.enableCascade()} />
-                      <span className="custom-control-label"> 同时删除关联记录</span>
+                      <span className="custom-control-label"> {$lang('DeleteCasTips')}</span>
                     </label>
                     <div className={' ' + (this.state.enableCascade ? '' : 'hide')}>
                       <select className="form-control form-control-sm" ref={(c) => (this._cascades = c)} multiple>
@@ -1706,10 +1710,10 @@ class DeleteConfirm extends RbAlert {
                 )}
                 <div className="mt-4 mb-3" ref={(c) => (this._btns = c)}>
                   <button className="btn btn-space btn-secondary" type="button" onClick={() => this.hide()}>
-                    取消
+                    {$lang('Cancel')}
                   </button>
                   <button className="btn btn-space btn-danger" type="button" onClick={() => this.handleDelete()}>
-                    删除
+                    {$lang('Delete')}
                   </button>
                 </div>
               </div>
@@ -1727,7 +1731,7 @@ class DeleteConfirm extends RbAlert {
         this.setState({ cascadesEntity: res.data }, () => {
           this.__select2 = $(this._cascades)
             .select2({
-              placeholder: '选择关联实体 (可选)',
+              placeholder: $lang('SelectCasEntity'),
               width: '88%',
             })
             .val(null)
@@ -1746,9 +1750,9 @@ class DeleteConfirm extends RbAlert {
     const btns = $(this._btns).find('.btn').button('loading')
     $.post('/app/entity/record-delete?id=' + ids + '&cascades=' + cascades, (res) => {
       if (res.error_code === 0) {
-        if (res.data.deleted === res.data.requests) RbHighbar.success('删除成功')
-        else if (res.data.deleted === 0) RbHighbar.error('无法删除选中记录')
-        else RbHighbar.success('成功删除 ' + res.data.deleted + ' 条记录')
+        if (res.data.deleted === res.data.requests) RbHighbar.success($lang('SomeSuccess', 'Delete'))
+        else if (res.data.deleted === 0) RbHighbar.error($lang('NotDeleteTips'))
+        else RbHighbar.success($lang('SuccessDeletedXItems').replace('%d', res.data.deleted))
 
         this.hide()
         typeof this.props.deleteAfter === 'function' && this.props.deleteAfter()
@@ -1769,7 +1773,7 @@ class RepeatedViewer extends RbModalHandler {
   render() {
     const data = this.props.data
     return (
-      <RbModal ref={(c) => (this._dlg = c)} title={`存在 ${this.props.data.length - 1} 条重复记录`} disposeOnHide={true} colored="warning">
+      <RbModal ref={(c) => (this._dlg = c)} title={$lang('ExistsXDuplicateItems').replace('%d', this.props.data.length - 1)} disposeOnHide={true} colored="warning">
         <table className="table table-striped table-hover table-sm dialog-table">
           <thead>
             <tr>
@@ -1796,10 +1800,10 @@ class RepeatedViewer extends RbModalHandler {
       <tr key={`row-${idx}`}>
         {item.map((o, i) => {
           if (i === 0) return null
-          return <td key={`col-${idx}-${i}`}>{o || <span className="text-muted">无</span>}</td>
+          return <td key={`col-${idx}-${i}`}>{o || <span className="text-muted">{$lang('Null')}</span>}</td>
         })}
         <td className="actions">
-          <a className="icon" onClick={() => this.openView(item[0])} title="查看详情">
+          <a className="icon" onClick={() => this.openView(item[0])} title={$lang('ViewDetail')}>
             <i className="zmdi zmdi-open-in-new" />
           </a>
         </td>

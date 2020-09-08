@@ -53,7 +53,7 @@ class AppList extends React.Component {
     $.get('/admin/apis-manager/app-list', (res) => {
       this.setState({ list: res.data || [] }, () => {
         $('.rb-loading-active').removeClass('rb-loading-active')
-        $('.dataTables_info').text($lang('CountItems').replace('%d', this.state.list.length))
+        $('.dataTables_info').text($lang('CountXItems').replace('%d', this.state.list.length))
         if (this.state.list.length === 0) $('.list-nodata').removeClass('hide')
       })
     })

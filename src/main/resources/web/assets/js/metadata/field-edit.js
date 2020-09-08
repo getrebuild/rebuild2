@@ -212,7 +212,7 @@ class AdvDateDefaultValue extends RbAlert {
             <select className="form-control form-control-sm ml-1" ref={(c) => (this._refs[1] = c)} onChange={(e) => this.setState({ uncalc: !e.target.value })}>
               <option value="">{$lang('CalcNone')}</option>
               <option value="+">{$lang('CalcPlus')}</option>
-              <option value="-">{$lang('CalcSubtract')}</option>
+              <option value="-">{$lang('CalcMinus')}</option>
             </select>
             <input type="number" min="1" max="999999" className="form-control form-control-sm ml-1" defaultValue="1" disabled={this.state.uncalc} ref={(c) => (this._refs[2] = c)} />
             <select className="form-control form-control-sm ml-1" disabled={this.state.uncalc} ref={(c) => (this._refs[3] = c)}>

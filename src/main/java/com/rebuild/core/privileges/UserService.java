@@ -155,14 +155,14 @@ public class UserService extends BaseServiceImpl {
         if (UserHelper.isAdmin(currentUser)) return;
 
         if (action == BizzPermission.CREATE || action == BizzPermission.DELETE) {
-            throw new PrivilegesException(Language.getLang("NoPrivileges"));
+            throw new PrivilegesException(Language.getLang("NoOpPrivileges"));
         }
 
         // 用户可自己改自己
         if (action == BizzPermission.UPDATE && currentUser.equals(user)) {
             return;
         }
-        throw new PrivilegesException(Language.getLang("NoPrivileges"));
+        throw new PrivilegesException(Language.getLang("NoOpPrivileges"));
     }
 
     /**

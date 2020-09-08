@@ -25,7 +25,7 @@ $(document).ready(function () {
 
   $('.J_confirm').click(function () {
     if ($('.J_config>li').length > maxOptions) {
-      RbHighbar.create($lang('MaxSupportOptions').replace('%d', maxOptions))
+      RbHighbar.create($lang('MaxSupportXOptions').replace('%d', maxOptions))
       return false
     }
 

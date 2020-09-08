@@ -106,6 +106,9 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
      * @see AppUtils#isHtmlRequest(HttpServletRequest)
      */
     private ModelAndView createError(HttpServletRequest request, Exception ex, HttpStatus status, Map<String, Object> model) {
+        // IGNORED
+        if (request.getRequestURI().contains("/assets/")) return null;
+
         ModelAndView error;
         if (AppUtils.isHtmlRequest(request)) {
             error = new ModelAndView("/error/error");

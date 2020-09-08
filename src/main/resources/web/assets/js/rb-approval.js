@@ -42,7 +42,7 @@ class ApprovalProcessor extends React.Component {
 
   renderStateProcessing() {
     window.RbViewPage && window.RbViewPage.setReadonly(true)
-    let aMsg = $lang('RecordInApproval')
+    let aMsg = $lang('SomeInApproval,CurrentRecord')
     if (this.state.imApprover) {
       if (this.state.imApproveSatate === 1) aMsg = $lang('RecordWaitYouApproval')
       else if (this.state.imApproveSatate === 10) aMsg = $lang('RecordWaitUserApproval')
@@ -531,7 +531,7 @@ class ApprovalStepViewer extends React.Component {
             <img src={`${rb.baseUrl}/account/user-avatar/${s.submitter}`} />
           </div>
           <div className="timeline-header">
-            <p className="timeline-activity">{$lang('SubmittedApprovalBy').replace('%s', s.submitter === rb.currentUser ? $lang('You') : s.submitterName)}</p>
+            <p className="timeline-activity">{$lang('SubmittedApprovalByX').replace('%s', s.submitter === rb.currentUser ? $lang('You') : s.submitterName)}</p>
             {s.approvalName && (
               <blockquote className="blockquote timeline-blockquote mb-0">
                 <p>
@@ -559,7 +559,7 @@ class ApprovalStepViewer extends React.Component {
 
     s.forEach((item) => {
       const approverName = item.approver === rb.currentUser ? $lang('You') : item.approverName
-      let aMsg = $lang('WaitApprovalBy').replace('%s', approverName)
+      let aMsg = $lang('WaitApprovalByX').replace('%s', approverName)
       if (item.state >= 10) aMsg = `${$lang('By')} ${approverName} ${STATE_NAMES[item.state]}`
       if ((nodeState >= 10 || lastState >= 10) && item.state < 10) aMsg = `${approverName} ${$lang('NotApproval')}`
 
