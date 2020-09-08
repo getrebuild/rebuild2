@@ -32,12 +32,12 @@ const ListConfig = {
 
 // 操作类型
 const RevTypes = {
-  1: $lang('Permission1'),
-  2: $lang('Permission2'),
-  4: $lang('Permission4'),
-  16: $lang('Permission16'),
-  32: $lang('Permission32'),
-  64: $lang('Permission64'),
+  1: $lang('Create'),
+  2: $lang('Delete'),
+  4: $lang('Update'),
+  16: $lang('Assign'),
+  32: $lang('Share'),
+  64: $lang('UnShare'),
 }
 
 class DataList extends React.Component {

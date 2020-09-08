@@ -415,7 +415,7 @@ $(document).ready(() => {
   $('.J_delete').click(() => {
     const s = filesList.getSelected()
     if (!s) return
-    RbAlert.create($lang('DeleteSelectSomeConfirm,File'), {
+    RbAlert.create($lang('DeleteSomeConfirm,File'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {

@@ -616,9 +616,9 @@ const ANN_OPTIONS = [
   [4, $lang('AnnouncementPos4')],
 ]
 const REM_OPTIONS = [
-  [1, $lang('SendRemind1')],
-  [2, $lang('SendRemind2')],
-  [4, $lang('SendRemind4')],
+  [1, $lang('e.Notification')],
+  [2, $lang('Mail')],
+  [4, $lang('Sms')],
 ]
 
 function __findMaskTexts(mask, options) {

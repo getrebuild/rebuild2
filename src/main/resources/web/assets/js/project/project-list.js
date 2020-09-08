@@ -91,7 +91,7 @@ class DlgEdit extends RbFormHandler {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">{$lang('ProjectName')}</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.ProjectConfig.projectName')}</label>
             <div className="col-sm-7">
               <input className="form-control form-control-sm" value={this.state.projectName || ''} data-id="projectName" onChange={this.handleChange} maxLength="60" />
             </div>
@@ -99,7 +99,7 @@ class DlgEdit extends RbFormHandler {
           {!this.props.id && (
             <React.Fragment>
               <div className="form-group row">
-                <label className="col-sm-3 col-form-label text-sm-right">{$lang('ProjectCode')}</label>
+                <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.ProjectConfig.projectCode')}</label>
                 <div className="col-sm-7">
                   <input className="form-control form-control-sm " value={this.state.projectCode || ''} data-id="projectCode" onChange={this.handleChange} maxLength="6" />
                   <div className="form-text">{$lang('ProjectCodeTips')}</div>
@@ -141,7 +141,7 @@ class DlgEdit extends RbFormHandler {
   }
 
   save = () => {
-    if (!this.state.projectName) return RbHighbar.create($lang('PlsInputSome,ProjectName'))
+    if (!this.state.projectName) return RbHighbar.create($lang('PlsInputSome,f.ProjectConfig.projectName'))
     const _data = {
       projectName: this.state.projectName,
       iconName: this.state.iconName,

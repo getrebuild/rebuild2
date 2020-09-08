@@ -55,7 +55,7 @@ class FilesList extends React.Component {
             </a>
           </div>
         )}
-        {this.__pageNo > 1 && this.state.currentLen > 0 && this.state.currentLen < PAGE_SIZE && <div className="text-center mt-3 mb-3 text-muted">{$lang('LoadedAll')}</div>}
+        {this.__pageNo > 1 && this.state.currentLen > 0 && this.state.currentLen < PAGE_SIZE && <div className="text-center mt-3 mb-3 text-muted">{$lang('AllLoaded')}</div>}
         {this.__pageNo === 1 && !hasFiles && (
           <div className="list-nodata pt-8 pb-8">
             <i className="zmdi zmdi-folder-outline"></i>
@@ -103,7 +103,7 @@ class FilesList extends React.Component {
 
   getSelected() {
     const s = this.state.currentActive
-    if (!s) RbHighbar.create($lang('UnselectSome,File'))
+    if (!s) RbHighbar.create($lang('UnselectAnySome,File'))
     else return s
   }
 }

@@ -498,7 +498,7 @@ const RbViewPage = {
             if (v.length === 0)
               renderRbcomp(
                 <UserShow
-                  name={$lang('AddShare')}
+                  name={$lang('AddSome,Share')}
                   icon="zmdi zmdi-plus"
                   onClick={() => {
                     $('.J_share').trigger('click')

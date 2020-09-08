@@ -620,19 +620,19 @@ class ScheduleOptions extends React.Component {
           <dd className="col-12 col-lg-9 mb-0" ref={(c) => (this._scheduleRemind = c)}>
             <label className="custom-control custom-checkbox custom-control-inline">
               <input className="custom-control-input" name="showOn" type="checkbox" value={1} disabled={this.props.readonly} />
-              <span className="custom-control-label">{$lang('SendRemind1')}</span>
+              <span className="custom-control-label">{$lang('e.Notification')}</span>
             </label>
             <label className="custom-control custom-checkbox custom-control-inline" title={email}>
               <input className="custom-control-input" name="showOn" type="checkbox" value={2} disabled={this.props.readonly} />
               <span className="custom-control-label">
-                {$lang('SendRemind2')}
+                {$lang('Mail')}
                 {!email && <span> ({$lang('Unavailable')})</span>}
               </span>
             </label>
             <label className="custom-control custom-checkbox custom-control-inline" title={mobile}>
               <input className="custom-control-input" name="showOn" type="checkbox" value={4} disabled={this.props.readonly} />
               <span className="custom-control-label">
-                {$lang('SendRemind4')}
+                {$lang('Sms')}
                 {!mobile && <span> ({$lang('Unavailable')})</span>}
               </span>
             </label>

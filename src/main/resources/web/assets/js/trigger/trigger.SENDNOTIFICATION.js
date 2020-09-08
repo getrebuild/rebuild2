@@ -25,7 +25,7 @@ class ContentSendNotification extends ActionContentSpec {
               <label className="custom-control custom-control-sm custom-radio custom-control-inline mb-1">
                 <input className="custom-control-input" name="mtype" type="radio" onChange={() => this.setState({ type: 2 })} checked={this.state.type === 2} />
                 <span className="custom-control-label">
-                  {$lang('Email2')} {this.state.serviceMail === false && `(${$lang('Unavailable')})`}
+                  {$lang('Mail')} {this.state.serviceMail === false && `(${$lang('Unavailable')})`}
                 </span>
               </label>
               <label className="custom-control custom-control-sm custom-radio custom-control-inline mb-1">

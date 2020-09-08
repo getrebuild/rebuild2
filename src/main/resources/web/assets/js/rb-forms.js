@@ -1601,7 +1601,7 @@ class ClassificationSelector extends React.Component {
     const last = this._select2[this.state.openLevel]
     const v = last.val()
     if (!v) {
-      RbHighbar.create($lang('SelectError'))
+      RbHighbar.create($lang('InvalidArgs'))
     } else {
       const text = []
       $(this._select2).each(function () {

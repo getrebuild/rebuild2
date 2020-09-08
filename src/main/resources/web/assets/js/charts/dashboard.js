@@ -41,7 +41,7 @@ $(document).ready(function () {
 
     if (location.hash && location.hash.length > 20) {
       if (location.hash.substr(0, 5) === '#del=') {
-        RbHighbar.success('仪表盘已删除')
+        RbHighbar.success($lang('SomeDeleted,e.DashboardConfig'))
         location.hash = ''
       } else {
         const high = $('#chart-' + location.hash.substr(1)).addClass('high')
@@ -151,7 +151,7 @@ const dlgShow = (t, props) => {
       renderRbcomp(<DlgAddChart {...props} />, null, function () {
         dlgRefs[t] = this
       })
-    else RbHighbar.create('你无权添加图标到此仪表盘')
+    else RbHighbar.create($lang('NoPrivilegesAddChartToDashTips'))
   } else if (t === 'DlgDashAdd')
     renderRbcomp(<DlgDashAdd {...props} />, null, function () {
       dlgRefs[t] = this
@@ -185,7 +185,11 @@ const render_dashboard = function (init) {
   $(init).each((idx, item) => add_widget(item))
   if (rendered_charts.length === 0) {
     const gsi =
-      '<div class="grid-stack-item"><div id="chart-add" class="grid-stack-item-content"><a class="chart-add" onclick="dlgShow(\'DlgAddChart\')"><i class="zmdi zmdi-plus"></i><p>添加图表</p></a></div></div>'
+      '<div class="grid-stack-item">' +
+      '<div id="chart-add" class="grid-stack-item-content">' +
+      `<a class="chart-add" onclick="dlgShow('DlgAddChart')"><i class="zmdi zmdi-plus"></i><p>${$lang('AddSome,Chart')}</p></a>` +
+      '</div>' +
+      '</div>'
     gridstack.addWidget(gsi, 0, 0, 2, 2)
     gridstack.disable()
   }
@@ -264,10 +268,10 @@ class DlgAddChart extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title="添加图表" ref="dlg">
+      <RbModal title={$lang('AddSome,Chart')} ref="dlg">
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">图表数据来源</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('ChartDataSource')}</label>
             <div className="col-sm-7">
               <select className="form-control form-control-sm" ref="entity" />
             </div>
@@ -275,7 +279,7 @@ class DlgAddChart extends RbFormHandler {
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3">
               <button className="btn btn-primary" type="button" onClick={() => this.next()}>
-                下一步
+                {$lang('NextStep')}
               </button>
             </div>
           </div>
@@ -290,7 +294,7 @@ class DlgAddChart extends RbFormHandler {
       $(res.data).each(function () {
         $('<option value="' + this.name + '">' + this.label + '</option>').appendTo(entity_el)
       })
-      this.__select2 = entity_el.select2({ placeholder: '选择数据来源' })
+      this.__select2 = entity_el.select2({ placeholder: $lang('SelectSome,DataSource') })
     })
   }
 
@@ -309,12 +313,19 @@ class DlgDashSettings extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title="仪表盘设置" ref="dlg">
+      <RbModal title={$lang('SetSome,e.DashboardConfig')} ref="dlg">
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">名称</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('Name')}</label>
             <div className="col-sm-7">
-              <input className="form-control form-control-sm" value={this.state.title || ''} placeholder="默认仪表盘" data-id="title" onChange={this.handleChange} maxLength="40" />
+              <input
+                className="form-control form-control-sm"
+                value={this.state.title || ''}
+                placeholder={$lang('DefaultSome,e.DashboardConfig')}
+                data-id="title"
+                onChange={this.handleChange}
+                maxLength="40"
+              />
             </div>
           </div>
           {rb.isAdminUser && (
@@ -330,10 +341,10 @@ class DlgDashSettings extends RbFormHandler {
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3">
               <button className="btn btn-primary btn-space" type="button" onClick={() => this.save()}>
-                确定
+                {$lang('Confirm')}
               </button>
               <button className="btn btn-danger bordered btn-space" type="button" onClick={() => this.delete()}>
-                <i className="zmdi zmdi-delete icon" /> 删除
+                <i className="zmdi zmdi-delete icon" /> {$lang('Delete')}
               </button>
             </div>
           </div>
@@ -345,7 +356,7 @@ class DlgDashSettings extends RbFormHandler {
   save() {
     const _data = {
       shareTo: this._shareTo.getData().shareTo,
-      title: this.state.title || '默认仪表盘',
+      title: this.state.title || $lang('DefaultSome,e.DashboardConfig'),
     }
     _data.metadata = { id: this.props.dashid, entity: 'DashboardConfig' }
 
@@ -361,9 +372,9 @@ class DlgDashSettings extends RbFormHandler {
   }
 
   delete() {
-    RbAlert.create('确认删除此仪表盘吗？', {
+    RbAlert.create($lang('DeleteSomeConfirm,e.DashboardConfig'), {
       type: 'danger',
-      confirmText: '删除',
+      confirmText: $lang('Delete'),
       confirm: function () {
         this.disabled(true)
         $.post('/app/entity/record-delete?id=' + dashid, function (res) {
@@ -384,12 +395,19 @@ class DlgDashAdd extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title="添加仪表盘" ref="dlg">
+      <RbModal title={$lang('AddSome,e.DashboardConfig')} ref="dlg">
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">名称</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('Name')}</label>
             <div className="col-sm-7">
-              <input className="form-control form-control-sm" value={this.state.title || ''} placeholder="我的仪表盘" data-id="title" onChange={this.handleChange} maxLength="40" />
+              <input
+                className="form-control form-control-sm"
+                value={this.state.title || ''}
+                placeholder={$lang('MySome,e.DashboardConfig')}
+                data-id="title"
+                onChange={this.handleChange}
+                maxLength="40"
+              />
             </div>
           </div>
           <div className="form-group row">
@@ -397,17 +415,17 @@ class DlgDashAdd extends RbFormHandler {
             <div className="col-sm-7">
               <label className="custom-control custom-control-sm custom-checkbox custom-control-inline mt-0 mb-0">
                 <input className="custom-control-input" type="checkbox" checked={this.state.copy === true} data-id="copy" onChange={this.handleChange} />
-                <span className="custom-control-label">复制当前仪表盘</span>
+                <span className="custom-control-label">{$lang('CopyDashTips')}</span>
               </label>
             </div>
           </div>
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3">
               <button className="btn btn-primary" type="button" onClick={this.save}>
-                确定
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link" onClick={this.hide}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>
@@ -417,14 +435,15 @@ class DlgDashAdd extends RbFormHandler {
   }
 
   save = () => {
-    const _data = { title: this.state.title || '我的仪表盘' }
-    _data.metadata = { entity: 'DashboardConfig' }
+    const _data = {
+      title: this.state.title || $lang('MySome,e.DashboardConfig'),
+      metadata: { entity: 'DashboardConfig' },
+    }
     if (this.state.copy === true) _data.__copy = gridstack_serialize
 
     $.post('/dashboard/dash-new', JSON.stringify(_data), (res) => {
-      if (res.error_code === 0) {
-        location.href = '?d=' + res.data.id
-      } else RbHighbar.error(res.error_msg)
+      if (res.error_code === 0) location.href = '?d=' + res.data.id
+      else RbHighbar.error(res.error_msg)
     })
   }
 }

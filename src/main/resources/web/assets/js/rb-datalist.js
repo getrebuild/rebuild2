@@ -398,7 +398,7 @@ class RbList extends React.Component {
       .each(function () {
         selected.push($(this).parents('tr').data('id'))
       })
-    if (selected.length === 0 && noWarn !== true) RbHighbar.create($lang('NoAnySelected'))
+    if (selected.length === 0 && noWarn !== true) RbHighbar.create($lang('UnselectAnySome,Record'))
     return selected
   }
 
@@ -482,7 +482,7 @@ CellRenders.addRender('$NAME$', function (v, s, k) {
 CellRenders.addRender('$NOPRIVILEGES$', function (v, s, k) {
   return (
     <td key={k}>
-      <div style={s} className="column-nopriv" title={$lang('NoRPrivilegesTips')}>
+      <div style={s} className="column-nopriv">
         [{$lang('NoPrivileges')}]
       </div>
     </td>
@@ -860,7 +860,9 @@ const AdvFilters = {
 
         // 可修改
         if (item.editable) {
-          const $action = $('<div class="action"><a title="修改"><i class="zmdi zmdi-edit"></i></a><a title="删除"><i class="zmdi zmdi-delete"></i></a></div>').appendTo($item)
+          const $action = $(`<div class="action"><a title="${$lang('Modify')}"><i class="zmdi zmdi-edit"></i></a><a title="${$lang('Delete')}"><i class="zmdi zmdi-delete"></i></a></div>`).appendTo(
+            $item
+          )
 
           $action.find('a:eq(0)').click(function () {
             that.showAdvFilter(item.id)
@@ -869,7 +871,7 @@ const AdvFilters = {
           })
 
           $action.find('a:eq(1)').click(function () {
-            RbAlert.create($lang('DeleteFilterConfirm'), {
+            RbAlert.create($lang('DeleteSomeConfirm,AdvFilter'), {
               type: 'danger',
               confirmText: $lang('Delete'),
               confirm: function () {

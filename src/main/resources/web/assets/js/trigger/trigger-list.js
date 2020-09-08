@@ -11,14 +11,14 @@ $(document).ready(function () {
 })
 
 const WHENS = {
-  1: $lang('Permission1'),
-  2: $lang('Permission2'),
-  4: $lang('Permission4'),
-  16: $lang('Permission16'),
-  32: $lang('Permission32'),
-  64: $lang('Permission64'),
-  128: $lang('Permission128'),
-  256: $lang('Permission256'),
+  1: $lang('Create'),
+  2: $lang('Delete'),
+  4: $lang('Update'),
+  16: $lang('Assign'),
+  32: $lang('Share'),
+  64: $lang('UnShare'),
+  128: $lang('Approved'),
+  256: $lang('Revoked'),
   512: `(${$lang('JobExecution')})`,
 }
 

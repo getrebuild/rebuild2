@@ -140,8 +140,8 @@ const check_user0 = () => {
   if (!ientry.entity || !ientry.owning_user) return
   $.get(`/admin/data/data-imports/check-user?user=${ientry.owning_user}&entity=${ientry.entity}`, (res) => {
     let hasError = []
-    if (res.data.canCreate !== true) hasError.push($lang('Permission1'))
-    if (res.data.canUpdate !== true) hasError.push($lang('Permission4'))
+    if (res.data.canCreate !== true) hasError.push($lang('Create'))
+    if (res.data.canUpdate !== true) hasError.push($lang('Update'))
     if (hasError.length > 0) {
       renderRbcomp(<RbAlertBox message={$lang('SelectUserNoPermissionConfirm').replace('%s', hasError.join('/'))} />, 'user-warn')
     } else {
