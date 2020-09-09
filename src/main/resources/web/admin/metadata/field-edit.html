@@ -76,7 +76,7 @@
     </style>
   </head>
   <body>
-    <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-aside rb-color-header">
+    <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-aside rb-color-header" th:classappend="${sideCollapsedClazz}">
       <th:block th:replace="~{/_include/nav-top}" />
       <th:block th:replace="~{/_include/nav-left-admin :: nav(active='entities')}" />
       <div class="rb-content">
@@ -310,7 +310,7 @@
                       <input class="custom-control-input" type="checkbox" id="fieldRepeatable" th:data-o="${fieldRepeatable}" />
                       <span class="custom-control-label">[[${bundle.lang('AllowRepeatable')}]]</span>
                     </label>
-                    <label class="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0 hide">
+                    <label class="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0 bosskey-show">
                       <input class="custom-control-input" type="checkbox" id="fieldQueryable" th:data-o="${fieldQueryable}" />
                       <span class="custom-control-label"> [[${bundle.lang('AllowQueryable')}]]</span>
                     </label>

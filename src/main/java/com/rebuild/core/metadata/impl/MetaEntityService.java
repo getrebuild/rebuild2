@@ -9,6 +9,7 @@ package com.rebuild.core.metadata.impl;
 
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.PersistManagerFactory;
+import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
@@ -76,5 +77,13 @@ public class MetaEntityService extends BaseService implements AdminGuard {
 
         del += super.delete(recordId);
         return del;
+    }
+
+    @Override
+    public Record update(Record record) {
+        record = super.update(record);
+
+        Application.getMetadataFactory().refresh(false);
+        return record;
     }
 }

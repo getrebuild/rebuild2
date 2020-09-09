@@ -132,7 +132,8 @@ public class EntityRecordCreator extends JsonRecordCreator {
             }
 
             if (!notAllowed.isEmpty()) {
-                throw new DataSpecificationException(StringUtils.join(notAllowed, "/") + " 不允许为空");
+                throw new DataSpecificationException(
+                        Language.formatLang("XNotNull", StringUtils.join(notAllowed, " / ")));
             }
         }
         // 更新
@@ -157,7 +158,8 @@ public class EntityRecordCreator extends JsonRecordCreator {
             }
 
             if (!notAllowed.isEmpty()) {
-                throw new DataSpecificationException(Language.formatLang("XNotModify", StringUtils.join(notAllowed, " / ")));
+                throw new DataSpecificationException(
+                        Language.formatLang("XNotModify", StringUtils.join(notAllowed, " / ")));
             }
         }
     }

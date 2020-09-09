@@ -531,7 +531,7 @@ class ApprovalStepViewer extends React.Component {
             <img src={`${rb.baseUrl}/account/user-avatar/${s.submitter}`} />
           </div>
           <div className="timeline-header">
-            <p className="timeline-activity">{$lang('SubmittedApprovalByX').replace('%s', s.submitter === rb.currentUser ? $lang('T1You') : s.submitterName)}</p>
+            <p className="timeline-activity">{$lang('SubmittedApprovalByX').replace('%s', s.submitter === rb.currentUser ? $lang('You') : s.submitterName)}</p>
             {s.approvalName && (
               <blockquote className="blockquote timeline-blockquote mb-0">
                 <p>
@@ -558,9 +558,9 @@ class ApprovalStepViewer extends React.Component {
     }
 
     s.forEach((item) => {
-      const approverName = item.approver === rb.currentUser ? $lang('T1You') : item.approverName
+      const approverName = item.approver === rb.currentUser ? $lang('You') : item.approverName
       let aMsg = $lang('WaitApprovalByX').replace('%s', approverName)
-      if (item.state >= 10) aMsg = `${$lang('T1By')} ${approverName} ${STATE_NAMES[item.state]}`
+      if (item.state >= 10) aMsg = `${$lang('By')} ${approverName} ${STATE_NAMES[item.state]}`
       if ((nodeState >= 10 || lastState >= 10) && item.state < 10) aMsg = `${approverName} ${$lang('NotApproval')}`
 
       sss.push(

@@ -180,9 +180,9 @@ public class Entity2Schema extends Field2Schema {
             throw new MetadataException(Language.getLang("OnlyAdminCanSome", "DeleteEntity"));
         }
 
-        EasyMeta easyMeta = EasyMeta.valueOf(entity);
-        ID metaRecordId = easyMeta.getMetaId();
-        if (easyMeta.isBuiltin() || metaRecordId == null) {
+        EasyMeta easy = EasyMeta.valueOf(entity);
+        ID metaRecordId = easy.getMetaId();
+        if (easy.isBuiltin() || metaRecordId == null) {
             throw new MetadataException(Language.getLang("BuiltInNotDelete"));
         }
 
@@ -191,7 +191,6 @@ public class Entity2Schema extends Field2Schema {
                 boolean dropSlave = this.dropEntity(entity.getSlaveEntity(), true);
                 if (dropSlave) {
                     entity = MetadataHelper.getEntity(entity.getEntityCode());
-                    easyMeta = EasyMeta.valueOf(entity);
 
                 } else {
                     throw new MetadataException(Language.getLang("DeleteMasterFirstTips"));

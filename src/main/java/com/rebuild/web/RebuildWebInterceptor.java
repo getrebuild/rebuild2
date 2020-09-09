@@ -62,11 +62,19 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         if (htmlRequest) {
             request.setAttribute(RebuildWebConstants.LOCALE, locale);
             request.setAttribute(RebuildWebConstants.$BUNDLE, Language.getCurrentBundle());
-        }
 
-        // TODO CSRF
-        if (htmlRequest) {
+            // TODO CSRF
             request.setAttribute(RebuildWebConstants.CSRF_TOKEN, CodecUtils.randomCode(60));
+
+            // Side collapsed
+            String sidebarCollapsed = ServletUtils.readCookie(request, "rb.sidebarCollapsed");
+            String sideCollapsedClazz = "false".equals(sidebarCollapsed) ? "" : "rb-collapsible-sidebar-collapsed";
+            // Aside
+            if (!requestUri.contains("/admin/")) {
+                String asideCollapsed = ServletUtils.readCookie(request, "rb.asideCollapsed");
+                if (!"false".equals(asideCollapsed)) sideCollapsedClazz += " rb-aside-collapsed";
+            }
+            request.setAttribute("sideCollapsedClazz", sideCollapsedClazz);
         }
 
         // 服务状态

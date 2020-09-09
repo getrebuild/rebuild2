@@ -9,7 +9,6 @@ const wpc = window.__PageConfig
 const __gExtConfig = {}
 
 const SHOW_REPEATABLE = ['TEXT', 'DATE', 'DATETIME', 'EMAIL', 'URL', 'PHONE', 'REFERENCE', 'CLASSIFICATION']
-const SHOW_QUERYABLE = []
 
 $(document).ready(function () {
   const dt = wpc.fieldType
@@ -24,7 +23,7 @@ $(document).ready(function () {
       creatable: $val('#fieldCreatable'),
       updatable: $val('#fieldUpdatable'),
       repeatable: $val('#fieldRepeatable'),
-      queryable: $val('#fieldQueryable'),
+      // queryable: $val('#fieldQueryable'),
     }
     if (data.fieldLabel === '') return RbHighbar.create($lang('PlsInputSome,FieldName'))
 
@@ -123,10 +122,6 @@ $(document).ready(function () {
   // 显示重复值选项
   if (SHOW_REPEATABLE.includes(dt) && wpc.fieldName !== 'approvalId') {
     $('#fieldRepeatable').parents('.custom-control').removeClass('hide')
-  }
-  // 显示可查询选项
-  if (SHOW_QUERYABLE.includes(dt)) {
-    $('#fieldQueryable').parents('.custom-control').removeClass('hide')
   }
 
   // 内建字段

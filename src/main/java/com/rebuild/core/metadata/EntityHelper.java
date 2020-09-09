@@ -12,8 +12,8 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.engine.StandardRecord;
 import cn.devezhao.persist4j.record.FieldValueException;
-import cn.devezhao.persist4j.record.JsonRecordCreator;
 import com.alibaba.fastjson.JSONObject;
+import com.rebuild.core.support.i18n.Language;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
@@ -30,16 +30,16 @@ public class EntityHelper {
      * @return
      */
     public static Record parse(JSONObject data, ID user) {
-        JSONObject metadata = data.getJSONObject(JsonRecordCreator.META_FIELD);
+        JSONObject metadata = data.getJSONObject(EntityRecordCreator.META_FIELD);
         if (metadata == null) {
-            throw new FieldValueException("无效实体数据格式(1): " + data.toJSONString());
+            throw new FieldValueException(Language.getLang("InvalidRecordJson") + " : " + data.toJSONString());
         }
 
         String entityName = metadata.getString("entity");
         if (StringUtils.isBlank(entityName)) {
             String id = metadata.getString("id");
             if (!ID.isId(id)) {
-                throw new FieldValueException("无效实体数据格式(2): " + data.toJSONString());
+                throw new FieldValueException(Language.getLang("InvalidRecordJson") + " : " + data.toJSONString());
             }
             entityName = MetadataHelper.getEntityName(ID.valueOf(id));
         }

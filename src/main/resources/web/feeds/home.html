@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/feeds.css}" />
   </head>
   <body>
-    <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo">
+    <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo" th:classappend="${sideCollapsedClazz}">
       <th:block th:replace="~{/_include/nav-top}" />
       <th:block th:replace="~{/_include/nav-left :: nav(active='nav_entity-Feeds')}" />
       <div class="rb-content">
@@ -35,14 +35,14 @@
                           </span>
                         </div>
                         <div class="input-group input-group-sm">
-                          <input type="text" class="form-control search J_date-begin" th:placeholder="${bundle.lang('PublishTime') + ' (' + bundle.lang('T1Start') + ')'}" />
+                          <input type="text" class="form-control search J_date-begin" th:placeholder="${bundle.lang('PublishTime') + ' (' + bundle.lang('Start0') + ')'}" />
                           <span class="append">
                             <a><i class="icon zmdi zmdi-close"></i></a>
                             <i class="icon zmdi zmdi-calendar"></i>
                           </span>
                         </div>
                         <div class="input-group input-group-sm">
-                          <input type="text" class="form-control search J_date-end" th:placeholder="${bundle.lang('PublishTime') + ' (' + bundle.lang('T1End') + ')'}" />
+                          <input type="text" class="form-control search J_date-end" th:placeholder="${bundle.lang('PublishTime') + ' (' + bundle.lang('End0') + ')'}" />
                           <span class="append">
                             <a><i class="icon zmdi zmdi-close"></i></a>
                             <i class="icon zmdi zmdi-calendar"></i>

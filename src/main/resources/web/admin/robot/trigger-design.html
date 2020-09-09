@@ -6,7 +6,7 @@
     <title>[[${bundle.lang('e.RobotTriggerConfig')}]]</title>
   </head>
   <body>
-    <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-color-header">
+    <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-color-header" th:classappend="${sideCollapsedClazz}">
       <th:block th:replace="~{/_include/nav-top}" />
       <th:block th:replace="~{/_include/nav-left-admin :: nav(active='robot-trigger')}" />
       <div class="rb-content">
@@ -19,7 +19,7 @@
             <div class="card-body">
               <ul class="timeline spare">
                 <li class="timeline-item">
-                  <div class="timeline-date"><span>当发生动作</span></div>
+                  <div class="timeline-date"><span>[[${bundle.lang('WhenTriggerAction')}]]</span></div>
                   <div class="timeline-content">
                     <form class="simple">
                       <div class="form-group row">
@@ -70,7 +70,7 @@
                               ></span>
                             </label>
                           </div>
-                          <div class="mt-1">
+                          <div class="mt-1 bosskey-show">
                             <div>
                               <label class="custom-control custom-control-sm custom-checkbox custom-control-inline mb-0">
                                 <input class="custom-control-input" type="checkbox" value="512" onclick="_handle512Change()" />
@@ -89,7 +89,7 @@
                                 </div>
                                 <input type="text" class="form-control form-control-sm text-center J_whenTimer2" placeholder="1" />
                                 <div class="input-group-append">
-                                  <span class="input-group-text">[[${bundle.lang('Time')}]]</span>
+                                  <span class="input-group-text">[[${bundle.lang('Times')}]]</span>
                                 </div>
                               </div>
                               <p class="form-text">[[${bundle.lang('JobExecutionTips')}]]</p>

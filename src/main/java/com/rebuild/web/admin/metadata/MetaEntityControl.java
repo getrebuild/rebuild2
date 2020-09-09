@@ -14,6 +14,7 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
+import com.rebuild.core.metadata.impl.MetaEntityService;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.task.TaskExecutors;
 import com.rebuild.core.metadata.EntityHelper;
@@ -128,16 +129,18 @@ public class MetaEntityControl extends BaseController {
         String masterEntity = reqJson.getString("masterEntity");
         if (StringUtils.isNotBlank(masterEntity)) {
             if (!MetadataHelper.containsEntity(masterEntity)) {
-                writeFailure(response, "无效主实体 : " + masterEntity);
+                writeFailure(response,
+                        getLang(request,"SomeInvalid", "MasterEntity") + " : " + masterEntity);
                 return;
             }
 
-            Entity master = MetadataHelper.getEntity(masterEntity);
-            if (master.getMasterEntity() != null) {
-                writeFailure(response, "明细实体不能作为主实体");
+            Entity useMaster = MetadataHelper.getEntity(masterEntity);
+            if (useMaster.getMasterEntity() != null) {
+                writeFailure(response, getLang(request, "SlaveEntityNotBeMaster"));
                 return;
-            } else if (master.getSlaveEntity() != null) {
-                writeFailure(response, "选择的主实体已被 " + EasyMeta.getLabel(master.getSlaveEntity()) + " 使用");
+            } else if (useMaster.getSlaveEntity() != null) {
+                writeFailure(response,
+                        String.format(getLang(request, "SelectMasterEntityBeXUsed"), useMaster.getSlaveEntity()));
                 return;
             }
         }
@@ -171,8 +174,7 @@ public class MetaEntityControl extends BaseController {
             }
         }
 
-        Application.getCommonsService().update(record);
-        Application.getMetadataFactory().refresh(false);
+        Application.getBean(MetaEntityService.class).update(record);
 
         if (needReindex != null) {
             Entity entity = MetadataHelper.getEntity(needReindex);
@@ -192,11 +194,8 @@ public class MetaEntityControl extends BaseController {
         boolean force = getBoolParameter(request, "force", false);
 
         boolean drop = new Entity2Schema(user).dropEntity(entity, force);
-        if (drop) {
-            writeSuccess(response);
-        } else {
-            writeFailure(response, "删除失败，请确认该实体是否可被删除");
-        }
+        if (drop) writeSuccess(response);
+        else writeFailure(response);
     }
 
     @RequestMapping("entity/entity-export")

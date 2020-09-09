@@ -101,12 +101,16 @@ $(function () {
     $('.J_notifications-top').on('shown.bs.dropdown', _loadMessages)
   }
 
-  var bkeydown_times = 0
+  var bosskey = 0
   $(document.body).keydown(function (e) {
     if (e.shiftKey) {
-      if (++bkeydown_times === 6) $('.bosskey-show').show()
+      if (++bosskey === 6) {
+        $('.bosskey-show').show()
+        $.cookie('useBosskey', 666, { expires: null, httpOnly: true })
+      }
     }
   })
+  if ($.cookie('useBosskey')) $('.bosskey-show').show()
 
   // Trigger on window.onresize
   $(window).on('resize', function () {
@@ -167,17 +171,18 @@ var _initNavs = function () {
     })
     $('.sidebar-elements>li>a').tooltip('disable')
   } else {
-    $('.rb-toggle-left-sidebar').click(function () {
-      var el = $('.rb-collapsible-sidebar').toggleClass('rb-collapsible-sidebar-collapsed')
-      $storage.set('rb-sidebar-collapsed', el.hasClass('rb-collapsible-sidebar-collapsed'))
-      $('.sidebar-elements>li>a').tooltip('toggleEnabled')
-      $(window).trigger('resize')
-    })
-    if ($storage.get('rb-sidebar-collapsed') === 'true') {
-      $('.rb-collapsible-sidebar').addClass('rb-collapsible-sidebar-collapsed')
-    } else {
+    const $el = $('.rb-collapsible-sidebar')
+    if (!$el.hasClass('rb-collapsible-sidebar-collapsed')) {
       $('.sidebar-elements>li>a').tooltip('disable')
     }
+
+    $('.rb-toggle-left-sidebar').click(function () {
+      $el.toggleClass('rb-collapsible-sidebar-collapsed')
+      $.cookie('rb.sidebarCollapsed', $el.hasClass('rb-collapsible-sidebar-collapsed'), { expires: 180 })
+
+      $('.sidebar-elements>li>a').tooltip('toggleEnabled')
+      $addResizeHandler()()
+    })
   }
 
   // SubNavs
@@ -286,7 +291,7 @@ var _loadMessages = function () {
   })
 }
 var _showNotification = function () {
-  if ($.cookie('rb.showNotification')) return
+  if ($.cookie('grantedNotification')) return
   var _Notification = window.Notification || window.mozNotification || window.webkitNotification
   if (_Notification) {
     if (_Notification.permission === 'granted') {
@@ -294,7 +299,7 @@ var _showNotification = function () {
         tag: 'rbNotification',
         icon: rb.baseUrl + '/assets/img/favicon.png',
       })
-      $.cookie('rb.showNotification', 1, { expires: null }) // session cookie
+      $.cookie('grantedNotification', 666, { expires: null, httpOnly: true }) // session cookie
     } else {
       _Notification.requestPermission()
     }

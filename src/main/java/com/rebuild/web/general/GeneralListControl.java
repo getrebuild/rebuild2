@@ -57,7 +57,7 @@ public class GeneralListControl extends EntityController {
         }
 
         if (!Application.getPrivilegesManager().allowRead(user, thatEntity.getEntityCode())) {
-            response.sendError(403, "你没有访问此实体的权限");
+            response.sendError(403, getLang(request, "YouNoPrivilegeAccessSome", "Page"));
             return null;
         }
 
@@ -78,12 +78,6 @@ public class GeneralListControl extends EntityController {
                 Application.getPrivilegesManager().allow(user, ZeroEntry.AllowDataExport));
         mv.getModel().put(ZeroEntry.AllowBatchUpdate.name(),
                 Application.getPrivilegesManager().allow(user, ZeroEntry.AllowBatchUpdate));
-
-        // 展开 WIDGET 面板
-        String asideCollapsed = ServletUtils.readCookie(request, "rb.asideCollapsed");
-        if (!"false".equals(asideCollapsed)) {
-            mv.getModel().put("asideCollapsed", true);
-        }
 
         return mv;
     }

@@ -119,8 +119,8 @@ public class DataListManager extends BaseLayoutManager {
         }
 
         return JSONUtils.toJSONObject(
-                new String[]{"entity", "nameField", "fields"},
-                new Object[]{entity, namedField.getName(), columnList});
+                new String[] { "entity", "nameField", "fields" },
+                new Object[] { entity, namedField.getName(), columnList });
     }
 
     /**
@@ -141,8 +141,8 @@ public class DataListManager extends BaseLayoutManager {
         String parentLabel = parent == null ? "" : (EasyMeta.getLabel(parent) + ".");
         EasyMeta easyField = new EasyMeta(field);
         return JSONUtils.toJSONObject(
-                new String[]{"field", "label", "type"},
-                new Object[]{parentField + easyField.getName(), parentLabel + easyField.getLabel(), easyField.getDisplayType(false)});
+                new String[] { "field", "label", "type" },
+                new Object[] { parentField + easyField.getName(), parentLabel + easyField.getLabel(), easyField.getDisplayType(false)});
     }
 
     /**

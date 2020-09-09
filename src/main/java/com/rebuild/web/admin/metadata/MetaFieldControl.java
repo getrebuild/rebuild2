@@ -17,14 +17,11 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
+import com.rebuild.core.metadata.impl.*;
 import com.rebuild.core.support.state.StateHelper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.MetadataSorter;
-import com.rebuild.core.metadata.impl.DisplayType;
-import com.rebuild.core.metadata.impl.EasyMeta;
-import com.rebuild.core.metadata.impl.Field2Schema;
-import com.rebuild.core.metadata.impl.FieldExtConfigProps;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
@@ -88,7 +85,7 @@ public class MetaFieldControl extends BaseController {
     public ModelAndView pageEntityField(@PathVariable String entity, @PathVariable String field,
                                         HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!MetadataHelper.checkAndWarnField(entity, field)) {
-            response.sendError(404, "无效字段 : " + entity + "." + field);
+            response.sendError(404, getLang(request, "SomeInvalid", "Field"));
             return null;
         }
 
@@ -108,6 +105,7 @@ public class MetaFieldControl extends BaseController {
         mv.getModel().put("fieldCreatable", fieldMeta.isCreatable());
         mv.getModel().put("fieldUpdatable", fieldMeta.isUpdatable());
         mv.getModel().put("fieldRepeatable", fieldMeta.isRepeatable());
+        mv.getModel().put("fieldQueryable", fieldMeta.isQueryable());
         mv.getModel().put("fieldBuildin", easyField.isBuiltin());
         mv.getModel().put("fieldDefaultValue", fieldMeta.getDefaultValue());
         mv.getModel().put("isSuperAdmin", UserHelper.isSuperAdmin(getRequestUser(request)));
@@ -154,7 +152,7 @@ public class MetaFieldControl extends BaseController {
             extConfig = JSONUtils.toJSONObject(FieldExtConfigProps.CLASSIFICATION_USE, dataId);
         } else if (dt == DisplayType.STATE) {
             if (!StateHelper.isStateClass(stateClass)) {
-                writeFailure(response, "无效状态类");
+                writeFailure(response, getLang(request, "SomeInvalid,StateClass"));
                 return;
             }
             extConfig = JSONUtils.toJSONObject(FieldExtConfigProps.STATE_STATECLASS, stateClass);
@@ -174,9 +172,8 @@ public class MetaFieldControl extends BaseController {
         ID user = getRequestUser(request);
         JSON formJson = ServletUtils.getRequestJson(request);
         Record record = EntityHelper.parse((JSONObject) formJson, user);
-        Application.getCommonsService().update(record);
 
-        Application.getMetadataFactory().refresh(false);
+        Application.getBean(MetaFieldService.class).update(record);
         writeSuccess(response);
     }
 
@@ -192,10 +189,7 @@ public class MetaFieldControl extends BaseController {
         Field field = MetadataHelper.getEntity((String) fieldRecord[0]).getField((String) fieldRecord[1]);
 
         boolean drop = new Field2Schema(user).dropField(field, false);
-        if (drop) {
-            writeSuccess(response);
-        } else {
-            writeFailure(response, "删除失败，请确认该字段是否可删除");
-        }
+        if (drop) writeSuccess(response);
+        else writeFailure(response);
     }
 }
