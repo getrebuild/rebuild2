@@ -123,10 +123,10 @@ public class FormsBuilder extends FormsManager {
                 approvalState = null;
 
                 if (!Application.getPrivilegesManager().allowUpdate(user, masterRecordId)) {
-                    return formatModelError(Language.formatLang("NoSomePrivileges", "AddSlave"));
+                    return formatModelError(Language.formatLang("YouNoSomePrivileges", "AddSlave"));
                 }
             } else if (!Application.getPrivilegesManager().allowCreate(user, entityMeta.getEntityCode())) {
-                return formatModelError(Language.getLang("NoSomePrivileges", "Create"));
+                return formatModelError(Language.getLang("YouNoSomePrivileges", "Create"));
             } else {
                 approvalState = getHadApproval(entityMeta, null);
             }
@@ -143,7 +143,7 @@ public class FormsBuilder extends FormsManager {
         // 编辑
         else {
             if (!Application.getPrivilegesManager().allowUpdate(user, record)) {
-                return formatModelError(Language.getLang("NoSomeRecordPrivilehes", "Update"));
+                return formatModelError(Language.getLang("YouNoSomeRecordPrivileges", "Update"));
             }
 
             approvalState = getHadApproval(entityMeta, record);

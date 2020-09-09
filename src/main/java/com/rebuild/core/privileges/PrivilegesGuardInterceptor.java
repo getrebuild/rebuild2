@@ -114,7 +114,7 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
                 Field stmField = MetadataHelper.getSlaveToMasterField(entity);
                 ID masterId = ((Record) idOrRecord).getID(stmField.getName());
                 if (masterId == null || !Application.getPrivilegesManager().allowUpdate(caller, masterId)) {
-                    throw new AccessDeniedException(Language.getLang("NoSomePrivileges", "AddSlave"));
+                    throw new AccessDeniedException(Language.getLang("YouNoSomePrivileges", "AddSlave"));
                 }
                 allowed = true;
 
@@ -204,9 +204,9 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
         }
 
         if (target == null) {
-            return String.format(Language.formatLang("NoSomeXPrivilehes", actionKey), EasyMeta.getLabel(entity));
+            return String.format(Language.formatLang("YouNoSomeXPrivileges", actionKey), EasyMeta.getLabel(entity));
         } else {
-            return Language.formatLang("NoSomeRecordPrivilehes", actionKey);
+            return Language.formatLang("YouNoSomeRecordPrivileges", actionKey);
         }
     }
 

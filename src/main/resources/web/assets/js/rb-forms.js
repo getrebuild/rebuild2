@@ -1672,7 +1672,7 @@ class DeleteConfirm extends RbAlert {
 
   render() {
     let message = this.props.message
-    if (!message) message = this.props.ids ? $lang('DeleteSelectConfirm', this.props.ids.length) : $lang('DeleteConfirm')
+    if (!message) message = this.props.ids ? $lang('DeleteSelectedConfirm', this.props.ids.length) : $lang('DeleteRecordConfirm')
 
     return (
       <div className="modal rbalert" ref={(c) => (this._dlg = c)} tabIndex="-1">

@@ -15,7 +15,9 @@ import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ShareToManager;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
+import org.apache.commons.codec.language.bm.Lang;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -55,7 +57,7 @@ public class DashboardManager extends ShareToManager {
         if (detected == null) {
             Record record = EntityHelper.forNew(EntityHelper.DashboardConfig, user);
             record.setString("config", JSONUtils.EMPTY_ARRAY_STR);
-            record.setString("title", UserHelper.isAdmin(user) ? "默认仪表盘" : "我的仪表盘");
+            record.setString("title", Language.getLang("SomeDashboard", UserHelper.isAdmin(user) ? "Default" : "My"));
             record.setString("shareTo", UserHelper.isAdmin(user) ? SHARE_ALL : SHARE_SELF);
             Application.getBean(DashboardConfigService.class).create(record);
         }
