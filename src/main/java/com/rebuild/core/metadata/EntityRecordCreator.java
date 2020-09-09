@@ -22,6 +22,7 @@ import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.service.trigger.RobotTriggerManager;
+import com.rebuild.core.support.i18n.Language;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +157,7 @@ public class EntityRecordCreator extends JsonRecordCreator {
             }
 
             if (!notAllowed.isEmpty()) {
-                throw new DataSpecificationException(StringUtils.join(notAllowed, "/") + " 不允许修改");
+                throw new DataSpecificationException(Language.formatLang("XNotModify", StringUtils.join(notAllowed, " / ")));
             }
         }
     }

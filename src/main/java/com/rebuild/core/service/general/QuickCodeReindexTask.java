@@ -17,7 +17,9 @@ import com.hankcs.hanlp.HanLP;
 import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationManager;
 import com.rebuild.core.configuration.general.PickListManager;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.state.StateManager;
+import com.rebuild.core.support.state.StateSpec;
 import com.rebuild.core.support.task.HeavyTask;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
@@ -128,7 +130,8 @@ public class QuickCodeReindexTask extends HeavyTask<Integer> {
         } else if (dt == DisplayType.PICKLIST) {
             nameValue = PickListManager.instance.getLabel((ID) nameValue);
         } else if (dt == DisplayType.STATE) {
-            nameValue = StateManager.instance.getLabel(nameField, (Integer) nameValue);
+            StateSpec state = StateManager.instance.findState(nameField, nameValue);
+            nameValue = Language.getLang(state);
         } else if (dt == DisplayType.CLASSIFICATION) {
             nameValue = ClassificationManager.instance.getFullName((ID) nameValue);
         } else if (dt == DisplayType.DATE || dt == DisplayType.DATETIME) {

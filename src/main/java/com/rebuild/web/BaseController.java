@@ -56,7 +56,7 @@ public abstract class BaseController extends Controller {
      */
     protected String getLang(HttpServletRequest request, String key, String...phKey) {
         String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
-        LanguageBundle bundle = Application.getBean(Language.class).getBundle(locale);
+        LanguageBundle bundle = Application.getLanguage().getBundle(locale);
         return bundle.getLang(key, phKey);
     }
 

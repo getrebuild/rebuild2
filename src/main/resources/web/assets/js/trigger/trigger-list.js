@@ -26,7 +26,7 @@ const formatWhen = function (maskVal) {
   const as = []
   for (let k in WHENS) {
     // eslint-disable-next-line eqeqeq
-    if ((maskVal & k) != 0) as.push(WHENS[k])
+    if ((maskVal & k) !== 0) as.push(WHENS[k])
   }
   return as.join('/')
 }

@@ -25,6 +25,7 @@ import com.rebuild.core.service.dashboard.DashboardConfigService;
 import com.rebuild.core.service.dashboard.DashboardManager;
 import com.rebuild.core.service.dashboard.charts.ChartsFactory;
 import com.rebuild.core.service.dashboard.charts.builtin.BuiltinChart;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
@@ -157,7 +158,7 @@ public class DashboardControl extends BaseController {
         // 内置图表
         if (!"entity".equalsIgnoreCase(type)) {
             for (BuiltinChart b : ChartsFactory.getBuiltinCharts()) {
-                Object[] c = new Object[]{b.getChartId(), b.getChartTitle(), b.getChartType(), b.getChartDesc()};
+                Object[] c = new Object[]{b.getChartId(), b.getChartTitle(), b.getChartType(), null, Language.getLang("BuiltIn")};
                 charts = (Object[][]) ArrayUtils.add(charts, c);
             }
         }

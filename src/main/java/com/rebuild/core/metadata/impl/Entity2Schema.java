@@ -19,6 +19,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserService;
+import com.rebuild.core.support.i18n.Language;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
@@ -63,7 +64,8 @@ public class Entity2Schema extends Field2Schema {
     public String createEntity(String entityName, String entityLabel, String comments, String masterEntity, boolean haveNameField) {
         if (entityName != null) {
             if (MetadataHelper.containsEntity(entityName)) {
-                throw new MetadataException("重复实体名称 : " + entityName);
+                throw new MetadataException(
+                        Language.getLang("SomeDuplicate", "EntityName") + " : " + entityName);
             }
         } else {
             entityName = toPinyinName(entityLabel);
@@ -78,7 +80,8 @@ public class Entity2Schema extends Field2Schema {
 
         final boolean isSlave = StringUtils.isNotBlank(masterEntity);
         if (isSlave && !MetadataHelper.containsEntity(masterEntity)) {
-            throw new MetadataException("无效主实体 : " + masterEntity);
+            throw new MetadataException(
+                    Language.getLang("SomeInvalid", "MasterEntity") + " : " + masterEntity);
         }
 
         String physicalName = "T__" + entityName.toUpperCase();
@@ -121,7 +124,7 @@ public class Entity2Schema extends Field2Schema {
 
             if (haveNameField) {
                 createUnsafeField(
-                        tempEntity, nameFiled, entityLabel + "名称", DisplayType.TEXT, false, true, true, true, null, null, null, null, null);
+                        tempEntity, nameFiled, Language.formatLang("SomeName", entityLabel), DisplayType.TEXT, false, true, true, true, null, null, null, null, null);
             }
 
             createBuiltinField(tempEntity, EntityHelper.CreatedBy, "创建人", DisplayType.REFERENCE, null, "User", null);
@@ -138,7 +141,7 @@ public class Entity2Schema extends Field2Schema {
             } else {
                 // 助记码/搜索码
                 createUnsafeField(
-                        tempEntity, EntityHelper.QuickCode, "QUICKCODE", DisplayType.TEXT, true, false, false, true, null, null, null, null, null);
+                        tempEntity, EntityHelper.QuickCode, "助记码", DisplayType.TEXT, true, false, false, true, null, null, null, null, null);
 
                 createBuiltinField(tempEntity, EntityHelper.OwningUser, "所属用户", DisplayType.REFERENCE, null, "User", null);
                 createBuiltinField(tempEntity, EntityHelper.OwningDept, "所属部门", DisplayType.REFERENCE, null, "Department", null);
@@ -146,13 +149,13 @@ public class Entity2Schema extends Field2Schema {
         } catch (Throwable ex) {
             LOG.error(null, ex);
             Application.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
-            throw new MetadataException("元数据初始化失败 : " + ex.getLocalizedMessage());
+            throw new MetadataException(Language.getLang("NotCreateMetasToDb") + " : " + ex.getLocalizedMessage());
         }
 
         boolean schemaReady = schema2Database(tempEntity);
         if (!schemaReady) {
             Application.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
-            throw new MetadataException("无法创建表到数据库");
+            throw new MetadataException(Language.getLang("NotCreateMetasToDb"));
         }
 
         Application.getMetadataFactory().refresh(false);
@@ -174,13 +177,13 @@ public class Entity2Schema extends Field2Schema {
      */
     public boolean dropEntity(Entity entity, boolean force) {
         if (!user.equals(UserService.ADMIN_USER)) {
-            throw new MetadataException("仅超级管理员可删除实体");
+            throw new MetadataException(Language.getLang("OnlyAdminCanSome", "DeleteEntity"));
         }
 
         EasyMeta easyMeta = EasyMeta.valueOf(entity);
         ID metaRecordId = easyMeta.getMetaId();
         if (easyMeta.isBuiltin() || metaRecordId == null) {
-            throw new MetadataException("系统内建实体不允许删除");
+            throw new MetadataException(Language.getLang("BuiltInNotDelete"));
         }
 
         if (entity.getSlaveEntity() != null) {
@@ -191,17 +194,17 @@ public class Entity2Schema extends Field2Schema {
                     easyMeta = EasyMeta.valueOf(entity);
 
                 } else {
-                    throw new MetadataException("不能直接删除主实体，请先删除明细实体");
+                    throw new MetadataException(Language.getLang("DeleteMasterFirstTips"));
                 }
 
             } else {
-                throw new MetadataException("不能直接删除主实体，请先删除明细实体");
+                throw new MetadataException(Language.getLang("DeleteMasterFirstTips"));
             }
         }
 
         for (Field whoRef : entity.getReferenceToFields(true)) {
             if (!whoRef.getOwnEntity().equals(entity)) {
-                throw new MetadataException("实体已被其他实体引用 (引用实体: " + EasyMeta.getLabel(whoRef.getOwnEntity()) + ")");
+                throw new MetadataException(Language.formatLang("DeleteEntityHasRefs", EasyMeta.getLabel(whoRef.getOwnEntity())));
             }
         }
 
@@ -209,7 +212,7 @@ public class Entity2Schema extends Field2Schema {
         if (!force) {
             long count;
             if ((count = checkRecordCount(entity)) > 0) {
-                throw new MetadataException("不能删除有数据的实体 (数据量: " + count + ")");
+                throw new MetadataException(Language.formatLang("DeleteEntityHasDatas", count));
             }
         }
 
@@ -248,7 +251,6 @@ public class Entity2Schema extends Field2Schema {
      */
     private Field createBuiltinField(Entity entity, String fieldName, String fieldLabel, DisplayType displayType, String comments,
                                      String refEntity, CascadeModel cascade) {
-        comments = StringUtils.defaultIfBlank(comments, "系统内建");
         return createUnsafeField(
                 entity, fieldName, fieldLabel, displayType, false, false, false, true, comments, refEntity, cascade, null, null);
     }

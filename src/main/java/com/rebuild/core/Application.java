@@ -245,16 +245,16 @@ public class Application {
         return getApplicationContext().getBean(beanClazz);
     }
 
+    public static Language getLanguage() {
+        return getBean(Language.class);
+    }
+
     public static OnlineSessionStore getSessionStore() {
         return getBean(OnlineSessionStore.class);
     }
 
     public static ID getCurrentUser() throws AccessDeniedException {
         return getSessionStore().get();
-    }
-
-    public static LanguageBundle getCurrentBundle() {
-        return getBean(Language.class).getCurrentBundle();
     }
 
     public static PersistManagerFactory getPersistManagerFactory() {

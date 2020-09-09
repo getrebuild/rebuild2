@@ -53,7 +53,7 @@ var $showAnnouncement = function () {
     if (res.error_code !== 0 || !res.data || res.data.length === 0) return
     const as = res.data.map((item, idx) => {
       return (
-        <div className="bg-warning" key={'a-' + idx} title={$lang('ViewDetail')} onClick={() => renderRbcomp(<AnnouncementModal {...item} />)}>
+        <div className="bg-warning" key={'a-' + idx} title={$lang('ViewDetails')} onClick={() => renderRbcomp(<AnnouncementModal {...item} />)}>
           <i className="icon zmdi zmdi-notifications-active" />
           <p dangerouslySetInnerHTML={{ __html: item.content }}></p>
         </div>

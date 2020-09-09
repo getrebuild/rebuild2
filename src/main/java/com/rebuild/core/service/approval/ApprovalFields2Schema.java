@@ -17,6 +17,7 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.Field2Schema;
 import com.rebuild.core.metadata.impl.MetadataException;
+import com.rebuild.core.support.i18n.Language;
 
 /**
  * 审批流程字段
@@ -48,9 +49,10 @@ public class ApprovalFields2Schema extends Field2Schema {
                 DisplayType.TEXT, true, false, false, true, null, null, null, null, null);
 
         boolean schemaReady = schema2Database(approvalEntity, new Field[]{apporvalId, apporvalState, apporvalStepId});
+
         if (!schemaReady) {
             Application.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
-            throw new MetadataException("无法创建审批流程字段到数据库");
+            throw new MetadataException(Language.getLang("NotCreateMetasToDb"));
         }
 
         Application.getMetadataFactory().refresh(false);

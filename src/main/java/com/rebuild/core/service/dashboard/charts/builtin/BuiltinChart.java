@@ -29,13 +29,6 @@ public interface BuiltinChart {
     /**
      * @return
      */
-    default String getChartDesc() {
-        return "内置";
-    }
-
-    /**
-     * @return
-     */
     default JSONObject getChartConfig() {
         // 此处 entity=User 并无意义，只是便于权限控制
         return JSONUtils.toJSONObject(new String[]{"entity", "type"}, new String[]{"User", getChartType()});

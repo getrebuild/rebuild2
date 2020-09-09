@@ -28,10 +28,11 @@ import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationManager;
 import com.rebuild.core.configuration.general.PickListManager;
-import com.rebuild.core.support.state.StateManager;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
+import com.rebuild.core.metadata.impl.MetadataException;
+import com.rebuild.core.support.state.StateManager;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -165,9 +166,9 @@ public class RecordCheckout {
             return null;
         }
 
-        Integer state = StateManager.instance.getState(field, val);
-        if (state != null) {
-            return state;
+        try {
+            return StateManager.instance.findState(field, val).getState();
+        } catch (MetadataException ignored) {
         }
 
         // 兼容状态值

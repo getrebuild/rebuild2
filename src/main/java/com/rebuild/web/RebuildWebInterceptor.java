@@ -14,6 +14,7 @@ import com.rebuild.api.ResultBody;
 import com.rebuild.core.Application;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.setup.InstallState;
 import com.rebuild.core.privileges.bizz.ZeroEntry;
 import com.rebuild.utils.AppUtils;
@@ -60,7 +61,7 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
 
         if (htmlRequest) {
             request.setAttribute(RebuildWebConstants.LOCALE, locale);
-            request.setAttribute(RebuildWebConstants.$BUNDLE, Application.getCurrentBundle());
+            request.setAttribute(RebuildWebConstants.$BUNDLE, Language.getCurrentBundle());
         }
 
         // TODO CSRF

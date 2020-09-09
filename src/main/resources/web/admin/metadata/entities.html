@@ -119,8 +119,8 @@
         $t.find('.icon').addClass('zmdi-' + item.icon)
         $t.find('span').text(item.entityLabel)
         $t.find('p').text(item.comments || '-')
-        if (item.builtin == true) $('<i class="badge badge-pill badge-secondary thin text-muted">内建</i>').appendTo($t.find('a.card'))
-        if (!!item.slaveEntity) $('<i class="badge badge-pill badge-secondary thin text-muted">明细</i>').appendTo($t.find('a.card'))
+        if (item.builtin == true) $(`<i class="badge badge-pill badge-secondary thin text-muted">${$lang('BuiltIn')}</i>`).appendTo($t.find('a.card'))
+        if (!!item.slaveEntity) $(`<i class="badge badge-pill badge-secondary thin text-muted">${$lang('Slave')}</i>`).appendTo($t.find('a.card'))
         return $t
       }
     </script>

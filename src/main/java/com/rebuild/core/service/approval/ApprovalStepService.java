@@ -21,6 +21,7 @@ import com.rebuild.core.service.DataSpecificationNoRollbackException;
 import com.rebuild.core.service.general.OperatingContext;
 import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.core.service.trigger.RobotTriggerManual;
+import com.rebuild.core.support.i18n.Language;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -67,26 +68,28 @@ public class ApprovalStepService extends BaseService {
         super.update(recordOfMain);
 
         String entityLabel = EasyMeta.getLabel(recordOfMain.getEntity());
-        String approvalMsg = String.format("有一条%s记录请你审批 @%s", entityLabel, recordId);
 
         // 审批人
+        String approvalMsg = Language.formatLang("HasXApprovalNotice", entityLabel);
+
         Record step = EntityHelper.forNew(EntityHelper.RobotApprovalStep, submitter);
         step.setID("recordId", recordId);
         step.setID("approvalId", approvalId);
         step.setString("node", recordOfMain.getString(EntityHelper.ApprovalStepNode));
         step.setString("prevNode", FlowNode.NODE_ROOT);
-        for (ID a : nextApprovers) {
+        for (ID to : nextApprovers) {
             Record clone = step.clone();
-            clone.setID("approver", a);
-            clone = super.create(clone);
-            Application.getNotifications().send(MessageBuilder.createApproval(submitter, a, approvalMsg, clone.getPrimary()));
+            clone.setID("approver", to);
+            super.create(clone);
+
+            Application.getNotifications().send(MessageBuilder.createApproval(to, approvalMsg, recordId));
         }
 
         // 抄送人
         if (cc != null && !cc.isEmpty()) {
-            String ccMsg = String.format("用户 @%s 提交了一条%s审批，请知晓 @%s", submitter, entityLabel, recordId);
-            for (ID c : cc) {
-                Application.getNotifications().send(MessageBuilder.createApproval(c, ccMsg));
+            String ccMsg = Language.formatLang("CcXSubmittedNotice", submitter, entityLabel);
+            for (ID to : cc) {
+                Application.getNotifications().send(MessageBuilder.createApproval(to, ccMsg, recordId));
             }
         }
 
@@ -124,7 +127,7 @@ public class ApprovalStepService extends BaseService {
                 ApprovalProcessor approvalProcessor = new ApprovalProcessor((ID) stepObject[0], (ID) stepObject[1]);
                 FlowNodeGroup nextNodes = approvalProcessor.getNextNodes();
                 if (!nextNodes.getGroupId().equals(checkUseGroup)) {
-                    throw new DataSpecificationNoRollbackException("由于更改数据导致流程改变，你需要重新审批");
+                    throw new DataSpecificationNoRollbackException(Language.getLang("ReSubmitOnDataAdded"));
                 }
             }
         }
@@ -147,10 +150,10 @@ public class ApprovalStepService extends BaseService {
 
         // 抄送人
         if (cc != null && !cc.isEmpty()) {
-            String ccMsg = String.format("用户 @%s 提交的%s审批由 @%s 已%s，请知晓 @%s",
-                    submitter, entityLabel, approver, state.getName(), recordId);
+            String ccMsg = Language.formatLang("CcXApprovedNotice",
+                    submitter, entityLabel, approver, Language.getLang(state));
             for (ID c : cc) {
-                Application.getNotifications().send(MessageBuilder.createApproval(c, ccMsg));
+                Application.getNotifications().send(MessageBuilder.createApproval(c, ccMsg, recordId));
             }
         }
 
@@ -164,15 +167,15 @@ public class ApprovalStepService extends BaseService {
             recordOfMain.setInt(EntityHelper.ApprovalState, ApprovalState.REJECTED.getState());
             super.update(recordOfMain);
 
-            String rejectedMsg = String.format("@%s 驳回了你的%s审批 @%s", approver, entityLabel, recordId);
-            Application.getNotifications().send(MessageBuilder.createApproval(submitter, rejectedMsg));
+            String rejectedMsg = Language.formatLang("XRejectedYourApproval", approver, entityLabel);
+            Application.getNotifications().send(MessageBuilder.createApproval(submitter, rejectedMsg, recordId));
             return;
         }
 
         // 或签/会签
         boolean goNextNode = true;
 
-        String approvalMsg = String.format("有一条%s记录请你审批 @%s", entityLabel, recordId);
+        String approvalMsg = Language.formatLang("HasXApprovalNotice", entityLabel);
 
         // 或签。一人通过其他作废
         if (FlowNode.SIGN_OR.equals(signMode)) {
@@ -205,7 +208,8 @@ public class ApprovalStepService extends BaseService {
                     Record r = EntityHelper.forUpdate((ID) o[0], approver);
                     r.setBoolean("isWaiting", false);
                     super.update(r);
-                    Application.getNotifications().send(MessageBuilder.createApproval(submitter, (ID) o[1], approvalMsg, r.getPrimary()));
+
+                    Application.getNotifications().send(MessageBuilder.createApproval((ID) o[1], approvalMsg, recordId));
                 }
             }
         }
@@ -225,12 +229,12 @@ public class ApprovalStepService extends BaseService {
 
         // 审批人
         if (nextApprovers != null) {
-            for (ID a : nextApprovers) {
-                ID created = createStepIfNeed(recordId, approvalId, nextNode, a, !goNextNode, currentNode);
+            for (ID to : nextApprovers) {
+                ID created = createStepIfNeed(recordId, approvalId, nextNode, to, !goNextNode, currentNode);
 
                 // 非会签通知审批
                 if (goNextNode && created != null) {
-                    Application.getNotifications().send(MessageBuilder.createApproval(submitter, a, approvalMsg, created));
+                    Application.getNotifications().send(MessageBuilder.createApproval(to, approvalMsg, recordId));
                 }
             }
         }
@@ -408,7 +412,7 @@ public class ApprovalStepService extends BaseService {
                     FlowNode.NODE_AUTOAPPROVAL, useApprover, false, FlowNode.NODE_ROOT);
             Record step = EntityHelper.forUpdate(stepId, useApprover, false);
             step.setInt("state", ApprovalState.APPROVED.getState());
-            step.setString("remark", "自动审批 (触发器)");
+            step.setString("remark", Language.getLang("AUTOAPPROVAL"));
             super.update(step);
 
             approved(recordId, useApprover, useApproval, FlowNode.NODE_AUTOAPPROVAL);

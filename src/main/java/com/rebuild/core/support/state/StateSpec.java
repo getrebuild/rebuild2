@@ -29,6 +29,7 @@ public interface StateSpec {
 
     /**
      * 显示值
+     * 请使用多语言 {@link com.rebuild.core.support.i18n.Language#getLang(StateSpec)}
      *
      * @return
      */

@@ -44,7 +44,8 @@ public class LanguageControl extends BaseController {
     @GetMapping("bundle")
     public void getLanguageBundle(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType(ServletUtils.CT_JS);
-        final LanguageBundle bundle = Application.getCurrentBundle();
+
+        final LanguageBundle bundle = Language.getCurrentBundle();
 
         // whether the generated ETag should be weak
         // SPEC: length of W/ + " + 0 + 32bits md5 hash + "
@@ -92,14 +93,13 @@ public class LanguageControl extends BaseController {
      */
     public static boolean switchLanguage(HttpServletRequest request) {
         String locale = request.getParameter("locale");
-        Language language = Application.getBean(Language.class);
-        if (locale == null || !language.available(locale)) {
+        if (locale == null || !Application.getLanguage().available(locale)) {
             return false;
         }
 
         if (Application.devMode()) {
             try {
-                language.init();
+                Application.getLanguage().init();
             } catch (Exception ex) {
                 throw new RebuildException(ex);
             }

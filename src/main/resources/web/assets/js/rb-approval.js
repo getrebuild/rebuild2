@@ -46,7 +46,7 @@ class ApprovalProcessor extends React.Component {
     if (this.state.imApprover) {
       if (this.state.imApproveSatate === 1) aMsg = $lang('RecordWaitYouApproval')
       else if (this.state.imApproveSatate === 10) aMsg = $lang('RecordWaitUserApproval')
-      else if (this.state.imApproveSatate === 11) aMsg = $lang('YouRevokedApproval')
+      else if (this.state.imApproveSatate === 11) aMsg = $lang('YouRejectedApproval')
     }
 
     return (
@@ -56,7 +56,7 @@ class ApprovalProcessor extends React.Component {
         </button>
         {this.state.canCancel && (
           <button className="close btn btn-secondary" onClick={this.cancel}>
-            {$lang('Revoke')}
+            {$lang('s.ApprovalState.CANCELED')}
           </button>
         )}
         {this.state.imApprover && this.state.imApproveSatate === 1 && (
@@ -82,7 +82,7 @@ class ApprovalProcessor extends React.Component {
         </button>
         {rb.isAdminUser && (
           <button className="close btn btn-secondary" onClick={this.revoke}>
-            {$lang('RevokeAdmin')}
+            {$lang('s.ApprovalState.REVOKED')}
           </button>
         )}
         <div className="icon">
@@ -105,7 +105,7 @@ class ApprovalProcessor extends React.Component {
         <div className="icon">
           <span className="zmdi zmdi-close-circle-o"></span>
         </div>
-        <div className="message">{$lang('RecordIsRevokedTips')}</div>
+        <div className="message">{$lang('RecordIsRejectedTips')}</div>
       </div>
     )
   }
@@ -139,7 +139,7 @@ class ApprovalProcessor extends React.Component {
         <div className="icon">
           <span className="zmdi zmdi-rotate-left"></span>
         </div>
-        <div className="message">{$lang('RecordIsRevokedAdminTips')}</div>
+        <div className="message">{$lang('RecordIsRevokedTips')}</div>
       </div>
     )
   }
@@ -168,12 +168,12 @@ class ApprovalProcessor extends React.Component {
 
   cancel = () => {
     const that = this
-    RbAlert.create($lang('ApprovalRevokeConfirm'), {
+    RbAlert.create($lang('ApprovalCancelConfirm'), {
       confirm: function () {
         this.disabled(true)
         $.post(`/app/entity/approval/cancel?record=${that.props.id}`, (res) => {
           if (res.error_code > 0) RbHighbar.error(res.error_msg)
-          else _reload(this, $lang('ApprovalRevoked'))
+          else _reload(this, $lang('ApprovalCanceled'))
           this.disabled()
         })
       },
@@ -182,13 +182,13 @@ class ApprovalProcessor extends React.Component {
 
   revoke = () => {
     const that = this
-    RbAlert.create($lang('ApprovalRevokeAdminConfirm'), {
+    RbAlert.create($lang('ApprovalRevokeConfirm'), {
       type: 'warning',
       confirm: function () {
         this.disabled(true)
         $.post(`/app/entity/approval/revoke?record=${that.props.id}`, (res) => {
           if (res.error_code > 0) RbHighbar.error(res.error_msg)
-          else _reload(this, $lang('ApprovalRevokedAdmin'))
+          else _reload(this, $lang('ApprovalRevoked'))
           this.disabled()
         })
       },
@@ -371,7 +371,7 @@ class ApprovalApproveForm extends ApprovalUsersForm {
 
   render() {
     return (
-      <RbModal ref={(c) => (this._dlg = c)} title={$lang('Approval2')} width="600">
+      <RbModal ref={(c) => (this._dlg = c)} title={$lang('Approval')} width="600">
         <div className="form approval-form">
           {this.state.bizMessage && (
             <div className="form-group">
@@ -396,7 +396,7 @@ class ApprovalApproveForm extends ApprovalUsersForm {
               {$lang('Agree')}
             </button>
             <button type="button" className="btn btn-danger bordered btn-space" onClick={() => this.post(11)}>
-              {$lang('Reject')}
+              {$lang('s.ApprovalState.REJECTED')}
             </button>
           </div>
         </div>
@@ -458,7 +458,7 @@ class ApprovalApproveForm extends ApprovalUsersForm {
       } else if (res.error_code > 0) {
         RbHighbar.error(res.error_msg)
       } else {
-        _reload(this, $lang('ApprovalAlreadySome,' + state === 10 ? 'Agree' : 'Reject'))
+        _reload(this, $lang('ApprovalAlreadySome,' + state === 10 ? 'Agree' : 's.ApprovalState.REJECTED'))
         typeof this.props.call === 'function' && this.props.call()
       }
       this.disabled()
@@ -479,10 +479,10 @@ class EditableForm extends RbForm {
 }
 
 const STATE_NAMES = {
-  10: $lang('ApprovalState10'),
-  11: $lang('ApprovalState11'),
-  12: $lang('ApprovalState12'),
-  13: $lang('ApprovalState13'),
+  10: $lang('ApproveSome,Agree'),
+  11: $lang('ApproveSome,s.ApprovalState.REJECTED'),
+  12: $lang('ApproveSome,s.ApprovalState.CANCELED'),
+  13: $lang('ApproveSome,s.ApprovalState.REVOKED'),
 }
 
 // 已审批步骤查看

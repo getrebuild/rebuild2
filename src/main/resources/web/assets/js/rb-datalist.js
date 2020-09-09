@@ -454,7 +454,7 @@ const CellRenders = {
   renderSimple(v, s, k) {
     if (typeof v === 'string' && v.length > 300) v = v.sub(0, 300)
     else if (k.endsWith('.approvalId') && !v) v = $lang('UnSubmit')
-    else if (k.endsWith('.approvalState') && !v) v = $lang('Draft')
+    else if (k.endsWith('.approvalState') && !v) v = $lang('s.ApprovalState.DRAFT')
     return (
       <td key={k}>
         <div style={s} title={v}>

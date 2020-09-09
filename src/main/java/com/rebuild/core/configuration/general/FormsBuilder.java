@@ -116,7 +116,7 @@ public class FormsBuilder extends FormsManager {
 
                 if ((approvalState == ApprovalState.PROCESSING || approvalState == ApprovalState.APPROVED)) {
                     String stateType = approvalState == ApprovalState.APPROVED ? "RecordApproved" : "RecordInApproval";
-                    return formatModelError(Language.getLang("MasterRecordApprovedTips", stateType));
+                    return formatModelError(Language.getLang("MasterRecordApprovedNotAddSlaveTips", stateType));
                 }
 
                 // 明细无需审批
@@ -446,7 +446,7 @@ public class FormsBuilder extends FormsManager {
         // No value
         if (!data.hasValue(fieldName, false)) {
             if (EntityHelper.ApprovalId.equalsIgnoreCase(fieldName)) {
-                return FieldValueWrapper.wrapMixValue(null, FieldValueWrapper.APPROVAL_UNSUBMITTED);
+                return FieldValueWrapper.wrapMixValue(null, Language.getLang(ApprovalState.DRAFT));
             } else if (field.getDisplayType() == DisplayType.BARCODE) {
                 return FieldValueWrapper.instance.wrapBarcode(data.getPrimary(), field);
             }

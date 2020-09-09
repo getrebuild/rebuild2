@@ -7,7 +7,9 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.support.i18n;
 
+import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Field;
+import cn.devezhao.persist4j.metadata.BaseMeta;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
@@ -16,12 +18,14 @@ import com.rebuild.core.RebuildException;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.state.StateSpec;
+import com.rebuild.web.OnlineSessionStore;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
-import javax.swing.text.html.parser.Entity;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -97,14 +101,6 @@ public class Language implements Initialization {
     }
 
     /**
-     * 当前用户语言包
-     * @return
-     */
-    public LanguageBundle getCurrentBundle() {
-        return getBundle(Application.getSessionStore().getLocale());
-    }
-
-    /**
      * @param locale
      * @return
      */
@@ -135,40 +131,64 @@ public class Language implements Initialization {
     // -- Quick Methods
 
     /**
+     * 当前用户语言包（线程量用户）
+     *
+     * @return
+     * @see OnlineSessionStore#getLocale()
+     */
+    public static LanguageBundle getCurrentBundle() {
+        return Application.getLanguage().getBundle(Application.getSessionStore().getLocale());
+    }
+
+    /**
      * @param key
-     * @param phKeys
+     * @param phKeys 可替换语言 Key 中的 {0} {1}
      * @return
      */
     public static String getLang(String key, String...phKeys) {
-        return Application.getBean(Language.class).getCurrentBundle().getLang(key, phKeys);
+        return getCurrentBundle().getLang(key, phKeys);
     }
 
     /**
      * @param key
-     * @param phValues
+     * @param phValues 可格式化语言 Key 中的 %s %d
      * @return
      */
     public static String formatLang(String key, Object...phValues) {
-        return Application.getBean(Language.class).getCurrentBundle().formatLang(key, phValues);
+        return getCurrentBundle().formatLang(key, phValues);
     }
 
     /**
-     * @param field
+     * 元数据语言
+     *
+     * @param entityOrField
      * @return
      */
-    public static String getLang(Field field) {
-        if (MetadataHelper.isCommonsField(field)) {
-            return getLang("f." + field.getName());
+    public static String getLang(BaseMeta entityOrField) {
+        String langKey;
+        if (entityOrField instanceof Entity) {
+            langKey = "e." + entityOrField.getName();
         } else {
-            return getLang("f." + field.getOwnEntity().getName() + "." + field.getName());
+            Field field = (Field) entityOrField;
+            if (MetadataHelper.isCommonsField(field)) {
+                langKey = "f." + field.getName();
+            } else {
+                langKey = "f." + field.getOwnEntity().getName() + "." + field.getName();
+            }
         }
+
+        return StringUtils.defaultIfBlank(
+                getCurrentBundle().getLangBase(langKey), entityOrField.getDescription());
     }
 
     /**
-     * @param entity
+     * 状态语言
+     *
+     * @param state
      * @return
      */
-    public static String getLang(Entity entity) {
-        return getLang("e." + entity.getName());
+    public static String getLang(StateSpec state) {
+        String langKey = "s." + state.getClass().getSimpleName() + "." + ((Enum<?>) state).name();
+        return StringUtils.defaultIfBlank(getCurrentBundle().getLangBase(langKey), state.getName());
     }
 }

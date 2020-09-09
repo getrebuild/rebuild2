@@ -386,7 +386,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
 
                 if (state == ApprovalState.APPROVED || state == ApprovalState.PROCESSING) {
                     String stateType = state == ApprovalState.APPROVED ? "RecordApproved" : "RecordInApproval";
-                    throw new DataSpecificationException(Language.getLang("MasterRecordApprovedTips", stateType));
+                    throw new DataSpecificationException(Language.getLang("MasterRecordApprovedNotAddSlaveTips", stateType));
                 }
             }
 

@@ -18,6 +18,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.ClassificationManager;
 import com.rebuild.core.configuration.general.MultiSelectManager;
 import com.rebuild.core.configuration.general.PickListManager;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.state.StateHelper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -44,10 +45,7 @@ public class FieldValueWrapper {
      * 引用值被删除时的默认显示
      */
     public static final String MISS_REF_PLACE = "[DELETED]";
-    /**
-     * 流程未提交
-     */
-    public static final String APPROVAL_UNSUBMITTED = "未提交";
+
     /**
      * 名称字段为空时，采用 @+ID 的方式显示
      */
@@ -229,7 +227,7 @@ public class FieldValueWrapper {
      */
     public String wrapState(Object value, EasyMeta field) {
         String stateClass = field.getExtraAttr(FieldExtConfigProps.STATE_STATECLASS);
-        return StateHelper.valueOf(stateClass, (Integer) value).getName();
+        return Language.getLang(StateHelper.valueOf(stateClass, (Integer) value));
     }
 
     /**
@@ -311,13 +309,13 @@ public class FieldValueWrapper {
         // 审批
         if (field.getName().equalsIgnoreCase(EntityHelper.ApprovalState)) {
             if (value == null) {
-                return ApprovalState.DRAFT.getName();
+                return Language.getLang(ApprovalState.DRAFT);
             } else {
-                return ApprovalState.valueOf((Integer) value).getName();
+                return Language.getLang(ApprovalState.valueOf((Integer) value));
             }
 
         } else if (field.getName().equalsIgnoreCase(EntityHelper.ApprovalId) && value == null) {
-            return wrapMixValue(null, APPROVAL_UNSUBMITTED);
+            return wrapMixValue(null, Language.getLang(ApprovalState.DRAFT));
         }
 
         return null;

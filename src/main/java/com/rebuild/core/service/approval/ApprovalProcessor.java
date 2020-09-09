@@ -76,7 +76,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
     public boolean submit(JSONObject selectNextUsers) throws ApprovalException {
         final ApprovalState currentState = ApprovalHelper.getApprovalState(this.record);
         if (currentState == ApprovalState.PROCESSING || currentState == ApprovalState.APPROVED) {
-            throw new ApprovalException(Language.getLang("InvalidapprovalStateTips"));
+            throw new ApprovalException(Language.formatLang("InvalidApprovalStateXTips", currentState));
         }
 
         FlowNodeGroup nextNodes = getNextNodes(FlowNode.NODE_ROOT);
@@ -134,7 +134,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
         final ApprovalStatus status = ApprovalHelper.getApprovalStatus(this.record);
         ApprovalState currentState = status.getCurrentState();
         if (currentState != ApprovalState.PROCESSING) {
-            throw new ApprovalException(Language.getLang("InvalidapprovalStateTips"));
+            throw new ApprovalException(Language.formatLang("InvalidApprovalStateXTips", currentState));
         }
 
         final Object[] stepApprover = Application.createQueryNoFilter(
@@ -190,7 +190,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
         final ApprovalStatus status = ApprovalHelper.getApprovalStatus(this.record);
         ApprovalState currentState = status.getCurrentState();
         if (currentState != ApprovalState.PROCESSING) {
-            throw new ApprovalException(Language.getLang("InvalidapprovalStateTips"));
+            throw new ApprovalException(Language.formatLang("InvalidApprovalStateXTips", currentState));
         }
 
         Application.getBean(ApprovalStepService.class).txCancel(
@@ -205,7 +205,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
     public void revoke() throws ApprovalException {
         final ApprovalStatus status = ApprovalHelper.getApprovalStatus(this.record);
         if (status.getCurrentState() != ApprovalState.APPROVED) {
-            throw new ApprovalException(Language.getLang("InvalidapprovalStateTips"));
+            throw new ApprovalException(Language.formatLang("InvalidApprovalStateXTips", status.getCurrentState()));
         }
 
         Object[] count = Application.createQueryNoFilter(
@@ -214,7 +214,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
                 .setParameter(2, ApprovalState.REVOKED.getState())
                 .unique();
         if (ObjectUtils.toInt(count[0]) >= MAX_REVOKED) {
-            throw new ApprovalException(Language.formatLang("AdminRevokeOutLimitTips", MAX_REVOKED));
+            throw new ApprovalException(Language.formatLang("RevokeOutLimitTips", MAX_REVOKED));
         }
 
         Application.getBean(ApprovalStepService.class).txCancel(

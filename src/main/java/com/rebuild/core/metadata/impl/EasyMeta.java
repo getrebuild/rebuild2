@@ -19,6 +19,7 @@ import com.rebuild.core.RebuildException;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.trigger.RobotTriggerManager;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
@@ -150,15 +151,15 @@ public class EasyMeta implements BaseMeta {
     }
 
     /**
-     * Use #getDescription()
-     *
      * @return
+     * @see #getDescription()
+     * @see com.rebuild.core.support.i18n.Language#getLang(BaseMeta)
      */
     public String getLabel() {
         if (isField() && ((Field) baseMeta).getType() == FieldType.PRIMARY) {
             return "ID";
         }
-        return StringUtils.defaultIfBlank(getDescription(), getName().toUpperCase());
+        return Language.getLang(this.baseMeta);
     }
 
     /**
@@ -181,7 +182,7 @@ public class EasyMeta implements BaseMeta {
         if (getMetaId() != null) {
             return comments;
         }
-        return StringUtils.defaultIfBlank(comments, "系统内建");
+        return StringUtils.defaultIfBlank(comments, Language.getLang("SysBuiltIn"));
     }
 
     @Override

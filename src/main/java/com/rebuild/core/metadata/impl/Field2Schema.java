@@ -21,6 +21,7 @@ import com.alibaba.fastjson.JSON;
 import com.hankcs.hanlp.HanLP;
 import com.rebuild.core.Application;
 import com.rebuild.core.support.BlackList;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.setup.Installer;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -57,7 +58,7 @@ public class Field2Schema {
      */
     public Field2Schema(ID user) {
         this.user = user;
-        Assert.isTrue(UserHelper.isSuperAdmin(user), "仅超级管理员可添加/删除元数据");
+        Assert.isTrue(UserHelper.isSuperAdmin(user), Language.getLang("OnlyAdminCanSome", "Operation"));
     }
 
     /**
@@ -72,7 +73,7 @@ public class Field2Schema {
     public String createField(Entity entity, String fieldLabel, DisplayType type, String comments, String refEntity, JSON extConfig) {
         long count;
         if ((count = checkRecordCount(entity)) > 100000) {
-            throw new MetadataException("本实体记录过大，增加字段可能导致表损坏 (记录数: " + count + ")");
+            throw new MetadataException(Language.formatLang("AddFieldHasBigdata", count));
         }
 
         String fieldName = toPinyinName(fieldLabel);
@@ -90,7 +91,7 @@ public class Field2Schema {
         boolean schemaReady = schema2Database(entity, new Field[]{field});
         if (!schemaReady) {
             Application.getCommonsService().delete(tempMetaId.toArray(new ID[0]));
-            throw new MetadataException("无法创建字段到数据库");
+            throw new MetadataException(Language.getLang("NotCreateMetasToDb"));
         }
 
         Application.getMetadataFactory().refresh(false);
@@ -106,18 +107,18 @@ public class Field2Schema {
         EasyMeta easyMeta = EasyMeta.valueOf(field);
         ID metaRecordId = easyMeta.getMetaId();
         if (easyMeta.isBuiltin() || metaRecordId == null) {
-            throw new MetadataException("系统内建字段不允许删除");
+            throw new MetadataException(Language.getLang("BuiltInNotDelete"));
         }
 
         Entity entity = field.getOwnEntity();
         if (entity.getNameField().equals(field)) {
-            throw new MetadataException("名称字段不允许被删除");
+            throw new MetadataException(Language.getLang("NameFieldNotDelete"));
         }
 
         if (!force) {
             long count;
             if ((count = checkRecordCount(entity)) > 100000) {
-                throw new MetadataException("本实体记录过大，删除字段可能导致表损坏 (" + entity.getName() + "=" + count + ")");
+                throw new MetadataException(Language.formatLang("AddFieldHasBigdata", count));
             }
         }
 
@@ -254,7 +255,7 @@ public class Field2Schema {
 
         if (StringUtils.isNotBlank(refEntity)) {
             if (!MetadataHelper.containsEntity(refEntity)) {
-                throw new MetadataException("无效引用实体: " + refEntity);
+                throw new MetadataException(Language.getLang("SomeInvalid,RefEntity") + " : " + refEntity);
             }
             recordOfField.setString("refEntity", refEntity);
             if (cascade != null) {
@@ -272,7 +273,7 @@ public class Field2Schema {
         recordOfField.setInt("maxLength", maxLength);
 
         if (dt == DisplayType.REFERENCE && StringUtils.isBlank(refEntity)) {
-            throw new MetadataException("引用字段必须指定引用实体");
+            throw new MetadataException(Language.getLang("RefFieldMustHasRefEntity"));
         }
 
         recordOfField = Application.getCommonsService().create(recordOfField);
@@ -339,9 +340,6 @@ public class Field2Schema {
             identifier = identifier.substring(0, 42);
         }
 
-        if (!StringHelper.isIdentifier(identifier)) {
-            throw new MetadataException("无效名称 : " + text);
-        }
         return identifier;
     }
 }

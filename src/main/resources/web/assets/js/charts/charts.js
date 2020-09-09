@@ -603,8 +603,8 @@ class ChartTreemap extends BaseChart {
 // ~ 审批列表
 const APPROVAL_STATES = {
   1: ['warning', $lang('WaitApproval')],
-  10: ['success', $lang('Pass')],
-  11: ['danger', $lang('Reject')],
+  10: ['success', $lang('s.ApprovalState.APPROVED')],
+  11: ['danger', $lang('s.ApprovalState.REJECTED')],
 }
 
 class ApprovalList extends BaseChart {
@@ -682,8 +682,8 @@ class ApprovalList extends BaseChart {
                           {$lang('Approve')}
                         </button>
                       )}
-                      {this.state.viewState === 10 && <span className="text-success">{$lang('Pass')}</span>}
-                      {this.state.viewState === 11 && <span className="text-danger">{$lang('Reject')}</span>}
+                      {this.state.viewState === 10 && <span className="text-success">{$lang('s.ApprovalState.APPROVED')}</span>}
+                      {this.state.viewState === 11 && <span className="text-danger">{$lang('s.ApprovalState.REJECTED')}</span>}
                     </td>
                   </tr>
                 )
@@ -777,7 +777,7 @@ class FeedsSchedule extends BaseChart {
                 return (
                   <tr key={'schedule-' + idx}>
                     <td>
-                      <a title={$lang('ViewDetail')} href={`${rb.baseUrl}/app/list-and-view?id=${item.id}`} className="content" dangerouslySetInnerHTML={{ __html: item.content }} />
+                      <a title={$lang('ViewDetails')} href={`${rb.baseUrl}/app/list-and-view?id=${item.id}`} className="content" dangerouslySetInnerHTML={{ __html: item.content }} />
                     </td>
                     <td className="cell-detail">
                       <div>{item.scheduleTime}</div>
@@ -1093,7 +1093,8 @@ class ChartSelect extends RbModalHandler {
                     <span className="float-left title">
                       <strong>{item[1]}</strong>
                       <p className="text-muted fs-12">
-                        {item[4] && <span>{item[4]}</span>} <DateShow date={item[3]} />
+                        {item[4] && <span>{item[4]}</span>}
+                        {item[3] && <DateShow date={item[3]} />}
                       </p>
                     </span>
                     <span className="float-right">
@@ -1107,7 +1108,7 @@ class ChartSelect extends RbModalHandler {
                         </a>
                       )}
                     </span>
-                    {!this.props.entity && item[4] && (
+                    {!this.props.entity && item[3] && (
                       <span className="float-right">
                         <a className="delete" onClick={() => this.deleteChart(item[0])}>
                           <i className="zmdi zmdi-delete"></i>

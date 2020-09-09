@@ -112,7 +112,7 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
         ModelAndView error;
         if (AppUtils.isHtmlRequest(request)) {
             error = new ModelAndView("/error/error");
-            error.getModelMap().put("bundle", Application.getBean(Language.class).getCurrentBundle());
+            error.getModelMap().put("bundle", Application.getLanguage().getCurrentBundle());
         } else {
             error = new ModelAndView(new FastJsonJsonView());
         }

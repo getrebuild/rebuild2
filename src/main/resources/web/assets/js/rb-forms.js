@@ -1803,7 +1803,7 @@ class RepeatedViewer extends RbModalHandler {
           return <td key={`col-${idx}-${i}`}>{o || <span className="text-muted">{$lang('Null')}</span>}</td>
         })}
         <td className="actions">
-          <a className="icon" onClick={() => this.openView(item[0])} title={$lang('ViewDetail')}>
+          <a className="icon" onClick={() => this.openView(item[0])} title={$lang('ViewDetails')}>
             <i className="zmdi zmdi-open-in-new" />
           </a>
         </td>
