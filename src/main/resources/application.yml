@@ -56,8 +56,3 @@ spring:
   quartz:
     scheduler-name: rbScheduler
     startup-delay: 15s
-
-management:
-  endpoints:
-    web:
-      base-path: /_actuator

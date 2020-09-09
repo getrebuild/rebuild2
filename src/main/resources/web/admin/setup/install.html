@@ -2,7 +2,7 @@
 <html lang="zh" xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>REBUILD 安装程序</title>
+    <title>[[${bundle.lang('RbInstaller')}]]</title>
     <style type="text/css">
       .splash-container.rb-install {
         max-width: 680px;
@@ -58,19 +58,12 @@
             <div class="card shadow-lg">
               <div class="card-header bg-primary m-0"><a class="logo-img white"></a></div>
               <div class="card-body pt-0">
-                <h2 class="text-center text-muted">请稍后 ...</h2>
+                <h2 class="text-center text-muted">[[${bundle.lang('PlsWaiting')}]]</h2>
               </div>
             </div>
             <div class="copyright">
-              &copy; REBUILD ([[${Version}]]) · <a href="https://getrebuild.com/docs/admin/install" target="_blank" class="link">安装手册</a>
-              <div class="mt-1 license">
-                <a href="https://getrebuild.com/" class="link" target="_blank">REBUILD</a>
-                使用开源
-                <a href="https://getrebuild.com/license/LICENSE.txt" class="link" target="_blank">GPL-3.0</a>
-                和
-                <a href="https://getrebuild.com/license/COMMERCIAL.txt" class="link" target="_blank">商用</a>
-                双重授权许可，安装/使用即表示你已阅读并同意许可内容。
-              </div>
+              &copy; REBUILD ([[${Version}]]) · <a href="https://getrebuild.com/docs/admin/install" target="_blank" class="link">[[${bundle.lang('InstallGuide')}]]</a>
+              <div class="mt-1 license link" th:utext="${bundle.lang('RebuildRights')}"></div>
             </div>
           </div>
         </div>

@@ -37,7 +37,7 @@
       <table class="table table-bordered table-sm table-hover">
         <tbody>
           <tr>
-            <th width="30%">REBUILD Service</th>
+            <th width="30%">Status</th>
             <td>
               <span class="text-success" th:if="${ok}">OK</span>
               <span class="text-danger" th:if="${!ok}">Startup failed</span>
@@ -87,7 +87,7 @@
         </tr>
         <tr>
           <th>Startup Time</th>
-          <td>[[${T(com.rebuild.core.Application).getStartupTime()}]]</td>
+          <td>[[${T(com.rebuild.core.ServerStatus).getStartupTime()}]]</td>
         </tr>
       </tbody>
       </table>

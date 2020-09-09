@@ -61,6 +61,18 @@ public abstract class BaseController extends Controller {
     }
 
     /**
+     * @param request
+     * @param key
+     * @param phValues
+     * @return
+     */
+    protected String formatLang(HttpServletRequest request, String key, Object... phValues) {
+        String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
+        LanguageBundle bundle = Application.getLanguage().getBundle(locale);
+        return bundle.formatLang(key, phValues);
+    }
+
+    /**
      * @param response
      */
     protected void writeSuccess(HttpServletResponse response) {

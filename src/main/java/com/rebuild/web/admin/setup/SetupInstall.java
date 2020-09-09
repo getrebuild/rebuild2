@@ -14,9 +14,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.support.setup.InstallState;
 import com.rebuild.core.support.setup.Installer;
+import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
-import org.apache.commons.io.FileUtils;
+import com.rebuild.web.RebuildWebConstants;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +28,6 @@ import redis.clients.jedis.JedisPoolConfig;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -43,10 +43,20 @@ import java.sql.SQLException;
 public class SetupInstall extends BaseController implements InstallState {
 
     @RequestMapping("install")
-    public ModelAndView pageIndex(HttpServletResponse response) throws IOException {
+    public ModelAndView index(HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (Application.serversReady() && !Application.devMode()) {
             response.sendError(404);
             return null;
+        }
+
+        String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
+        if (locale == null) {
+            locale = request.getLocale().getLanguage();
+            if (Application.getLanguage().available(locale)) {
+                ServletUtils.setSessionAttribute(request, AppUtils.SK_LOCALE, locale);
+                response.sendRedirect("install");
+                return null;
+            }
         }
 
         ModelAndView mv = createModelAndView("/admin/setup/install");
@@ -61,54 +71,27 @@ public class SetupInstall extends BaseController implements InstallState {
 
         try (Connection conn = new Installer(props).getConnection(null)) {
             DatabaseMetaData dmd = conn.getMetaData();
-            String msg = String.format("连接成功 : %s %s", dmd.getDatabaseProductName(), dmd.getDatabaseProductVersion());
+            String msg = formatLang(request,
+                    "ConnectionSucceed", dmd.getDatabaseProductName() + " " + dmd.getDatabaseProductVersion());
 
             // 查询表
             try (ResultSet rs = dmd.getTables(null, null, null, new String[]{"TABLE"})) {
                 if (rs.next()) {
                     String hasTable = rs.getString("TABLE_NAME");
                     if (hasTable != null) {
-                        msg += " (非空数据库，可能导致安装失败)";
+                        msg += getLang(request, "NoneEmptyDbTips");
                     }
                 }
             } catch (SQLException ignored) {
             }
 
             writeSuccess(response, msg);
-        } catch (SQLException e) {
-            if (e.getLocalizedMessage().contains("Unknown database")) {
-                writeSuccess(response, "连接成功 : 数据库不存在，系统将自动创建");
+        } catch (SQLException ex) {
+            if (ex.getLocalizedMessage().contains("Unknown database")) {
+                writeSuccess(response, getLang(request, "ConnectionSucceedEmptyDbTips"));
             } else {
-                writeFailure(response, "连接错误 : " + e.getLocalizedMessage());
+                writeFailure(response, formatLang(request, "ConnectionError", ex.getLocalizedMessage()));
             }
-        }
-    }
-
-    @RequestMapping("test-directory")
-    public void testDirectory(HttpServletRequest request, HttpServletResponse response) {
-        String dir = getParameterNotNull(request, "dir");
-        File file = new File(dir);
-        if (file.exists()) {
-            if (!file.isDirectory()) {
-                file = null;
-            }
-        } else {
-            try {
-                FileUtils.forceMkdir(file);
-                if (file.exists()) {
-                    FileUtils.deleteDirectory(file);
-                } else {
-                    file = null;
-                }
-            } catch (IOException ex) {
-                file = null;
-            }
-        }
-
-        if (file == null) {
-            writeFailure(response);
-        } else {
-            writeSuccess(response, file.getAbsolutePath());
         }
     }
 
@@ -127,9 +110,10 @@ public class SetupInstall extends BaseController implements InstallState {
                 info = info.substring(0, 80) + "...";
             }
             pool.destroy();
-            writeSuccess(response, "连接成功 : " + info);
+
+            writeSuccess(response, formatLang(request, "ConnectionSucceed", info));
         } catch (Exception ex) {
-            writeFailure(response, "连接失败 : " + ThrowableUtils.getRootCause(ex).getLocalizedMessage());
+            writeFailure(response, formatLang(request, "ConnectionError", ThrowableUtils.getRootCause(ex).getLocalizedMessage()));
         }
     }
 
@@ -139,9 +123,9 @@ public class SetupInstall extends BaseController implements InstallState {
         try {
             new Installer(installProps).install();
             writeSuccess(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-            writeFailure(response, "出现错误 : " + e.getLocalizedMessage());
+        } catch (Exception ex) {
+            LOG.error("An error occurred during installation", ex);
+            writeFailure(response, getLang(request, "InstallFailed") + " : " + ThrowableUtils.getRootCause(ex).getLocalizedMessage());
         }
     }
 }

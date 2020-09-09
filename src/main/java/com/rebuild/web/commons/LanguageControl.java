@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- * 语言控制
+ * 多语言控制
  *
  * @author devezhao
  * @since 2019/11/29
@@ -33,6 +33,8 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/language/")
 public class LanguageControl extends BaseController {
+
+    public static final String CK_LOCALE = "rb.locale";
 
     private static final String HEADER_ETAG = "ETag";
     private static final String HEADER_IF_NONE_MATCH = "If-None-Match";
@@ -70,7 +72,21 @@ public class LanguageControl extends BaseController {
 
     @RequestMapping("select")
     public void selectLanguage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        switchLanguage(request);
+        String locale = request.getParameter("locale");
+        if (locale == null || !Application.getLanguage().available(locale)) {
+            locale = Application.getLanguage().getDefaultBundle().getLocale();
+        }
+
+        if (Application.devMode()) {
+            try {
+                Application.getLanguage().init();
+            } catch (Exception ex) {
+                throw new RebuildException(ex);
+            }
+        }
+
+        ServletUtils.setSessionAttribute(request, AppUtils.SK_LOCALE, locale);
+        AppUtils.addCookie(response, CK_LOCALE, locale);
 
         if (AppUtils.isHtmlRequest(request)) {
             String nexturl = request.getParameter("nexturl");
@@ -83,29 +99,5 @@ public class LanguageControl extends BaseController {
         } else {
             writeSuccess(response);
         }
-    }
-
-    /**
-     * 切换语言，通过 `locale` 参数
-     *
-     * @param request
-     * @return
-     */
-    public static boolean switchLanguage(HttpServletRequest request) {
-        String locale = request.getParameter("locale");
-        if (locale == null || !Application.getLanguage().available(locale)) {
-            return false;
-        }
-
-        if (Application.devMode()) {
-            try {
-                Application.getLanguage().init();
-            } catch (Exception ex) {
-                throw new RebuildException(ex);
-            }
-        }
-
-        ServletUtils.setSessionAttribute(request, AppUtils.SK_LOCALE, locale);
-        return true;
     }
 }

@@ -39,13 +39,11 @@ public class ErrorPageResolver extends BaseController {
 
     @GetMapping("/error/server-status")
     public ModelAndView pageServerStatus(HttpServletRequest request) {
-        if ("1".equals(request.getParameter("check"))) {
-            ServerStatus.checkAll();
-        }
+        boolean realtime = "1".equals(request.getParameter("check"));
 
         ModelAndView mv = createModelAndView("/error/server-status");
         mv.getModel().put("ok", ServerStatus.isStatusOK() && Application.serversReady());
-        mv.getModel().put("status", ServerStatus.getLastStatus());
+        mv.getModel().put("status", ServerStatus.getLastStatus(realtime));
 
         mv.getModel().put("MemoryUsage", ServerStatus.getHeapMemoryUsed());
         mv.getModel().put("SystemLoad", ServerStatus.getSystemLoad());
@@ -54,15 +52,13 @@ public class ErrorPageResolver extends BaseController {
 
     @GetMapping("/error/server-status.json")
     public void apiServerStatus(HttpServletRequest request, HttpServletResponse response) {
-        if ("1".equals(request.getParameter("check"))) {
-            ServerStatus.checkAll();
-        }
+        boolean realtime = "1".equals(request.getParameter("check"));
 
         JSONObject state = new JSONObject();
         state.put("ok", ServerStatus.isStatusOK());
         JSONArray stats = new JSONArray();
         state.put("status", stats);
-        for (ServerStatus.Status s : ServerStatus.getLastStatus()) {
+        for (ServerStatus.Status s : ServerStatus.getLastStatus(realtime)) {
             stats.add(s.toJson());
         }
 

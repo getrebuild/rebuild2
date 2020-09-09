@@ -185,7 +185,7 @@ public class LoginControl extends BaseController {
         if (autoLogin) {
             String alt = user + "," + System.currentTimeMillis() + ",v1";
             alt = AES.encrypt(alt);
-            ServletUtils.addCookie(response, CK_AUTOLOGIN, alt, 60 * 60 * 24 * 30, null, "/");
+            AppUtils.addCookie(response, CK_AUTOLOGIN, alt);
         } else {
             ServletUtils.removeCookie(request, response, CK_AUTOLOGIN);
         }

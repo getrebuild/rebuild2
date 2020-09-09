@@ -8,7 +8,6 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core;
 
 import cn.devezhao.bizz.security.AccessDeniedException;
-import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.commons.excel.Cell;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Query;
@@ -33,7 +32,6 @@ import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.License;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.i18n.Language;
-import com.rebuild.core.support.i18n.LanguageBundle;
 import com.rebuild.core.support.setup.Installer;
 import com.rebuild.core.support.setup.UpgradeDatabase;
 import com.rebuild.utils.JSONable;
@@ -113,8 +111,6 @@ public class Application {
 
     private static boolean serversReady;
 
-    private static Date startupTime;
-
     private static boolean debugMode = false;
 
     public static void main(String[] args) {
@@ -148,7 +144,7 @@ public class Application {
 
             } else {
                 LOG.warn(RebuildBanner.formatBanner(
-                        "REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl));
+                        "REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl + "/setup/install"));
             }
 
         } catch (Exception ex) {
@@ -164,8 +160,6 @@ public class Application {
                     LOG.error(null, ex);
                 }
             }
-
-            startupTime = CalendarUtils.now();
         }
     }
 
@@ -230,10 +224,6 @@ public class Application {
 
     public static boolean serversReady() {
         return serversReady && APPLICATION_CONTEXT != null;
-    }
-
-    public static Date getStartupTime() {
-        return startupTime;
     }
 
     public static ConfigurableApplicationContext getApplicationContext() {

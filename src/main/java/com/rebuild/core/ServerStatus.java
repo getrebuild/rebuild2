@@ -7,10 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core;
 
-import cn.devezhao.commons.CodecUtils;
-import cn.devezhao.commons.ObjectUtils;
-import cn.devezhao.commons.SystemUtils;
-import cn.devezhao.commons.ThrowableUtils;
+import cn.devezhao.commons.*;
 import cn.devezhao.commons.runtime.MemoryInformation;
 import cn.devezhao.commons.runtime.MemoryInformationBean;
 import cn.devezhao.persist4j.util.SqlHelper;
@@ -27,6 +24,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,17 +35,20 @@ import java.util.List;
  */
 public final class ServerStatus {
 
+    private static Date StartupTime;
+
     private static long LastCheckTime = 0;
     private static final List<Status> LAST_STATUS = new ArrayList<>();
 
     /**
-     * 最近状态
+     * 服务状态
      *
+     * @param realtime
      * @return
      */
-    public static List<Status> getLastStatus() {
+    public static List<Status> getLastStatus(boolean realtime) {
         // 60 秒缓存
-        if (System.currentTimeMillis() - LastCheckTime > 60 * 1000) {
+        if (realtime || System.currentTimeMillis() - LastCheckTime > 60 * 1000) {
             checkAll();
         }
 
@@ -57,17 +58,24 @@ public final class ServerStatus {
     }
 
     /**
-     * 服务是否正常
+     * 服务正常
      *
      * @return
      */
     public static boolean isStatusOK() {
-        for (Status s : getLastStatus()) {
-            if (!s.success) {
-                return false;
-            }
+        for (Status s : getLastStatus(false)) {
+            if (!s.success) return false;
         }
         return true;
+    }
+
+    /**
+     * 启动时间
+     *
+     * @return
+     */
+    public static Date getStartupTime() {
+        return StartupTime;
     }
 
     /**
@@ -75,9 +83,10 @@ public final class ServerStatus {
      *
      * @return
      */
-    public static boolean checkAll() {
-        List<Status> last = new ArrayList<>();
+    static boolean checkAll() {
+        if (StartupTime == null) StartupTime = CalendarUtils.now();
 
+        List<Status> last = new ArrayList<>();
         last.add(checkCreateFile());
         last.add(checkDatabase());
         last.add(checkCacheService());
@@ -95,7 +104,7 @@ public final class ServerStatus {
      *
      * @return
      */
-    protected static Status checkDatabase() {
+    static Status checkDatabase() {
         String name = "Database";
         if (Installer.isUseH2()) return Status.success(name + "/H2");
 
@@ -116,7 +125,7 @@ public final class ServerStatus {
      *
      * @return
      */
-    protected static Status checkCreateFile() {
+    static Status checkCreateFile() {
         String name = "Create File";
         FileWriter fw = null;
         try {
@@ -142,7 +151,7 @@ public final class ServerStatus {
      *
      * @return
      */
-    protected static Status checkCacheService() {
+    static Status checkCacheService() {
         CommonsCache cache = Application.getCommonsCache();
         String name = "Cache";
         if (!Installer.isUseRedis()) name += "/EHCACHE";
@@ -180,7 +189,7 @@ public final class ServerStatus {
             this.error = error;
 
             if (success) {
-                Application.LOG.info("Checking " + toString());
+                Application.LOG.debug("Checking " + toString());
             } else {
                 Application.LOG.error("Checking " + toString());
             }

@@ -22,6 +22,7 @@ import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.files.FilesHelper;
 import com.rebuild.core.service.project.ProjectManager;
+import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
@@ -64,7 +65,7 @@ public class FileListControl extends BaseController {
             }
         }
         // 记住最后一次访问的文件类型
-        ServletUtils.addCookie(response, CK_LASTPATH, path);
+        AppUtils.addCookie(response, CK_LASTPATH, path);
 
         return createModelAndView("/files/" + path);
     }

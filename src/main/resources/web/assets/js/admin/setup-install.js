@@ -6,9 +6,9 @@ See LICENSE and COMMERCIAL in the project root for license information.
 */
 
 const _INSTALL_STATES = {
-  10: ['zmdi-settings zmdi-hc-spin', '正在完成 ...'],
-  11: ['zmdi-check text-success', '安装成功'],
-  12: ['zmdi-close-circle-o text-danger', '安装失败'],
+  10: ['zmdi-settings zmdi-hc-spin', $lang('Installing')],
+  11: ['zmdi-check text-success', $lang('InstallSucceed')],
+  12: ['zmdi-close-circle-o text-danger', $lang('InstallFailed')],
 }
 
 class Setup extends React.Component {
@@ -31,12 +31,12 @@ class Setup extends React.Component {
               <h2 className="mb-0">{state[1]}</h2>
               {this.state.installState === 11 && (
                 <a className="btn btn-secondary mt-3" href="../user/login">
-                  立即登录
+                  {$lang('LoginNow')}
                 </a>
               )}
               {this.state.installState === 12 && (
                 <a className="btn btn-secondary mt-3" href="install">
-                  重试
+                  {$lang('Retry')}
                 </a>
               )}
               {this.state.installState === 12 && this.state.installError && (
@@ -75,18 +75,18 @@ class RbWelcome extends React.Component {
   render() {
     return (
       <div className="rb-welcome pb-1">
-        <h3>选择安装模式</h3>
+        <h3>{$lang('SelectSome,InstallMode')}</h3>
         <ul className="list-unstyled">
           <li>
             <a onClick={() => this._start(1)}>
-              <h5 className="m-0 text-bold">标准安装</h5>
-              <p className="m-0 mt-1 text-muted">以产品形式安装，用于真实生产环境</p>
+              <h5 className="m-0 text-bold">{$lang('InstallMySql')}</h5>
+              <p className="m-0 mt-1 text-muted">{$lang('InstallMySqlTips')}</p>
             </a>
           </li>
           <li>
             <a onClick={() => this._start(99)}>
-              <h5 className="m-0 text-bold">快速安装</h5>
-              <p className="m-0 mt-1 text-muted">将使用内建数据库执行安装，仅用于评估演示 (部分功能可能无法使用)</p>
+              <h5 className="m-0 text-bold">{$lang('InstallH2')}</h5>
+              <p className="m-0 mt-1 text-muted">{$lang('InstallH2Tips')}</p>
             </a>
           </li>
         </ul>
@@ -97,21 +97,16 @@ class RbWelcome extends React.Component {
   // 开始安装
   _start(type) {
     const that = this
-    RbAlert.create(
-      `<div class="text-left">${$(
-        '.license'
-      ).html()}<br>如果用于商业用途，请注意使用目的。访问 <a href="https://getrebuild.com/#pricing-plans" class="link" target="_blank">REBUILD 官网</a> 了解更多信息。</div>`,
-      {
-        html: true,
-        type: 'warning',
-        cancelText: '不同意',
-        confirmText: '同意',
-        confirm: function () {
-          this.hide()
-          that.props.$$$parent.setState({ installType: type, stepNo: type === 1 ? 2 : 4 })
-        },
-      }
-    )
+    RbAlert.create(`<div class="text-left link">${$('.license').html()}<p class="text-bold">${$lang('CommercialTips')}</p></div>`, {
+      html: true,
+      type: 'warning',
+      cancelText: $lang('Disagree'),
+      confirmText: $lang('Agree'),
+      confirm: function () {
+        this.hide()
+        that.props.$$$parent.setState({ installType: type, stepNo: type === 1 ? 2 : 4 })
+      },
+    })
   }
 }
 
@@ -122,45 +117,45 @@ class DatabaseConf extends React.Component {
   render() {
     return (
       <div className="rb-database">
-        <h3>设置数据库</h3>
+        <h3>{$lang('SetSome,Database')}</h3>
         <form>
           <div className="form-group row pt-0">
-            <div className="col-sm-3 col-form-label text-sm-right">数据库类型</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('DbType')}</div>
             <div className="col-sm-7">
               <select className="form-control form-control-sm" name="dbType">
                 <option value="mysql">MySQL</option>
               </select>
-              <div className="form-text">支持 MySQL 5.5 及以上版本</div>
+              <div className="form-text">{$lang('DbMySqlTips')}</div>
             </div>
           </div>
           <div className="form-group row">
-            <div className="col-sm-3 col-form-label text-sm-right">主机</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('Host')}</div>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="dbHost" value={this.state.dbHost || ''} onChange={this.handleValue} placeholder="127.0.0.1" />
             </div>
           </div>
           <div className="form-group row">
-            <div className="col-sm-3 col-form-label text-sm-right">端口</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('Port')}</div>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="dbPort" value={this.state.dbPort || ''} onChange={this.handleValue} placeholder="3306" />
             </div>
           </div>
           <div className="form-group row">
-            <div className="col-sm-3 col-form-label text-sm-right">数据库</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('DbName')}</div>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="dbName" value={this.state.dbName || ''} onChange={this.handleValue} placeholder="rebuild10" />
-              <div className="form-text">如数据库不存在系统将自动创建</div>
+              <div className="form-text">{$lang('DbNameTips')}</div>
             </div>
           </div>
           <div className="form-group row">
-            <div className="col-sm-3 col-form-label text-sm-right">用户</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('DbUser')}</div>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="dbUser" value={this.state.dbUser || ''} onChange={this.handleValue} placeholder="rebuild" />
-              <div className="form-text">请赋予用户除管理员权限以外的所有权限</div>
+              <div className="form-text">{$lang('DbUserTips')}</div>
             </div>
           </div>
           <div className="form-group row">
-            <div className="col-sm-3 col-form-label text-sm-right">密码</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('Passwd')}</div>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="dbPassword" value={this.state.dbPassword || ''} onChange={this.handleValue} placeholder="rebuild" />
             </div>
@@ -180,14 +175,15 @@ class DatabaseConf extends React.Component {
           )}
           <button className="btn btn-link float-left text-left pl-0" onClick={this._prev}>
             <i className="zmdi zmdi-chevron-left icon" />
-            选择安装模式
+            {$lang('SelectSome,InstallMode')}
           </button>
           <div className="float-right">
             <button className="btn btn-link text-right mr-2" disabled={this.state.inTest} onClick={this._testConnection}>
-              {this.state.inTest && <i className="zmdi icon zmdi-refresh zmdi-hc-spin" />} 测试连接
+              {this.state.inTest && <i className="zmdi icon zmdi-refresh zmdi-hc-spin" />}
+              {$lang('TestConnection')}
             </button>
             <button className="btn btn-secondary" onClick={this._next}>
-              下一步
+              {$lang('NextStep')}
             </button>
           </div>
           <div className="clearfix"></div>
@@ -212,7 +208,7 @@ class DatabaseConf extends React.Component {
       dbPassword: this.state.dbPassword || 'rebuild',
     }
     if (check && isNaN(ps.dbPort)) {
-      RbHighbar.create('无效端口')
+      RbHighbar.create($lang('SomeInvalid,Port'))
       return
     }
     return ps
@@ -244,36 +240,43 @@ class CacheConf extends DatabaseConf {
   render() {
     return (
       <div className="rb-systems">
-        <h3>设置缓存服务</h3>
+        <h3>{$lang('SetSome,CacheSrv')}</h3>
         <form>
           <div className="form-group row">
-            <div className="col-sm-3 col-form-label text-sm-right">缓存类型</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('CacheType')}</div>
             <div className="col-sm-7">
               <select className="form-control form-control-sm" name="cacheType" onChange={this.handleValue} defaultValue={this.props.cacheType}>
-                <option value="ehcache">EHCACHE (内建)</option>
+                <option value="ehcache">EHCACHE ({$lang('BuiltIn')})</option>
                 <option value="redis">REDIS</option>
               </select>
-              {this.state.cacheType === 'redis' && <div className="form-text">支持 REDIS 3.0 及以上版本</div>}
+              {this.state.cacheType === 'redis' && <div className="form-text">{$lang('CacheRedisTips')}</div>}
             </div>
           </div>
           {this.state.cacheType === 'redis' && (
             <React.Fragment>
               <div className="form-group row">
-                <div className="col-sm-3 col-form-label text-sm-right">主机</div>
+                <div className="col-sm-3 col-form-label text-sm-right">{$lang('Host')}</div>
                 <div className="col-sm-7">
                   <input type="text" className="form-control form-control-sm" name="CacheHost" value={this.state.CacheHost || ''} onChange={this.handleValue} placeholder="127.0.0.1" />
                 </div>
               </div>
               <div className="form-group row">
-                <div className="col-sm-3 col-form-label text-sm-right">端口</div>
+                <div className="col-sm-3 col-form-label text-sm-right">{$lang('Port')}</div>
                 <div className="col-sm-7">
                   <input type="text" className="form-control form-control-sm" name="CachePort" value={this.state.CachePort || ''} onChange={this.handleValue} placeholder="6379" />
                 </div>
               </div>
               <div className="form-group row">
-                <div className="col-sm-3 col-form-label text-sm-right">密码</div>
+                <div className="col-sm-3 col-form-label text-sm-right">{$lang('Passwd')}</div>
                 <div className="col-sm-7">
-                  <input type="text" className="form-control form-control-sm" name="CachePassword" value={this.state.CachePassword || ''} onChange={this.handleValue} placeholder="(无密码请留空)" />
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    name="CachePassword"
+                    value={this.state.CachePassword || ''}
+                    onChange={this.handleValue}
+                    placeholder={$lang('CacheNoPasswdTips')}
+                  />
                 </div>
               </div>
             </React.Fragment>
@@ -293,16 +296,17 @@ class CacheConf extends DatabaseConf {
           )}
           <button className="btn btn-link float-left text-left pl-0" onClick={this._prev}>
             <i className="zmdi zmdi-chevron-left icon" />
-            设置数据库
+            {$lang('SetSome,Database')}
           </button>
           <div className="float-right">
             {this.state.cacheType === 'redis' && (
               <button className="btn btn-link text-right mr-2" disabled={this.state.inTest} onClick={this._testConnection}>
-                {this.state.inTest && <i className="zmdi icon zmdi-refresh zmdi-hc-spin" />} 测试连接
+                {this.state.inTest && <i className="zmdi icon zmdi-refresh zmdi-hc-spin" />}
+                {$lang('TestConnection')}
               </button>
             )}
             <button className="btn btn-secondary" onClick={this._next}>
-              下一步
+              {$lang('NextStep')}
             </button>
           </div>
           <div className="clearfix"></div>
@@ -320,7 +324,7 @@ class CacheConf extends DatabaseConf {
       CachePassword: this.state.CachePassword || '',
     }
     if (check && isNaN(ps.CachePort)) {
-      RbHighbar.create('无效端口')
+      RbHighbar.create($lang('SomeInvalid,Port'))
       return
     }
     return ps
@@ -356,22 +360,22 @@ class AdminConf extends DatabaseConf {
   render() {
     return (
       <div className="rb-systems">
-        <h3>设置超级管理员</h3>
+        <h3>{$lang('SetSome,SuperAdmin')}</h3>
         <form>
           <div className="form-group row pt-0">
-            <div className="col-sm-3 col-form-label text-sm-right">登录密码</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('f.User.password')}</div>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="adminPasswd" value={this.state.adminPasswd || ''} onChange={this.handleValue} placeholder="admin" />
               <div className="form-text">
-                默认用户名/密码均为 <code className="text-danger">admin</code>
+                {$lang('DefaultPasswd')} <code className="text-danger">admin</code>
               </div>
             </div>
           </div>
           <div className="form-group row">
-            <div className="col-sm-3 col-form-label text-sm-right">管理员邮箱</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('AdminEmail')}</div>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="adminMail" value={this.state.adminMail || ''} onChange={this.handleValue} placeholder="(选填)" />
-              <div className="form-text">用于找回密码等重要操作，也可在安装完成后填写</div>
+              <div className="form-text">{$lang('AdminEmailTips')}</div>
             </div>
           </div>
         </form>
@@ -382,18 +386,18 @@ class AdminConf extends DatabaseConf {
           {this.props.$$$parent.state.installType === 1 && (
             <button className="btn btn-link float-left text-left pl-0" onClick={() => this._prev(3)}>
               <i className="zmdi zmdi-chevron-left icon" />
-              设置缓存服务
+              {$lang('SetSome,CacheSrv')}
             </button>
           )}
           {this.props.$$$parent.state.installType === 99 && (
             <button className="btn btn-link float-left text-left pl-0" onClick={() => this._prev(0)}>
               <i className="zmdi zmdi-chevron-left icon" />
-              选择安装模式
+              {$lang('SelectSome,InstallMode')}
             </button>
           )}
           <div className="float-right">
             <button className="btn btn-primary" onClick={this._next}>
-              完成安装
+              {$lang('FinishInstall')}
             </button>
           </div>
           <div className="clearfix"></div>
@@ -408,7 +412,7 @@ class AdminConf extends DatabaseConf {
       adminMail: this.state.adminMail,
     }
     if (check && ps.adminMail && !$regex.isMail(ps.adminMail)) {
-      RbHighbar.create('管理员邮箱无效')
+      RbHighbar.create($lang('SomeInvalid,AdminEmail'))
       return
     }
     return ps

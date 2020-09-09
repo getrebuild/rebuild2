@@ -1,7 +1,7 @@
 package com.rebuild.web.configuration;
 
 import cn.devezhao.persist4j.Record;
-import io.micrometer.core.instrument.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 

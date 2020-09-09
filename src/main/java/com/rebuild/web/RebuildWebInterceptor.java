@@ -18,6 +18,7 @@ import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.setup.InstallState;
 import com.rebuild.core.privileges.bizz.ZeroEntry;
 import com.rebuild.utils.AppUtils;
+import com.rebuild.web.commons.LanguageControl;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +56,10 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         // Locale
         String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
         if (locale == null) {
-            locale = RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
+            locale = ServletUtils.readCookie(request, LanguageControl.CK_LOCALE);
+            if (locale == null) {
+                locale = RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
+            }
         }
         Application.getSessionStore().setLocale(locale);
 
