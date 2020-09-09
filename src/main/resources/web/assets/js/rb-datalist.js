@@ -582,10 +582,10 @@ CellRenders.addRender('PHONE', function (v, s, k) {
 
 const APPROVAL_STATE_CLAZZs = {
   审批中: 'warning',
+  PROCESSING: 'warning',
   驳回: 'danger',
-  通过: 'success',
-  APPROVING: 'warning',
   REJECTED: 'danger',
+  通过: 'success',
   APPROVED: 'success',
 }
 CellRenders.addRender('STATE', function (v, s, k) {
