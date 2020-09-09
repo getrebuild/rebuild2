@@ -13,6 +13,9 @@
     <version>2.0.0-SNAPSHOT</version>
     <name>rebuild</name>
     <description>RB V2 use SpringBoot</description>
+    <!--
+    <packaging>war</packaging>
+    -->
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,6 +23,24 @@
         <java.version>1.8</java.version>
         <skipTests>true</skipTests>
     </properties>
+
+    <build>
+        <finalName>rebuild</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>web/node_modules/**</exclude>
+                </excludes>
+            </resource>
+        </resources>
+    </build>
 
     <!-- Unpublished libs can be found on https://github.com/devezhao/ -->
     <repositories>
@@ -38,6 +59,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jdbc</artifactId>
@@ -248,22 +276,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>web/node_modules/**</exclude>
-                </excludes>
-            </resource>
-        </resources>
-    </build>
-
 </project>

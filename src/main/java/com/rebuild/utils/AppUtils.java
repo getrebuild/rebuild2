@@ -192,6 +192,7 @@ public class AppUtils {
      * @see ServletUtils#readCookie(HttpServletRequest, String)
      */
     public static void addCookie(HttpServletResponse response, String name, String value) {
-        ServletUtils.addCookie(response, name, value, 60 * 60 * 24 * 90, null, getContextPath() + "/");
+        ServletUtils.addCookie(response, name, value, 60 * 60 * 24 * 90,
+                null, StringUtils.defaultIfBlank(getContextPath(), "/"));
     }
 }

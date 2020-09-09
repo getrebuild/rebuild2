@@ -55,7 +55,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ImportResource;
-import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -67,12 +66,16 @@ import java.util.Map;
  * @author zhaofang123@gmail.com
  * @since 05/18/2018
  */
-@Repository
 @SpringBootApplication(scanBasePackages = {"com.rebuild"}, exclude = {
         DataSourceAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class, JdbcTemplateAutoConfiguration.class,
         RedisAutoConfiguration.class, CacheAutoConfiguration.class})
 @ImportResource("classpath:application-bean.xml")
 public class Application {
+//    extends SpringBootServletInitializer {
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+//        return builder.sources(Application.class);
+//    }
 
     protected static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
