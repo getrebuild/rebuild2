@@ -44,7 +44,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/admin/")
-public class SystemCfgControl extends BaseController {
+public class SystemConfigurationControl extends BaseController {
 
     @GetMapping("systems")
     public ModelAndView pageSystems() {
