@@ -77,7 +77,7 @@
     <th:block th:replace="~{/_include/footer}" />
     <script>
       window.__PageConfig = {
-        formConfig: $unescape('[[${FormConfig}]]'),
+        formConfig: _$unth('[[${FormConfig}]]'),
         entityName: '[[${entityName}]]',
         isSuperAdmin: '[[${isSuperAdmin}]]' === 'true',
       }

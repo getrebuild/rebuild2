@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 多语言
@@ -79,7 +80,7 @@ public class Language implements Initialization {
                 return bundleMap.get(locale);
             }
 
-            locale = useCode(locale);
+            locale = useLanguageCode(locale);
             if (locale != null) {
                 return bundleMap.get(locale);
             }
@@ -104,7 +105,7 @@ public class Language implements Initialization {
      * @param locale
      * @return
      */
-    private String useCode(String locale) {
+    private String useLanguageCode(String locale) {
         String code = locale.split("[_-]")[0];
         for (String key : bundleMap.keySet()) {
             if (key.equals(code) || key.startsWith(code)) {
@@ -122,10 +123,17 @@ public class Language implements Initialization {
      */
     public boolean available(String locale) {
         boolean a = bundleMap.containsKey(locale);
-        if (!a && useCode(locale) != null) {
+        if (!a && useLanguageCode(locale) != null) {
             return true;
         }
         return a;
+    }
+
+    /**
+     * @return
+     */
+    public Set<String> availableList() {
+        return bundleMap.keySet();
     }
 
     // -- Quick Methods

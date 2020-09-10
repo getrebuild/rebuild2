@@ -74,8 +74,8 @@
       window.__PageConfig = {
         type: 'RecordList',
         entity: ['[[${entityName}]]', '[[${entityLabel}]]', '[[${entityIcon}]]'],
-        privileges: $unescape('[[${entityPrivileges}]]'),
-        listConfig: $unescape('[[${DataListConfig}]]'),
+        privileges: _$unth('[[${entityPrivileges}]]'),
+        listConfig: _$unth('[[${DataListConfig}]]'),
         advFilter: false,
       }
     </script>

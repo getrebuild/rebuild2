@@ -54,13 +54,7 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         final boolean htmlRequest = AppUtils.isHtmlRequest(request);
 
         // Locale
-        String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
-        if (locale == null) {
-            locale = ServletUtils.readCookie(request, LanguageControl.CK_LOCALE);
-            if (locale == null) {
-                locale = RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
-            }
-        }
+        final String locale = detectLocale(request);
         Application.getSessionStore().setLocale(locale);
 
         if (htmlRequest) {
@@ -158,6 +152,30 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
             LOG.warn("Method handle time {} ms. Request URL {} [ {} ]",
                     time, ServletUtils.getFullRequestUrl(request), StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "-"));
         }
+    }
+
+    /**
+     * @param request
+     * @return
+     */
+    private String detectLocale(HttpServletRequest request) {
+        // 1. Session
+        String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
+        if (locale == null) {
+            // 2. Cookie
+            locale = ServletUtils.readCookie(request, LanguageControl.CK_LOCALE);
+            if (locale == null) {
+                // 3. User-Local
+                locale = request.getLocale().getLanguage();
+            }
+        }
+
+        if (Application.getLanguage().available(locale)) {
+            return locale;
+        }
+
+        // 4. Default
+        return RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
     }
 
     /**

@@ -14,12 +14,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.support.setup.InstallState;
 import com.rebuild.core.support.setup.Installer;
-import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
-import com.rebuild.web.RebuildWebConstants;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import redis.clients.jedis.Jedis;
@@ -42,21 +42,11 @@ import java.sql.SQLException;
 @RequestMapping("/setup/")
 public class SetupInstall extends BaseController implements InstallState {
 
-    @RequestMapping("install")
-    public ModelAndView index(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @GetMapping("install")
+    public ModelAndView index(HttpServletResponse response) throws IOException {
         if (Application.serversReady() && !Application.devMode()) {
             response.sendError(404);
             return null;
-        }
-
-        String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
-        if (locale == null) {
-            locale = request.getLocale().getLanguage();
-            if (Application.getLanguage().available(locale)) {
-                ServletUtils.setSessionAttribute(request, AppUtils.SK_LOCALE, locale);
-                response.sendRedirect("install");
-                return null;
-            }
         }
 
         ModelAndView mv = createModelAndView("/admin/setup/install");
@@ -64,7 +54,7 @@ public class SetupInstall extends BaseController implements InstallState {
         return mv;
     }
 
-    @RequestMapping("test-connection")
+    @PostMapping("test-connection")
     public void testConnection(HttpServletRequest request, HttpServletResponse response) {
         JSONObject dbProps = (JSONObject) ServletUtils.getRequestJson(request);
         JSONObject props = JSONUtils.toJSONObject("databaseProps", dbProps);
@@ -95,7 +85,7 @@ public class SetupInstall extends BaseController implements InstallState {
         }
     }
 
-    @RequestMapping("test-cache")
+    @PostMapping("test-cache")
     public void testCache(HttpServletRequest request, HttpServletResponse response) {
         JSONObject cacheProps = (JSONObject) ServletUtils.getRequestJson(request);
 
@@ -117,9 +107,10 @@ public class SetupInstall extends BaseController implements InstallState {
         }
     }
 
-    @RequestMapping("install-rebuild")
+    @PostMapping("install-rebuild")
     public void installExec(HttpServletRequest request, HttpServletResponse response) {
         JSONObject installProps = (JSONObject) ServletUtils.getRequestJson(request);
+
         try {
             new Installer(installProps).install();
             writeSuccess(response);

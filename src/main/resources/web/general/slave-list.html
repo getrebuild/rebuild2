@@ -107,8 +107,8 @@
       window.__PageConfig = {
         type: 'SlaveList',
         entity: ['[[${entityName}]]', '[[${entityLabel}]]', '[[${entityIcon}]]'],
-        privileges: $unescape('[[${entityPrivileges}]]'),
-        listConfig: $unescape('[[${DataListConfig}]]'),
+        privileges: _$unth('[[${entityPrivileges}]]'),
+        listConfig: _$unth('[[${DataListConfig}]]'),
         advFilter: true,
       }
     </script>

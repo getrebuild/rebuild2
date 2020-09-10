@@ -11,14 +11,12 @@ import cn.devezhao.commons.CalendarUtils;
 import cn.devezhao.commons.RegexUtils;
 import cn.devezhao.commons.ThrowableUtils;
 import cn.devezhao.commons.web.ServletUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.qiniu.common.QiniuException;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.util.Auth;
 import com.rebuild.core.Application;
 import com.rebuild.core.support.*;
-import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
@@ -34,10 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 系统配置
@@ -49,14 +44,22 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/admin/")
-public class SystemConfControl extends BaseController {
+public class SystemCfgControl extends BaseController {
 
     @GetMapping("systems")
     public ModelAndView pageSystems() {
-        ModelAndView mv = createModelAndView("/admin/system-conf");
+        ModelAndView mv = createModelAndView("/admin/system-cfg");
         for (ConfigurationItem item : ConfigurationItem.values()) {
             mv.getModel().put(item.name(), RebuildConfiguration.get(item));
         }
+
+        // Available lang
+        JSONObject localesJson = new JSONObject();
+        for (String locale : Application.getLanguage().availableList()) {
+            Locale inst = Locale.forLanguageTag(locale.split("[_-]")[0]);
+            localesJson.put(locale, inst.getDisplayName(inst) + " (" + locale + ")");
+        }
+        mv.getModel().put("availableLangs", localesJson);
 
         JSONObject authority = License.queryAuthority();
         mv.getModel().put("LicenseType",

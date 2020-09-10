@@ -94,9 +94,9 @@
       window.__PageConfig = {
         type: 'RecordView',
         entity: ['[[${entityName}]]', '[[${entityLabel}]]', '[[${entityIcon}]]'],
-        privileges: $unescape('[[${entityPrivileges}]]'),
-        viewTabs: $unescape('[[${ViewTabs}]]'),
-        viewAdds: $unescape('[[${ViewAdds}]]'),
+        privileges: _$unth('[[${entityPrivileges}]]'),
+        viewTabs: _$unth('[[${ViewTabs}]]'),
+        viewAdds: _$unth('[[${ViewAdds}]]'),
         recordId: '[[${id}]]',
       }
     </script>

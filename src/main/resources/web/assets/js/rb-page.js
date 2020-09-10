@@ -665,9 +665,9 @@ var $fromNow = function (date) {
 }
 
 /**
- * 转义 JSON
+ * 转义 Thymeleaf 页面的 JSON
  */
-var $unescape = function (text) {
+var _$unth = function (text) {
   if (!text) return null
   text = text.replace(/&quot;/g, '"')
   return $.parseJSON(text)

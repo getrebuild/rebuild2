@@ -118,13 +118,10 @@
     <th:block th:replace="~{/_include/footer}" />
     <script th:src="@{/assets/js/admin/syscfg.js}" type="text/babel"></script>
     <script type="text/babel">
-      const _LANGS = {
-        zh_CN: '中文 (zh_CN)',
-        en: 'English (en)',
-      }
+      const _LANGS = _$unth('[[${availableLangs}]]')
       $(document).ready(() => {
         const $L = $('#_DefaultLanguage')
-        $L.text(_LANGS[$L.text()])
+        $L.text(_LANGS[$L.text()] || 'UNKONWN')
       })
 
       useEditComp = function (name, value) {
