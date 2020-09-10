@@ -59,10 +59,10 @@ public class KVStorage {
 
         Record record;
         if (exists == null) {
-            record = EntityHelper.forNew(EntityHelper.SystemConfig, UserService.SYSTEM_USER);
+            record = EntityHelper.forNew(EntityHelper.SystemConfig, UserService.SYSTEM_USER, false);
             record.setString("item", key);
         } else {
-            record = EntityHelper.forUpdate((ID) exists[0], UserService.SYSTEM_USER);
+            record = EntityHelper.forUpdate((ID) exists[0], UserService.SYSTEM_USER, false);
         }
         record.setString("value", String.valueOf(value));
 

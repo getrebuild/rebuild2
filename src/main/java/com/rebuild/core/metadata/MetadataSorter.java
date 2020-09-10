@@ -14,18 +14,18 @@ import cn.devezhao.persist4j.metadata.BaseMeta;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
-import org.apache.commons.lang.ArrayUtils;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
- * 元数据辅助类，支持过滤/排序字段或实体
+ * 元数据辅助类，注意此类返回的数据会过滤和排序
  *
  * @author devezhao
- * @see EasyMeta
  * @since 09/30/2018
+ * @see EasyMeta
+ * @see MetadataHelper
  */
 public class MetadataSorter {
 
@@ -35,131 +35,118 @@ public class MetadataSorter {
      * @return
      */
     public static Entity[] sortEntities() {
-        return sortEntities(null, true);
-    }
-
-    /**
-     * 用户权限内可见实体（具备读取权限）
-     *
-     * @param user
-     * @return
-     */
-    public static Entity[] sortEntities(ID user) {
-        return sortEntities(user, false);
+        return sortEntities(null, true, true);
     }
 
     /**
      * 用户权限内可用实体
      *
      * @param user
-     * @param containsBizz 是否包括内建 BIZZ 实体
+     * @param usesBizz 是否包括内建 BIZZ 实体
      * @return
      */
-    public static Entity[] sortEntities(ID user, boolean containsBizz) {
-        List<Entity> sorted = new ArrayList<>();
+    @SuppressWarnings("SuspiciousToArrayCall")
+    public static Entity[] sortEntities(ID user, boolean usesBizz, boolean usesSlave) {
+        List<BaseMeta> entities = new ArrayList<>();
+        for (Entity e : MetadataHelper.getEntities()) {
+            if (!e.isQueryable()) continue;
+            if (e.getMasterEntity() != null && !usesSlave) continue;
 
-        // 排序在前
-        if (containsBizz) {
-            sorted.add(MetadataHelper.getEntity(EntityHelper.User));
-            sorted.add(MetadataHelper.getEntity(EntityHelper.Department));
-            sorted.add(MetadataHelper.getEntity(EntityHelper.Role));
-            sorted.add(MetadataHelper.getEntity(EntityHelper.Team));
-        }
-
-        Entity[] entities = MetadataHelper.getEntities();
-        sortBaseMeta(entities);
-        for (Entity e : entities) {
             EasyMeta easyEntity = EasyMeta.valueOf(e);
-            if (easyEntity.isBuiltin() && !MetadataHelper.hasPrivilegesField(e) && !easyEntity.isPlainEntity()) {
-                continue;
-            }
+            if (easyEntity.isBuiltin() && !easyEntity.isPlainEntity()) continue;
 
-            if (user == null) {
-                sorted.add(e);
+            if (user == null || !MetadataHelper.hasPrivilegesField(e)) {
+                entities.add(e);
             } else if (Application.getPrivilegesManager().allowRead(user, e.getEntityCode())) {
-                sorted.add(e);
+                entities.add(e);
             }
         }
-        return sorted.toArray(new Entity[0]);
+
+        if (usesBizz) {
+            entities.add(MetadataHelper.getEntity(EntityHelper.User));
+            entities.add(MetadataHelper.getEntity(EntityHelper.Department));
+            entities.add(MetadataHelper.getEntity(EntityHelper.Role));
+            entities.add(MetadataHelper.getEntity(EntityHelper.Team));
+        }
+
+        sortByLabel(entities);
+        return entities.toArray(new Entity[0]);
     }
 
     /**
      * 获取字段
      *
      * @param entity
-     * @param allowedTypes
+     * @param usesTypes
      * @return
-     * @see #sortFields(Field[], DisplayType...)
      */
-    public static Field[] sortFields(Entity entity, DisplayType... allowedTypes) {
-        return sortFields(entity.getFields(), allowedTypes);
+    public static Field[] sortFields(Entity entity, DisplayType... usesTypes) {
+        return sortFields(entity.getFields(), usesTypes);
     }
 
     /**
      * 获取字段
      *
      * @param fields
-     * @param allowedTypes 仅返回指定的类型
+     * @param usesTypes 仅返回指定的类型
      * @return
      */
-    public static Field[] sortFields(Field[] fields, DisplayType... allowedTypes) {
-        List<Field> othersFields = new ArrayList<>();
-        List<Field> commonsFields = new ArrayList<>();
-        List<Field> approvalFields = new ArrayList<>();
+    @SuppressWarnings("SuspiciousToArrayCall")
+    protected static Field[] sortFields(Field[] fields, DisplayType... usesTypes) {
+        List<BaseMeta> fieldsList = new ArrayList<>();
         for (Field field : fields) {
+            if (!field.isQueryable()) continue;
+
+            if (usesTypes.length == 0) {
+                fieldsList.add(field);
+            } else {
+                DisplayType fieldDt = EasyMeta.getDisplayType(field);
+                for (DisplayType dt : usesTypes) {
+                    if (dt == fieldDt) {
+                        fieldsList.add(field);
+                    }
+                }
+            }
+        }
+
+        sortByLabel(fieldsList);
+        return fieldsList.toArray(new Field[0]);
+    }
+
+    /**
+     * 字段排序
+     *
+     * @param fields
+     */
+    public static Field[] sort(List<Field> fields) {
+        List<BaseMeta> othersFields = new ArrayList<>();
+        List<BaseMeta> commonsFields = new ArrayList<>();
+        List<BaseMeta> approvalFields = new ArrayList<>();
+
+        for (BaseMeta field : fields) {
             if (MetadataHelper.isApprovalField(field.getName())) {
                 approvalFields.add(field);
-            } else if (MetadataHelper.isCommonsField(field)) {
+            } else if (MetadataHelper.isCommonsField((Field) field)) {
                 commonsFields.add(field);
             } else {
                 othersFields.add(field);
             }
         }
 
-        Field[] allFields = othersFields.toArray(new Field[0]);
-        sortBaseMeta(allFields);
-        // 公共字段在后
-        Field[] commonsFieldsAry = commonsFields.toArray(new Field[0]);
-        sortBaseMeta(commonsFieldsAry);
-        allFields = (Field[]) ArrayUtils.addAll(allFields, commonsFieldsAry);
-        // 审批字段在后
-        if (!approvalFields.isEmpty()) {
-            Field[] approvalFieldsAry = approvalFields.toArray(new Field[0]);
-            sortBaseMeta(approvalFieldsAry);
-            allFields = (Field[]) ArrayUtils.addAll(allFields, approvalFieldsAry);
-        }
+        sortByLabel(othersFields);
+        List<BaseMeta> allFields = new ArrayList<>(othersFields);
 
-        // 返回全部
-        if (allowedTypes == null || allowedTypes.length == 0) {
-            List<Field> list = new ArrayList<>();
-            for (Field field : allFields) {
-                if (!MetadataHelper.isSystemField(field)) {
-                    list.add(field);
-                }
-            }
-            return list.toArray(new Field[0]);
-        }
+        sortByLabel(commonsFields);
+        allFields.addAll(commonsFields);
 
-        List<Field> list = new ArrayList<>();
-        for (Field field : allFields) {
-            DisplayType dtThat = EasyMeta.getDisplayType(field);
-            for (DisplayType dt : allowedTypes) {
-                if (dtThat.equals(dt) && !MetadataHelper.isSystemField(field)) {
-                    list.add(field);
-                    break;
-                }
-            }
-        }
-        return list.toArray(new Field[0]);
+        sortByLabel(approvalFields);
+        allFields.addAll(approvalFields);
+
+        return allFields.toArray(new Field[0]);
     }
 
-    /**
-     * 按 Label 排序
-     *
-     * @param metas
-     */
-    private static void sortBaseMeta(BaseMeta[] metas) {
-        Arrays.sort(metas, (foo, bar) -> {
+    private static void sortByLabel(List<BaseMeta> metas) {
+        metas.sort((foo, bar) -> {
             String fooLetter = EasyMeta.getLabel(foo);
             String barLetter = EasyMeta.getLabel(bar);
             return fooLetter.compareTo(barLetter);

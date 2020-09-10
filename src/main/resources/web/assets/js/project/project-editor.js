@@ -34,7 +34,7 @@ $(document).ready(() => {
       members: _Members.val().join(','),
       metadata: { id: wpc.id },
     }
-    if (!_data.members) return RbHighbar.create($lang('PlsSelectSome,ProjectMembers'))
+    if (!_data.members) return RbHighbar.create($lang('PlsSelectSome,f.ProjectConfig.members'))
 
     $btn.button('loading')
     $.post('/admin/projects/post', JSON.stringify(_data), (res) => {
@@ -80,7 +80,7 @@ class PlanList extends React.Component {
             </div>
           )
         })}
-        {this.state.plans && this.state.plans.length === 0 && <p className="text-muted m-3">{$lang('PlsAddSome,TaskPlan')}</p>}
+        {this.state.plans && this.state.plans.length === 0 && <p className="text-muted m-3">{$lang('PlsAddSome,e.ProjectPlanConfig')}</p>}
       </React.Fragment>
     )
   }
@@ -148,7 +148,7 @@ class PlanList extends React.Component {
           this.hide()
           if (res.error_code === 0) {
             that.loadPlans()
-            RbHighbar.success($lang('SomeDeleted,TaskPlan'))
+            RbHighbar.success($lang('SomeDeleted,e.ProjectPlanConfig'))
           } else RbHighbar.error(res.error_msg)
         })
       },
@@ -166,10 +166,10 @@ class PlanEdit extends RbFormHandler {
   render() {
     const selectedFlowNexts = this.props.selectedFlowNexts || []
     return (
-      <RbModal title={`${$lang(this.props.id ? 'Modify' : 'Add')}${$lang('TaskPlan')}`} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
+      <RbModal title={`${$lang(this.props.id ? 'Modify' : 'Add')}${$lang('e.ProjectPlanConfig')}`} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">{$lang('PlanName')}</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.ProjectPlanConfig.planName')}</label>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="planName" value={this.state.planName || ''} onChange={this.handleChange} maxLength="60" autoFocus />
             </div>
@@ -228,7 +228,7 @@ class PlanEdit extends RbFormHandler {
   }
 
   save = () => {
-    if (!this.state.planName) return RbHighbar.create($lang('PlsInputSome,PlanName'))
+    if (!this.state.planName) return RbHighbar.create($lang('PlsInputSome,f.ProjectPlanConfig.planName'))
 
     const _data = {
       planName: this.state.planName,

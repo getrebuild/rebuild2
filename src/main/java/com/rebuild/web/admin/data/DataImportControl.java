@@ -98,20 +98,25 @@ public class DataImportControl extends BaseController {
 
     @RequestMapping("/data-imports/import-fields")
     public void importFields(HttpServletRequest request, HttpServletResponse response) {
-        String entity = getParameterNotNull(request, "entity");
-        Entity entityBase = MetadataHelper.getEntity(entity);
+        Entity entity = MetadataHelper.getEntity(getParameterNotNull(request, "entity"));
 
         List<Map<String, Object>> list = new ArrayList<>();
-        for (Field field : MetadataSorter.sortFields(entityBase)) {
+        for (Field field : MetadataSorter.sortFields(entity)) {
             String fieldName = field.getName();
             if (EntityHelper.OwningDept.equals(fieldName)
-                    || MetadataHelper.isApprovalField(fieldName) || MetadataHelper.isSystemField(fieldName)) {
+                    || MetadataHelper.isApprovalField(fieldName)
+                    || MetadataHelper.isSystemField(fieldName)) {
                 continue;
             }
+
+            // TODO 开放媒体字段导入
             EasyMeta easyMeta = new EasyMeta(field);
-            if (easyMeta.getDisplayType() == DisplayType.FILE || easyMeta.getDisplayType() == DisplayType.IMAGE
-                    || easyMeta.getDisplayType() == DisplayType.AVATAR || easyMeta.getDisplayType() == DisplayType.BARCODE
-                    || easyMeta.getDisplayType() == DisplayType.ID || easyMeta.getDisplayType() == DisplayType.ANYREFERENCE) {
+            if (easyMeta.getDisplayType() == DisplayType.FILE
+                    || easyMeta.getDisplayType() == DisplayType.IMAGE
+                    || easyMeta.getDisplayType() == DisplayType.AVATAR
+                    || easyMeta.getDisplayType() == DisplayType.BARCODE
+                    || easyMeta.getDisplayType() == DisplayType.ID
+                    || easyMeta.getDisplayType() == DisplayType.ANYREFERENCE) {
                 continue;
             }
 
@@ -122,13 +127,17 @@ public class DataImportControl extends BaseController {
             map.put("nullable", field.isNullable());
 
             String defaultValue = null;
-            if (EntityHelper.CreatedOn.equals(fieldName) || EntityHelper.ModifiedOn.equals(fieldName)) {
+            if (EntityHelper.CreatedOn.equals(fieldName)
+                    || EntityHelper.ModifiedOn.equals(fieldName)) {
                 defaultValue = getLang(request, "CurrentTime");
-            } else if (EntityHelper.CreatedBy.equals(fieldName) || EntityHelper.ModifiedBy.equals(fieldName) || EntityHelper.OwningUser.equals(fieldName)) {
+            } else if (EntityHelper.CreatedBy.equals(fieldName)
+                    || EntityHelper.ModifiedBy.equals(fieldName)
+                    || EntityHelper.OwningUser.equals(fieldName)) {
                 defaultValue = getLang(request, "CurrentUser");
             } else if (easyMeta.getDisplayType() == DisplayType.SERIES) {
-                defaultValue = getLang(request, "AutoNumber");
+                defaultValue = getLang(request, "t.SERIES");
             }
+
             if (defaultValue != null) {
                 map.put("defaultValue", defaultValue);
             }

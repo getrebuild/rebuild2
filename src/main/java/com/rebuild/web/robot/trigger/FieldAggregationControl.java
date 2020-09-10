@@ -67,21 +67,21 @@ public class FieldAggregationControl extends BaseController {
         String target = getParameter(request, "target");
         Entity targetEntity = StringUtils.isBlank(target) ? null : MetadataHelper.getEntity(target);
 
-        final DisplayType[] allowTypes = new DisplayType[]{DisplayType.NUMBER, DisplayType.DECIMAL};
+        final DisplayType[] usesTypes = new DisplayType[]{DisplayType.NUMBER, DisplayType.DECIMAL};
 
         List<String[]> sourceFields = new ArrayList<>();
         List<String[]> targetFields = new ArrayList<>();
 
         // 源字段
 
-        for (Field field : MetadataSorter.sortFields(sourceEntity.getFields(), allowTypes)) {
+        for (Field field : MetadataSorter.sortFields(sourceEntity, usesTypes)) {
             sourceFields.add(buildField(field, false));
         }
         // 关联实体
-        for (Field fieldRef : MetadataSorter.sortFields(sourceEntity.getFields(), DisplayType.REFERENCE)) {
+        for (Field fieldRef : MetadataSorter.sortFields(sourceEntity, DisplayType.REFERENCE)) {
             String fieldRefName = fieldRef.getName() + ".";
             String fieldRefLabel = EasyMeta.getLabel(fieldRef) + ".";
-            for (Field field : MetadataSorter.sortFields(fieldRef.getReferenceEntity(), allowTypes)) {
+            for (Field field : MetadataSorter.sortFields(fieldRef.getReferenceEntity(), usesTypes)) {
                 String[] build = buildField(field, false);
                 build[0] = fieldRefName + build[0];
                 build[1] = fieldRefLabel + build[1];
@@ -92,7 +92,7 @@ public class FieldAggregationControl extends BaseController {
         // 目标字段
 
         if (targetEntity != null) {
-            for (Field field : MetadataSorter.sortFields(targetEntity.getFields(), allowTypes)) {
+            for (Field field : MetadataSorter.sortFields(targetEntity, usesTypes)) {
                 if (EasyMeta.valueOf(field).isBuiltin()) {
                     continue;
                 }

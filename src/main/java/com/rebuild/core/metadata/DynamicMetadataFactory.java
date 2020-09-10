@@ -52,7 +52,7 @@ public class DynamicMetadataFactory extends ConfigurationMetadataFactory {
         final Element rootElement = config.getRootElement();
 
         Object[][] customEntities = Application.createQueryNoFilter(
-                "select typeCode,entityName,physicalName,entityLabel,entityId,comments,icon,nameField,masterEntity from MetaEntity")
+                "select typeCode,entityName,physicalName,entityLabel,entityId,comments,icon,nameField,masterEntity,extConfig from MetaEntity")
                 .array();
         for (Object[] c : customEntities) {
             String name = (String) c[1];
@@ -70,14 +70,14 @@ public class DynamicMetadataFactory extends ConfigurationMetadataFactory {
                     .addAttribute("deletable", "true");
 
             JSONObject extraAttrs = JSONUtils.toJSONObject(
-                    new String[]{"metaId", "comments", "icon"},
-                    new Object[]{c[4], c[5], c[6]});
+                    new String[] { "metaId", "comments", "icon" },
+                    new Object[] { c[4], c[5], c[6] });
             entity.addAttribute("extra-attrs", extraAttrs.toJSONString());
         }
 
         Object[][] customFields = Application.createQueryNoFilter(
                 "select belongEntity,fieldName,physicalName,fieldLabel,displayType,nullable,creatable,updatable,"
-                        + "maxLength,defaultValue,refEntity,cascade,fieldId,comments,extConfig,repeatable from MetaField")
+                        + "maxLength,defaultValue,refEntity,cascade,fieldId,comments,extConfig,repeatable,queryable from MetaField")
                 .array();
         for (Object[] c : customFields) {
             String entityName = (String) c[0];
@@ -98,22 +98,26 @@ public class DynamicMetadataFactory extends ConfigurationMetadataFactory {
                     .addAttribute("creatable", String.valueOf(c[6]))
                     .addAttribute("updatable", String.valueOf(c[7]))
                     .addAttribute("repeatable", String.valueOf(c[15]))
-                    .addAttribute("queryable", "true");
-
-            if (fieldName.equals(EntityHelper.AutoId)) {
-                field.addAttribute("auto-value", "true");
-            }
+                    .addAttribute("queryable", String.valueOf(c[16]));
 
             DisplayType dt = DisplayType.valueOf((String) c[4]);
             field.addAttribute("type", dt.getFieldType().getName());
 
+            // 针对不同字段的特殊处理
+
+            if (fieldName.equals(EntityHelper.AutoId)) {
+                field.addAttribute("auto-value", "true");
+            }
             if (dt == DisplayType.DECIMAL) {
                 field.addAttribute("decimal-scale", "8");
-            } else if (dt == DisplayType.ANYREFERENCE || dt == DisplayType.REFERENCE
+            }
+            if (dt == DisplayType.ANYREFERENCE || dt == DisplayType.REFERENCE
                     || dt == DisplayType.PICKLIST || dt == DisplayType.CLASSIFICATION) {
                 field.addAttribute("ref-entity", (String) c[10])
                         .addAttribute("cascade", (String) c[11]);
-            } else if (dt == DisplayType.BARCODE) {
+            }
+            if (dt == DisplayType.BARCODE || dt == DisplayType.ID
+                    || MetadataHelper.isSystemField(fieldName)) {
                 field.addAttribute("queryable", "false");
             }
 

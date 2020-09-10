@@ -84,7 +84,7 @@ public class EntityHelper {
      * @return
      */
     public static Record forNew(int entity, ID user) {
-        return forNew(MetadataHelper.getEntity(entity), user);
+        return forNew(entity, user, true);
     }
 
     /**
@@ -92,8 +92,8 @@ public class EntityHelper {
      * @param user
      * @return
      */
-    public static Record forNew(String entity, ID user) {
-        return forNew(MetadataHelper.getEntity(entity), user);
+    public static Record forNew(int entity, ID user, boolean bindCommons) {
+        return forNew(MetadataHelper.getEntity(entity), user, bindCommons);
     }
 
     /**
@@ -101,12 +101,14 @@ public class EntityHelper {
      * @param user
      * @return
      */
-    private static Record forNew(Entity entity, ID user) {
+    private static Record forNew(Entity entity, ID user, boolean bindCommons) {
         Assert.notNull(entity, "[entity] not be bull");
         Assert.notNull(user, "[user] not be bull");
 
         Record record = new StandardRecord(entity, user);
-        EntityRecordCreator.bindCommonsFieldsValue(record, true);
+        if (bindCommons) {
+            EntityRecordCreator.bindCommonsFieldsValue(record, true);
+        }
         return record;
     }
 

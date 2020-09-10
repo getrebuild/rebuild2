@@ -56,7 +56,7 @@ $(document).ready(function () {
     RbModal.create('/p/commons/search-icon', $lang('SelectSome,Icon'))
   })
 
-  $.get('/commons/metadata/fields?entity=' + wpc.entity, function (d) {
+  $.get(`/commons/metadata/fields?entity=${wpc.entity}`, function (d) {
     const rs = d.data.map((item) => {
       const canName =
         item.type === 'NUMBER' ||

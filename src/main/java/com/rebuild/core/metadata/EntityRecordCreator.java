@@ -82,13 +82,12 @@ public class EntityRecordCreator extends JsonRecordCreator {
     protected static void bindCommonsFieldsValue(Record r, boolean isNew) {
         final Date now = CalendarUtils.now();
         final Entity entity = r.getEntity();
-        final User editor = Application.getUserStore().getUser(r.getEditor());
 
         if (entity.containsField(EntityHelper.ModifiedOn)) {
             r.setDate(EntityHelper.ModifiedOn, now);
         }
         if (entity.containsField(EntityHelper.ModifiedBy)) {
-            r.setID(EntityHelper.ModifiedBy, (ID) editor.getIdentity());
+            r.setID(EntityHelper.ModifiedBy, r.getEditor());
         }
 
         if (isNew) {
@@ -96,13 +95,14 @@ public class EntityRecordCreator extends JsonRecordCreator {
                 r.setDate(EntityHelper.CreatedOn, now);
             }
             if (entity.containsField(EntityHelper.CreatedBy)) {
-                r.setID(EntityHelper.CreatedBy, (ID) editor.getIdentity());
+                r.setID(EntityHelper.CreatedBy, r.getEditor());
             }
             if (entity.containsField(EntityHelper.OwningUser)) {
-                r.setID(EntityHelper.OwningUser, (ID) editor.getIdentity());
+                r.setID(EntityHelper.OwningUser, r.getEditor());
             }
             if (entity.containsField(EntityHelper.OwningDept)) {
-                r.setID(EntityHelper.OwningDept, (ID) editor.getOwningDept().getIdentity());
+                User user = Application.getUserStore().getUser(r.getEditor());
+                r.setID(EntityHelper.OwningDept, (ID) user.getOwningDept().getIdentity());
             }
         }
     }

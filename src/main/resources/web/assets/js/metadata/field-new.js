@@ -73,7 +73,7 @@ $(document).ready(function () {
     if (dt === 'REFERENCE') {
       if (referenceLoaded === false) {
         referenceLoaded = true
-        $.get('/admin/entity/entity-list?noslave=false', (res) => {
+        $.get('/admin/entity/entity-list?slave=true', (res) => {
           $(res.data).each(function () {
             $(`<option value="${this.entityName}">${this.entityLabel}${this.masterEntity ? ' (' + $lang('SlaveEntity') + ')' : ''}</option>`).appendTo('#refEntity')
           })

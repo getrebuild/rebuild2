@@ -23,7 +23,7 @@ $(document).ready(function () {
       creatable: $val('#fieldCreatable'),
       updatable: $val('#fieldUpdatable'),
       repeatable: $val('#fieldRepeatable'),
-      // queryable: $val('#fieldQueryable'),
+      queryable: $val('#fieldQueryable'),
     }
     if (data.fieldLabel === '') return RbHighbar.create($lang('PlsInputSome,FieldName'))
 

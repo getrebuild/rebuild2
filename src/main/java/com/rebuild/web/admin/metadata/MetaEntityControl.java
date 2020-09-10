@@ -89,18 +89,13 @@ public class MetaEntityControl extends BaseController {
 
     @RequestMapping("entity/entity-list")
     public void listEntity(HttpServletRequest request, HttpServletResponse response) {
-        // 有无 BIZZ 实体
-        final boolean nobizz = getBoolParameter(request, "nobizz", false);
-        // 有无明细实体
-        final boolean noslave = getBoolParameter(request, "noslave", true);
+        // 默认无BIZZ实体
+        final boolean usesBizz = getBoolParameter(request, "bizz", false);
+        // 默认无明细实体
+        final boolean usesSlave = getBoolParameter(request, "slave", false);
 
         List<Map<String, Object>> ret = new ArrayList<>();
-        for (Entity entity : MetadataSorter.sortEntities()) {
-            if ((noslave && entity.getMasterEntity() != null)
-                    || (nobizz && MetadataHelper.isBizzEntity(entity.getEntityCode()))) {
-                continue;
-            }
-
+        for (Entity entity : MetadataSorter.sortEntities(null, usesBizz, usesSlave)) {
             EasyMeta easyMeta = new EasyMeta(entity);
             Map<String, Object> map = new HashMap<>();
             map.put("entityName", easyMeta.getName());

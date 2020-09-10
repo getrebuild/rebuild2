@@ -39,7 +39,7 @@ $(document).ready(function () {
     parent.RbModal.resize()
     if (entityLoaded === false) {
       entityLoaded = true
-      $.get('/admin/entity/entity-list?nobizz=true', function (res) {
+      $.get('/admin/entity/entity-list', function (res) {
         $(res.data).each(function () {
           if (!this.slaveEntity) $(`<option value="${this.entityName}">${this.entityLabel}</option>`).appendTo('#masterEntity')
         })

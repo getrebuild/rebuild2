@@ -11,7 +11,6 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.dialect.FieldType;
 import cn.devezhao.persist4j.engine.ID;
-import cn.devezhao.persist4j.metadata.BaseMeta;
 import cn.devezhao.persist4j.metadata.MetadataException;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.EasyMeta;
@@ -27,6 +26,7 @@ import java.util.List;
  *
  * @author zhaofang123@gmail.com
  * @since 08/13/2018
+ * @see EasyMeta
  */
 public class MetadataHelper {
 
@@ -113,15 +113,6 @@ public class MetadataHelper {
      */
     public static String getEntityName(ID record) {
         return getEntity(record.getEntityCode()).getName();
-    }
-
-    /**
-     * @param record
-     * @return
-     * @see EasyMeta#getLabel(BaseMeta)
-     */
-    public static String getEntityLabel(ID record) {
-        return EasyMeta.getLabel(getEntity(record.getEntityCode()));
     }
 
     /**
@@ -213,9 +204,7 @@ public class MetadataHelper {
      * @see EntityHelper
      */
     public static boolean isCommonsField(Field field) {
-        if (isSystemField(field)) {
-            return true;
-        }
+        if (isSystemField(field)) return true;
         return isCommonsField(field.getName());
     }
 
@@ -278,15 +267,6 @@ public class MetadataHelper {
      */
     public static boolean isPlainEntity(int entityCode) {
         return EasyMeta.valueOf(entityCode).isPlainEntity();
-    }
-
-    /**
-     * @param entityName
-     * @return
-     * @see EasyMeta#isPlainEntity()
-     */
-    public static boolean isPlainEntity(String entityName) {
-        return EasyMeta.valueOf(entityName).isPlainEntity();
     }
 
     /**

@@ -206,10 +206,7 @@ public class FileListControl extends BaseController {
             if (inQuery) allows.add(EntityHelper.ProjectTaskComment);
         }
 
-        for (Entity e : MetadataSorter.sortEntities(user)) {
-            // 明细实体会合并到主实体显示
-            if (!inQuery && MetadataHelper.isSlaveEntity(e.getEntityCode())) continue;
-
+        for (Entity e : MetadataSorter.sortEntities(user, false, false)) {
             // 有附件字段的实体才显示
             if (hasAttachmentFields(e)) {
                 allows.add(e.getEntityCode());

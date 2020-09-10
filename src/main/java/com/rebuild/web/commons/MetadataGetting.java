@@ -36,19 +36,13 @@ import java.util.*;
 @RequestMapping("/commons/metadata/")
 public class MetadataGetting extends BaseController {
 
-    private static final String FT_QUERY = "QUERY";
-
     @RequestMapping("entities")
     public void entities(HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
-        boolean includeSlave = getBoolParameter(request, "slave", false);
-        List<Map<String, String>> list = new ArrayList<>();
-        for (Entity e : MetadataSorter.sortEntities(user)) {
-            // 是否返回明细实体
-            if (e.getMasterEntity() != null && !includeSlave) {
-                continue;
-            }
+        boolean usesSlave = getBoolParameter(request, "slave", false);
 
+        List<Map<String, String>> list = new ArrayList<>();
+        for (Entity e : MetadataSorter.sortEntities(user, false, usesSlave)) {
             Map<String, String> map = new HashMap<>();
             EasyMeta easy = new EasyMeta(e);
             map.put("name", e.getName());
@@ -64,23 +58,20 @@ public class MetadataGetting extends BaseController {
         String entity = getParameterNotNull(request, "entity");
         Entity entityMeta = MetadataHelper.getEntity(entity);
         boolean appendRefFields = "2".equals(getParameter(request, "deep"));
-        String fieldType = getParameter(request, "ft");
 
         List<Map<String, Object>> fsList = new ArrayList<>();
-        putFields(fsList, entityMeta, appendRefFields, fieldType);
+        putFields(fsList, entityMeta, appendRefFields);
 
         // 追加二级引用字段
         if (appendRefFields) {
             for (Field field : entityMeta.getFields()) {
                 if (EasyMeta.getDisplayType(field) != DisplayType.REFERENCE) continue;
-                if (FT_QUERY.equalsIgnoreCase(fieldType)
-                        && (!field.isQueryable() || !field.getReferenceEntity().isQueryable())) continue;
 
                 int code = field.getReferenceEntity().getEntityCode();
                 if (MetadataHelper.isBizzEntity(code) || code == EntityHelper.RobotApprovalConfig) continue;
 
                 fsList.add(buildField(field));
-                putFields(fsList, field, false, fieldType);
+                putFields(fsList, field, false);
             }
         }
 
@@ -91,9 +82,8 @@ public class MetadataGetting extends BaseController {
      * @param dest
      * @param entityOrField
      * @param filterRefField
-     * @param fieldType
      */
-    private void putFields(List<Map<String, Object>> dest, BaseMeta entityOrField, boolean filterRefField, String fieldType) {
+    private void putFields(List<Map<String, Object>> dest, BaseMeta entityOrField, boolean filterRefField) {
         Field parentField = null;
         Entity useEntity;
         if (entityOrField instanceof Field) {
@@ -104,8 +94,6 @@ public class MetadataGetting extends BaseController {
         }
 
         for (Field field : MetadataSorter.sortFields(useEntity)) {
-            if (FT_QUERY.equalsIgnoreCase(fieldType) && !field.isQueryable()) continue;
-
             Map<String, Object> map = buildField(field);
 
             // 引用字段处理

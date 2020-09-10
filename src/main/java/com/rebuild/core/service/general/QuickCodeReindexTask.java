@@ -198,6 +198,7 @@ public class QuickCodeReindexTask extends HeavyTask<Integer> {
             }
         }
 
+        if (quickCode.length() > 50) quickCode = quickCode.substring(0, 50);
         return quickCode.toUpperCase();
     }
 }

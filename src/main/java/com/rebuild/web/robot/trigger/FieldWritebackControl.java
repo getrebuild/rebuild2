@@ -48,11 +48,11 @@ public class FieldWritebackControl extends BaseController {
         // 源字段
 
         sourceFields.add(FieldAggregationControl.buildField(sourceEntity.getPrimaryField(), true));
-        for (Field field : MetadataSorter.sortFields(sourceEntity.getFields())) {
+        for (Field field : MetadataSorter.sortFields(sourceEntity)) {
             sourceFields.add(FieldAggregationControl.buildField(field, true));
         }
         // 关联实体
-        for (Field fieldRef : MetadataSorter.sortFields(sourceEntity.getFields(), DisplayType.REFERENCE)) {
+        for (Field fieldRef : MetadataSorter.sortFields(sourceEntity, DisplayType.REFERENCE)) {
             Entity refEntity = fieldRef.getReferenceEntity();
             if (refEntity.getEntityCode() == EntityHelper.RobotApprovalConfig) {
                 continue;
@@ -71,7 +71,7 @@ public class FieldWritebackControl extends BaseController {
         // 目标字段
 
         if (targetEntity != null) {
-            for (Field field : MetadataSorter.sortFields(targetEntity.getFields())) {
+            for (Field field : MetadataSorter.sortFields(targetEntity)) {
                 EasyMeta easyField = EasyMeta.valueOf(field);
                 DisplayType dt = easyField.getDisplayType();
                 if (dt == DisplayType.SERIES || dt == DisplayType.MULTISELECT || easyField.isBuiltin()) {

@@ -34,10 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author zhaofang123@gmail.com
@@ -51,6 +48,7 @@ public class MetaFieldControl extends BaseController {
     public ModelAndView page(@PathVariable String entity, HttpServletRequest request) {
         ModelAndView mv = createModelAndView("/admin/metadata/fields");
         MetaEntityControl.setEntityBase(mv, entity);
+
         String nameField = MetadataHelper.getNameField(entity).getName();
         mv.getModel().put("nameField", nameField);
         mv.getModel().put("isSuperAdmin", UserHelper.isSuperAdmin(getRequestUser(request)));
@@ -59,12 +57,16 @@ public class MetaFieldControl extends BaseController {
 
     @RequestMapping("list-field")
     public void listField(HttpServletRequest request, HttpServletResponse response) {
-        String entityName = getParameter(request, "entity");
-        Entity entity = MetadataHelper.getEntity(entityName);
+        Entity entity = MetadataHelper.getEntity(getParameterNotNull(request, "entity"));
+
+        List<Field> allFields = new ArrayList<>();
+        Collections.addAll(allFields, entity.getFields());
 
         List<Map<String, Object>> ret = new ArrayList<>();
-        for (Field field : MetadataSorter.sortFields(entity)) {
-            EasyMeta easyMeta = new EasyMeta(field);
+        for (Field field : MetadataSorter.sort(allFields)) {
+            if (MetadataHelper.isSystemField(field)) continue;
+
+            EasyMeta easyMeta = EasyMeta.valueOf(field);
             Map<String, Object> map = new HashMap<>();
             if (easyMeta.getMetaId() != null) {
                 map.put("fieldId", easyMeta.getMetaId());
@@ -78,10 +80,11 @@ public class MetaFieldControl extends BaseController {
             map.put("creatable", field.isCreatable());
             ret.add(map);
         }
+
         writeSuccess(response, ret);
     }
 
-    @RequestMapping("{entity}/field/{field}")
+    @GetMapping("{entity}/field/{field}")
     public ModelAndView pageEntityField(@PathVariable String entity, @PathVariable String field,
                                         HttpServletRequest request, HttpServletResponse response) throws IOException {
         if (!MetadataHelper.checkAndWarnField(entity, field)) {

@@ -79,14 +79,10 @@ public class BatchUpdateControl extends BaseController {
 
         List<Map<String, Object>> updatableFields = new ArrayList<>();
         for (Field field : MetadataSorter.sortFields(entityMeta)) {
-            if (MetadataHelper.isSystemField(field) || !field.isUpdatable()) {
-                continue;
-            }
+            if (!field.isUpdatable()) continue;
 
             EasyMeta easyMeta = EasyMeta.valueOf(field);
-            if (!easyMeta.isUpdatable()) {
-                continue;
-            }
+            if (!easyMeta.isUpdatable()) continue;
 
             DisplayType dt = easyMeta.getDisplayType();
             // 不支持的字段

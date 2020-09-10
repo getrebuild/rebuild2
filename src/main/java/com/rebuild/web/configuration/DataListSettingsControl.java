@@ -173,6 +173,6 @@ public class DataListSettingsControl extends BaseController implements ShareTo {
      * @return
      */
     private boolean canUseField(Field field) {
-        return field.isQueryable() && EasyMeta.getDisplayType(field) != DisplayType.BARCODE;
+        return EasyMeta.getDisplayType(field) != DisplayType.BARCODE;
     }
 }
