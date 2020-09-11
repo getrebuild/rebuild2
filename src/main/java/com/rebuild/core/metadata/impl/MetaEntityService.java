@@ -83,7 +83,7 @@ public class MetaEntityService extends BaseService implements AdminGuard {
     public Record update(Record record) {
         record = super.update(record);
 
-        Application.getMetadataFactory().refresh(false);
+        MetadataHelper.getMetadataFactory().refresh(false);
         return record;
     }
 }

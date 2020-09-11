@@ -254,10 +254,6 @@ public class Application {
         return getBean(PersistManagerFactory.class);
     }
 
-    public static DynamicMetadataFactory getMetadataFactory() {
-        return (DynamicMetadataFactory) getPersistManagerFactory().getMetadataFactory();
-    }
-
     public static UserStore getUserStore() {
         return getBean(UserStore.class);
     }

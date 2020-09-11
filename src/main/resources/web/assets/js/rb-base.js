@@ -16,7 +16,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 // select2.zh-CN
 // eslint-disable-next-line
-!(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd){var e=jQuery.fn.select2.amd}return(e.define("select2/i18n/zh-CN",[],function(){return{errorLoading:function(){return"无法载入结果"},inputTooLong:function(e){var t=e.input.length-e.maximum,n="请删除"+t+"个字符";return n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="请再输入至少"+t+"个字符";n="输入关键词搜索";return n},loadingMore:function(){return"载入更多结果"},maximumSelected:function(e){var t="最多只能选择"+e.maximum+"项";return t},noResults:function(){return"未找到结果"},searching:function(){return"搜索中..."},}}),{define:e.define,require:e.require})})();
+!(function(){if(jQuery&&jQuery.fn&&jQuery.fn.select2&&jQuery.fn.select2.amd){var e=jQuery.fn.select2.amd}return(e.define("select2/i18n/zh_CN",[],function(){return{errorLoading:function(){return"无法载入结果"},inputTooLong:function(e){var t=e.input.length-e.maximum,n="请删除"+t+"个字符";return n},inputTooShort:function(e){var t=e.minimum-e.input.length,n="请再输入至少"+t+"个字符";n="输入关键词搜索";return n},loadingMore:function(){return"载入更多结果"},maximumSelected:function(e){var t="最多只能选择"+e.maximum+"项";return t},noResults:function(){return"未找到结果"},searching:function(){return"搜索中..."},removeAllItems:function(){return"清除"}}}),{define:e.define,require:e.require})})();
 
 // extends jQuery
 !(function ($) {
@@ -53,10 +53,22 @@ See LICENSE and COMMERCIAL in the project root for license information.
     },
   })
 
+  // RB metas
+  window.rb = window.rb || {}
+  $('meta[name^="rb."]').each(function (idx, item) {
+    var k = $(item).attr('name').substr(3) // remove `rb.`
+    var v = $(item).attr('content')
+    if (v === 'true') v = true
+    else if (v === 'false') v = false
+    window.rb[k] = v
+  })
+
   $.ajaxSetup({
     headers: {
       'Content-Type': 'text/plain;charset=utf-8',
-      'X-Client': 'RB/WEB-2.0'
+      'X-Client': 'RB/WEB-2.0',
+      'X-Csrf-Token': window.rb.csrfToken || '',
+      'X-Access-Token': window.rb.accessToken || '',
     },
     cache: false,
     complete: function (xhr) {
@@ -70,15 +82,6 @@ See LICENSE and COMMERCIAL in the project root for license information.
       if (settings.url.substr(0, 1) === '/' && rb.baseUrl) settings.url = rb.baseUrl + settings.url
       return settings
     },
-  })
-
-  window.rb = window.rb || {}
-  $('meta[name^="rb."]').each(function (idx, item) {
-    var k = $(item).attr('name').substr(3) // remove `rb.`
-    var v = $(item).attr('content')
-    if (v === 'true') v = true
-    else if (v === 'false') v = false
-    window.rb[k] = v
   })
 
   if (rb.appName && rb.appName !== document.title) document.title = document.title + ' · ' + rb.appName
@@ -126,7 +129,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
   // for `select2`
   $.fn.select2.defaults.set('width', '100%')
-  $.fn.select2.defaults.set('language', rb.locale.replace('_', '-'))
+  $.fn.select2.defaults.set('language', rb.locale)
   $.fn.select2.defaults.set('allowClear', true)
   $.fn.select2.defaults.set('placeholder', '')
 
@@ -220,7 +223,7 @@ var $val = function (el) {
     return nVal === oVal ? null : nVal
   }
 
-  if ((oVal || 666) === (nVal || 666)) return null // unmodified
+  if ((oVal || 666) + '' === (nVal || 666) + '') return null // unmodified
   if (!!oVal && !nVal) return ''
   // new value is empty
   else return $.trim(nVal) || null

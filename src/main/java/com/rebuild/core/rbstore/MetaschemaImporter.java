@@ -43,8 +43,6 @@ public class MetaschemaImporter extends HeavyTask<String> {
 
     private List<Object[]> picklistHolders = new ArrayList<>();
 
-    private String finalEntityName = null;
-
     /**
      * @param fileUrl
      */
@@ -136,15 +134,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
         }
         setCompleted(100);
 
-        this.finalEntityName = entityName;
         return entityName;
-    }
-
-    /**
-     * @return
-     */
-    public String getFinalEntityName() {
-        return finalEntityName;
     }
 
     /**
@@ -210,7 +200,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
             }
         }
 
-        Application.getMetadataFactory().refresh(false);
+        MetadataHelper.getMetadataFactory().refresh(false);
         return entityName;
     }
 

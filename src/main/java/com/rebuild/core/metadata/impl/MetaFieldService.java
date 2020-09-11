@@ -13,7 +13,6 @@ import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.metadata.MetadataException;
-import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.AdminGuard;
@@ -79,7 +78,7 @@ public class MetaFieldService extends BaseService implements AdminGuard {
     public Record update(Record record) {
         record = super.update(record);
 
-        Application.getMetadataFactory().refresh(false);
+        MetadataHelper.getMetadataFactory().refresh(false);
         return record;
     }
 }

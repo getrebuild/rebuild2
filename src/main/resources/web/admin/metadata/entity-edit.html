@@ -86,6 +86,13 @@
                     <p class="form-text mb-0">[[${bundle.lang('NameFieldTips')}]]</p>
                   </div>
                 </div>
+                <div class="form-group row bosskey-show">
+                  <label class="col-md-12 col-xl-3 col-lg-4 col-form-label text-lg-right">[[${bundle.lang('QuickQueryField')}]]</label>
+                  <div class="col-md-12 col-xl-6 col-lg-8">
+                    <select class="form-control form-control-sm" id="quickFields"></select>
+                    <p class="form-text mb-0">[[${bundle.lang('QuickQueryFieldTips')}]]</p>
+                  </div>
+                </div>
                 <div class="form-group row">
                   <label class="col-md-12 col-xl-3 col-lg-4 col-form-label text-lg-right">[[${bundle.lang('Remark')}]]</label>
                   <div class="col-md-12 col-xl-6 col-lg-8">
@@ -115,6 +122,7 @@
         metaId: '[[${entityMetaId}]]',
         entity: '[[${entityName}]]',
         nameField: '[[${nameField}]]',
+        extConfig: _$unth('[[${entityExtConfig}]]'),
       }
     </script>
     <script th:src="@{/assets/js/metadata/entity-edit.js}"></script>

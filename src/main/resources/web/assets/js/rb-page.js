@@ -105,12 +105,12 @@ $(function () {
   $(document.body).keydown(function (e) {
     if (e.shiftKey) {
       if (++bosskey === 6) {
-        $('.bosskey-show').show()
-        $.cookie('useBosskey', 666, { expires: null, httpOnly: true })
+        $('.bosskey-show').removeClass('bosskey-show')
+        $.cookie('_USEBOSSKEY', 666, { expires: null, httpOnly: true })
       }
     }
   })
-  if ($.cookie('useBosskey')) $('.bosskey-show').show()
+  if ($.cookie('_USEBOSSKEY')) $('.bosskey-show').removeClass('bosskey-show')
 
   // Trigger on window.onresize
   $(window).on('resize', function () {

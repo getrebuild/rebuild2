@@ -128,6 +128,8 @@ public class MetaFieldControl extends BaseController {
             mv.getModel().put("fieldRefentity", refentity.getName());
             mv.getModel().put("fieldRefentityLabel", new EasyMeta(refentity).getLabel());
         }
+
+        // 扩展配置
         mv.getModel().put("fieldExtConfig", easyField.getExtraAttrs(true));
 
         return mv;

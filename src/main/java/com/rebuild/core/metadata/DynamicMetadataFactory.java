@@ -14,7 +14,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.DisplayType;
-import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -69,9 +68,16 @@ public class DynamicMetadataFactory extends ConfigurationMetadataFactory {
                     .addAttribute("queryable", "true")
                     .addAttribute("deletable", "true");
 
-            JSONObject extraAttrs = JSONUtils.toJSONObject(
-                    new String[] { "metaId", "comments", "icon" },
-                    new Object[] { c[4], c[5], c[6] });
+            // 实体扩展配置
+            JSONObject extraAttrs;
+            if (StringUtils.isBlank((String) c[9])) {
+                extraAttrs = new JSONObject();
+            } else {
+                extraAttrs = JSON.parseObject((String) c[9]);
+            }
+            extraAttrs.put("metaId", c[4]);
+            extraAttrs.put("comments", c[5]);
+            extraAttrs.put("icon", c[6]);
             entity.addAttribute("extra-attrs", extraAttrs.toJSONString());
         }
 

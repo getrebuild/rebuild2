@@ -24,15 +24,28 @@ $(document).ready(function () {
 
   const $btn = $('.J_save').click(function () {
     if (!wpc.metaId) return
+
     let data = {
       entityLabel: $val('#entityLabel'),
-      comments: $val('#comments'),
       nameField: $val('#nameField'),
+      comments: $val('#comments'),
     }
-    if (data.label === '') return RbHighbar.create($lang('PlsInoutSome,EntityName'))
+    if (data.label === '') {
+      RbHighbar.create($lang('PlsInoutSome,EntityName'))
+      return
+    }
 
     const icon = $val('#entityIcon')
-    if (icon) data.icon = icon
+    if (icon) {
+      data.icon = icon
+    }
+
+    const quickFields = $('#quickFields').val().join(',')
+    if (quickFields !== wpc.extConfig.quickFields) {
+      data.extConfig = {
+        quickFields: quickFields,
+      }
+    }
 
     data = $cleanMap(data)
     if (Object.keys(data).length === 0) {
@@ -56,8 +69,9 @@ $(document).ready(function () {
     RbModal.create('/p/commons/search-icon', $lang('SelectSome,Icon'))
   })
 
-  $.get(`/commons/metadata/fields?entity=${wpc.entity}`, function (d) {
-    const rs = d.data.map((item) => {
+  $.get(`/commons/metadata/fields?deep=1&entity=${wpc.entity}`, function (d) {
+    // 名称字段
+    const rsName = d.data.map((item) => {
       const canName =
         item.type === 'NUMBER' ||
         item.type === 'DECIMAL' ||
@@ -78,21 +92,40 @@ $(document).ready(function () {
       }
     })
 
-    const rsSort = []
-    rs.forEach((item) => {
-      if (item.disabled === false) rsSort.push(item)
+    const rsNameSorted = []
+    rsName.forEach((item) => {
+      if (item.disabled === false) rsNameSorted.push(item)
     })
-    rs.forEach((item) => {
-      if (item.disabled === true) rsSort.push(item)
+    rsName.forEach((item) => {
+      if (item.disabled === true) rsNameSorted.push(item)
     })
 
     $('#nameField')
       .select2({
         placeholder: $lang('SelectSome,Field'),
         allowClear: false,
-        data: rsSort,
+        data: rsNameSorted,
       })
       .val(wpc.nameField)
       .trigger('change')
+
+    // 快速查询
+    const rsQuick = []
+    d.data.forEach((x) => {
+      if (x.type === 'TEXT' || x.type === 'EMAIL' || x.type === 'URL' || x.type === 'PHONE' || x.type === 'SERIES' || x.type === 'PICKLIST' || x.type === 'CLASSIFICATION') {
+        rsQuick.push({ id: x.name, text: x.label })
+      }
+    })
+
+    $('#quickFields').select2({
+      placeholder: $lang('SelectSome,Field'),
+      allowClear: true,
+      multiple: true,
+      maximumSelectionLength: 5,
+      data: rsQuick,
+    })
+    if (wpc.extConfig.quickFields) {
+      $('#quickFields').val(wpc.extConfig.quickFields.split(',')).trigger('change')
+    }
   })
 })

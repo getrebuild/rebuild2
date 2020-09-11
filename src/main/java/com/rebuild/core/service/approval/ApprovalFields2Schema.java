@@ -55,7 +55,7 @@ public class ApprovalFields2Schema extends Field2Schema {
             throw new MetadataException(Language.getLang("NotCreateMetasToDb"));
         }
 
-        Application.getMetadataFactory().refresh(false);
+        MetadataHelper.getMetadataFactory().refresh(false);
         return true;
     }
 }

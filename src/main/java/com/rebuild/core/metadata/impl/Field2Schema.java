@@ -94,7 +94,7 @@ public class Field2Schema {
             throw new MetadataException(Language.getLang("NotCreateMetasToDb"));
         }
 
-        Application.getMetadataFactory().refresh(false);
+        MetadataHelper.getMetadataFactory().refresh(false);
         return fieldName;
     }
 
@@ -131,7 +131,7 @@ public class Field2Schema {
         }
 
         Application.getBean(MetaFieldService.class).delete(metaRecordId);
-        Application.getMetadataFactory().refresh(false);
+        MetadataHelper.getMetadataFactory().refresh(false);
         return true;
     }
 

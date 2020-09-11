@@ -76,6 +76,9 @@ public class MetaEntityControl extends BaseController {
             mv.getModel().put("slaveEntity", entityMeta.getSlaveEntity().getName());
         }
 
+        // 扩展配置
+        mv.getModel().put("entityExtConfig", EasyMeta.valueOf(entityMeta).getExtraAttrs(true));
+
         return mv;
     }
 
