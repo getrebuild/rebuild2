@@ -50,7 +50,7 @@ public class MetadataSorter {
         List<BaseMeta> entities = new ArrayList<>();
         for (Entity e : MetadataHelper.getEntities()) {
             if (!e.isQueryable()) continue;
-            if (e.getMasterEntity() != null && !usesSlave) continue;
+            if (e.getMainEntity() != null && !usesSlave) continue;
 
             EasyMeta easyEntity = EasyMeta.valueOf(e);
             if (easyEntity.isBuiltin() && !easyEntity.isPlainEntity()) continue;

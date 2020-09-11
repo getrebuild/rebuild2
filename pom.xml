@@ -140,7 +140,7 @@
         <dependency>
             <groupId>com.github.devezhao</groupId>
             <artifactId>persist4j</artifactId>
-            <version>1.4.3</version>
+            <version>e389c40861</version>
         </dependency>
 
         <dependency>

@@ -16,7 +16,7 @@ import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
-import com.rebuild.core.support.BlackList;
+import com.rebuild.utils.BlackList;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.SMSender;
@@ -140,7 +140,7 @@ public class UserService extends BaseServiceImpl {
             throw new DataSpecificationException(Language.getLang("SomeDuplicate", "Username"));
         }
 
-        if (!CommonsUtils.isPlainText(loginName) || BlackList.isBlacked(loginName)) {
+        if (!CommonsUtils.isPlainText(loginName) || BlackList.isBlack(loginName)) {
             throw new DataSpecificationException(Language.getLang("SomeInvalid", "Username"));
         }
     }

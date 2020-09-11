@@ -62,7 +62,7 @@ public class DynamicMetadataFactory extends ConfigurationMetadataFactory {
                     .addAttribute("description", (String) c[3])
                     .addAttribute("parent", "false")
                     .addAttribute("name-field", (String) c[7])
-                    .addAttribute("master", (String) c[8])
+                    .addAttribute("main", (String) c[8])
                     .addAttribute("creatable", "true")
                     .addAttribute("updatable", "true")
                     .addAttribute("queryable", "true")

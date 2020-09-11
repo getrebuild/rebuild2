@@ -62,8 +62,8 @@ public class GeneralListControl extends EntityController {
         }
 
         ModelAndView mv;
-        if (thatEntity.getMasterEntity() != null) {
-            mv = createModelAndView("/general/slave-list", entity, user);
+        if (thatEntity.getMainEntity() != null) {
+            mv = createModelAndView("/general/detail-list", entity, user);
         } else {
             mv = createModelAndView("/general/record-list", entity, user);
         }

@@ -68,12 +68,12 @@ public class MetaEntityControl extends BaseController {
         Entity entityMeta = MetadataHelper.getEntity(entity);
         mv.getModel().put("nameField", MetadataHelper.getNameField(entityMeta).getName());
 
-        if (entityMeta.getMasterEntity() != null) {
-            mv.getModel().put("masterEntity", entityMeta.getMasterEntity().getName());
+        if (entityMeta.getMainEntity() != null) {
+            mv.getModel().put("masterEntity", entityMeta.getMainEntity().getName());
             mv.getModel().put("slaveEntity", entityMeta.getName());
-        } else if (entityMeta.getSlaveEntity() != null) {
+        } else if (entityMeta.getDetailEntity() != null) {
             mv.getModel().put("masterEntity", entityMeta.getName());
-            mv.getModel().put("slaveEntity", entityMeta.getSlaveEntity().getName());
+            mv.getModel().put("slaveEntity", entityMeta.getDetailEntity().getName());
         }
 
         // 扩展配置
@@ -106,11 +106,11 @@ public class MetaEntityControl extends BaseController {
             map.put("comments", easyMeta.getComments());
             map.put("icon", easyMeta.getIcon());
             map.put("builtin", easyMeta.isBuiltin());
-            if (entity.getSlaveEntity() != null) {
-                map.put("slaveEntity", entity.getSlaveEntity().getName());
+            if (entity.getDetailEntity() != null) {
+                map.put("slaveEntity", entity.getDetailEntity().getName());
             }
-            if (entity.getMasterEntity() != null) {
-                map.put("masterEntity", entity.getMasterEntity().getName());
+            if (entity.getMainEntity() != null) {
+                map.put("masterEntity", entity.getMainEntity().getName());
             }
             ret.add(map);
         }
@@ -133,12 +133,12 @@ public class MetaEntityControl extends BaseController {
             }
 
             Entity useMaster = MetadataHelper.getEntity(masterEntity);
-            if (useMaster.getMasterEntity() != null) {
-                writeFailure(response, getLang(request, "SlaveEntityNotBeMaster"));
+            if (useMaster.getMainEntity() != null) {
+                writeFailure(response, getLang(request, "SlaveEntityNotBeMain"));
                 return;
-            } else if (useMaster.getSlaveEntity() != null) {
+            } else if (useMaster.getDetailEntity() != null) {
                 writeFailure(response,
-                        String.format(getLang(request, "SelectMasterEntityBeXUsed"), useMaster.getSlaveEntity()));
+                        String.format(getLang(request, "SelectMainEntityBeXUsed"), useMaster.getDetailEntity()));
                 return;
             }
         }

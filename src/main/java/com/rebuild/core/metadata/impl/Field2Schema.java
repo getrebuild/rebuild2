@@ -20,7 +20,7 @@ import cn.devezhao.persist4j.util.support.Table;
 import com.alibaba.fastjson.JSON;
 import com.hankcs.hanlp.HanLP;
 import com.rebuild.core.Application;
-import com.rebuild.core.support.BlackList;
+import com.rebuild.utils.BlackList;
 import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.setup.Installer;
 import com.rebuild.core.metadata.EntityHelper;
@@ -318,7 +318,7 @@ public class Field2Schema {
 
         // 全英文直接返回
         if (identifier.matches("[a-zA-Z0-9]+")) {
-            if (!CharSet.ASCII_ALPHA.contains(identifier.charAt(0)) || BlackList.isBlacked(identifier)) {
+            if (!CharSet.ASCII_ALPHA.contains(identifier.charAt(0)) || BlackList.isBlack(identifier)) {
                 identifier = "rb" + identifier;
             }
             return identifier;

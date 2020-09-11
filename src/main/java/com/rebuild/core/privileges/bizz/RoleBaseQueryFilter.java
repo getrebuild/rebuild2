@@ -95,8 +95,8 @@ public class RoleBaseQueryFilter implements Filter, QueryFilter {
             // NOTE BIZZ 实体全部用户可见
             if (MetadataHelper.isBizzEntity(entity.getEntityCode()) || EasyMeta.valueOf(entity).isPlainEntity()) {
                 return ALLOWED.evaluate(null);
-            } else if (entity.getMasterEntity() != null) {
-                useMaster = entity.getMasterEntity();
+            } else if (entity.getMainEntity() != null) {
+                useMaster = entity.getMainEntity();
             } else {
                 return DENIED.evaluate(null);
             }
@@ -118,7 +118,7 @@ public class RoleBaseQueryFilter implements Filter, QueryFilter {
         String ownFormat = "%s = '%s'";
         Field stmField = null;
         if (useMaster != null) {
-            stmField = MetadataHelper.getSlaveToMasterField(entity);
+            stmField = MetadataHelper.getDetailToMainField(entity);
             ownFormat = stmField.getName() + "." + ownFormat;
         }
 
@@ -159,7 +159,7 @@ public class RoleBaseQueryFilter implements Filter, QueryFilter {
         // 子实体。使用主实体的共享
         if (slaveToMasterField != null) {
             shareFilter = String.format(shareFilter,
-                    slaveToMasterField.getOwnEntity().getMasterEntity().getName(),
+                    slaveToMasterField.getOwnEntity().getMainEntity().getName(),
                     user.getId(), slaveToMasterField.getName());
         } else {
             shareFilter = String.format(shareFilter,

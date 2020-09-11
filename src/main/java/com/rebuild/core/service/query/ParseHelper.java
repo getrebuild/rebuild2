@@ -7,13 +7,30 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.service.query;
 
+import cn.devezhao.persist4j.Entity;
+import cn.devezhao.persist4j.Field;
+import cn.devezhao.persist4j.query.compiler.QueryCompiler;
+import com.rebuild.core.metadata.EntityHelper;
+import com.rebuild.core.metadata.MetadataHelper;
+import com.rebuild.core.metadata.MetadataSorter;
+import com.rebuild.core.metadata.impl.DisplayType;
+import com.rebuild.core.metadata.impl.EasyMeta;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author devezhao
  * @since 2019/9/29
  */
-public class ParserTokens {
+public class ParseHelper {
 
-    // 可选操作符
+    private static final Logger LOG = LoggerFactory.getLogger(ParseHelper.class);
+
+    // -- 可选操作符
 
     public static final String EQ = "EQ";
     public static final String NEQ = "NEQ";
@@ -140,4 +157,79 @@ public class ParserTokens {
         throw new UnsupportedOperationException("Unsupported token of operator : " + token);
     }
 
+    // --
+
+    /**
+     * @param field
+     * @return
+     */
+    public static String useQuickFilter(Field field) {
+        return useQuickFilter(EasyMeta.valueOf(field));
+    }
+
+    /**
+     * @param field
+     * @return
+     */
+    public static String useQuickFilter(EasyMeta field) {
+        DisplayType dt = field.getDisplayType();
+
+        // 引用字段不能作为名称字段（前端限制），此处的处理是因为某些系统实体有用到
+        // 主要要保证其兼容 LIKE 条件的语法要求
+        if (dt == DisplayType.REFERENCE || dt == DisplayType.PICKLIST || dt == DisplayType.CLASSIFICATION) {
+            return QueryCompiler.NAME_FIELD_PREFIX + field.getName();
+        } else if (dt == DisplayType.TEXT || dt == DisplayType.EMAIL || dt == DisplayType.URL || dt == DisplayType.PHONE || dt == DisplayType.SERIES) {
+            return field.getName();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param entity
+     * @param quickFields
+     * @return
+     */
+    public static Set<String> buildQuickFields(Entity entity, String quickFields) {
+        final Set<String> usesFields = new HashSet<>();
+
+        // 未指定则使用系统配置的
+        if (StringUtils.isBlank(quickFields)) {
+            quickFields = EasyMeta.valueOf(entity).getExtraAttr("quickFields");
+        }
+
+        // 验证
+        if (StringUtils.isNotBlank(quickFields)) {
+            for (String field : quickFields.split(",")) {
+                Field validField = MetadataHelper.getLastJoinField(entity, field);
+                if (validField != null) {
+                    String can = useQuickFilter(validField);
+                    if (can != null) {
+                        usesFields.add(field);
+                    }
+
+                } else {
+                    LOG.warn("No field found by QuickFilter : " + field + " in " + entity.getName());
+                }
+            }
+        }
+
+        if (usesFields.isEmpty()) {
+            // 名称字段
+            if (entity.getNameField() != null) {
+                usesFields.add(entity.getNameField().getName());
+            }
+            // 自动编号字段
+            for (Field field : MetadataSorter.sortFields(entity, DisplayType.SERIES)) {
+                usesFields.add(field.getName());
+            }
+        }
+
+        // QuickCode
+        if (entity.containsField(EntityHelper.QuickCode)) {
+            usesFields.add(EntityHelper.QuickCode);
+        }
+
+        return usesFields;
+    }
 }

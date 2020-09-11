@@ -55,14 +55,14 @@ public class RecycleBean implements Serializable {
         Record queryed = Application.createQueryNoFilter(sql).setParameter(1, this.recordId).record();
         JSONObject s = (JSONObject) queryed.serialize();
 
-        Entity slaveEntity = entity.getSlaveEntity();
+        Entity slaveEntity = entity.getDetailEntity();
         if (slaveEntity == null) {
             return s;
         }
 
         // 明细
         String slaveSql = buildBaseSql(slaveEntity)
-                .append(MetadataHelper.getSlaveToMasterField(slaveEntity).getName())
+                .append(MetadataHelper.getDetailToMainField(slaveEntity).getName())
                 .append(" = ?")
                 .toString();
         List<Record> slaveQueryed = Application.createQueryNoFilter(slaveSql).setParameter(1, this.recordId).list();

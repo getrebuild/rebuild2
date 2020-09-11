@@ -58,18 +58,18 @@ public class TemplateExtractor {
     public Map<String, String> transformVars(Entity entity) {
         final Set<String> vars = extractVars();
 
-        Entity slaveEntity = entity.getSlaveEntity();
+        Entity detailEntity = entity.getDetailEntity();
         Map<String, String> map = new HashMap<>();
         for (String field : vars) {
 
             // 明细实体的字段
-            if (slaveEntity != null && field.startsWith(SLAVE_PREFIX)) {
+            if (detailEntity != null && field.startsWith(SLAVE_PREFIX)) {
 
                 String slaveField = field.substring(1);
-                if (MetadataHelper.getLastJoinField(slaveEntity, slaveField) != null) {
+                if (MetadataHelper.getLastJoinField(detailEntity, slaveField) != null) {
                     map.put(field, slaveField);
                 } else {
-                    String realField = transformRealField(slaveEntity, slaveField);
+                    String realField = transformRealField(detailEntity, slaveField);
                     map.put(field, realField);
                 }
 

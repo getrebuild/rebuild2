@@ -165,8 +165,8 @@ public class CommonsService extends BaseService {
         }
 
         // 验证主实体
-        if (MetadataHelper.isSlaveEntity(entity.getEntityCode())) {
-            entity = entity.getMasterEntity();
+        if (entity.getMainEntity() != null) {
+            entity = entity.getMainEntity();
         }
 
         if (MetadataHelper.hasPrivilegesField(entity)) {

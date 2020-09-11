@@ -108,10 +108,10 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
         boolean allowed;
         if (action == BizzPermission.CREATE) {
             // 明细实体
-            if (entity.getMasterEntity() != null) {
+            if (entity.getMainEntity() != null) {
                 Assert.isTrue(Record.class.isAssignableFrom(idOrRecord.getClass()), "First argument must be Record!");
 
-                Field stmField = MetadataHelper.getSlaveToMasterField(entity);
+                Field stmField = MetadataHelper.getDetailToMainField(entity);
                 ID masterId = ((Record) idOrRecord).getID(stmField.getName());
                 if (masterId == null || !Application.getPrivilegesManager().allowUpdate(caller, masterId)) {
                     throw new AccessDeniedException(Language.getLang("YouNoSomePrivileges", "AddSlave"));

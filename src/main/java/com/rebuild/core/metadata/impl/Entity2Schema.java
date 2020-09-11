@@ -45,23 +45,23 @@ public class Entity2Schema extends Field2Schema {
     /**
      * @param entityLabel
      * @param comments
-     * @param masterEntity
+     * @param mainEntity
      * @param haveNameField
      * @return
      */
-    public String createEntity(String entityLabel, String comments, String masterEntity, boolean haveNameField) {
-        return createEntity(null, entityLabel, comments, masterEntity, haveNameField);
+    public String createEntity(String entityLabel, String comments, String mainEntity, boolean haveNameField) {
+        return createEntity(null, entityLabel, comments, mainEntity, haveNameField);
     }
 
     /**
      * @param entityName
      * @param entityLabel
      * @param comments
-     * @param masterEntity
+     * @param mainEntity
      * @param haveNameField
      * @return returns 实体名称
      */
-    public String createEntity(String entityName, String entityLabel, String comments, String masterEntity, boolean haveNameField) {
+    public String createEntity(String entityName, String entityLabel, String comments, String mainEntity, boolean haveNameField) {
         if (entityName != null) {
             if (MetadataHelper.containsEntity(entityName)) {
                 throw new MetadataException(
@@ -78,10 +78,10 @@ public class Entity2Schema extends Field2Schema {
             }
         }
 
-        final boolean isSlave = StringUtils.isNotBlank(masterEntity);
-        if (isSlave && !MetadataHelper.containsEntity(masterEntity)) {
+        final boolean isSlave = StringUtils.isNotBlank(mainEntity);
+        if (isSlave && !MetadataHelper.containsEntity(mainEntity)) {
             throw new MetadataException(
-                    Language.getLang("SomeInvalid", "MasterEntity") + " : " + masterEntity);
+                    Language.getLang("SomeInvalid", "MasterEntity") + " : " + mainEntity);
         }
 
         String physicalName = "T__" + entityName.toUpperCase();
@@ -109,7 +109,7 @@ public class Entity2Schema extends Field2Schema {
             record.setString("comments", comments);
         }
         if (isSlave) {
-            record.setString("masterEntity", masterEntity);
+            record.setString("mainEntity", mainEntity);
         }
         record.setString("nameField", nameFiled);
         record = Application.getCommonsService().create(record);
@@ -135,9 +135,9 @@ public class Entity2Schema extends Field2Schema {
             // 明细实体关联字段
             // 明细实体无所属用户或部门，使用主实体的
             if (isSlave) {
-                String masterLabel = EasyMeta.valueOf(masterEntity).getLabel();
-                String masterField = masterEntity + "Id";
-                createBuiltinField(tempEntity, masterField, masterLabel, DisplayType.REFERENCE, "引用主记录", masterEntity, CascadeModel.Delete);
+                String mainLabel = EasyMeta.valueOf(mainEntity).getLabel();
+                String mainPrimary = mainEntity + "Id";
+                createBuiltinField(tempEntity, mainPrimary, mainLabel, DisplayType.REFERENCE, "引用主记录", mainEntity, CascadeModel.Delete);
             } else {
                 // 助记码/搜索码
                 createUnsafeField(
@@ -186,18 +186,18 @@ public class Entity2Schema extends Field2Schema {
             throw new MetadataException(Language.getLang("BuiltInNotDelete"));
         }
 
-        if (entity.getSlaveEntity() != null) {
+        if (entity.getDetailEntity() != null) {
             if (force) {
-                boolean dropSlave = this.dropEntity(entity.getSlaveEntity(), true);
+                boolean dropSlave = this.dropEntity(entity.getDetailEntity(), true);
                 if (dropSlave) {
                     entity = MetadataHelper.getEntity(entity.getEntityCode());
 
                 } else {
-                    throw new MetadataException(Language.getLang("DeleteMasterFirstTips"));
+                    throw new MetadataException(Language.getLang("DeleteMainFirstTips"));
                 }
 
             } else {
-                throw new MetadataException(Language.getLang("DeleteMasterFirstTips"));
+                throw new MetadataException(Language.getLang("DeleteMainFirstTips"));
             }
         }
 

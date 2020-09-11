@@ -188,7 +188,7 @@ public class QueryParser {
             if (StringUtils.isNotBlank(where)) wheres.add(where);
         }
 
-        // appends Quick
+        // appends QuickQuery
         JSONObject quickFilter = queryExpr.getJSONObject("filter");
         if (quickFilter != null) {
             String where = new AdvFilterParser(entity, quickFilter).toSqlWhere();

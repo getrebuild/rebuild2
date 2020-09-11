@@ -63,7 +63,7 @@ public class PrivilegesManager {
         } else if (u.isAdmin()) {
             return Privileges.ROOT;
         }
-        return u.getOwningRole().getPrivileges(convert2MasterEntity(entity));
+        return u.getOwningRole().getPrivileges(convert2MainEntity(entity));
     }
 
     /**
@@ -218,20 +218,20 @@ public class PrivilegesManager {
             action = BizzPermission.SHARE;
         }
 
-        if (MetadataHelper.isSlaveEntity(entity)) {
+        if (MetadataHelper.getEntity(entity).getMainEntity() != null) {
             // 明细实体不能使用此方法检查创建权限
             // 明细实体创建 = 主实体更新，因此应该检查主实体记录是否有更新权限
             if (action == BizzPermission.CREATE) {
-                throw new PrivilegesException("Unsupported checks slave entity : " + entity);
+                throw new PrivilegesException("Unsupported checks detail-entity : " + entity);
             }
             // 明细无分派/共享
             else if (action == BizzPermission.ASSIGN || action == BizzPermission.SHARE) {
                 return false;
             }
-            action = convert2MasterAction(action);
+            action = convert2MainAction(action);
         }
 
-        Privileges ep = role.getPrivileges(convert2MasterEntity(entity));
+        Privileges ep = role.getPrivileges(convert2MainEntity(entity));
         return ep.allowed(action);
     }
 
@@ -269,15 +269,15 @@ public class PrivilegesManager {
             return true;
         }
 
-        if (MetadataHelper.isSlaveEntity(entity)) {
-            // 明细无分派/共享
+        // 明细无分派/共享
+        if (MetadataHelper.getEntity(entity).getMainEntity() != null) {
             if (action == BizzPermission.ASSIGN || action == BizzPermission.SHARE) {
                 return false;
             }
-            action = convert2MasterAction(action);
+            action = convert2MainAction(action);
         }
 
-        Privileges ep = role.getPrivileges(convert2MasterEntity(entity));
+        Privileges ep = role.getPrivileges(convert2MainEntity(entity));
 
         boolean allowed = ep.allowed(action);
         if (!allowed) {
@@ -348,14 +348,14 @@ public class PrivilegesManager {
         }
 
         Entity entity = MetadataHelper.getEntity(target.getEntityCode());
-        if (entity.getMasterEntity() != null) {
-            ID masterId = getMasterRecordId(target);
-            if (masterId == null) {
-                throw new NoRecordFoundException("No record found by slave-id : " + target);
+        if (entity.getMainEntity() != null) {
+            ID mainId = getMainRecordId(target);
+            if (mainId == null) {
+                throw new NoRecordFoundException("No record found by detail-id : " + target);
             }
 
-            target = masterId;
-            entity = entity.getMasterEntity();
+            target = mainId;
+            entity = entity.getMainEntity();
         }
 
         Object[] rights = Application.createQueryNoFilter(
@@ -374,35 +374,35 @@ public class PrivilegesManager {
      * @param entity
      * @return
      */
-    private int convert2MasterEntity(int entity) {
+    private int convert2MainEntity(int entity) {
         Entity em = MetadataHelper.getEntity(entity);
-        return em.getMasterEntity() == null ? entity : em.getMasterEntity().getEntityCode();
+        return em.getMainEntity() == null ? entity : em.getMainEntity().getEntityCode();
     }
 
     /**
      * 转换明细实体的权限。<tt>删除/新建/更新</tt>明细记录，等于修改主实体，因此要转换成<tt>更新</tt>权限
      *
-     * @param slaveAction
+     * @param detailAction
      * @return
      */
-    private Permission convert2MasterAction(Permission slaveAction) {
-        if (slaveAction == BizzPermission.CREATE || slaveAction == BizzPermission.DELETE) {
+    private Permission convert2MainAction(Permission detailAction) {
+        if (detailAction == BizzPermission.CREATE || detailAction == BizzPermission.DELETE) {
             return BizzPermission.UPDATE;
         }
-        return slaveAction;
+        return detailAction;
     }
 
     /**
      * 根据明细 ID 获取主记录 ID
      *
-     * @param slaveId
+     * @param detailId
      * @return
      */
-    private ID getMasterRecordId(ID slaveId) {
-        Entity entity = MetadataHelper.getEntity(slaveId.getEntityCode());
-        Field stmField = MetadataHelper.getSlaveToMasterField(entity);
+    private ID getMainRecordId(ID detailId) {
+        Entity entity = MetadataHelper.getEntity(detailId.getEntityCode());
+        Field stmField = MetadataHelper.getDetailToMainField(entity);
 
-        Object[] primary = Application.getQueryFactory().uniqueNoFilter(slaveId, stmField.getName());
+        Object[] primary = Application.getQueryFactory().uniqueNoFilter(detailId, stmField.getName());
         return primary == null ? null : (ID) primary[0];
     }
 

@@ -17,13 +17,13 @@ import cn.devezhao.persist4j.dialect.Type;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.support.SetUser;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.privileges.bizz.Department;
+import com.rebuild.core.support.SetUser;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -81,7 +81,7 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
 
         // 快速搜索模式，自动确定查询项
         if ("QUICK".equalsIgnoreCase(filterExp.getString("type"))) {
-            JSONArray items = buildQuickFilterItems(filterExp.getString("qfields"));
+            JSONArray items = buildQuickFilterItems(filterExp.getString("quickFields"));
             this.filterExp.put("items", items);
         }
 
@@ -209,39 +209,39 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
 
         // 日期时间
         if (dt == DisplayType.DATETIME || dt == DisplayType.DATE) {
-            if (ParserTokens.TDA.equalsIgnoreCase(op) || ParserTokens.YTA.equalsIgnoreCase(op)
-                    || ParserTokens.TTA.equalsIgnoreCase(op)) {
+            if (ParseHelper.TDA.equalsIgnoreCase(op) || ParseHelper.YTA.equalsIgnoreCase(op)
+                    || ParseHelper.TTA.equalsIgnoreCase(op)) {
                 value = getUTCDateFormat().format(CalendarUtils.now());
-                if (ParserTokens.YTA.equalsIgnoreCase(op)) {
+                if (ParseHelper.YTA.equalsIgnoreCase(op)) {
                     value = getUTCDateFormat().format(addDay(-1));
-                } else if (ParserTokens.TTA.equalsIgnoreCase(op)) {
+                } else if (ParseHelper.TTA.equalsIgnoreCase(op)) {
                     value = getUTCDateFormat().format(addDay(1));
                 }
 
                 if (dt == DisplayType.DATETIME) {
-                    op = ParserTokens.BW;
+                    op = ParseHelper.BW;
                     valueEnd = parseValue(value, op, fieldMeta, true);
                 }
 
-            } else if (ParserTokens.CUW.equalsIgnoreCase(op) || ParserTokens.CUM.equalsIgnoreCase(op)
-                    || ParserTokens.CUQ.equalsIgnoreCase(op) || ParserTokens.CUY.equalsIgnoreCase(op)) {
+            } else if (ParseHelper.CUW.equalsIgnoreCase(op) || ParseHelper.CUM.equalsIgnoreCase(op)
+                    || ParseHelper.CUQ.equalsIgnoreCase(op) || ParseHelper.CUY.equalsIgnoreCase(op)) {
                 Date date = Moment.moment().startOf(op.substring(2)).date();
                 value = CalendarUtils.getUTCDateFormat().format(date);
 
                 if (dt == DisplayType.DATETIME) {
-                    value += ParserTokens.ZERO_TIME;
+                    value += ParseHelper.ZERO_TIME;
                 }
 
-            } else if (ParserTokens.EQ.equalsIgnoreCase(op)
+            } else if (ParseHelper.EQ.equalsIgnoreCase(op)
                     && dt == DisplayType.DATETIME && StringUtils.length(value) == 10) {
-                op = ParserTokens.BW;
+                op = ParseHelper.BW;
                 valueEnd = parseValue(value, op, fieldMeta, true);
             }
 
         } else if (dt == DisplayType.MULTISELECT) {
             // 多选的包含/不包含要按位计算
-            if (ParserTokens.IN.equalsIgnoreCase(op) || ParserTokens.NIN.equalsIgnoreCase(op)) {
-                op = ParserTokens.IN.equalsIgnoreCase(op) ? ParserTokens.BAND : ParserTokens.NBAND;
+            if (ParseHelper.IN.equalsIgnoreCase(op) || ParseHelper.NIN.equalsIgnoreCase(op)) {
+                op = ParseHelper.IN.equalsIgnoreCase(op) ? ParseHelper.BAND : ParseHelper.NBAND;
 
                 long maskValue = 0;
                 for (String s : value.split("\\|")) {
@@ -253,9 +253,9 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
 
         StringBuilder sb = new StringBuilder(field)
                 .append(' ')
-                .append(ParserTokens.convetOperator(op));
+                .append(ParseHelper.convetOperator(op));
         // 无需值
-        if (ParserTokens.NL.equalsIgnoreCase(op) || ParserTokens.NT.equalsIgnoreCase(op)) {
+        if (ParseHelper.NL.equalsIgnoreCase(op) || ParseHelper.NT.equalsIgnoreCase(op)) {
             return sb.toString();
         }
 
@@ -263,27 +263,27 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
 
         // 自定义函数
 
-        if (ParserTokens.BFD.equalsIgnoreCase(op)) {
-            value = getUTCDateFormat().format(addDay(-NumberUtils.toInt(value))) + ParserTokens.FULL_TIME;
-        } else if (ParserTokens.BFM.equalsIgnoreCase(op)) {
-            value = getUTCDateFormat().format(addMonth(-NumberUtils.toInt(value))) + ParserTokens.FULL_TIME;
-        } else if (ParserTokens.BFY.equalsIgnoreCase(op)) {
-            value = getUTCDateFormat().format(addMonth(-NumberUtils.toInt(value) * 12)) + ParserTokens.FULL_TIME;
-        } else if (ParserTokens.AFD.equalsIgnoreCase(op)) {
-            value = getUTCDateFormat().format(addDay(NumberUtils.toInt(value))) + ParserTokens.ZERO_TIME;
-        } else if (ParserTokens.AFM.equalsIgnoreCase(op)) {
-            value = getUTCDateFormat().format(addMonth(NumberUtils.toInt(value))) + ParserTokens.ZERO_TIME;
-        } else if (ParserTokens.AFY.equalsIgnoreCase(op)) {
-            value = getUTCDateFormat().format(addMonth(NumberUtils.toInt(value) * 12)) + ParserTokens.ZERO_TIME;
-        } else if (ParserTokens.RED.equalsIgnoreCase(op)) {
-            value = getUTCDateFormat().format(addDay(-NumberUtils.toInt(value))) + ParserTokens.FULL_TIME;
-        } else if (ParserTokens.REM.equalsIgnoreCase(op)) {
-            value = getUTCDateFormat().format(addMonth(-NumberUtils.toInt(value))) + ParserTokens.FULL_TIME;
-        } else if (ParserTokens.REY.equalsIgnoreCase(op)) {
-            value = getUTCDateFormat().format(addMonth(-NumberUtils.toInt(value) * 12)) + ParserTokens.FULL_TIME;
-        } else if (ParserTokens.SFU.equalsIgnoreCase(op)) {
+        if (ParseHelper.BFD.equalsIgnoreCase(op)) {
+            value = getUTCDateFormat().format(addDay(-NumberUtils.toInt(value))) + ParseHelper.FULL_TIME;
+        } else if (ParseHelper.BFM.equalsIgnoreCase(op)) {
+            value = getUTCDateFormat().format(addMonth(-NumberUtils.toInt(value))) + ParseHelper.FULL_TIME;
+        } else if (ParseHelper.BFY.equalsIgnoreCase(op)) {
+            value = getUTCDateFormat().format(addMonth(-NumberUtils.toInt(value) * 12)) + ParseHelper.FULL_TIME;
+        } else if (ParseHelper.AFD.equalsIgnoreCase(op)) {
+            value = getUTCDateFormat().format(addDay(NumberUtils.toInt(value))) + ParseHelper.ZERO_TIME;
+        } else if (ParseHelper.AFM.equalsIgnoreCase(op)) {
+            value = getUTCDateFormat().format(addMonth(NumberUtils.toInt(value))) + ParseHelper.ZERO_TIME;
+        } else if (ParseHelper.AFY.equalsIgnoreCase(op)) {
+            value = getUTCDateFormat().format(addMonth(NumberUtils.toInt(value) * 12)) + ParseHelper.ZERO_TIME;
+        } else if (ParseHelper.RED.equalsIgnoreCase(op)) {
+            value = getUTCDateFormat().format(addDay(-NumberUtils.toInt(value))) + ParseHelper.FULL_TIME;
+        } else if (ParseHelper.REM.equalsIgnoreCase(op)) {
+            value = getUTCDateFormat().format(addMonth(-NumberUtils.toInt(value))) + ParseHelper.FULL_TIME;
+        } else if (ParseHelper.REY.equalsIgnoreCase(op)) {
+            value = getUTCDateFormat().format(addMonth(-NumberUtils.toInt(value) * 12)) + ParseHelper.FULL_TIME;
+        } else if (ParseHelper.SFU.equalsIgnoreCase(op)) {
             value = getUser().toLiteral();
-        } else if (ParserTokens.SFB.equalsIgnoreCase(op)) {
+        } else if (ParseHelper.SFB.equalsIgnoreCase(op)) {
             Department dept = UserHelper.getDepartment(getUser());
             if (dept != null) {
                 value = dept.getIdentity().toString();
@@ -296,7 +296,7 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
                     value = null;
                 }
             }
-        } else if (ParserTokens.SFD.equalsIgnoreCase(op)) {
+        } else if (ParseHelper.SFD.equalsIgnoreCase(op)) {
             Department dept = UserHelper.getDepartment(getUser());
             if (dept != null) {
                 int refe = fieldMeta.getReferenceEntity().getEntityCode();
@@ -329,7 +329,7 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
         }
 
         // 区间
-        final boolean isBetween = op.equalsIgnoreCase(ParserTokens.BW);
+        final boolean isBetween = op.equalsIgnoreCase(ParseHelper.BW);
         if (isBetween && valueEnd == null) {
             valueEnd = parseValue(item.getString("value2"), op, fieldMeta, true);
             if (valueEnd == null) {
@@ -338,11 +338,11 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
         }
 
         // IN
-        if (op.equalsIgnoreCase(ParserTokens.IN) || op.equalsIgnoreCase(ParserTokens.NIN) || op.equalsIgnoreCase(ParserTokens.SFD)) {
+        if (op.equalsIgnoreCase(ParseHelper.IN) || op.equalsIgnoreCase(ParseHelper.NIN) || op.equalsIgnoreCase(ParseHelper.SFD)) {
             sb.append(value);
         } else {
             // LIKE
-            if (op.equalsIgnoreCase(ParserTokens.LK) || op.equalsIgnoreCase(ParserTokens.NLK)) {
+            if (op.equalsIgnoreCase(ParseHelper.LK) || op.equalsIgnoreCase(ParseHelper.NLK)) {
                 value = '%' + value + '%';
             }
             sb.append(quoteValue(value, fieldMeta.getType()));
@@ -382,21 +382,21 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
 
             // TIMESTAMP 仅指定了日期值，则补充时间值
             if (field.getType() == FieldType.TIMESTAMP && StringUtils.length(value) == 10) {
-                if (ParserTokens.GT.equalsIgnoreCase(op)) {
-                    value += ParserTokens.FULL_TIME;  // 不含当日
-                } else if (ParserTokens.LT.equalsIgnoreCase(op)) {
-                    value += ParserTokens.ZERO_TIME;  // 不含当日
-                } else if (ParserTokens.GE.equalsIgnoreCase(op)) {
-                    value += ParserTokens.ZERO_TIME;  // 含当日
-                } else if (ParserTokens.LE.equalsIgnoreCase(op)) {
-                    value += ParserTokens.FULL_TIME;  // 含当日
-                } else if (ParserTokens.BW.equalsIgnoreCase(op)) {
-                    value += (endVal ? ParserTokens.FULL_TIME : ParserTokens.ZERO_TIME);  // 含当日
+                if (ParseHelper.GT.equalsIgnoreCase(op)) {
+                    value += ParseHelper.FULL_TIME;  // 不含当日
+                } else if (ParseHelper.LT.equalsIgnoreCase(op)) {
+                    value += ParseHelper.ZERO_TIME;  // 不含当日
+                } else if (ParseHelper.GE.equalsIgnoreCase(op)) {
+                    value += ParseHelper.ZERO_TIME;  // 含当日
+                } else if (ParseHelper.LE.equalsIgnoreCase(op)) {
+                    value += ParseHelper.FULL_TIME;  // 含当日
+                } else if (ParseHelper.BW.equalsIgnoreCase(op)) {
+                    value += (endVal ? ParseHelper.FULL_TIME : ParseHelper.ZERO_TIME);  // 含当日
                 }
             }
 
             // 多个值的情况下，兼容 | 号分割
-            if (op.equalsIgnoreCase(ParserTokens.IN) || op.equalsIgnoreCase(ParserTokens.NIN) || op.equalsIgnoreCase(ParserTokens.SFD)) {
+            if (op.equalsIgnoreCase(ParseHelper.IN) || op.equalsIgnoreCase(ParseHelper.NIN) || op.equalsIgnoreCase(ParseHelper.SFD)) {
                 Set<String> inVals = new HashSet<>();
                 for (String v : value.split("\\|")) {
                     inVals.add(quoteValue(v, field.getType()));
@@ -444,44 +444,14 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
     /**
      * 快速查询
      *
-     * @param qFields
+     * @param quickFields
      * @return
      */
-    private JSONArray buildQuickFilterItems(String qFields) {
-        final Set<String> fieldItems = new HashSet<>();
-
-        // 指定字段
-        if (StringUtils.isNotBlank(qFields)) {
-            for (String field : qFields.split(",")) {
-                field = field.trim();
-                if (MetadataHelper.getLastJoinField(rootEntity, field) != null) {
-                    fieldItems.add(field);
-                } else {
-                    LOG.warn("No field found by QuickFilter : " + field + " in " + rootEntity.getName());
-                }
-            }
-        }
-
-        // 追加名称字段和 quickCode
-        Field nameField = rootEntity.getNameField();
-        DisplayType dt = EasyMeta.getDisplayType(nameField);
-
-        // 引用字段不能作为名称字段，此处的处理是因为某些系统实体有用到
-        // 请主要要保证其兼容 LIKE 条件的语法要求
-        if (dt == DisplayType.REFERENCE) {
-            fieldItems.add("&" + nameField.getName());
-        } else if (dt == DisplayType.PICKLIST || dt == DisplayType.CLASSIFICATION) {
-            fieldItems.add("&" + nameField.getName());
-        } else if (dt == DisplayType.TEXT || dt == DisplayType.EMAIL || dt == DisplayType.URL || dt == DisplayType.PHONE || dt == DisplayType.SERIES) {
-            fieldItems.add(nameField.getName());
-        }
-
-        if (rootEntity.containsField(EntityHelper.QuickCode)) {
-            fieldItems.add(EntityHelper.QuickCode);
-        }
+    private JSONArray buildQuickFilterItems(String quickFields) {
+        Set<String> usesFields = ParseHelper.buildQuickFields(rootEntity, quickFields);
 
         JSONArray items = new JSONArray();
-        for (String field : fieldItems) {
+        for (String field : usesFields) {
             items.add(JSON.parseObject("{ op:'LK', value:'{1}', field:'" + field + "' }"));
         }
         return items;

@@ -5,11 +5,10 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-package com.rebuild.core.support;
+package com.rebuild.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.rebuild.utils.JSONUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
@@ -38,7 +37,7 @@ public class BlackList {
      * @param text
      * @return
      */
-    public static boolean isBlacked(String text) {
+    public static boolean isBlack(String text) {
         if (BLACKLIST == null) {
             try {
                 File file = ResourceUtils.getFile("classpath:blacklist.json");

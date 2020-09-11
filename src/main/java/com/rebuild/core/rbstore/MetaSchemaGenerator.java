@@ -57,8 +57,8 @@ public class MetaSchemaGenerator {
      */
     public JSON generate() {
         JSONObject schema = (JSONObject) performEntity(entity, false);
-        if (entity.getSlaveEntity() != null) {
-            JSON slave = performEntity(entity.getSlaveEntity(), true);
+        if (entity.getDetailEntity() != null) {
+            JSON slave = performEntity(entity.getDetailEntity(), true);
             schema.put("slave", slave);
         }
         return schema;
@@ -84,7 +84,7 @@ public class MetaSchemaGenerator {
         JSONArray metaFields = new JSONArray();
         for (Field field : entity.getFields()) {
             if (MetadataHelper.isCommonsField(field)
-                    || (isSlave && MetadataHelper.getSlaveToMasterField(entity).equals(field))) {
+                    || (isSlave && MetadataHelper.getDetailToMainField(entity).equals(field))) {
                 continue;
             }
             metaFields.add(performField(field));

@@ -148,7 +148,7 @@ public class MetadataGetting extends BaseController {
         Set<Entity> references = new HashSet<>();
         for (Field field : entityMeta.getReferenceToFields()) {
             Entity own = field.getOwnEntity();
-            if (!(MetadataHelper.isSlaveEntity(own.getEntityCode()) || field.getType() == FieldType.ANY_REFERENCE)) {
+            if (!(own.getMainEntity() != null || field.getType() == FieldType.ANY_REFERENCE)) {
                 references.add(own);
             }
         }

@@ -139,10 +139,10 @@ public class DashboardControl extends BaseController {
                 String entity = request.getParameter("entity");
                 Entity entityMeta = MetadataHelper.getEntity(entity);
                 String entitySql = String.format("belongEntity = '%s'", StringEscapeUtils.escapeSql(entity));
-                if (entityMeta.getMasterEntity() != null) {
-                    entitySql += String.format(" or belongEntity = '%s'", entityMeta.getMasterEntity().getName());
-                } else if (entityMeta.getSlaveEntity() != null) {
-                    entitySql += String.format(" or belongEntity = '%s'", entityMeta.getSlaveEntity().getName());
+                if (entityMeta.getMainEntity() != null) {
+                    entitySql += String.format(" or belongEntity = '%s'", entityMeta.getMainEntity().getName());
+                } else if (entityMeta.getDetailEntity() != null) {
+                    entitySql += String.format(" or belongEntity = '%s'", entityMeta.getDetailEntity().getName());
                 }
 
                 sql = sql.replace("1=1", entitySql);

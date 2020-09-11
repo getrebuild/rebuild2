@@ -158,8 +158,8 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
 
         String sql = String.format(baseSql + " order by modifiedOn desc",
                 StringUtils.join(fieldsOfSlave, ","),
-                entity.getSlaveEntity().getName(),
-                MetadataHelper.getSlaveToMasterField(entity.getSlaveEntity()).getName());
+                entity.getDetailEntity().getName(),
+                MetadataHelper.getDetailToMainField(entity.getDetailEntity()).getName());
         List<Record> list = Application.createQuery(sql, this.getUser())
                 .setParameter(1, this.recordId)
                 .list();

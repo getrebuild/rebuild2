@@ -99,7 +99,7 @@ public class FormsBuilder extends FormsManager {
         final Entity entityMeta = MetadataHelper.getEntity(entity);
 
         // 明细实体
-        final Entity masterEntity = entityMeta.getMasterEntity();
+        final Entity mainEntity = entityMeta.getMainEntity();
         // 审批流程（状态）
         ApprovalState approvalState;
 
@@ -107,22 +107,22 @@ public class FormsBuilder extends FormsManager {
 
         // 新建
         if (record == null) {
-            if (masterEntity != null) {
-                ID masterRecordId = MASTERID4NEWSLAVE.get();
-                Assert.notNull(masterRecordId, "Please calls #setCurrentMasterId first");
+            if (mainEntity != null) {
+                ID mainRecordId = MAINID_4NEW_DETAIL.get();
+                Assert.notNull(mainRecordId, "Please calls #setCurrentMainId first");
 
                 approvalState = getHadApproval(entityMeta, null);
-                MASTERID4NEWSLAVE.set(null);
+                MAINID_4NEW_DETAIL.set(null);
 
                 if ((approvalState == ApprovalState.PROCESSING || approvalState == ApprovalState.APPROVED)) {
                     String stateType = approvalState == ApprovalState.APPROVED ? "RecordApproved" : "RecordInApproval";
-                    return formatModelError(Language.getLang("MasterRecordApprovedNotAddSlaveTips", stateType));
+                    return formatModelError(Language.getLang("MainRecordApprovedNotAddSlaveTips", stateType));
                 }
 
                 // 明细无需审批
                 approvalState = null;
 
-                if (!Application.getPrivilegesManager().allowUpdate(user, masterRecordId)) {
+                if (!Application.getPrivilegesManager().allowUpdate(user, mainRecordId)) {
                     return formatModelError(Language.formatLang("YouNoSomePrivileges", "AddSlave"));
                 }
             } else if (!Application.getPrivilegesManager().allowCreate(user, entityMeta.getEntityCode())) {
@@ -148,7 +148,7 @@ public class FormsBuilder extends FormsManager {
 
             approvalState = getHadApproval(entityMeta, record);
             if (approvalState != null) {
-                String recordType = masterEntity == null ? "Record" : "MasterRecord";
+                String recordType = mainEntity == null ? "Record" : "MasterRecord";
                 if (approvalState == ApprovalState.APPROVED) {
                     return formatModelError(Language.getLang("SomeRecordApprovedTips", recordType));
                 } else if (approvalState == ApprovalState.PROCESSING) {
@@ -187,11 +187,11 @@ public class FormsBuilder extends FormsManager {
         }
 
         // 主/明细实体处理
-        if (entityMeta.getMasterEntity() != null) {
+        if (entityMeta.getMainEntity() != null) {
             model.set("isSlave", true);
-        } else if (entityMeta.getSlaveEntity() != null) {
+        } else if (entityMeta.getDetailEntity() != null) {
             model.set("isMaster", true);
-            model.set("slaveMeta", EasyMeta.getEntityShow(entityMeta.getSlaveEntity()));
+            model.set("slaveMeta", EasyMeta.getEntityShow(entityMeta.getDetailEntity()));
         }
 
         if (data != null && data.hasValue(EntityHelper.ModifiedOn)) {
@@ -223,23 +223,23 @@ public class FormsBuilder extends FormsManager {
      * @see RobotApprovalManager#hadApproval(Entity, ID)
      */
     private ApprovalState getHadApproval(Entity entity, ID recordId) {
-        Entity masterEntity = entity.getMasterEntity();
-        if (masterEntity == null) {
+        Entity mainEntity = entity.getMainEntity();
+        if (mainEntity == null) {
             return RobotApprovalManager.instance.hadApproval(entity, recordId);
         }
 
-        ID masterRecordId = MASTERID4NEWSLAVE.get();
-        if (masterRecordId == null) {
-            Field stmField = MetadataHelper.getSlaveToMasterField(entity);
+        ID mainRecordId = MAINID_4NEW_DETAIL.get();
+        if (mainRecordId == null) {
+            Field stmField = MetadataHelper.getDetailToMainField(entity);
             String sql = String.format("select %s from %s where %s = ?",
                     stmField.getName(), entity.getName(), entity.getPrimaryField().getName());
             Object[] o = Application.createQueryNoFilter(sql).setParameter(1, recordId).unique();
             if (o == null) {
                 return null;
             }
-            masterRecordId = (ID) o[0];
+            mainRecordId = (ID) o[0];
         }
-        return RobotApprovalManager.instance.hadApproval(masterEntity, masterRecordId);
+        return RobotApprovalManager.instance.hadApproval(mainEntity, mainRecordId);
     }
 
     /**
@@ -514,7 +514,7 @@ public class FormsBuilder extends FormsManager {
             }
             // 主实体字段
             else if (field.equals(DV_MASTER)) {
-                Field stmField = MetadataHelper.getSlaveToMasterField(entity);
+                Field stmField = MetadataHelper.getDetailToMainField(entity);
                 Object mixValue = inFormFields.contains(stmField.getName()) ? readyReferenceValue(value) : value;
                 if (mixValue != null) {
                     initialValReady.put(stmField.getName(), mixValue);
@@ -575,18 +575,18 @@ public class FormsBuilder extends FormsManager {
 
     // -- 主/明细实体权限处理
 
-    private static final ThreadLocal<ID> MASTERID4NEWSLAVE = new ThreadLocal<>();
+    private static final ThreadLocal<ID> MAINID_4NEW_DETAIL = new ThreadLocal<>();
 
     /**
      * 创建明细实体必须指定主实体，以便验证权限
      *
-     * @param masterId
+     * @param mainId
      */
-    public static void setCurrentMasterId(ID masterId) {
-        if (masterId == null) {
-            MASTERID4NEWSLAVE.remove();
+    public static void setCurrentMainId(ID mainId) {
+        if (mainId == null) {
+            MAINID_4NEW_DETAIL.remove();
         } else {
-            MASTERID4NEWSLAVE.set(masterId);
+            MAINID_4NEW_DETAIL.set(mainId);
         }
     }
 }

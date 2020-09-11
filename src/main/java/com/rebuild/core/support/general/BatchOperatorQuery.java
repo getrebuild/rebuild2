@@ -25,7 +25,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.support.SetUser;
 import com.rebuild.core.metadata.MetadataHelper;
-import com.rebuild.core.service.query.ParserTokens;
+import com.rebuild.core.service.query.ParseHelper;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -85,7 +85,7 @@ public class BatchOperatorQuery extends SetUser<BatchOperatorQuery> {
         }
         if (this.dataRange == DR_SELECTED) {
             JSONObject idsItem = new JSONObject();
-            idsItem.put("op", ParserTokens.IN);
+            idsItem.put("op", ParseHelper.IN);
             idsItem.put("field", getEntity().getPrimaryField().getName());
             idsItem.put("value", queryData.getString("_selected"));
 

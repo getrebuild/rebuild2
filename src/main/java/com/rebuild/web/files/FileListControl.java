@@ -104,9 +104,9 @@ public class FileListControl extends BaseController {
                         "(belongEntity = %d or belongEntity = %d)", entity, EntityHelper.ProjectTaskComment));
             } else if (entity > 1) {
                 Entity entityMeta = MetadataHelper.getEntity(entity);
-                if (entityMeta.getSlaveEntity() != null) {
+                if (entityMeta.getDetailEntity() != null) {
                     sqlWhere.add(String.format(
-                            "(belongEntity = %d or belongEntity = %d)", entity, entityMeta.getSlaveEntity().getEntityCode()));
+                            "(belongEntity = %d or belongEntity = %d)", entity, entityMeta.getDetailEntity().getEntityCode()));
                 } else {
                     sqlWhere.add("belongEntity = " + entity);
                 }
@@ -211,8 +211,8 @@ public class FileListControl extends BaseController {
             if (hasAttachmentFields(e)) {
                 allows.add(e.getEntityCode());
             }
-            if (e.getSlaveEntity() != null && hasAttachmentFields(e.getSlaveEntity())) {
-                allows.add(e.getSlaveEntity().getEntityCode());
+            if (e.getDetailEntity() != null && hasAttachmentFields(e.getDetailEntity())) {
+                allows.add(e.getDetailEntity().getEntityCode());
             }
         }
         return allows.toArray(new Integer[0]);

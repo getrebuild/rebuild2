@@ -53,18 +53,18 @@ public class RecordOwningCache extends BaseCacheTemplate<ID> {
         }
 
         Entity entity = MetadataHelper.getEntity(record.getEntityCode());
-        Entity useMaster = null;
+        Entity useMain = null;
         if (!MetadataHelper.hasPrivilegesField(entity)) {
-            useMaster = entity.getMasterEntity();
-            if (!(useMaster != null && MetadataHelper.hasPrivilegesField(useMaster))) {
+            useMain = entity.getMainEntity();
+            if (!(useMain != null && MetadataHelper.hasPrivilegesField(useMain))) {
                 throw new PrivilegesException("None privileges entity : " + entity.getName());
             }
         }
 
         String sql = "select owningUser from %s where %s = '%s'";
         // 使用主记录
-        if (useMaster != null) {
-            Field stmField = MetadataHelper.getSlaveToMasterField(entity);
+        if (useMain != null) {
+            Field stmField = MetadataHelper.getDetailToMainField(entity);
             sql = sql.replaceFirst("owningUser", stmField.getName() + ".owningUser");
         }
         sql = String.format(sql, entity.getName(), entity.getPrimaryField().getName(), record.toLiteral());

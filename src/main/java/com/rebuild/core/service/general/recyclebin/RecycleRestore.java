@@ -147,7 +147,7 @@ public class RecycleRestore {
         Record record = new RestoreRecordCreator(entity, content).create(true);
         records.add(record);
 
-        Entity slaveEntity = entity.getSlaveEntity();
+        Entity slaveEntity = entity.getDetailEntity();
         if (slaveList != null && slaveEntity != null) {
             for (Object o : slaveList) {
                 Record slave = new RestoreRecordCreator(slaveEntity, (JSONObject) o).create(true);

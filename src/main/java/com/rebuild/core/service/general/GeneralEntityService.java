@@ -375,29 +375,29 @@ public class GeneralEntityService extends ObservableService implements EntitySer
      */
     protected boolean checkModifications(Record record, Permission action) throws DataSpecificationException {
         final Entity entity = record.getEntity();
-        final Entity masterEntity = entity.getMasterEntity();
+        final Entity mainEntity = entity.getMainEntity();
 
         if (action == BizzPermission.CREATE) {
             // 验证审批状态
             // 仅验证新建明细（相当于更新主记录）
-            if (masterEntity != null && MetadataHelper.hasApprovalField(record.getEntity())) {
-                Field stmField = MetadataHelper.getSlaveToMasterField(entity);
+            if (mainEntity != null && MetadataHelper.hasApprovalField(record.getEntity())) {
+                Field stmField = MetadataHelper.getDetailToMainField(entity);
                 ApprovalState state = ApprovalHelper.getApprovalState(record.getID(stmField.getName()));
 
                 if (state == ApprovalState.APPROVED || state == ApprovalState.PROCESSING) {
                     String stateType = state == ApprovalState.APPROVED ? "RecordApproved" : "RecordInApproval";
-                    throw new DataSpecificationException(Language.getLang("MasterRecordApprovedNotAddSlaveTips", stateType));
+                    throw new DataSpecificationException(Language.getLang("MainRecordApprovedNotAddSlaveTips", stateType));
                 }
             }
 
         } else {
-            final Entity checkEntity = masterEntity != null ? masterEntity : entity;
+            final Entity checkEntity = mainEntity != null ? mainEntity : entity;
             ID recordId = record.getPrimary();
 
             if (checkEntity.containsField(EntityHelper.ApprovalId)) {
                 // 需要验证主记录
                 String recordType = "Record";
-                if (masterEntity != null) {
+                if (mainEntity != null) {
                     recordId = getMasterId(entity, recordId);
                     recordType = "MasterRecord";
                 }
@@ -491,7 +491,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
      * @throws NoRecordFoundException
      */
     private ID getMasterId(Entity slaveEntity, ID slaveId) throws NoRecordFoundException {
-        Field stmField = MetadataHelper.getSlaveToMasterField(slaveEntity);
+        Field stmField = MetadataHelper.getDetailToMainField(slaveEntity);
         Object[] o = Application.getQueryFactory().uniqueNoFilter(slaveId, stmField.getName());
         if (o == null) {
             throw new NoRecordFoundException(slaveId);

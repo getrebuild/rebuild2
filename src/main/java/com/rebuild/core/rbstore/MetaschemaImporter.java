@@ -139,17 +139,17 @@ public class MetaschemaImporter extends HeavyTask<String> {
 
     /**
      * @param schemaEntity
-     * @param masterEntityName
+     * @param mainEntityName
      * @return
      * @throws MetadataException
      */
-    private String performEntity(JSONObject schemaEntity, String masterEntityName) throws MetadataException {
+    private String performEntity(JSONObject schemaEntity, String mainEntityName) throws MetadataException {
         String entityName = schemaEntity.getString("entity");
         String entityLabel = schemaEntity.getString("entityLabel");
 
         Entity2Schema entity2Schema = new Entity2Schema(this.getUser());
         entity2Schema.createEntity(
-                entityName, entityLabel, schemaEntity.getString("comments"), masterEntityName, false);
+                entityName, entityLabel, schemaEntity.getString("comments"), mainEntityName, false);
         Entity entity = MetadataHelper.getEntity(entityName);
         this.setCompleted((int) (this.getCompleted() * 1.5));
 

@@ -101,7 +101,7 @@ public class DataListSettingsControl extends BaseController implements ShareTo {
         }
 
         // 明细关联字段
-        final Field stmField = entityMeta.getMasterEntity() == null ? null : MetadataHelper.getSlaveToMasterField(entityMeta);
+        final Field stmField = entityMeta.getMainEntity() == null ? null : MetadataHelper.getDetailToMainField(entityMeta);
 
         // 引用实体的字段
         for (Field field : MetadataSorter.sortFields(entityMeta, DisplayType.REFERENCE)) {

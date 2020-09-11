@@ -12,6 +12,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.dialect.FieldType;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.metadata.MetadataException;
+import cn.devezhao.persist4j.query.compiler.QueryCompiler;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import org.slf4j.Logger;
@@ -295,40 +296,20 @@ public class MetadataHelper {
      * @param slave
      * @return
      */
-    public static Field getSlaveToMasterField(Entity slave) {
-        Entity master = slave.getMasterEntity();
-        Assert.isTrue(master != null, "Non slave entity");
+    public static Field getDetailToMainField(Entity slave) {
+        Entity main = slave.getMainEntity();
+        Assert.isTrue(main != null, "None detail-entity");
 
         for (Field field : slave.getFields()) {
             if (field.getType() != FieldType.REFERENCE) {
                 continue;
             }
             // 不可建的那个才是，因为明细字段也可能引用主实体
-            if (master.equals(field.getReferenceEntity()) && !field.isCreatable()) {
+            if (main.equals(field.getReferenceEntity()) && !field.isCreatable()) {
                 return field;
             }
         }
-        throw new MetadataException("Bad slave entity (No STM)");
-    }
-
-    /**
-     * 是否主实体
-     *
-     * @param entityCode
-     * @return
-     */
-    public static boolean isMasterEntity(int entityCode) {
-        return getEntity(entityCode).getSlaveEntity() != null;
-    }
-
-    /**
-     * 是否明细实体
-     *
-     * @param entityCode
-     * @return
-     */
-    public static boolean isSlaveEntity(int entityCode) {
-        return getEntity(entityCode).getMasterEntity() != null;
+        throw new MetadataException("Bad detail entity (No DTM)");
     }
 
     /**
@@ -341,7 +322,7 @@ public class MetadataHelper {
      */
     public static Field getLastJoinField(Entity entity, String fieldPath) {
         String[] paths = fieldPath.split("\\.");
-        if (fieldPath.charAt(0) == '&') {
+        if (fieldPath.charAt(0) == QueryCompiler.NAME_FIELD_PREFIX) {
             paths[0] = paths[0].substring(1);
             if (!entity.containsField(paths[0])) {
                 return null;

@@ -74,8 +74,7 @@ public class DataListBuilderImpl implements DataListBuilder {
         int[] limits = queryParser.getSqlLimit();
         Object[][] data = query.setLimit(limits[0], limits[1]).array();
 
-        return createDataListWrapper(totalRows, data, query)
-                .toJson();
+        return createDataListWrapper(totalRows, data, query).toJson();
     }
 
     /**

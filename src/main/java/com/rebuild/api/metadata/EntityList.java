@@ -50,11 +50,11 @@ public class EntityList extends BaseApi {
         o.put("queryable", entity.isQueryable());
         o.put("deletable", entity.isDeletable());
 
-        if (entity.getMasterEntity() != null) {
-            o.put("master_entity", entity.getMasterEntity().getName());
+        if (entity.getMainEntity() != null) {
+            o.put("main_entity", entity.getMainEntity().getName());
         }
-        if (entity.getSlaveEntity() != null) {
-            o.put("slave_entity", entity.getSlaveEntity().getName());
+        if (entity.getDetailEntity() != null) {
+            o.put("detail_entity", entity.getDetailEntity().getName());
         }
         return o;
     }

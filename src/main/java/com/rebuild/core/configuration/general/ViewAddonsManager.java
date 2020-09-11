@@ -52,10 +52,10 @@ public class ViewAddonsManager extends BaseLayoutManager {
 
         // 添加明细实体到第一个
         Entity entityMeta = MetadataHelper.getEntity(entity);
-        if (entityMeta.getSlaveEntity() != null) {
-            JSON slave = EasyMeta.getEntityShow(entityMeta.getSlaveEntity());
+        if (entityMeta.getDetailEntity() != null) {
+            JSON detail = EasyMeta.getEntityShow(entityMeta.getDetailEntity());
             JSONArray tabsFluent = new JSONArray();
-            tabsFluent.add(slave);
+            tabsFluent.add(detail);
             tabsFluent.fluentAddAll((Collection<?>) tabs);
             tabs = tabsFluent;
         }
@@ -89,7 +89,7 @@ public class ViewAddonsManager extends BaseLayoutManager {
             JSONArray refs = new JSONArray();
             for (Field field : entityMeta.getReferenceToFields(true)) {
                 Entity e = field.getOwnEntity();
-                if (e.getMasterEntity() == null &&
+                if (e.getMainEntity() == null &&
                         Application.getPrivilegesManager().allow(user, e.getEntityCode(), useAction)) {
                     refs.add(getEntityShow(field, mfRefs, applyType));
                 }
@@ -141,7 +141,7 @@ public class ViewAddonsManager extends BaseLayoutManager {
         for (Field field : entity.getReferenceToFields(true)) {
             Entity e = field.getOwnEntity();
             // 排除明细实体
-            if (e.getMasterEntity() == null) {
+            if (e.getMainEntity() == null) {
                 int t = map.getOrDefault(e, 0);
                 map.put(e, t + 1);
             }

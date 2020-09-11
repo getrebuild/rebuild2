@@ -114,8 +114,8 @@ public class MetaFieldControl extends BaseController {
         mv.getModel().put("isSuperAdmin", UserHelper.isSuperAdmin(getRequestUser(request)));
 
         // 明细实体
-        if (((Entity) easyEntity.getBaseMeta()).getMasterEntity() != null) {
-            Field stmField = MetadataHelper.getSlaveToMasterField((Entity) easyEntity.getBaseMeta());
+        if (((Entity) easyEntity.getBaseMeta()).getMainEntity() != null) {
+            Field stmField = MetadataHelper.getDetailToMainField((Entity) easyEntity.getBaseMeta());
             mv.getModel().put("isSlaveToMasterField", stmField.equals(fieldMeta));
         } else {
             mv.getModel().put("isSlaveToMasterField", false);

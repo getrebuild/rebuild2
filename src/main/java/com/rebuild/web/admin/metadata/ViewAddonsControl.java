@@ -80,7 +80,7 @@ public class ViewAddonsControl extends BaseController {
         Set<String[]> refs = new HashSet<>();
         for (Field field : entityMeta.getReferenceToFields(true)) {
             Entity e = field.getOwnEntity();
-            if (e.getMasterEntity() != null) {
+            if (e.getMainEntity() != null) {
                 continue;
             }
 

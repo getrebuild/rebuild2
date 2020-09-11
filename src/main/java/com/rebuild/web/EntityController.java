@@ -78,8 +78,8 @@ public abstract class EntityController extends BaseController {
         putEntityMeta(mv, entity);
 
         // 使用主实体权限
-        if (entity.getMasterEntity() != null) {
-            entity = entity.getMasterEntity();
+        if (entity.getMainEntity() != null) {
+            entity = entity.getMainEntity();
         }
         if (MetadataHelper.hasPrivilegesField(entity)) {
             Permission[] actions = new Permission[]{
@@ -113,25 +113,25 @@ public abstract class EntityController extends BaseController {
         into.getModel().put("entityLabel", easyMeta.getLabel());
         into.getModel().put("entityIcon", easyMeta.getIcon());
 
-        EasyMeta master = null;
-        EasyMeta slave = null;
-        if (entity.getMasterEntity() != null) {
-            master = EasyMeta.valueOf(entity.getMasterEntity());
-            slave = EasyMeta.valueOf(entity);
-        } else if (entity.getSlaveEntity() != null) {
-            master = EasyMeta.valueOf(entity);
-            slave = EasyMeta.valueOf(entity.getSlaveEntity());
+        EasyMeta main = null;
+        EasyMeta detail = null;
+        if (entity.getMainEntity() != null) {
+            main = EasyMeta.valueOf(entity.getMainEntity());
+            detail = EasyMeta.valueOf(entity);
+        } else if (entity.getDetailEntity() != null) {
+            main = EasyMeta.valueOf(entity);
+            detail = EasyMeta.valueOf(entity.getDetailEntity());
         } else {
             into.getModel().put("masterEntity", easyMeta.getName());
         }
 
-        if (master != null) {
-            into.getModel().put("masterEntity", master.getName());
-            into.getModel().put("masterEntityLabel", master.getLabel());
-            into.getModel().put("masterEntityIcon", master.getIcon());
-            into.getModel().put("slaveEntity", slave.getName());
-            into.getModel().put("slaveEntityLabel", slave.getLabel());
-            into.getModel().put("slaveEntityIcon", slave.getIcon());
+        if (main != null) {
+            into.getModel().put("masterEntity", main.getName());
+            into.getModel().put("masterEntityLabel", main.getLabel());
+            into.getModel().put("masterEntityIcon", main.getIcon());
+            into.getModel().put("slaveEntity", detail.getName());
+            into.getModel().put("slaveEntityLabel", detail.getLabel());
+            into.getModel().put("slaveEntityIcon", detail.getIcon());
         }
     }
 }

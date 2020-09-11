@@ -58,8 +58,8 @@ public class GeneralModelControl extends EntityController {
 
         ID record = ID.valueOf(id);
         ModelAndView mv;
-        if (thatEntity.getMasterEntity() != null) {
-            mv = createModelAndView("/general/slave-view", record, user);
+        if (thatEntity.getMainEntity() != null) {
+            mv = createModelAndView("/general/detail-view", record, user);
         } else {
             mv = createModelAndView("/general/record-view", record, user);
 
@@ -86,7 +86,7 @@ public class GeneralModelControl extends EntityController {
                 // 创建明细实体必须指定主实体，以便验证权限
                 String master = ((JSONObject) initialVal).getString(FormsBuilder.DV_MASTER);
                 if (ID.isId(master)) {
-                    FormsBuilder.setCurrentMasterId(ID.valueOf(master));
+                    FormsBuilder.setCurrentMainId(ID.valueOf(master));
                 }
             }
         }
@@ -99,7 +99,7 @@ public class GeneralModelControl extends EntityController {
             }
             writeSuccess(response, model);
         } finally {
-            FormsBuilder.setCurrentMasterId(null);
+            FormsBuilder.setCurrentMainId(null);
         }
     }
 
