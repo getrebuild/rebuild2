@@ -385,7 +385,12 @@ class RbList extends React.Component {
     el = $(el || '.input-search>input')
     const q = el.val()
     if (!q && !this.lastFilter) return null
-    return { entity: this.props.config.entity, type: 'QUICK', values: { 1: q }, qfields: el.data('fields') || null }
+    return {
+      entity: this.props.config.entity,
+      type: 'QUICK',
+      values: { 1: q },
+      quickFields: el.data('quickfields') || null,
+    }
   }
 
   /**

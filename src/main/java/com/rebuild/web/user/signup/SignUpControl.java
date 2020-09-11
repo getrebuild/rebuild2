@@ -17,6 +17,7 @@ import com.rebuild.core.support.*;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.service.DataSpecificationException;
+import com.rebuild.utils.BlackList;
 import com.rebuild.web.BaseController;
 import com.wf.captcha.utils.CaptchaUtil;
 import org.apache.commons.lang.math.RandomUtils;
@@ -123,7 +124,7 @@ public class SignUpControl extends BaseController {
         if (loginName.length() > 20) {
             loginName = loginName.substring(0, 20);
         }
-        if (BlackList.isBlacked(loginName)) {
+        if (BlackList.isBlack(loginName)) {
             writeSuccess(response);
             return;
         }

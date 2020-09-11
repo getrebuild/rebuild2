@@ -77,7 +77,7 @@ $(document).ready(() => {
         data: function (params) {
           const query = {
             entity: 'User',
-            qfields: 'loginName,fullName,email,quickCode',
+            quickFields: 'loginName,fullName,email,quickCode',
             q: params.term,
           }
           return query
