@@ -69,7 +69,7 @@ public class SetupInstall extends BaseController implements InstallState {
                 if (rs.next()) {
                     String hasTable = rs.getString("TABLE_NAME");
                     if (hasTable != null) {
-                        msg += getLang(request, "NoneEmptyDbTips");
+                        msg += " (" + getLang(request, "NoneEmptyDbTips") + ")";
                     }
                 }
             } catch (SQLException ignored) {

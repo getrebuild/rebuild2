@@ -255,6 +255,8 @@ public class FormsBuilder extends FormsManager {
         final Date now = CalendarUtils.now();
         final boolean hideUncreate = RebuildConfiguration.getBool(ConfigurationItem.FormHideUncreateField) && data == null;
 
+        final String autoValue = Language.getLang("AutoValue");
+
         // Check and clean
         for (Iterator<Object> iter = elements.iterator(); iter.hasNext(); ) {
             JSONObject el = (JSONObject) iter.next();
@@ -353,7 +355,7 @@ public class FormsBuilder extends FormsManager {
                             el.put("value", FieldValueWrapper.wrapMixValue((ID) dept.getIdentity(), dept.getName()));
                             break;
                         case EntityHelper.ApprovalId:
-                            el.put("value", FieldValueWrapper.wrapMixValue(null, Language.getLang("AutoValue")));
+                            el.put("value", FieldValueWrapper.wrapMixValue(null, Language.getLang("UnSubmit")));
                             break;
                         case EntityHelper.ApprovalState:
                             el.put("value", ApprovalState.DRAFT.getState());
@@ -363,28 +365,30 @@ public class FormsBuilder extends FormsManager {
                     }
                 }
 
-                if (dt == DisplayType.SERIES) {
-                    el.put("value", Language.getLang("AutoValue"));
-                } else if (dt == DisplayType.BOOL) {
-                    el.put("value", BoolEditor.FALSE);
-                } else {
-                    String defVal = DefaultValueHelper.exprDefaultValueToString(fieldMeta);
-                    if (defVal != null) {
-                        if (dateLength > -1) {
-                            defVal = defVal.substring(0, dateLength);
+                if (el.get("value") == null) {
+                    if (dt == DisplayType.SERIES) {
+                        el.put("value", autoValue);
+                    } else if (dt == DisplayType.BOOL) {
+                        el.put("value", BoolEditor.FALSE);
+                    } else {
+                        String defaultVal = DefaultValueHelper.exprDefaultValueToString(fieldMeta);
+                        if (defaultVal != null) {
+                            if (dateLength > -1) {
+                                defaultVal = defaultVal.substring(0, dateLength);
+                            }
+                            el.put("value", defaultVal);
                         }
-                        el.put("value", defVal);
                     }
                 }
 
                 if (roViaTriggers && el.get("value") == null) {
                     if (dt == DisplayType.REFERENCE || dt == DisplayType.CLASSIFICATION) {
-                        el.put("value", FieldValueWrapper.wrapMixValue(null, Language.getLang("AutoValue")));
+                        el.put("value", FieldValueWrapper.wrapMixValue(null, autoValue));
                     } else if (dt == DisplayType.TEXT || dt == DisplayType.NTEXT
                             || dt == DisplayType.EMAIL || dt == DisplayType.URL || dt == DisplayType.PHONE
                             || dt == DisplayType.NUMBER || dt == DisplayType.DECIMAL
                             || dt == DisplayType.DATETIME || dt == DisplayType.DATE) {
-                        el.put("value", Language.getLang("AutoValue"));
+                        el.put("value", autoValue);
                     }
                 }
             }

@@ -243,8 +243,8 @@ public class ReferenceSearchControl extends EntityController {
     /**
      * @see com.rebuild.web.general.GeneralListControl#pageList(String, HttpServletRequest, HttpServletResponse)
      */
-    @GetMapping("reference-search-list")
-    public ModelAndView pageListSearch(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @GetMapping("reference-search")
+    public ModelAndView referenceSearchPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String[] fieldAndEntity = getParameterNotNull(request, "field").split("\\.");
         if (!MetadataHelper.checkAndWarnField(fieldAndEntity[1], fieldAndEntity[0])) {
             response.sendError(404);

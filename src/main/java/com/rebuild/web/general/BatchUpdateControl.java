@@ -61,8 +61,7 @@ public class BatchUpdateControl extends BaseController {
 
         JSONObject requestData = (JSONObject) ServletUtils.getRequestJson(request);
 
-        int dataRange = getIntParameter(request, "dr", 2);
-        requestData.put("_dataRange", dataRange);
+        requestData.put("_dataRange", getIntParameter(request, "dr", 2));
         requestData.put("entity", entity);
         BulkContext bulkContext = new BulkContext(user, BizzPermission.UPDATE, requestData);
 

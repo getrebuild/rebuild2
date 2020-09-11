@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title th:text="|查询${entityLabel}|"></title>
+    <title th:text="${entityLabel}"></title>
     <style type="text/css">
       .rb-datatable-header {
         position: fixed;
@@ -26,22 +26,22 @@
               <div class="col-6">
                 <div class="dataTables_filter">
                   <div class="input-group input-search">
-                    <input class="form-control" type="text" th:placeholder="|查询${entityLabel}|" maxlength="40" />
-                    <span class="input-group-btn"
-                      ><button class="btn btn-secondary" type="button"><i class="icon zmdi zmdi-search"></i></button
-                    ></span>
+                    <input class="form-control" type="text" th:placeholder="${bundle.lang('QuickQuery')}" maxlength="40" />
+                    <span class="input-group-btn">
+                      <button class="btn btn-secondary" type="button"><i class="icon zmdi zmdi-search"></i></button>
+                    </span>
                   </div>
                 </div>
               </div>
               <div class="col-6">
                 <div class="dataTables_oper">
-                  <button class="btn btn-space btn-primary J_select"><i class="icon zmdi zmdi-check"></i> 确定</button>
+                  <button class="btn btn-space btn-primary J_select"><i class="icon zmdi zmdi-check"></i> [[${bundle.lang('Confirm')}]]</button>
                 </div>
               </div>
             </div>
             <div id="react-list" class="rb-loading rb-loading-active data-list">
-                  <th:block th:replace="~{/_include/spinner}" />
-                </div>
+              <th:block th:replace="~{/_include/spinner}" />
+            </div>
           </div>
         </div>
       </div>

@@ -47,7 +47,7 @@ class TriggerList extends ConfigList {
                 <a href={`trigger/${item[0]}`}>{item[3] || item[2] + ' · ' + item[7]}</a>
               </td>
               <td>{item[2] || item[1]}</td>
-              <td>{item[6] > 0 ? $lang('WhenXTime').replace('%s', formatWhen(item[6])) : <span className="text-warning">{$lang('NoTriggerAction')}</span>}</td>
+              <td>{item[6] > 0 ? $lang('WhenXTime').replace('%s', formatWhen(item[6])) : <span className="text-warning">({$lang('NoTriggerAction')})</span>}</td>
               <td>{item[4] ? <span className="badge badge-warning font-weight-light">{$lang('False')}</span> : <span className="badge badge-success font-weight-light">{$lang('True')}</span>}</td>
               <td>{item[5]}</td>
               <td className="actions">

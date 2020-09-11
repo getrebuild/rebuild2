@@ -1128,7 +1128,7 @@ class RbFormReference extends RbFormElement {
 
     if (this.__searcher) this.__searcher.show()
     else {
-      const searchUrl = `${rb.baseUrl}/commons/search/reference-search-list?field=${this.props.field}.${this.props.$$$parent.props.entity}`
+      const searchUrl = `${rb.baseUrl}/commons/search/reference-search?field=${this.props.field}.${this.props.$$$parent.props.entity}`
       renderRbcomp(<ReferenceSearcher url={searchUrl} title={$lang('QuerySome').replace('{0}', this.props.label)} />, function () {
         that.__searcher = this
       })

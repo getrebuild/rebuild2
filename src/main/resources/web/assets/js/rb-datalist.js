@@ -666,11 +666,11 @@ class RbListPagination extends React.Component {
           <div className="float-right paging_sizes">
             <select className="form-control form-control-sm" title={$lang('PerPageShow')} onChange={this.setPageSize} value={this.state.pageSize || 20}>
               {rb.env === 'dev' && <option value="5">5</option>}
-              <option value="20">20</option>
-              <option value="40">40</option>
-              <option value="80">80</option>
-              <option value="100">100</option>
-              <option value="200">200</option>
+              <option value="20">{$lang('XItem').replace('%d', 20)}</option>
+              <option value="40">{$lang('XItem').replace('%d', 40)}</option>
+              <option value="80">{$lang('XItem').replace('%d', 80)}</option>
+              <option value="100">{$lang('XItem').replace('%d', 100)}</option>
+              <option value="200">{$lang('XItem').replace('%d', 200)}</option>
             </select>
           </div>
           <div className="float-right dataTables_paginate paging_simple_numbers">

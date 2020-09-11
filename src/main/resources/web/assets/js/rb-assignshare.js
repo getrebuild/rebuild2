@@ -11,30 +11,30 @@ class DlgAssign extends RbModalHandler {
   constructor(props) {
     super(props)
     this.onView = !!window.RbViewPage
-    this.specs = ['assign', $lang('Assign')]
+    this.specs = ['assign', 'Assign']
   }
 
   render() {
     return (
-      <RbModal title={this.specs[1]} ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang(this.specs[1])} ref={(c) => (this._dlg = c)}>
         <div className="form">
           {this.onView === true ? null : (
             <div className="form-group row pb-0">
-              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SomeWhichRecords').replace('{0}', this.specs[1])}</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SomeWhichRecords,' + this.specs[1])}</label>
               <div className="col-sm-7">
-                <div className="form-control-plaintext">{`${$lang('DatasSelected')} (${this.state.ids.length})`}</div>
+                <div className="form-control-plaintext">{`${$lang('DatasSelected')} (${$lang('XItem').replace('%d', this.state.ids.length)})`}</div>
               </div>
             </div>
           )}
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">{$lang('XToWho').replace('%s', this.specs[1])}</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('SomeToWho,' + this.specs[1])}</label>
             <div className="col-sm-7">{this._useUserSelector()}</div>
           </div>
           {this.state.cascadesShow !== true ? (
             <div className="form-group row">
               <div className="col-sm-7 offset-sm-3">
                 <a href="#" onClick={this._showCascade}>
-                  {$lang('SameXRelatedRecords').replace('%s', this.specs[1])}
+                  {$lang('SameSomeRelatedRecords,' + this.specs[1])}
                 </a>
               </div>
             </div>
@@ -91,7 +91,7 @@ class DlgAssign extends RbModalHandler {
   post() {
     let users = this._UserSelector.val()
     if (!users || users.length === 0) {
-      RbHighbar.create($lang('PlsSelectXToWho').replace('%s', this.specs[1]))
+      RbHighbar.create($lang('PlsSelectSomeToWho,' + this.specs[1]))
       return
     }
     if ($.type(users) === 'array') users = users.join(',')
@@ -105,7 +105,7 @@ class DlgAssign extends RbModalHandler {
         $(this._cascades).val(null).trigger('change')
 
         this.hide()
-        RbHighbar.success($lang('SomeSuccess').replace('{0}', this.specs[1]))
+        RbHighbar.success($lang('SomeSuccess,' + this.specs[1]))
 
         setTimeout(() => {
           if (window.RbListPage) RbListPage._RbList.reload()
@@ -136,7 +136,7 @@ class DlgAssign extends RbModalHandler {
 class DlgShare extends DlgAssign {
   constructor(props) {
     super(props)
-    this.specs = ['share', $lang('Share')]
+    this.specs = ['share', 'Share']
   }
 
   _useUserSelector() {
@@ -171,7 +171,7 @@ class DlgUnshare extends RbModalHandler {
           <div className="form-group row">
             <label className="col-sm-3 col-form-label text-sm-right">{$lang('SomeWhichRecords,UnShare')}</label>
             <div className="col-sm-7">
-              <div className="form-control-plaintext">{`${$lang('DatasSelected')} (${this.state.ids.length})`}</div>
+              <div className="form-control-plaintext">{`${$lang('DatasSelected')} (${$lang('XItem').replace('%d', this.state.ids.length)})`}</div>
             </div>
           </div>
           <div className="form-group row pt-0 pb-0">

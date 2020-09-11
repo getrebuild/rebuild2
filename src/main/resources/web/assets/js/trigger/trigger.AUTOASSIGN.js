@@ -35,7 +35,7 @@ class ContentAutoAssign extends ActionContentSpec {
             </div>
           </div>
           <div className="form-group row pb-1">
-            <label className="col-12 col-lg-3 col-form-label text-lg-right">{$lang('SameXRelatedRecords,Assign')}</label>
+            <label className="col-12 col-lg-3 col-form-label text-lg-right">{$lang('SameSomeRelatedRecords,Assign')}</label>
             <div className="col-12 col-lg-8">
               <div className="entity-select">
                 <select className="form-control form-control-sm" ref={(c) => (this._cascades = c)}>

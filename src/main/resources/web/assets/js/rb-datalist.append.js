@@ -29,20 +29,20 @@ class BatchOperator extends RbFormHandler {
                 <label className="custom-control custom-control-sm custom-radio mb-2">
                   <input className="custom-control-input" name="dataRange" type="radio" checked={~~this.state.dataRange === 1} value="1" onChange={this.handleChange} />
                   <span className="custom-control-label">
-                    {$lang('DatasSelected')} ({selectedRows})
+                    {$lang('DatasSelected')} ({$lang('XItem').replace('%d', selectedRows)})
                   </span>
                 </label>
               )}
               <label className="custom-control custom-control-sm custom-radio mb-2">
                 <input className="custom-control-input" name="dataRange" type="radio" checked={~~this.state.dataRange === 2} value="2" onChange={this.handleChange} />
                 <span className="custom-control-label">
-                  {$lang('DatasPaged')} ({pageRows})
+                  {$lang('DatasPaged')} ({$lang('XItem').replace('%d', pageRows)})
                 </span>
               </label>
               <label className="custom-control custom-control-sm custom-radio mb-2">
                 <input className="custom-control-input" name="dataRange" type="radio" checked={~~this.state.dataRange === 3} value="3" onChange={this.handleChange} />
                 <span className="custom-control-label">
-                  {$lang('DatasQueryed')} ({queryRows})
+                  {$lang('DatasQueryed')} ({$lang('XItem').replace('%d', queryRows)})
                 </span>
               </label>
               <label className="custom-control custom-control-sm custom-radio mb-1">
@@ -131,8 +131,8 @@ class BatchUpdate extends BatchOperator {
                       <span className="badge badge-warning">{BUE_OPTYPES[item.op]}</span>
                     </div>
                     <div className="col-6">
-                      {item.op !== 'NULL' && <span className="badge badge-light">{item.text || item.value}</span>}
-                      <a className="del" onClick={() => this.removeItem(item.field)}>
+                      {item.op !== 'NULL' && <span className="badge badge-light text-break text-left">{item.text || item.value}</span>}
+                      <a className="del" onClick={() => this.removeItem(item.field)} title={$lang('Remove')}>
                         <i className="zmdi zmdi-close"></i>
                       </a>
                     </div>
@@ -245,10 +245,11 @@ class BatchUpdate extends BatchOperator {
 const BUE_OPTYPES = {
   SET: $lang('BatchUpdateOpSET'),
   NULL: $lang('BatchUpdateOpNULL'),
-  PREFIX: $lang('BatchUpdateOpPREFIX'),
-  SUFFIX: $lang('BatchUpdateOpSUFFIX'),
-  PLUS: $lang('CalcPlus'),
-  MINUS: $lang('CalcMinus'),
+  // TODO 支持更多修改模式
+  // PREFIX: $lang('BatchUpdateOpPREFIX'),
+  // SUFFIX: $lang('BatchUpdateOpSUFFIX'),
+  // PLUS: $lang('CalcPlus'),
+  // MINUS: $lang('CalcMinus'),
 }
 
 // ~ 批量修改编辑器
@@ -309,8 +310,8 @@ class BatchUpdateEditor extends React.Component {
   renderOp() {
     return (
       <select className="form-control form-control-sm" ref={(c) => (this._op = c)}>
-        <option value="SET">{BUE_OPTYPES['BatchUpdateOpSET']}</option>
-        <option value="NULL">{BUE_OPTYPES['BatchUpdateOpNULL']}</option>
+        <option value="SET">{BUE_OPTYPES['SET']}</option>
+        <option value="NULL">{BUE_OPTYPES['NULL']}</option>
       </select>
     )
   }
