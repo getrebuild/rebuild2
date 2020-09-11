@@ -188,10 +188,10 @@ public class FormsBuilder extends FormsManager {
 
         // 主/明细实体处理
         if (entityMeta.getMainEntity() != null) {
-            model.set("isSlave", true);
+            model.set("isDetail", true);
         } else if (entityMeta.getDetailEntity() != null) {
-            model.set("isMaster", true);
-            model.set("slaveMeta", EasyMeta.getEntityShow(entityMeta.getDetailEntity()));
+            model.set("isMain", true);
+            model.set("detailMeta", EasyMeta.getEntityShow(entityMeta.getDetailEntity()));
         }
 
         if (data != null && data.hasValue(EntityHelper.ModifiedOn)) {

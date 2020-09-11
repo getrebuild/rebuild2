@@ -283,7 +283,7 @@ class RelatedList extends React.Component {
     this.__pageNo = this.__pageNo || 1
     if (append) this.__pageNo += append
     const pageSize = 20
-    $.get(`/app/entity/related-list?mainid=${this.props.master}&related=${this.props.entity}&pageNo=${this.__pageNo}&pageSize=${pageSize}`, (res) => {
+    $.get(`/app/entity/related-list?mainid=${this.props.main}&related=${this.props.entity}&pageNo=${this.__pageNo}&pageSize=${pageSize}`, (res) => {
       const _data = res.data.data || []
       const _list = (this.state.list || []).concat(_data)
       this.setState({ list: _list, showMores: _data.length >= pageSize })
@@ -445,7 +445,7 @@ const RbViewPage = {
     )
     $('.J_assign').click(() => DlgAssign.create({ entity: entity[0], ids: [id] }))
     $('.J_share').click(() => DlgShare.create({ entity: entity[0], ids: [id] }))
-    $('.J_add-slave').click(function () {
+    $('.J_add-detail').click(function () {
       const iv = { $MAINID$: id }
       const $this = $(this)
       RbFormModal.create({
@@ -460,7 +460,7 @@ const RbViewPage = {
     // Privileges
     if (ep) {
       if (ep.D === false) $('.J_delete').remove()
-      if (ep.U === false) $('.J_edit, .J_add-slave').remove()
+      if (ep.U === false) $('.J_edit, .J_add-detail').remove()
       if (ep.A !== true) $('.J_assign').remove()
       if (ep.S !== true) $('.J_share').remove()
       that.cleanViewActionButton()
@@ -539,7 +539,7 @@ const RbViewPage = {
       const tabNav = $(`<li class="nav-item"><a class="nav-link" href="#${tabId}" data-toggle="tab" title="${this.entityLabel}">${this.entityLabel}</a></li>`).appendTo('.nav-tabs')
       const tabPane = $(`<div class="tab-pane" id="${tabId}"></div>`).appendTo('.tab-content')
       tabNav.find('a').click(function () {
-        tabPane.find('.related-list').length === 0 && renderRbcomp(<MixRelatedList entity={entity} master={that.__id} />, tabPane)
+        tabPane.find('.related-list').length === 0 && renderRbcomp(<MixRelatedList entity={entity} main={that.__id} />, tabPane)
       })
     })
     this.updateVTabs()
@@ -639,7 +639,7 @@ const RbViewPage = {
   // 记录只读
   setReadonly() {
     $(this._RbViewForm._viewForm).addClass('readonly')
-    $('.J_edit, .J_delete, .J_add-slave').remove()
+    $('.J_edit, .J_delete, .J_add-detail').remove()
     this.cleanViewActionButton()
   },
 }

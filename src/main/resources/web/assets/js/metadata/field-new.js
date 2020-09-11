@@ -73,9 +73,9 @@ $(document).ready(function () {
     if (dt === 'REFERENCE') {
       if (referenceLoaded === false) {
         referenceLoaded = true
-        $.get('/admin/entity/entity-list?slave=true', (res) => {
+        $.get('/admin/entity/entity-list?detail=true', (res) => {
           $(res.data).each(function () {
-            $(`<option value="${this.entityName}">${this.entityLabel}${this.masterEntity ? ' (' + $lang('DetailEntity') + ')' : ''}</option>`).appendTo('#refEntity')
+            $(`<option value="${this.entityName}">${this.entityLabel}${this.mainEntity ? ' (' + $lang('DetailEntity') + ')' : ''}</option>`).appendTo('#refEntity')
           })
           if (res.data.length === 0) $(`<option value="">${$lang('NoAnySome,Entity')}</option>`).appendTo('#refEntity')
         })

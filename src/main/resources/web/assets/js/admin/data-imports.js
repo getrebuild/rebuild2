@@ -44,7 +44,7 @@ $(document).ready(() => {
     })
   }
 
-  $.get('/commons/metadata/entities?slave=true', (res) => {
+  $.get('/commons/metadata/entities?detail=true', (res) => {
     $(res.data).each(function () {
       $('<option value="' + this.name + '">' + this.label + '</option>').appendTo('#toEntity')
     })

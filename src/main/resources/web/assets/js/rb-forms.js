@@ -203,13 +203,13 @@ class RbForm extends React.Component {
           {$lang('SaveAndSubmit')}
         </a>
       )
-    if (pmodel.isMaster === true)
+    if (pmodel.isMain === true)
       moreActions.push(
         <a key="Action102" className="dropdown-item" onClick={() => this.post(102)}>
           {$lang('SaveAndAddDetail')}
         </a>
       )
-    else if (pmodel.isSlave === true)
+    else if (pmodel.isDetail === true)
       moreActions.push(
         <a key="Action101" className="dropdown-item" onClick={() => this.post(101)}>
           {$lang('SaveAndAdd')}
@@ -294,7 +294,7 @@ class RbForm extends React.Component {
   // 保存并继续添加
   static __NEXT_ADD = 101
   // 保存并添加明细
-  static __NEXT_ADDSLAVE = 102
+  static __NEXT_ADDDETAIL = 102
   // 保存并提交审批
   static __NEXT_APPROVAL = 103
   /**
@@ -332,9 +332,9 @@ class RbForm extends React.Component {
               icon: pstate.icon,
               initialValue: pstate.initialValue,
             })
-          } else if (next === RbForm.__NEXT_ADDSLAVE) {
+          } else if (next === RbForm.__NEXT_ADDDETAIL) {
             const iv = { $MAINID$: res.data.id }
-            const sm = this.props.$$$parent.state.__formModel.slaveMeta
+            const sm = this.props.$$$parent.state.__formModel.detailMeta
             RbFormModal.create({
               title: $lang('AddSome').replace('{0}', sm.entityLabel),
               entity: sm.entity,

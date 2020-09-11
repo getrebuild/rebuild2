@@ -50,15 +50,15 @@ public class BulkContext {
      * @param cascades
      * @param records
      * @param customData
-     * @param recordMaster
+     * @param recordMain
      */
-    private BulkContext(ID opUser, Permission action, ID toUser, String[] cascades, ID[] records, JSONObject customData, ID recordMaster) {
+    private BulkContext(ID opUser, Permission action, ID toUser, String[] cascades, ID[] records, JSONObject customData, ID recordMain) {
         this.opUser = opUser;
         this.action = action;
         this.toUser = toUser;
         this.records = records;
         this.customData = customData;
-        this.targetRecord = recordMaster;
+        this.targetRecord = recordMain;
         this.cascades = cascades;
         this.mainEntity = detecteMainEntity();
     }

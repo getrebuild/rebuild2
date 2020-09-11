@@ -38,12 +38,12 @@
           </div>
         </aside>
         <div class="main-content container-fluid">
-          <ul th:if="${slaveEntity != null}" class="nav nav-tabs nav-tabs-classic">
+          <ul th:if="${detailEntity != null}" class="nav nav-tabs nav-tabs-classic">
             <li class="nav-item">
-              <a class="nav-link active"><span class="icon zmdi" th:classappend="${'zmdi-' + masterEntityIcon}"></span> [[${masterEntityLabel}]]</a>
+              <a class="nav-link active"><span class="icon zmdi" th:classappend="${'zmdi-' + mainEntityIcon}"></span> [[${mainEntityLabel}]]</a>
             </li>
             <li class="nav-item">
-              <a th:href="|../${slaveEntity}/list|" class="nav-link"><span class="icon zmdi" th:classappend="${'zmdi-' + slaveEntityIcon}"></span> [[${slaveEntityLabel}]]</a>
+              <a th:href="|../${detailEntity}/list|" class="nav-link"><span class="icon zmdi" th:classappend="${'zmdi-' + detailEntityIcon}"></span> [[${detailEntityLabel}]]</a>
             </li>
           </ul>
           <div class="card card-table">

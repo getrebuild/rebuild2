@@ -114,7 +114,7 @@ $(document).ready(() => {
         memberList = this
       })
   })
-  $('.J_add-slave')
+  $('.J_add-detail')
     .off('click')
     .click(() => renderRbcomp(<MemberAddDlg id={teamId} call={() => memberList && memberList.loadMembers()} />))
   $('.J_delete')

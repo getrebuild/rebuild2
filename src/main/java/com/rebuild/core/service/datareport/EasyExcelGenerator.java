@@ -39,10 +39,7 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
     private File template;
     private ID recordId;
 
-    private boolean hasMaster = false;
-
-    protected EasyExcelGenerator() {
-    }
+    private boolean hasMain = false;
 
     /**
      * @param reportId
@@ -74,10 +71,10 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
             return null;
         }
 
-        Map<String, Object> master = null;
-        if (this.hasMaster) {
+        Map<String, Object> main = null;
+        if (this.hasMain) {
             Iterator<Map<String, Object>> iter = datas.iterator();
-            master = iter.next();
+            main = iter.next();
             iter.remove();
         }
 
@@ -93,8 +90,8 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
             }
 
             // 主记录
-            if (master != null) {
-                excelWriter.fill(master, writeSheet);
+            if (main != null) {
+                excelWriter.fill(main, writeSheet);
             }
 
         } finally {
@@ -148,7 +145,7 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
 
             Map<String, Object> data = buildData(record, varsMap, false);
             datas.add(data);
-            this.hasMaster = true;
+            this.hasMain = true;
         }
 
         // 无明细

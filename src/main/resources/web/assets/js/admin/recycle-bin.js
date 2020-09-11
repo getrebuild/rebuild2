@@ -7,7 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 const _entities = {}
 $(document).ready(() => {
-  $.get('/commons/metadata/entities?slave=true', (res) => {
+  $.get('/commons/metadata/entities?detail=true', (res) => {
     $(res.data).each(function () {
       $(`<option value="${this.name}">${this.label}</option>`).appendTo('#belongEntity')
       _entities[this.name] = this.label

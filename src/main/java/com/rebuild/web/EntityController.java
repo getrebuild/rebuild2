@@ -122,16 +122,16 @@ public abstract class EntityController extends BaseController {
             main = EasyMeta.valueOf(entity);
             detail = EasyMeta.valueOf(entity.getDetailEntity());
         } else {
-            into.getModel().put("masterEntity", easyMeta.getName());
+            into.getModel().put("mainEntity", easyMeta.getName());
         }
 
         if (main != null) {
-            into.getModel().put("masterEntity", main.getName());
-            into.getModel().put("masterEntityLabel", main.getLabel());
-            into.getModel().put("masterEntityIcon", main.getIcon());
-            into.getModel().put("slaveEntity", detail.getName());
-            into.getModel().put("slaveEntityLabel", detail.getLabel());
-            into.getModel().put("slaveEntityIcon", detail.getIcon());
+            into.getModel().put("mainEntity", main.getName());
+            into.getModel().put("mainEntityLabel", main.getLabel());
+            into.getModel().put("mainEntityIcon", main.getIcon());
+            into.getModel().put("detailEntity", detail.getName());
+            into.getModel().put("detailEntityLabel", detail.getLabel());
+            into.getModel().put("detailEntityIcon", detail.getIcon());
         }
     }
 }

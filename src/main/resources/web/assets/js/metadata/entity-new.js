@@ -18,9 +18,9 @@ $(document).ready(function () {
       label: entityLabel,
       comments: comments,
     }
-    if ($val('#isSlave')) {
-      data.masterEntity = $val('#masterEntity')
-      if (!data.masterEntity) {
+    if ($val('#isDetail')) {
+      data.mainEntity = $val('#mainEntity')
+      if (!data.mainEntity) {
         RbHighbar.create($lang('PlsSelectSome,MainEntity'))
         return
       }
@@ -34,14 +34,14 @@ $(document).ready(function () {
   })
 
   let entityLoaded = false
-  $('#isSlave').click(function () {
-    $('.J_masterEntity').toggleClass('hide')
+  $('#isDetail').click(function () {
+    $('.J_mainEntity').toggleClass('hide')
     parent.RbModal.resize()
     if (entityLoaded === false) {
       entityLoaded = true
       $.get('/admin/entity/entity-list', function (res) {
         $(res.data).each(function () {
-          if (!this.slaveEntity) $(`<option value="${this.entityName}">${this.entityLabel}</option>`).appendTo('#masterEntity')
+          if (!this.detailEntity) $(`<option value="${this.entityName}">${this.entityLabel}</option>`).appendTo('#mainEntity')
         })
       })
     }

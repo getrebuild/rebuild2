@@ -47,8 +47,8 @@
                 <a class="dropdown-item J_report"><i class="icon zmdi zmdi-map"></i> [[${bundle.lang('Report')}]]</a>
               </div>
             </div>
-            <div th:if="${slaveEntity != null}" class="col-12 col-lg-6">
-              <button class="btn btn-secondary J_add-slave" type="button" th:data-entity="${slaveEntity}" th:data-label="${slaveEntityLabel}" th:data-icon="${slaveEntityIcon}">
+            <div th:if="${detailEntity != null}" class="col-12 col-lg-6">
+              <button class="btn btn-secondary J_add-detail" type="button" th:data-entity="${detailEntity}" th:data-label="${detailEntityLabel}" th:data-icon="${detailEntityIcon}">
                 <i class="icon x14 zmdi zmdi-playlist-plus"></i> [[${bundle.lang('AddDetail')}]]
               </button>
             </div>

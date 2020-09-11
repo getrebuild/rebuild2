@@ -69,11 +69,11 @@ public class MetaEntityControl extends BaseController {
         mv.getModel().put("nameField", MetadataHelper.getNameField(entityMeta).getName());
 
         if (entityMeta.getMainEntity() != null) {
-            mv.getModel().put("masterEntity", entityMeta.getMainEntity().getName());
-            mv.getModel().put("slaveEntity", entityMeta.getName());
+            mv.getModel().put("mainEntity", entityMeta.getMainEntity().getName());
+            mv.getModel().put("detailEntity", entityMeta.getName());
         } else if (entityMeta.getDetailEntity() != null) {
-            mv.getModel().put("masterEntity", entityMeta.getName());
-            mv.getModel().put("slaveEntity", entityMeta.getDetailEntity().getName());
+            mv.getModel().put("mainEntity", entityMeta.getName());
+            mv.getModel().put("detailEntity", entityMeta.getDetailEntity().getName());
         }
 
         // 扩展配置
@@ -95,7 +95,7 @@ public class MetaEntityControl extends BaseController {
         // 默认无BIZZ实体
         final boolean usesBizz = getBoolParameter(request, "bizz", false);
         // 默认无明细实体
-        final boolean usesDetail = getBoolParameter(request, "slave", false);
+        final boolean usesDetail = getBoolParameter(request, "detail", false);
 
         List<Map<String, Object>> ret = new ArrayList<>();
         for (Entity entity : MetadataSorter.sortEntities(null, usesBizz, usesDetail)) {
@@ -107,10 +107,10 @@ public class MetaEntityControl extends BaseController {
             map.put("icon", easyMeta.getIcon());
             map.put("builtin", easyMeta.isBuiltin());
             if (entity.getDetailEntity() != null) {
-                map.put("slaveEntity", entity.getDetailEntity().getName());
+                map.put("detailEntity", entity.getDetailEntity().getName());
             }
             if (entity.getMainEntity() != null) {
-                map.put("masterEntity", entity.getMainEntity().getName());
+                map.put("mainEntity", entity.getMainEntity().getName());
             }
             ret.add(map);
         }
@@ -124,7 +124,7 @@ public class MetaEntityControl extends BaseController {
 
         String label = reqJson.getString("label");
         String comments = reqJson.getString("comments");
-        String mainEntity = reqJson.getString("masterEntity");
+        String mainEntity = reqJson.getString("mainEntity");
         if (StringUtils.isNotBlank(mainEntity)) {
             if (!MetadataHelper.containsEntity(mainEntity)) {
                 writeFailure(response,
