@@ -21,7 +21,8 @@ const BABEL_OPTIONS = {
   minified: true
 }
 
-const WEB_ROOT = '../target/classes/web'
+const WEB_ROOT = '../src/main/resources/web'
+const OUT_ROOT = '../target/classes/web'
 
 function compileJs(cb) {
   return src(`${WEB_ROOT}/assets/js/**/*.js`)
@@ -34,7 +35,7 @@ function compileJs(cb) {
       })
     )
     .pipe(
-      dest(`${WEB_ROOT}/../__web/assets/js`)
+      dest(`${OUT_ROOT}/assets/js`)
     )
 }
 
@@ -49,7 +50,7 @@ function compileCss(cb) {
       })
     )
     .pipe(
-      dest(`${WEB_ROOT}/../__web/assets/css`)
+      dest(`${OUT_ROOT}/assets/css`)
     )
 }
 
@@ -113,7 +114,7 @@ function compileHtml(cb) {
       })
     )
     .pipe(
-      dest(`${WEB_ROOT}/../__web`)
+      dest(OUT_ROOT)
     )
 }
 

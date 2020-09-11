@@ -1,7 +1,7 @@
 {
-  "name": "rebuild-transpiler",
+  "name": "rebuild-compiler",
   "version": "0.2.0",
-  "description": "rebuild js/css/html transpiler",
+  "description": "rebuild js/css/html compiler",
   "author": "rebuild",
   "license": "GPL-3.0",
   "repository": {

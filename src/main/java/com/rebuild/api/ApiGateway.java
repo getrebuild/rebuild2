@@ -62,7 +62,7 @@ public class ApiGateway extends Controller implements Initialization {
             API_CLASSES.put(apiName, (Class<? extends BaseApi>) c);
         }
 
-        LOG.info("Added {} API(s)", API_CLASSES.size());
+        LOG.info("Added {} APIs", API_CLASSES.size());
     }
 
     @CrossOrigin
