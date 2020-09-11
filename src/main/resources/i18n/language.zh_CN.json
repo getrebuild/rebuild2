@@ -987,7 +987,7 @@
   "BuiltinChart": "内置图表",
   "SomeWhichRecords": "%s哪些记录",
   "XToWho": "%s给谁",
-  "PlsSelectXToWho": "%s给谁",
+  "PlsSelectXToWho": "请选择%s给谁",
   "SameXRelatedRecords": "同时%s关联记录",
   "CancelWhichUsers": "取消哪些用户",
   "ByXSharedOnX": "由 %s 共享于 %s",
