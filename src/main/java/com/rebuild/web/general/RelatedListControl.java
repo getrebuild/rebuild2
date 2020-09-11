@@ -45,10 +45,10 @@ public class RelatedListControl extends BaseController {
 
     @GetMapping("related-list")
     public void relatedList(HttpServletRequest request, HttpServletResponse response) {
-        ID masterId = getIdParameterNotNull(request, "masterId");
+        ID mainid = getIdParameterNotNull(request, "mainid");
         String related = getParameterNotNull(request, "related");
 
-        String sql = buildMasterSql(masterId, related, false);
+        String sql = buildMainSql(mainid, related, false);
 
         String[] e = related.split("\\.");
         Field nameField = MetadataHelper.getNameField(e[0]);
@@ -75,12 +75,12 @@ public class RelatedListControl extends BaseController {
 
     @GetMapping("related-counts")
     public void relatedCounts(HttpServletRequest request, HttpServletResponse response) {
-        ID masterId = getIdParameterNotNull(request, "masterId");
+        ID mainid = getIdParameterNotNull(request, "mainid");
         String[] relateds = getParameterNotNull(request, "relateds").split(",");
 
         Map<String, Integer> countMap = new HashMap<>();
         for (String related : relateds) {
-            String sql = buildMasterSql(masterId, related, true);
+            String sql = buildMainSql(mainid, related, true);
             if (sql != null) {
                 Object[] count = Application.createQuery(sql).unique();
                 countMap.put(related, ObjectUtils.toInt(count[0]));
@@ -95,7 +95,7 @@ public class RelatedListControl extends BaseController {
      * @param count
      * @return
      */
-    private String buildMasterSql(ID recordOfMain, String relatedExpr, boolean count) {
+    private String buildMainSql(ID recordOfMain, String relatedExpr, boolean count) {
         // Entity.Field
         String[] e = relatedExpr.split("\\.");
         Entity relatedEntity = MetadataHelper.getEntity(e[0]);
@@ -106,10 +106,10 @@ public class RelatedListControl extends BaseController {
             relatedFields.add(e[1]);
         } else {
             // v1.9 之前会把所有相关的查出来
-            Entity masterEntity = MetadataHelper.getEntity(recordOfMain.getEntityCode());
+            Entity mainEntity = MetadataHelper.getEntity(recordOfMain.getEntityCode());
             for (Field field : relatedEntity.getFields()) {
                 if ((field.getType() == FieldType.REFERENCE || field.getType() == FieldType.ANY_REFERENCE)
-                        && ArrayUtils.contains(field.getReferenceEntities(), masterEntity)) {
+                        && ArrayUtils.contains(field.getReferenceEntities(), mainEntity)) {
                     relatedFields.add(field.getName());
                 }
             }
@@ -119,13 +119,13 @@ public class RelatedListControl extends BaseController {
             return null;
         }
 
-        String masterWhere = "(" + StringUtils.join(relatedFields, " = ''{0}'' or ") + " = ''{0}'')";
-        masterWhere = MessageFormat.format(masterWhere, recordOfMain);
+        String mainWhere = "(" + StringUtils.join(relatedFields, " = ''{0}'' or ") + " = ''{0}'')";
+        mainWhere = MessageFormat.format(mainWhere, recordOfMain);
         if (relatedEntity.getEntityCode() == EntityHelper.Feeds) {
-            masterWhere += " and type = " + FeedsType.FOLLOWUP.getMask();
+            mainWhere += " and type = " + FeedsType.FOLLOWUP.getMask();
         }
 
-        String baseSql = "select %s from " + relatedEntity.getName() + " where " + masterWhere;
+        String baseSql = "select %s from " + relatedEntity.getName() + " where " + mainWhere;
 
         Field primaryField = relatedEntity.getPrimaryField();
         Field namedField = MetadataHelper.getNameField(relatedEntity);

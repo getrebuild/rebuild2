@@ -36,8 +36,8 @@ class RbViewForm extends React.Component {
       }
 
       let hadApproval = res.data.hadApproval
-      if (wpc.type === 'SlaveView') {
-        if (hadApproval === 2) $('.J_edit, .J_delete').attr({ disabled: true, title: $lang('SomeInApproval,MasterRecord') })
+      if (wpc.type === 'DetailView') {
+        if (hadApproval === 2) $('.J_edit, .J_delete').attr({ disabled: true, title: $lang('SomeInApproval,MainRecord') })
         else if (hadApproval === 10) $('.J_edit, .J_delete').remove()
         hadApproval = null
       }
@@ -283,7 +283,7 @@ class RelatedList extends React.Component {
     this.__pageNo = this.__pageNo || 1
     if (append) this.__pageNo += append
     const pageSize = 20
-    $.get(`/app/entity/related-list?masterId=${this.props.master}&related=${this.props.entity}&pageNo=${this.__pageNo}&pageSize=${pageSize}`, (res) => {
+    $.get(`/app/entity/related-list?mainid=${this.props.master}&related=${this.props.entity}&pageNo=${this.__pageNo}&pageSize=${pageSize}`, (res) => {
       const _data = res.data.data || []
       const _list = (this.state.list || []).concat(_data)
       this.setState({ list: _list, showMores: _data.length >= pageSize })
@@ -422,7 +422,7 @@ const RbViewPage = {
 
     $('.J_delete').click(function () {
       if ($(this).attr('disabled')) return
-      const needEntity = wpc.type === 'SlaveList' || wpc.type === 'SlaveView' ? null : entity[0]
+      const needEntity = wpc.type === 'DetailList' || wpc.type === 'DetailView' ? null : entity[0]
       renderRbcomp(
         <DeleteConfirm
           id={that.__id}
@@ -446,10 +446,10 @@ const RbViewPage = {
     $('.J_assign').click(() => DlgAssign.create({ entity: entity[0], ids: [id] }))
     $('.J_share').click(() => DlgShare.create({ entity: entity[0], ids: [id] }))
     $('.J_add-slave').click(function () {
-      const iv = { $MASTER$: id }
+      const iv = { $MAINID$: id }
       const $this = $(this)
       RbFormModal.create({
-        title: $lang('AddSlave'),
+        title: $lang('AddDetail'),
         entity: $this.data('entity'),
         icon: $this.data('icon'),
         initialValue: iv,
@@ -557,7 +557,7 @@ const RbViewPage = {
   updateVTabs(specEntities) {
     specEntities = specEntities || this.__vtabEntities
     if (!specEntities || specEntities.length === 0) return
-    $.get(`/app/entity/related-counts?masterId=${this.__id}&relateds=${specEntities.join(',')}`, function (res) {
+    $.get(`/app/entity/related-counts?mainid=${this.__id}&relateds=${specEntities.join(',')}`, function (res) {
       for (let k in res.data || {}) {
         if (~~res.data[k] > 0) {
           const tabNav = $('.nav-tabs a[href="#tab-' + k.replace('.', '--') + '"]')

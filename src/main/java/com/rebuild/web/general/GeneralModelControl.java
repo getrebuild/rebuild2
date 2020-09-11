@@ -84,9 +84,9 @@ public class GeneralModelControl extends EntityController {
             initialVal = ServletUtils.getRequestJson(request);
             if (initialVal != null) {
                 // 创建明细实体必须指定主实体，以便验证权限
-                String master = ((JSONObject) initialVal).getString(FormsBuilder.DV_MASTER);
-                if (ID.isId(master)) {
-                    FormsBuilder.setCurrentMainId(ID.valueOf(master));
+                String mainid = ((JSONObject) initialVal).getString(FormsBuilder.DV_MAINID);
+                if (ID.isId(mainid)) {
+                    FormsBuilder.setCurrentMainId(ID.valueOf(mainid));
                 }
             }
         }

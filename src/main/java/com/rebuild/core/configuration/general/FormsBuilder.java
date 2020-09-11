@@ -56,7 +56,7 @@ public class FormsBuilder extends FormsManager {
     // 分割线
     public static final String DIVIDER_LINE = "$DIVIDER$";
     // 引用主记录
-    public static final String DV_MASTER = "$MASTER$";
+    public static final String DV_MAINID = "$MAINID$";
     // 引用记录
     public static final String DV_REFERENCE_PREFIX = "&";
 
@@ -116,14 +116,14 @@ public class FormsBuilder extends FormsManager {
 
                 if ((approvalState == ApprovalState.PROCESSING || approvalState == ApprovalState.APPROVED)) {
                     String stateType = approvalState == ApprovalState.APPROVED ? "RecordApproved" : "RecordInApproval";
-                    return formatModelError(Language.getLang("MainRecordApprovedNotAddSlaveTips", stateType));
+                    return formatModelError(Language.getLang("MainRecordApprovedNotAddDetailTips", stateType));
                 }
 
                 // 明细无需审批
                 approvalState = null;
 
                 if (!Application.getPrivilegesManager().allowUpdate(user, mainRecordId)) {
-                    return formatModelError(Language.formatLang("YouNoSomePrivileges", "AddSlave"));
+                    return formatModelError(Language.formatLang("YouNoSomePrivileges", "AddDetail"));
                 }
             } else if (!Application.getPrivilegesManager().allowCreate(user, entityMeta.getEntityCode())) {
                 return formatModelError(Language.getLang("YouNoSomePrivileges", "Create"));
@@ -148,7 +148,7 @@ public class FormsBuilder extends FormsManager {
 
             approvalState = getHadApproval(entityMeta, record);
             if (approvalState != null) {
-                String recordType = mainEntity == null ? "Record" : "MasterRecord";
+                String recordType = mainEntity == null ? "Record" : "MainRecord";
                 if (approvalState == ApprovalState.APPROVED) {
                     return formatModelError(Language.getLang("SomeRecordApprovedTips", recordType));
                 } else if (approvalState == ApprovalState.PROCESSING) {
@@ -513,7 +513,7 @@ public class FormsBuilder extends FormsManager {
                 }
             }
             // 主实体字段
-            else if (field.equals(DV_MASTER)) {
+            else if (field.equals(DV_MAINID)) {
                 Field stmField = MetadataHelper.getDetailToMainField(entity);
                 Object mixValue = inFormFields.contains(stmField.getName()) ? readyReferenceValue(value) : value;
                 if (mixValue != null) {

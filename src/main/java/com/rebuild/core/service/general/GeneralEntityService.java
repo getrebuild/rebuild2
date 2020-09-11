@@ -386,7 +386,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
 
                 if (state == ApprovalState.APPROVED || state == ApprovalState.PROCESSING) {
                     String stateType = state == ApprovalState.APPROVED ? "RecordApproved" : "RecordInApproval";
-                    throw new DataSpecificationException(Language.getLang("MainRecordApprovedNotAddSlaveTips", stateType));
+                    throw new DataSpecificationException(Language.getLang("MainRecordApprovedNotAddDetailTips", stateType));
                 }
             }
 
@@ -399,7 +399,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
                 String recordType = "Record";
                 if (mainEntity != null) {
                     recordId = getMasterId(entity, recordId);
-                    recordType = "MasterRecord";
+                    recordType = "MainRecord";
                 }
 
                 ApprovalState currentState;

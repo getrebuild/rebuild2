@@ -206,7 +206,7 @@ class RbForm extends React.Component {
     if (pmodel.isMaster === true)
       moreActions.push(
         <a key="Action102" className="dropdown-item" onClick={() => this.post(102)}>
-          {$lang('SaveAndAddSlave')}
+          {$lang('SaveAndAddDetail')}
         </a>
       )
     else if (pmodel.isSlave === true)
@@ -333,7 +333,7 @@ class RbForm extends React.Component {
               initialValue: pstate.initialValue,
             })
           } else if (next === RbForm.__NEXT_ADDSLAVE) {
-            const iv = { $MASTER$: res.data.id }
+            const iv = { $MAINID$: res.data.id }
             const sm = this.props.$$$parent.state.__formModel.slaveMeta
             RbFormModal.create({
               title: $lang('AddSome').replace('{0}', sm.entityLabel),

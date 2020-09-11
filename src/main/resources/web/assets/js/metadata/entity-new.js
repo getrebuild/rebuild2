@@ -21,7 +21,7 @@ $(document).ready(function () {
     if ($val('#isSlave')) {
       data.masterEntity = $val('#masterEntity')
       if (!data.masterEntity) {
-        RbHighbar.create($lang('PlsSelectSome,MasterEntity'))
+        RbHighbar.create($lang('PlsSelectSome,MainEntity'))
         return
       }
     }

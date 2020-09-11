@@ -81,7 +81,7 @@ public class Entity2Schema extends Field2Schema {
         final boolean isSlave = StringUtils.isNotBlank(mainEntity);
         if (isSlave && !MetadataHelper.containsEntity(mainEntity)) {
             throw new MetadataException(
-                    Language.getLang("SomeInvalid", "MasterEntity") + " : " + mainEntity);
+                    Language.getLang("SomeInvalid", "MainEntity") + " : " + mainEntity);
         }
 
         String physicalName = "T__" + entityName.toUpperCase();

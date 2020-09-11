@@ -55,8 +55,8 @@
         </div>
         <div class="main-content container-fluid pt-1">
           <ul th:if="${slaveEntity != null}" class="nav nav-tabs nav-tabs-classic">
-            <li th:class="|nav-item J_tab-${masterEntity}|"><a th:href="|../${masterEntity}/base|" class="nav-link">[[${bundle.lang('MasterEntity')}]]</a></li>
-            <li th:class="|nav-item J_tab-${slaveEntity}|"><a th:href="|../${slaveEntity}/base|" class="nav-link">[[${bundle.lang('SlaveEntity')}]]</a></li>
+            <li th:class="|nav-item J_tab-${masterEntity}|"><a th:href="|../${masterEntity}/base|" class="nav-link">[[${bundle.lang('MainEntity')}]]</a></li>
+            <li th:class="|nav-item J_tab-${slaveEntity}|"><a th:href="|../${slaveEntity}/base|" class="nav-link">[[${bundle.lang('DetailEntity')}]]</a></li>
           </ul>
           <div class="card mb-0">
             <div class="card-body pt-4">

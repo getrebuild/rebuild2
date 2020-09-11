@@ -128,13 +128,13 @@ public class MetaEntityControl extends BaseController {
         if (StringUtils.isNotBlank(masterEntity)) {
             if (!MetadataHelper.containsEntity(masterEntity)) {
                 writeFailure(response,
-                        getLang(request,"SomeInvalid", "MasterEntity") + " : " + masterEntity);
+                        getLang(request,"SomeInvalid", "MainEntity") + " : " + masterEntity);
                 return;
             }
 
             Entity useMaster = MetadataHelper.getEntity(masterEntity);
             if (useMaster.getMainEntity() != null) {
-                writeFailure(response, getLang(request, "SlaveEntityNotBeMain"));
+                writeFailure(response, getLang(request, "DetailEntityNotBeMain"));
                 return;
             } else if (useMaster.getDetailEntity() != null) {
                 writeFailure(response,
