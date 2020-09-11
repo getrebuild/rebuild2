@@ -18,7 +18,7 @@
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-color-header" th:classappend="${sideCollapsedClazz}">
       <th:block th:replace="~{/_include/nav-top}" />
-      <th:block th:replace="~{/_include/nav-left-admin :: nav(active='revision-history')}" />
+      <th:block th:replace="~{/_include/nav-left-admin(active='revision-history')}" />
       <div class="rb-content">
         <div class="main-content container-fluid">
           <div class="card card-table">

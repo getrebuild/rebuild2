@@ -8,7 +8,7 @@
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-color-header rb-aside" th:classappend="${sideCollapsedClazz}">
       <th:block th:replace="~{/_include/nav-top}" />
-      <th:block th:replace="~{/_include/nav-left-admin :: nav(active='robot-approval')}" />
+      <th:block th:replace="~{/_include/nav-left-admin(active='robot-approval')}" />
       <div class="rb-content">
         <aside class="page-aside">
           <div class="rb-scroller">

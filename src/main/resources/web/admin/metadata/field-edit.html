@@ -78,7 +78,7 @@
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-aside rb-color-header" th:classappend="${sideCollapsedClazz}">
       <th:block th:replace="~{/_include/nav-top}" />
-      <th:block th:replace="~{/_include/nav-left-admin :: nav(active='entities')}" />
+      <th:block th:replace="~{/_include/nav-left-admin(active='entities')}" />
       <div class="rb-content">
         <aside class="page-aside">
           <div class="rb-scroller-aside rb-scroller">
