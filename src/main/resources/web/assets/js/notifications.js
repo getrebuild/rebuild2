@@ -43,7 +43,7 @@ class MessageList extends React.Component {
           {this.state.list && msglist.length === 0 && (
             <div className="list-nodata">
               <span className="zmdi zmdi-notifications"></span>
-              <p>暂无消息</p>
+              <p>{$lang('NoSome,Message')}</p>
             </div>
           )}
         </div>
@@ -90,8 +90,8 @@ class MessageList extends React.Component {
             </div>
           </div>
           {append && (
-            <a title="查看相关记录" className="badge link" href={`${rb.baseUrl}/app/list-and-view?id=${item[5]}`}>
-              查看
+            <a title={$lang('ClickViewReleated')} className="badge link" href={`${rb.baseUrl}/app/list-and-view?id=${item[5]}`}>
+              {$lang('View0')}
             </a>
           )}
         </span>
@@ -104,7 +104,7 @@ class MessageList extends React.Component {
 
     const that = this
     $('.read-all').click(() => {
-      RbAlert.create('确认已读全部消息？', {
+      RbAlert.create($lang('MakeReadAllConfirm'), {
         confirm: function () {
           this.hide()
           that.makeRead('ALL')
@@ -145,7 +145,7 @@ class MessageList extends React.Component {
       })
       this.setState({ list: list })
 
-      if (id === 'ALL') RbHighbar.success('全部消息已设为已读')
+      if (id === 'ALL') RbHighbar.success($lang('MakeReadAllTips'))
     })
   }
 }

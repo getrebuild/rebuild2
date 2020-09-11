@@ -3027,10 +3027,6 @@ form {
   color: #fff;
 }
 
-.file-share .expires ul li.active a::after {
-  content: '有效';
-}
-
 .file-share .form-control {
   background-color: #fff !important;
   cursor: text;

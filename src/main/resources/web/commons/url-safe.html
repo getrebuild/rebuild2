@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>安全提示</title>
+    <title>[[${bundle.lang('SafeTip')}]]</title>
     <style type="text/css">
       .safe-tips {
         background-color: #fff;
@@ -47,15 +47,15 @@
         <div class="main-content container">
           <div class="error-container">
             <div class="safe-tips">
-              <h3>即将跳转到外部网站</h3>
-              <p>安全性未知，请谨慎访问</p>
+              <h3>[[${bundle.lang('SafeUrlTips1')}]]</h3>
+              <p>[[${bundle.lang('SafeUrlTips2')}]]</p>
               <div class="url">
                 <span class="icon"><i class="zmdi zmdi-link"></i></span>
                 <span class="text" th:utext="${outerUrl}"></span>
               </div>
               <div class="clearfix"></div>
-              <a class="btn btn-danger bordered" th:href="${outerUrl}" rel="noopener noreferrer">继续访问</a>
-              <a class="btn btn-link" onclick="window.close()">关闭</a>
+              <a class="btn btn-danger bordered" th:href="${outerUrl}" rel="noopener noreferrer">[[${bundle.lang('ContinueAccess')}]]</a>
+              <a class="btn btn-link" onclick="window.close()">[[${bundle.lang('Close')}]]</a>
             </div>
           </div>
         </div>

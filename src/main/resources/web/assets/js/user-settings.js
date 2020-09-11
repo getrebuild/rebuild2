@@ -35,7 +35,7 @@ $(document).ready(function () {
       return
     }
     if (workphone && !$regex.isTel(workphone)) {
-      RbHighbar.create('请输入正确的工作电话')
+      RbHighbar.create($lang('SomeNotFormatWell,f.User.workphone'))
       return
     }
 
@@ -69,7 +69,7 @@ $(document).ready(function () {
         const ip = $ip.text()
         $.get(`/commons/ip-location?ip=${ip}`, (res) => {
           if (res.error_code === 0 && res.data.country !== 'N') {
-            const L = res.data.country === 'R' ? '局域网' : [res.data.region, res.data.country].join(', ')
+            const L = res.data.country === 'R' ? $lang('LAN') : [res.data.region, res.data.country].join(', ')
             $ip.text(`${ip} (${L})`)
           }
         })
@@ -86,22 +86,22 @@ class DlgChangePasswd extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title="更改密码" ref="dlg" disposeOnHide={true}>
+      <RbModal title={$lang('ModifySome,Password')} ref="dlg" disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">原密码</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('OldPassword')}</label>
             <div className="col-sm-7">
               <input type="password" className="form-control form-control-sm" data-id="oldPasswd" onChange={this.handleChange} />
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">新密码</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('NewPassword')}</label>
             <div className="col-sm-7">
               <input type="password" className="form-control form-control-sm" data-id="newPasswd" onChange={this.handleChange} />
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">重复新密码</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('RepeatNewPassword')}</label>
             <div className="col-sm-7">
               <input type="password" className="form-control form-control-sm" data-id="newPasswdAgain" onChange={this.handleChange} />
             </div>
@@ -109,10 +109,10 @@ class DlgChangePasswd extends RbFormHandler {
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref="btns">
               <button className="btn btn-primary btn-space" type="button" onClick={() => this.post()}>
-                确定
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link btn-space" onClick={() => this.hide()}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>
@@ -123,17 +123,19 @@ class DlgChangePasswd extends RbFormHandler {
 
   post() {
     const s = this.state
-    if (!s.oldPasswd) return RbHighbar.create('请输入原密码')
-    if (!s.newPasswd) return RbHighbar.create('请输入新密码')
-    if (s.newPasswd !== s.newPasswdAgain) return RbHighbar.create('两次输入的新密码不一致')
+    if (!s.oldPasswd) return RbHighbar.create($lang('PlsInputSome,OldPassword'))
+    if (!s.newPasswd) return RbHighbar.create($lang('PlsInputSome,NewPassword'))
+    if (s.newPasswd !== s.newPasswdAgain) return RbHighbar.create($lang('PasswordNotMatch'))
 
     const $btns = $(this.refs['btns']).find('.btn').button('loading')
     $.post(`/settings/user/save-passwd?oldp=${$encode(s.oldPasswd)}&newp=${$encode(s.newPasswd)}`, (res) => {
       $btns.button('reset')
       if (res.error_code === 0) {
         this.hide()
-        RbHighbar.success('密码修改成功')
-      } else RbHighbar.create(res.error_msg)
+        RbHighbar.success($lang('SomeSuccess,Modify'))
+      } else {
+        RbHighbar.create(res.error_msg)
+      }
     })
   }
 }
@@ -142,21 +144,21 @@ class DlgChangePasswd extends RbFormHandler {
 class DlgChangeEmail extends RbFormHandler {
   constructor(props) {
     super(props)
-    this.state = { ...this.state, vcodeDisabled: false, vcodeCountdown: '获取验证码' }
+    this.state = { ...this.state, vcodeDisabled: false, vcodeCountdown: $lang('GetVcode') }
   }
 
   render() {
     return (
-      <RbModal title="更改邮箱" ref="dlg" disposeOnHide={true}>
+      <RbModal title={$lang('ModifySome,f.User.email')} ref="dlg" disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">邮箱地址</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.User.email')}</label>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" data-id="newEmail" onChange={this.handleChange} />
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">验证码</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('Vcode')}</label>
             <div className="col-sm-4 pr-0">
               <input type="text" className="form-control form-control-sm" data-id="vcode" onChange={this.handleChange} />
             </div>
@@ -169,10 +171,10 @@ class DlgChangeEmail extends RbFormHandler {
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref="btns">
               <button className="btn btn-primary btn-space" type="button" onClick={() => this.post()}>
-                确定
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link btn-space" onClick={() => this.hide()}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>
@@ -183,7 +185,8 @@ class DlgChangeEmail extends RbFormHandler {
 
   sendVCode() {
     const s = this.state
-    if (!s.newEmail || !$regex.isMail(s.newEmail)) return RbHighbar.create('请输入有效的邮箱地址')
+    if (!s.newEmail) return RbHighbar.create($lang('PlsInputSome,f.User.email'))
+    if (!$regex.isMail(s.newEmail)) return RbHighbar.create($lang('SomeNotFormatWell,f.User.email'))
 
     this.setState({ vcodeDisabled: true })
     $.post(`/settings/user/send-email-vcode?email=${$encode(s.newEmail)}`, (res) => {
@@ -198,27 +201,30 @@ class DlgChangeEmail extends RbFormHandler {
   vcodeResend() {
     let countdown = 60
     let countdownTimer = setInterval(() => {
-      this.setState({ vcodeCountdown: `重新获取 (${--countdown})` })
+      this.setState({ vcodeCountdown: `${$lang('ReGet')} (${--countdown})` })
       if (countdown <= 0) {
         clearInterval(countdownTimer)
-        this.setState({ vcodeCountdown: '重新获取', vcodeDisabled: false })
+        this.setState({ vcodeCountdown: $lang('ReGet'), vcodeDisabled: false })
       }
     }, 1000)
   }
 
   post() {
     const s = this.state
-    if (!s.newEmail || !$regex.isMail(s.newEmail)) return RbHighbar.create('请输入有效的邮箱地址')
-    if (!s.newEmail || !s.vcode) return RbHighbar.create('请输入邮箱地址和验证码')
+    if (!s.newEmail) return RbHighbar.create($lang('PlsInputSome,f.User.email'))
+    if (!$regex.isMail(s.newEmail)) return RbHighbar.create($lang('SomeNotFormatWell,f.User.email'))
+    if (!s.newEmail || !s.vcode) return RbHighbar.create($lang('PlsInputSome,Vcode'))
 
     const $btns = $(this.refs['btns']).find('.btn').button('loading')
     $.post(`/settings/user/save-email?email=${$encode(s.newEmail)}&vcode=${$encode(s.vcode)}`, (res) => {
       $btns.button('reset')
       if (res.error_code === 0) {
         this.hide()
-        $('.J_email-account').html(`当前绑定邮箱 <b>${s.newEmail}</b>`)
-        RbHighbar.create('邮箱修改成功', 'success')
-      } else RbHighbar.create(res.error_msg)
+        $('.J_email-account').text(s.newEmail)
+        RbHighbar.success($lang('SomeSuccess,Modify'))
+      } else {
+        RbHighbar.create(res.error_msg)
+      }
     })
   }
 }
@@ -232,14 +238,14 @@ class DlgCropper extends RbModalHandler {
 
   render() {
     return (
-      <RbModal title="更改头像" ref={(c) => (this._dlg = c)} width="500" onHide={() => (__cropper = null)}>
+      <RbModal title={$lang('ModifySome,Avatar')} ref={(c) => (this._dlg = c)} width="500" onHide={() => (__cropper = null)}>
         <div className={this.state.inLoad ? 'rb-loading rb-loading-active' : null} style={{ height: 400, overflow: 'hide' }}>
           {this.state.img && <img src={`${rb.baseUrl}/filex/img/${this.state.img}?temp=true`} ref={(c) => (this._avatar = c)} style={{ maxWidth: '100%' }} />}
           {this.state.inLoad && <RbSpinner />}
         </div>
         <div className="mt-3">
           <button className="btn btn-primary w-100" onClick={this.post} ref={(c) => (this._btn = c)}>
-            更改
+            {$lang('Modify')}
           </button>
         </div>
       </RbModal>

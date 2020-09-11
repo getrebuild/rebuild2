@@ -15,6 +15,8 @@ import com.rebuild.api.user.AuthTokenManager;
 import com.rebuild.core.Application;
 import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.core.privileges.bizz.User;
+import com.rebuild.core.service.DataSpecificationException;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.web.admin.AdminVerfiyControl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.MediaType;
@@ -122,9 +124,9 @@ public class AppUtils {
 
             Integer code = (Integer) request.getAttribute(ServletUtils.ERROR_STATUS_CODE);
             if (code != null && code == 404) {
-                return "访问的地址/资源不存在";
+                return Language.getLang("Error404");
             } else if (code != null && code == 403) {
-                return "权限不足，访问被阻止";
+                return Language.getLang("Error403");
             }
 
             exception = (Throwable) request.getAttribute(ServletUtils.ERROR_EXCEPTION);
@@ -134,18 +136,20 @@ public class AppUtils {
         if (exception != null) {
             Throwable know = ThrowableUtils.getRootCause(exception);
             if (know instanceof DataTruncation) {
-                return "字段长度超出限制";
+                return Language.getLang("ErrorOutMaxInput");
             } else if (know instanceof AccessDeniedException) {
-                return "权限不足，访问被阻止";
+                return Language.getLang("Error403");
             }
         }
 
         if (exception == null) {
-            return "系统繁忙，请稍后重试";
+            return Language.getLang("Error500");
         } else {
             exception = ThrowableUtils.getRootCause(exception);
-            String errorMsg = StringUtils.defaultIfBlank(exception.getLocalizedMessage(), "系统繁忙，请稍后重试");
-            if (Application.devMode()) {
+            String errorMsg = exception.getLocalizedMessage();
+            if (StringUtils.isBlank(errorMsg)) errorMsg = Language.getLang("Error500");
+
+            if (Application.devMode() && !(exception instanceof DataSpecificationException)) {
                 errorMsg += " (" + exception.getClass().getSimpleName() + ")";
             }
             return errorMsg;

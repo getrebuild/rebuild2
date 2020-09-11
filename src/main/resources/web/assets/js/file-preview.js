@@ -39,9 +39,9 @@ class RbPreview extends React.Component {
     if (this.state.errorMsg || !previewContent) {
       previewContent = (
         <div className="unsupports shadow-lg rounded bg-light" onClick={this.__stopEvent}>
-          <h4 className="mt-0">{this.state.errorMsg || '暂不支持此类型文件的预览'}</h4>
+          <h4 className="mt-0">{this.state.errorMsg || $lang('UpsupportPreviewTips')}</h4>
           <a className="link" target="_blank" rel="noopener noreferrer" href={downloadUrl}>
-            下载文件
+            {$lang('DownloadFile')}
           </a>
         </div>
       )
@@ -56,15 +56,15 @@ class RbPreview extends React.Component {
             </div>
             <div className="float-right">
               {rb.fileSharable && (
-                <a onClick={this.share} title="分享">
+                <a onClick={this.share} title={$lang('Share0')}>
                   <i className="zmdi zmdi-share fs-17"></i>
                 </a>
               )}
-              <a title="下载" target="_blank" rel="noopener noreferrer" href={downloadUrl}>
+              <a title={$lang('Download')} target="_blank" rel="noopener noreferrer" href={downloadUrl}>
                 <i className="zmdi zmdi-download"></i>
               </a>
               {!this.props.unclose && (
-                <a title="关闭 (ESC)" onClick={this.hide}>
+                <a title={$lang('Close')} onClick={this.hide}>
                   <i className="zmdi zmdi-close"></i>
                 </a>
               )}
@@ -93,7 +93,7 @@ class RbPreview extends React.Component {
             src={this.__buildAbsoluteUrl(null, 'imageView2/2/w/1000/interlace/1/q/100')}
             alt="Loading"
             onLoad={() => this.setState({ imgRendered: true })}
-            onError={() => RbHighbar.error('无法加载图片')}
+            onError={() => RbHighbar.error($lang('LoadImgError'))}
           />
         </div>
         {this.props.urls.length > 1 && (
@@ -133,7 +133,7 @@ class RbPreview extends React.Component {
       <div className="container fp-content">
         <div className="iframe text" onClick={this.__stopEvent}>
           {this.state.previewText || this.state.previewText === '' ? (
-            <pre>{this.state.previewText || <i className="text-muted">无内容</i>}</pre>
+            <pre>{this.state.previewText || <i className="text-muted">{$lang('Null')}</i>}</pre>
           ) : (
             <div className="must-center">
               <RbSpinner fully={true} />
@@ -149,7 +149,7 @@ class RbPreview extends React.Component {
       <div className="container fp-content">
         <div className="audio must-center" onClick={this.__stopEvent}>
           <audio src={this.__buildAbsoluteUrl()} controls>
-            您的浏览器不支持此功能
+            {$lang('YourBrowserUnsupport')}
           </audio>
         </div>
       </div>
@@ -161,7 +161,7 @@ class RbPreview extends React.Component {
       <div className="container fp-content">
         <div className="video must-center" onClick={this.__stopEvent}>
           <video src={this.__buildAbsoluteUrl()} height="500" controls>
-            您的浏览器不支持此功能
+            {$lang('YourBrowserUnsupport')}
           </video>
         </div>
       </div>
@@ -298,13 +298,13 @@ class RbPreview extends React.Component {
 
 // ~ 共享
 const EXPIRES_TIME = [
-  [5, '5分钟'],
-  [30, '半小时'],
-  [60, '1小时'],
-  [360, '6小时'],
-  [720, '12小时'],
-  [1440, '1天'],
-  [4320, '3天'],
+  [5, 5 + $lang('Minte')],
+  [30, 30 + $lang('Minte')],
+  [60, 1 + $lang('Hour')],
+  [360, 6 + $lang('Hour')],
+  [720, 12 + $lang('Hour')],
+  [1440, 1 + $lang('Day0')],
+  [4320, 3 + $lang('Day0')],
 ]
 
 class FileShare extends RbModalHandler {
@@ -314,14 +314,14 @@ class FileShare extends RbModalHandler {
 
   render() {
     return (
-      <RbModal ref={(c) => (this._dlg = c)} title="分享文件" disposeOnHide="true">
+      <RbModal ref={(c) => (this._dlg = c)} title={$lang('Share0File')} disposeOnHide="true">
         <div className="file-share">
-          <label>分享链接</label>
+          <label>{$lang('Share0Link')}</label>
           <div className="input-group input-group-sm">
             <input className="form-control" value={this.state.shareUrl || ''} readOnly onClick={(e) => $(e.target).select()} />
             <span className="input-group-append">
               <button className="btn btn-secondary" ref={(c) => (this._btn = c)}>
-                复制
+                {$lang('Copy')}
               </button>
             </span>
           </div>
@@ -355,7 +355,7 @@ class FileShare extends RbModalHandler {
           return that.state.shareUrl
         },
       }).on('success', function () {
-        RbHighbar.success('分享链接已复制')
+        RbHighbar.success($lang('Share0LinkCopyTips'))
       })
     }
     if (!window.ClipboardJS) {

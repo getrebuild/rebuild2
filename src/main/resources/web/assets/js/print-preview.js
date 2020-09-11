@@ -117,7 +117,7 @@ class PreviewTable extends React.Component {
         </React.Fragment>
       )
     } else if (item.type === 'BOOL') {
-      return { T: '是', F: '否' }[item.value]
+      return $lang(item.value === 'T' ? 'True' : 'False')
     } else if (item.type === 'MULTISELECT') {
       // eslint-disable-next-line no-undef
       return __findMultiTexts(item.options, item.value).join(', ')

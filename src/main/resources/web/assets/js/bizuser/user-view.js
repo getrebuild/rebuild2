@@ -135,7 +135,7 @@ class DlgEnableUser extends RbModalHandler {
     super(props)
 
     this.__title = $lang('ActiveUser')
-    if (!props.enable) this.__title = $lang('ChangeSome,' + (props.dept === true ? 'e.Department' : 'e.Role'))
+    if (!props.enable) this.__title = $lang('ModifySome,' + (props.dept === true ? 'e.Department' : 'e.Role'))
   }
 
   render() {

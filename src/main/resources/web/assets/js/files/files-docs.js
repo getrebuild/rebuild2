@@ -224,7 +224,7 @@ class FileMoveDlg extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={$lang('ChangeSome,Folder')} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
+      <RbModal title={$lang('ModifySome,Folder')} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
             <label className="col-sm-3 col-form-label text-sm-right">{$lang('ChangToFolder')}</label>

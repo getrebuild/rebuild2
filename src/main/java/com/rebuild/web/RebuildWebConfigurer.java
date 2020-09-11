@@ -11,6 +11,7 @@ import cn.devezhao.commons.web.ServletUtils;
 import com.alibaba.fastjson.support.spring.FastJsonJsonView;
 import com.rebuild.core.Application;
 import com.rebuild.core.Initialization;
+import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.i18n.Language;
@@ -112,19 +113,22 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
         ModelAndView error;
         if (AppUtils.isHtmlRequest(request)) {
             error = new ModelAndView("/error/error");
-            error.getModelMap().put("bundle", Application.getLanguage().getCurrentBundle());
+            error.getModelMap().put("bundle", Language.getCurrentBundle());
         } else {
             error = new ModelAndView(new FastJsonJsonView());
         }
 
         String errorMsg = AppUtils.getErrorMessage(request, ex);
-        String errorLog = "\n++ EXECUTE REQUEST ERROR(s) TRACE +++++++++++++++++++++++++++++++++++++++++++++" +
-                "\nUser    : " + ObjectUtils.defaultIfNull(AppUtils.getRequestUser(request), "-") +
-                "\nIP      : " + ServletUtils.getRemoteAddr(request) +
-                "\nUA      : " + StringUtils.defaultIfEmpty(request.getHeader("user-agent"), "-") +
-                "\nURL(s)  : " + request.getRequestURL() + " [ " + StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "-") + " ]" +
-                "\nMessage : " + errorMsg + (model != null ? (" " + model.toString()) : "");
-        LOG.error(errorLog, ex);
+
+        if (!(ex instanceof DataSpecificationException)) {
+            String errorLog = "\n++ EXECUTE REQUEST ERROR(s) TRACE +++++++++++++++++++++++++++++++++++++++++++++" +
+                    "\nUser    : " + ObjectUtils.defaultIfNull(AppUtils.getRequestUser(request), "-") +
+                    "\nIP      : " + ServletUtils.getRemoteAddr(request) +
+                    "\nUA      : " + StringUtils.defaultIfEmpty(request.getHeader("user-agent"), "-") +
+                    "\nURL(s)  : " + request.getRequestURL() + " [ " + StringUtils.defaultIfBlank(ServletUtils.getReferer(request), "-") + " ]" +
+                    "\nMessage : " + errorMsg + (model != null ? (" " + model.toString()) : "");
+            LOG.error(errorLog, ex);
+        }
 
         error.getModel().put("error_code", status.value());
         error.getModel().put("error_msg", errorMsg);
