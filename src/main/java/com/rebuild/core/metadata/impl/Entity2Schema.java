@@ -78,8 +78,8 @@ public class Entity2Schema extends Field2Schema {
             }
         }
 
-        final boolean isSlave = StringUtils.isNotBlank(mainEntity);
-        if (isSlave && !MetadataHelper.containsEntity(mainEntity)) {
+        final boolean isDetail = StringUtils.isNotBlank(mainEntity);
+        if (isDetail && !MetadataHelper.containsEntity(mainEntity)) {
             throw new MetadataException(
                     Language.getLang("SomeInvalid", "MainEntity") + " : " + mainEntity);
         }
@@ -108,7 +108,7 @@ public class Entity2Schema extends Field2Schema {
         if (StringUtils.isNotBlank(comments)) {
             record.setString("comments", comments);
         }
-        if (isSlave) {
+        if (isDetail) {
             record.setString("mainEntity", mainEntity);
         }
         record.setString("nameField", nameFiled);
@@ -134,7 +134,7 @@ public class Entity2Schema extends Field2Schema {
 
             // 明细实体关联字段
             // 明细实体无所属用户或部门，使用主实体的
-            if (isSlave) {
+            if (isDetail) {
                 String mainLabel = EasyMeta.valueOf(mainEntity).getLabel();
                 String mainPrimary = mainEntity + "Id";
                 createBuiltinField(tempEntity, mainPrimary, mainLabel, DisplayType.REFERENCE, "引用主记录", mainEntity, CascadeModel.Delete);
@@ -188,8 +188,8 @@ public class Entity2Schema extends Field2Schema {
 
         if (entity.getDetailEntity() != null) {
             if (force) {
-                boolean dropSlave = this.dropEntity(entity.getDetailEntity(), true);
-                if (dropSlave) {
+                boolean dropDetail = this.dropEntity(entity.getDetailEntity(), true);
+                if (dropDetail) {
                     entity = MetadataHelper.getEntity(entity.getEntityCode());
 
                 } else {

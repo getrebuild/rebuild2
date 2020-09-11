@@ -136,9 +136,9 @@ public class RecycleRestore {
             return Collections.emptyList();
         }
 
-        JSONArray slaveList = content.getJSONArray(RecycleBean.NAME_SLAVELIST);
-        if (slaveList != null) {
-            content.remove(RecycleBean.NAME_SLAVELIST);
+        JSONArray detailList = content.getJSONArray(RecycleBean.NAME_DETAILLIST);
+        if (detailList != null) {
+            content.remove(RecycleBean.NAME_DETAILLIST);
         }
 
         List<Record> records = new ArrayList<>();
@@ -147,11 +147,11 @@ public class RecycleRestore {
         Record record = new RestoreRecordCreator(entity, content).create(true);
         records.add(record);
 
-        Entity slaveEntity = entity.getDetailEntity();
-        if (slaveList != null && slaveEntity != null) {
-            for (Object o : slaveList) {
-                Record slave = new RestoreRecordCreator(slaveEntity, (JSONObject) o).create(true);
-                records.add(slave);
+        Entity detailEntity = entity.getDetailEntity();
+        if (detailList != null && detailEntity != null) {
+            for (Object o : detailList) {
+                Record detail = new RestoreRecordCreator(detailEntity, (JSONObject) o).create(true);
+                records.add(detail);
             }
         }
         return records;

@@ -61,7 +61,6 @@ public class EasyMeta implements BaseMeta {
     /**
      * Use {@link #getLabel()}
      */
-    @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     @Override
     public String getDescription() {
@@ -142,9 +141,9 @@ public class EasyMeta implements BaseMeta {
                 return true;
             } else if (getDisplayType() == DisplayType.REFERENCE) {
                 // 明细-引用主记录的字段也是内建
-                // @see MetadataHelper#getSlaveToMasterField
-                Entity hasMaster = field.getOwnEntity().getMainEntity();
-                return hasMaster != null && hasMaster.equals(field.getReferenceEntity()) && !field.isCreatable();
+                // @see MetadataHelper#getDetailToMainField
+                Entity hasMain = field.getOwnEntity().getMainEntity();
+                return hasMain != null && hasMain.equals(field.getReferenceEntity()) && !field.isCreatable();
             }
         }
         return false;

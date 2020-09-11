@@ -114,8 +114,8 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
         TemplateExtractor templateExtractor = new TemplateExtractor(this.template, true);
         Map<String, String> varsMap = templateExtractor.transformVars(entity);
 
-        List<String> fieldsOfMaster = new ArrayList<>();
-        List<String> fieldsOfSlave = new ArrayList<>();
+        List<String> fieldsOfMain = new ArrayList<>();
+        List<String> fieldsOfDetail = new ArrayList<>();
 
         for (Map.Entry<String, String> e : varsMap.entrySet()) {
             String validField = e.getValue();
@@ -124,23 +124,23 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
                 continue;
             }
 
-            if (e.getKey().startsWith(TemplateExtractor.SLAVE_PREFIX)) {
-                fieldsOfSlave.add(validField);
+            if (e.getKey().startsWith(TemplateExtractor.DETAIL_PREFIX)) {
+                fieldsOfDetail.add(validField);
             } else {
-                fieldsOfMaster.add(validField);
+                fieldsOfMain.add(validField);
             }
         }
 
-        if (fieldsOfMaster.isEmpty() && fieldsOfSlave.isEmpty()) {
+        if (fieldsOfMain.isEmpty() && fieldsOfDetail.isEmpty()) {
             return Collections.emptyList();
         }
 
         final List<Map<String, Object>> datas = new ArrayList<>();
         final String baseSql = "select %s from %s where %s = ?";
 
-        if (!fieldsOfMaster.isEmpty()) {
+        if (!fieldsOfMain.isEmpty()) {
             String sql = String.format(baseSql,
-                    StringUtils.join(fieldsOfMaster, ","), entity.getName(), entity.getPrimaryField().getName());
+                    StringUtils.join(fieldsOfMain, ","), entity.getName(), entity.getPrimaryField().getName());
             Record record = Application.createQuery(sql, this.getUser())
                     .setParameter(1, this.recordId)
                     .record();
@@ -152,12 +152,12 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
         }
 
         // 无明细
-        if (fieldsOfSlave.isEmpty()) {
+        if (fieldsOfDetail.isEmpty()) {
             return datas;
         }
 
         String sql = String.format(baseSql + " order by modifiedOn desc",
-                StringUtils.join(fieldsOfSlave, ","),
+                StringUtils.join(fieldsOfDetail, ","),
                 entity.getDetailEntity().getName(),
                 MetadataHelper.getDetailToMainField(entity.getDetailEntity()).getName());
         List<Record> list = Application.createQuery(sql, this.getUser())
@@ -173,10 +173,10 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
     /**
      * @param record
      * @param varsMap
-     * @param isSlave
+     * @param isDetail
      * @return
      */
-    protected Map<String, Object> buildData(Record record, Map<String, String> varsMap, boolean isSlave) {
+    protected Map<String, Object> buildData(Record record, Map<String, String> varsMap, boolean isDetail) {
         final Entity entity = record.getEntity();
 
         final Map<String, Object> data = new HashMap<>();
@@ -184,8 +184,8 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
         for (Map.Entry<String, String> e : varsMap.entrySet()) {
             if (e.getValue() == null) {
                 String varName = e.getKey();
-                if (isSlave) {
-                    if (varName.startsWith(TemplateExtractor.SLAVE_PREFIX)) {
+                if (isDetail) {
+                    if (varName.startsWith(TemplateExtractor.DETAIL_PREFIX)) {
                         data.put(varName.substring(1), "[无效字段]");
                     }
                 } else {
@@ -212,7 +212,7 @@ public class EasyExcelGenerator extends SetUser<EasyExcelGenerator> {
                     break;
                 }
             }
-            if (varName.startsWith(TemplateExtractor.SLAVE_PREFIX)) {
+            if (varName.startsWith(TemplateExtractor.DETAIL_PREFIX)) {
                 varName = varName.substring(1);
             }
 

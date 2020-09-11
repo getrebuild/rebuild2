@@ -127,7 +127,7 @@ $(document).ready(function () {
   // 内建字段
   if (wpc.fieldBuildin) {
     $('.J_options input, .J_del').attr('disabled', true)
-    if (wpc.isSlaveToMasterField) {
+    if (wpc.isDetailToMainField) {
       $('.J_action').removeClass('hide')
     } else {
       $('.footer .alert').removeClass('hide')

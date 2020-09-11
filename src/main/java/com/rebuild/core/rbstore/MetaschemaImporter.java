@@ -72,9 +72,11 @@ public class MetaschemaImporter extends HeavyTask<String> {
             return hasError;
         }
 
-        JSONObject slave = remoteData.getJSONObject("slave");
-        if (slave != null) {
-            hasError = verfiyEntity(slave);
+        JSONObject detailData = remoteData.getJSONObject("detail");
+        if (detailData == null) detailData = remoteData.getJSONObject("slave");
+
+        if (detailData != null) {
+            hasError = verfiyEntity(detailData);
             return hasError;
         }
 
@@ -114,10 +116,12 @@ public class MetaschemaImporter extends HeavyTask<String> {
         Entity createdEntity = MetadataHelper.getEntity(entityName);
         setCompleted(45);
 
-        JSONObject slaveData = remoteData.getJSONObject("slave");
-        if (slaveData != null) {
+        JSONObject detailData = remoteData.getJSONObject("detail");
+        if (detailData == null) detailData = remoteData.getJSONObject("slave");
+
+        if (detailData != null) {
             try {
-                performEntity(slaveData, createdEntity.getName());
+                performEntity(detailData, createdEntity.getName());
                 setCompleted(90);
             } catch (MetadataException ex) {
                 // 出现异常，删除主实体

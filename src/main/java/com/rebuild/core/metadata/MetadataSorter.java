@@ -14,7 +14,6 @@ import cn.devezhao.persist4j.metadata.BaseMeta;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +45,11 @@ public class MetadataSorter {
      * @return
      */
     @SuppressWarnings("SuspiciousToArrayCall")
-    public static Entity[] sortEntities(ID user, boolean usesBizz, boolean usesSlave) {
+    public static Entity[] sortEntities(ID user, boolean usesBizz, boolean usesDetail) {
         List<BaseMeta> entities = new ArrayList<>();
         for (Entity e : MetadataHelper.getEntities()) {
             if (!e.isQueryable()) continue;
-            if (e.getMainEntity() != null && !usesSlave) continue;
+            if (e.getMainEntity() != null && !usesDetail) continue;
 
             EasyMeta easyEntity = EasyMeta.valueOf(e);
             if (easyEntity.isBuiltin() && !easyEntity.isPlainEntity()) continue;

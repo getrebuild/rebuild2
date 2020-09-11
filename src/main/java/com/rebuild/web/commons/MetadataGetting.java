@@ -39,10 +39,10 @@ public class MetadataGetting extends BaseController {
     @RequestMapping("entities")
     public void entities(HttpServletRequest request, HttpServletResponse response) {
         ID user = getRequestUser(request);
-        boolean usesSlave = getBoolParameter(request, "slave", false);
+        boolean usesDetail = getBoolParameter(request, "slave", false);
 
         List<Map<String, String>> list = new ArrayList<>();
-        for (Entity e : MetadataSorter.sortEntities(user, false, usesSlave)) {
+        for (Entity e : MetadataSorter.sortEntities(user, false, usesDetail)) {
             Map<String, String> map = new HashMap<>();
             EasyMeta easy = new EasyMeta(e);
             map.put("name", e.getName());

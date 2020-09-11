@@ -116,9 +116,9 @@ public class MetaFieldControl extends BaseController {
         // 明细实体
         if (((Entity) easyEntity.getBaseMeta()).getMainEntity() != null) {
             Field stmField = MetadataHelper.getDetailToMainField((Entity) easyEntity.getBaseMeta());
-            mv.getModel().put("isSlaveToMasterField", stmField.equals(fieldMeta));
+            mv.getModel().put("isDetailToMainField", stmField.equals(fieldMeta));
         } else {
-            mv.getModel().put("isSlaveToMasterField", false);
+            mv.getModel().put("isDetailToMainField", false);
         }
 
         // 字段类型相关

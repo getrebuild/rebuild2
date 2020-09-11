@@ -95,10 +95,10 @@ public class MetaEntityControl extends BaseController {
         // 默认无BIZZ实体
         final boolean usesBizz = getBoolParameter(request, "bizz", false);
         // 默认无明细实体
-        final boolean usesSlave = getBoolParameter(request, "slave", false);
+        final boolean usesDetail = getBoolParameter(request, "slave", false);
 
         List<Map<String, Object>> ret = new ArrayList<>();
-        for (Entity entity : MetadataSorter.sortEntities(null, usesBizz, usesSlave)) {
+        for (Entity entity : MetadataSorter.sortEntities(null, usesBizz, usesDetail)) {
             EasyMeta easyMeta = new EasyMeta(entity);
             Map<String, Object> map = new HashMap<>();
             map.put("entityName", easyMeta.getName());
@@ -124,28 +124,28 @@ public class MetaEntityControl extends BaseController {
 
         String label = reqJson.getString("label");
         String comments = reqJson.getString("comments");
-        String masterEntity = reqJson.getString("masterEntity");
-        if (StringUtils.isNotBlank(masterEntity)) {
-            if (!MetadataHelper.containsEntity(masterEntity)) {
+        String mainEntity = reqJson.getString("masterEntity");
+        if (StringUtils.isNotBlank(mainEntity)) {
+            if (!MetadataHelper.containsEntity(mainEntity)) {
                 writeFailure(response,
-                        getLang(request,"SomeInvalid", "MainEntity") + " : " + masterEntity);
+                        getLang(request,"SomeInvalid", "MainEntity") + " : " + mainEntity);
                 return;
             }
 
-            Entity useMaster = MetadataHelper.getEntity(masterEntity);
-            if (useMaster.getMainEntity() != null) {
+            Entity useMain = MetadataHelper.getEntity(mainEntity);
+            if (useMain.getMainEntity() != null) {
                 writeFailure(response, getLang(request, "DetailEntityNotBeMain"));
                 return;
-            } else if (useMaster.getDetailEntity() != null) {
+            } else if (useMain.getDetailEntity() != null) {
                 writeFailure(response,
-                        String.format(getLang(request, "SelectMainEntityBeXUsed"), useMaster.getDetailEntity()));
+                        String.format(getLang(request, "SelectMainEntityBeXUsed"), useMain.getDetailEntity()));
                 return;
             }
         }
 
         try {
             String entityName = new Entity2Schema(user)
-                    .createEntity(label, comments, masterEntity, getBoolParameter(request, "nameField"));
+                    .createEntity(label, comments, mainEntity, getBoolParameter(request, "nameField"));
             writeSuccess(response, entityName);
         } catch (Exception ex) {
             LOG.error(null, ex);

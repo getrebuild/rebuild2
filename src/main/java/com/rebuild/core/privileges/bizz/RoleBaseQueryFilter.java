@@ -90,13 +90,13 @@ public class RoleBaseQueryFilter implements Filter, QueryFilter {
             return ALLOWED.evaluate(null);
         }
 
-        Entity useMaster = null;
+        Entity useMain = null;
         if (!MetadataHelper.hasPrivilegesField(entity)) {
             // NOTE BIZZ 实体全部用户可见
             if (MetadataHelper.isBizzEntity(entity.getEntityCode()) || EasyMeta.valueOf(entity).isPlainEntity()) {
                 return ALLOWED.evaluate(null);
             } else if (entity.getMainEntity() != null) {
-                useMaster = entity.getMainEntity();
+                useMain = entity.getMainEntity();
             } else {
                 return DENIED.evaluate(null);
             }
@@ -105,7 +105,7 @@ public class RoleBaseQueryFilter implements Filter, QueryFilter {
         // 未配置权限的默认拒绝
         // 明细实体使用主实体权限
         Privileges ep = user.getOwningRole().getPrivileges(
-                useMaster != null ? useMaster.getEntityCode() : entity.getEntityCode());
+                useMain != null ? useMain.getEntityCode() : entity.getEntityCode());
         if (ep == Privileges.NONE) {
             return DENIED.evaluate(null);
         }
@@ -117,7 +117,7 @@ public class RoleBaseQueryFilter implements Filter, QueryFilter {
 
         String ownFormat = "%s = '%s'";
         Field stmField = null;
-        if (useMaster != null) {
+        if (useMain != null) {
             stmField = MetadataHelper.getDetailToMainField(entity);
             ownFormat = stmField.getName() + "." + ownFormat;
         }
@@ -149,18 +149,20 @@ public class RoleBaseQueryFilter implements Filter, QueryFilter {
      * 共享权限
      *
      * @param entity
-     * @param slaveToMasterField
+     * @param detailToMainField
      * @param filtered
      * @return
      */
-    protected String appendShareFilter(Entity entity, Field slaveToMasterField, String filtered) {
+    protected String appendShareFilter(Entity entity, Field detailToMainField, String filtered) {
+        if (user == null) return filtered;
+
         String shareFilter = "exists (select rights from ShareAccess where belongEntity = '%s' and shareTo = '%s' and recordId = ^%s)";
 
-        // 子实体。使用主实体的共享
-        if (slaveToMasterField != null) {
+        // 明细实体，使用主实体的共享
+        if (detailToMainField != null) {
             shareFilter = String.format(shareFilter,
-                    slaveToMasterField.getOwnEntity().getMainEntity().getName(),
-                    user.getId(), slaveToMasterField.getName());
+                    detailToMainField.getOwnEntity().getMainEntity().getName(),
+                    user.getId(), detailToMainField.getName());
         } else {
             shareFilter = String.format(shareFilter,
                     entity.getName(), user.getId(), entity.getPrimaryField().getName());

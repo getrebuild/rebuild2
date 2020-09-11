@@ -304,18 +304,18 @@ public class GeneralEntityService extends ObservableService implements EntitySer
     /**
      * 获取级联操作记录
      *
-     * @param recordMaster    主记录
+     * @param recordMain    主记录
      * @param cascadeEntities 级联实体
      * @param action          动作
      * @return
      */
-    protected Map<String, Set<ID>> getCascadedRecords(ID recordMaster, String[] cascadeEntities, Permission action) {
+    protected Map<String, Set<ID>> getCascadedRecords(ID recordMain, String[] cascadeEntities, Permission action) {
         if (cascadeEntities == null || cascadeEntities.length == 0) {
             return Collections.emptyMap();
         }
 
         Map<String, Set<ID>> entityRecordsMap = new HashMap<>();
-        Entity mainEntity = MetadataHelper.getEntity(recordMaster.getEntityCode());
+        Entity mainEntity = MetadataHelper.getEntity(recordMain.getEntityCode());
         for (String cas : cascadeEntities) {
             Entity casEntity = MetadataHelper.getEntity(cas);
 
@@ -324,7 +324,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
 
             Field[] reftoFields = MetadataHelper.getReferenceToFields(mainEntity, casEntity);
             for (Field field : reftoFields) {
-                sql.append(field.getName()).append(" = '").append(recordMaster).append("' or ");
+                sql.append(field.getName()).append(" = '").append(recordMain).append("' or ");
             }
             // remove last ' or '
             sql.replace(sql.length() - 4, sql.length(), " )");
@@ -398,7 +398,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
                 // 需要验证主记录
                 String recordType = "Record";
                 if (mainEntity != null) {
-                    recordId = getMasterId(entity, recordId);
+                    recordId = getMainId(entity, recordId);
                     recordType = "MainRecord";
                 }
 
@@ -485,16 +485,16 @@ public class GeneralEntityService extends ObservableService implements EntitySer
     /**
      * 获取主记录ID
      *
-     * @param slaveEntity
-     * @param slaveId
+     * @param detailEntity
+     * @param detailId
      * @return
      * @throws NoRecordFoundException
      */
-    private ID getMasterId(Entity slaveEntity, ID slaveId) throws NoRecordFoundException {
-        Field stmField = MetadataHelper.getDetailToMainField(slaveEntity);
-        Object[] o = Application.getQueryFactory().uniqueNoFilter(slaveId, stmField.getName());
+    private ID getMainId(Entity detailEntity, ID detailId) throws NoRecordFoundException {
+        Field stmField = MetadataHelper.getDetailToMainField(detailEntity);
+        Object[] o = Application.getQueryFactory().uniqueNoFilter(detailId, stmField.getName());
         if (o == null) {
-            throw new NoRecordFoundException(slaveId);
+            throw new NoRecordFoundException(detailId);
         }
         return (ID) o[0];
     }

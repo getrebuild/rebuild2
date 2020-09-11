@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 public class TemplateExtractor {
 
     // 明细字段
-    protected static final String SLAVE_PREFIX = ".";
+    protected static final String DETAIL_PREFIX = ".";
 
     // ${xxx}
     private static final Pattern PATT_V1 = Pattern.compile("\\$\\{(.*?)}");
@@ -63,13 +63,13 @@ public class TemplateExtractor {
         for (String field : vars) {
 
             // 明细实体的字段
-            if (detailEntity != null && field.startsWith(SLAVE_PREFIX)) {
+            if (detailEntity != null && field.startsWith(DETAIL_PREFIX)) {
 
-                String slaveField = field.substring(1);
-                if (MetadataHelper.getLastJoinField(detailEntity, slaveField) != null) {
-                    map.put(field, slaveField);
+                String detailField = field.substring(1);
+                if (MetadataHelper.getLastJoinField(detailEntity, detailField) != null) {
+                    map.put(field, detailField);
                 } else {
-                    String realField = transformRealField(detailEntity, slaveField);
+                    String realField = transformRealField(detailEntity, detailField);
                     map.put(field, realField);
                 }
 

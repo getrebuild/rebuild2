@@ -58,18 +58,18 @@ public class MetaSchemaGenerator {
     public JSON generate() {
         JSONObject schema = (JSONObject) performEntity(entity, false);
         if (entity.getDetailEntity() != null) {
-            JSON slave = performEntity(entity.getDetailEntity(), true);
-            schema.put("slave", slave);
+            JSON detail = performEntity(entity.getDetailEntity(), true);
+            schema.put("detail", detail);
         }
         return schema;
     }
 
     /**
      * @param entity
-     * @param isSlave
+     * @param isDetail
      * @return
      */
-    private JSON performEntity(Entity entity, boolean isSlave) {
+    private JSON performEntity(Entity entity, boolean isDetail) {
         JSONObject schemaEntity = new JSONObject(true);
 
         // 实体
@@ -84,7 +84,7 @@ public class MetaSchemaGenerator {
         JSONArray metaFields = new JSONArray();
         for (Field field : entity.getFields()) {
             if (MetadataHelper.isCommonsField(field)
-                    || (isSlave && MetadataHelper.getDetailToMainField(entity).equals(field))) {
+                    || (isDetail && MetadataHelper.getDetailToMainField(entity).equals(field))) {
                 continue;
             }
             metaFields.add(performField(field));

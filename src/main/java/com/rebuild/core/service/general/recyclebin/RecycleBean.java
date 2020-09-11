@@ -29,7 +29,7 @@ import java.util.List;
 public class RecycleBean implements Serializable {
     private static final long serialVersionUID = -1058552856844427594L;
 
-    public static final String NAME_SLAVELIST = "$SLAVELIST$";
+    public static final String NAME_DETAILLIST = "$SLAVELIST$";
 
     final private ID recordId;
 
@@ -55,22 +55,22 @@ public class RecycleBean implements Serializable {
         Record queryed = Application.createQueryNoFilter(sql).setParameter(1, this.recordId).record();
         JSONObject s = (JSONObject) queryed.serialize();
 
-        Entity slaveEntity = entity.getDetailEntity();
-        if (slaveEntity == null) {
+        Entity detailEntity = entity.getDetailEntity();
+        if (detailEntity == null) {
             return s;
         }
 
         // 明细
-        String slaveSql = buildBaseSql(slaveEntity)
-                .append(MetadataHelper.getDetailToMainField(slaveEntity).getName())
+        String detailSql = buildBaseSql(detailEntity)
+                .append(MetadataHelper.getDetailToMainField(detailEntity).getName())
                 .append(" = ?")
                 .toString();
-        List<Record> slaveQueryed = Application.createQueryNoFilter(slaveSql).setParameter(1, this.recordId).list();
-        JSONArray slaveList = new JSONArray();
-        for (Record r : slaveQueryed) {
-            slaveList.add(r.serialize());
+        List<Record> detailQueryed = Application.createQueryNoFilter(detailSql).setParameter(1, this.recordId).list();
+        JSONArray detailList = new JSONArray();
+        for (Record r : detailQueryed) {
+            detailList.add(r.serialize());
         }
-        s.put(NAME_SLAVELIST, slaveList);
+        s.put(NAME_DETAILLIST, detailList);
 
         return s;
     }

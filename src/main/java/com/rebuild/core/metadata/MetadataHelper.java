@@ -293,14 +293,14 @@ public class MetadataHelper {
     /**
      * 获取明细实体哪个字段引用自主实体
      *
-     * @param slave
+     * @param detail
      * @return
      */
-    public static Field getDetailToMainField(Entity slave) {
-        Entity main = slave.getMainEntity();
+    public static Field getDetailToMainField(Entity detail) {
+        Entity main = detail.getMainEntity();
         Assert.isTrue(main != null, "None detail-entity");
 
-        for (Field field : slave.getFields()) {
+        for (Field field : detail.getFields()) {
             if (field.getType() != FieldType.REFERENCE) {
                 continue;
             }

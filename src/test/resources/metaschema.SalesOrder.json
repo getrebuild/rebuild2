@@ -133,7 +133,7 @@
       "entity": "SalesOrder999"
     }
   },
-  "slave": {
+  "detail": {
     "entity": "SalesOrderItem999",
     "entityLabel": "订单明细",
     "nameField": "itemName",
