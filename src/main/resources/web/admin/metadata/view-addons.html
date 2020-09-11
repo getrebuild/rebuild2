@@ -41,7 +41,7 @@
           $(res.data.config).each(function () {
             $('.unset-list li[data-key="' + this + '"]').trigger('click')
           })
-          if (!res.data.refs || res.data.refs.length == 0) $(`<li class="dd-item nodata">${$lang('NoData')}</li>`).appendTo('.unset-list')
+          if (!res.data.refs || res.data.refs.length === 0) $(`<li class="dd-item nodata">${$lang('NoData')}</li>`).appendTo('.unset-list')
         })
 
         const $btn = $('.J_save').click(function () {
@@ -53,7 +53,7 @@
           $btn.button('loading')
           $.post(_url, JSON.stringify(config), function (res) {
             $btn.button('reset')
-            if (res.error_code == 0) parent.location.reload()
+            if (res.error_code === 0) parent.location.reload()
           })
         })
       })

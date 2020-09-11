@@ -61,10 +61,10 @@ public class SignUpControl extends BaseController {
         String email = getParameterNotNull(request, "email");
 
         if (!RegexUtils.isEMail(email)) {
-            writeFailure(response, getLang(request, "SomeInvalid", "Email"));
+            writeFailure(response, getLang(request, "SomeInvalid", "f.User.email"));
             return;
         } else if (Application.getUserStore().existsEmail(email)) {
-            writeFailure(response, getLang(request, "SomeExists", "Email"));
+            writeFailure(response, getLang(request, "SomeExists", "f.User.email"));
             return;
         }
 
@@ -104,6 +104,7 @@ public class SignUpControl extends BaseController {
         try {
             Application.getBean(UserService.class).txSignUp(userNew);
 
+            // 通知用户
             String homeUrl = RebuildConfiguration.getHomeUrl();
             String content = String.format(getLang(request, "SignupPending"), fullName, loginName, passwd, homeUrl, homeUrl);
             SMSender.sendMail(email, getLang(request, "AdminReviewSignup"), content);

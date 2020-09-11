@@ -224,7 +224,7 @@ var _initNavs = function () {
   }
 
   $('.nav-settings').click(function () {
-    RbModal.create('/p/settings/nav-settings', $lang('NavMenu'))
+    RbModal.create('/p/settings/nav-settings', $lang('SetSome,NavMenu'))
   })
 
   // WHEN SMALL-WIDTH

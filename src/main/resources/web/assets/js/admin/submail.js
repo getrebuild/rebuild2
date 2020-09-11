@@ -73,15 +73,15 @@ class TestSend extends RbAlert {
   constructor(props) {
     super(props)
     this.state = { ...props }
+    this._typeName = props.type === 'email' ? 'Email' : 'Mobile'
   }
 
   renderContent() {
-    const typeName = $lang(this.props.type === 'email' ? 'Email' : 'Sms')
     return (
       <form style={{ maxWidth: 400, margin: '0 auto' }}>
         <div className="form-group">
-          <label>{$lang('InputTestSome') + typeName}</label>
-          <input type="text" className="form-control form-control-sm" placeholder={typeName} ref={(c) => (this._input = c)} />
+          <label>{$lang('InputTestSome,' + this._typeName)}</label>
+          <input type="text" className="form-control form-control-sm" placeholder={$lang(this._typeName)} ref={(c) => (this._input = c)} />
         </div>
         <div className="form-group mb-1">
           <button type="button" className="btn btn-space btn-primary" onClick={() => this.confirm()} ref={(c) => (this._btn = c)}>
@@ -94,7 +94,7 @@ class TestSend extends RbAlert {
 
   confirm() {
     const receiver = $(this._input).val()
-    if (!receiver) return
+    if (!receiver) return RbHighbar.create($lang('PlsInputSome,' + this._typeName))
 
     const conf = {}
     $('.syscfg table td[data-id]').each(function () {

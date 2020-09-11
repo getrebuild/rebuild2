@@ -19,7 +19,7 @@
             <div class="dropdown-menu">
               <div class="user-info">
                 <div class="user-name" th:text="${user.getFullName()}">[[${bundle.lang('FullName')}]]</div>
-                <div class="user-id" th:data-user="${user.getId()}" th:text="${user.getEmail() ?: bundle.lang('SomeUnset,Email')}">[[${bundle.lang('Email')}]]</div>
+                <div class="user-id" th:data-user="${user.getId()}">[[${user.getEmail() ?: bundle.lang('SomeUnset,Email')}]]</div>
               </div>
               <a class="dropdown-item" th:href="@{/settings/user}"><i class="icon zmdi zmdi-account-box"></i>[[${bundle.lang('UserSet')}]]</a>
               <a class="dropdown-item" th:href="@{/user/logout}"><i class="icon zmdi zmdi-power"></i>[[${bundle.lang('Exit')}]]</a>

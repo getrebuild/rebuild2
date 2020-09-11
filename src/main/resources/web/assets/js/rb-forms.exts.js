@@ -15,12 +15,12 @@ class RbFormAvatar extends RbFormElement {
     const aUrl = rb.baseUrl + (this.state.value ? `/filex/img/${this.state.value}?imageView2/2/w/100/interlace/1/q/100` : '/assets/img/avatar.png')
     return (
       <div className="img-field avatar">
-        <span title={this.props.readonly ? null : '选择头像'}>
+        <span title={this.props.readonly ? null : $lang('SelectSome,Avatar')}>
           {!this.props.readonly && (
             <input ref={(c) => (this._fieldValue__input = c)} type="file" className="inputfile" id={`${this.props.field}-input`} accept="image/png,image/jpeg,image/gif" data-maxsize="10240000" />
           )}
           <label htmlFor={`${this.props.field}-input`} className="img-thumbnail img-upload">
-            <img src={aUrl} alt="头像" />
+            <img src={aUrl} alt={$lang('Avatar')} />
           </label>
         </span>
       </div>

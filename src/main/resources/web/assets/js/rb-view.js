@@ -548,7 +548,7 @@ const RbViewPage = {
     if (rb.isAdminUser) {
       $('.J_view-addons').click(function () {
         const type = $(this).data('type')
-        RbModal.create(`/p/admin/metadata/view-addons?entity=${that.__entity[0]}&type=${type}`, $lang('ConfSome,' + type === 'TAB' ? 'ViewShowAddon' : 'ViewNewAddon'))
+        RbModal.create(`/p/admin/metadata/view-addons?entity=${that.__entity[0]}&type=${type}`, $lang('ConfSome,' + (type === 'TAB' ? 'ViewShowAddon' : 'ViewNewAddon')))
       })
     }
   },

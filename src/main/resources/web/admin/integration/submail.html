@@ -29,7 +29,7 @@
                   <a href="#modfiy" class="float-right"><i class="icon zmdi zmdi-edit"></i> [[${bundle.lang('Modify')}]]</a>
                 </div>
                 <div class="card-body">
-                  <h5>[[${bundle.lang('SomeService,Email')}]]</h5>
+                  <h5>[[${bundle.lang('SomeService,Mail')}]]</h5>
                   <table class="table">
                     <tbody>
                       <tr>
@@ -42,13 +42,13 @@
                       </tr>
                       <tr>
                         <td>
-                          [[${bundle.lang('EmailServAddr')}]]
-                          <p>[[${bundle.lang('EmailServAddrTips')}]]</p>
+                          [[${bundle.lang('MailServAddr')}]]
+                          <p>[[${bundle.lang('MailServAddrTips')}]]</p>
                         </td>
                         <td data-id="MailAddr" th:data-value="${mailAccount == null ? '' : mailAccount[2]}">[[${mailAccount == null ? bundle.lang('Unset') : mailAccount[2]}]]</td>
                       </tr>
                       <tr>
-                        <td>[[${bundle.lang('EmailServName')}]]</td>
+                        <td>[[${bundle.lang('MailServName')}]]</td>
                         <td data-id="MailName" th:data-value="${mailAccount == null ? '' : mailAccount[3]}">[[${mailAccount == null ? bundle.lang('Unset') : mailAccount[3]}]]</td>
                       </tr>
                       <tr class="show-on-edit">
@@ -59,7 +59,7 @@
                   </table>
                   <div th:if="${mailAccount == null}" class="alert alert-danger alert-icon mt-6 mb-6">
                     <div class="icon"><span class="zmdi zmdi-close-circle-o"></span></div>
-                    <div class="message">[[${bundle.lang('ServiceUnset,Email')}]]</div>
+                    <div class="message">[[${bundle.lang('SomeServiceUnsetTips,Mail')}]]</div>
                   </div>
                   <h5>[[${bundle.lang('SomeService,Sms')}]]</h5>
                   <table class="table">
@@ -84,7 +84,7 @@
                   </table>
                   <div th:if="${smsAccount == null}" class="alert alert-danger alert-icon mt-6">
                     <div class="icon"><span class="zmdi zmdi-close-circle-o"></span></div>
-                    <div class="message">[[${bundle.lang('ServiceUnset,Sms')}]]</div>
+                    <div class="message">[[${bundle.lang('SomeServiceUnsetTips,Sms')}]]</div>
                   </div>
                   <div class="edit-footer">
                     <button class="btn btn-link">[[${bundle.lang('Cancel')}]]</button>

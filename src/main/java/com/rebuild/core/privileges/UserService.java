@@ -115,7 +115,7 @@ public class UserService extends BaseServiceImpl {
         }
 
         if (record.hasValue("email") && Application.getUserStore().existsUser(record.getString("email"))) {
-            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "Email"));
+            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "f.User.email"));
         }
 
         if (record.getPrimary() == null && !record.hasValue("fullName")) {
@@ -137,11 +137,11 @@ public class UserService extends BaseServiceImpl {
      */
     private void checkLoginName(String loginName) throws DataSpecificationException {
         if (Application.getUserStore().existsUser(loginName)) {
-            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "Username"));
+            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "f.User.loginName"));
         }
 
         if (!CommonsUtils.isPlainText(loginName) || BlackList.isBlack(loginName)) {
-            throw new DataSpecificationException(Language.getLang("SomeInvalid", "Username"));
+            throw new DataSpecificationException(Language.getLang("SomeInvalid", "f.User.loginName"));
         }
     }
 
@@ -279,14 +279,22 @@ public class UserService extends BaseServiceImpl {
      * @throws DataSpecificationException
      */
     public ID txSignUp(Record record) throws DataSpecificationException {
-        record = this.create(record, false);
+        Application.getSessionStore().set(SYSTEM_USER);
+        try {
+            record = this.create(record, false);
+        } finally {
+            Application.getSessionStore().clean();
+        }
 
+        // 通知管理员
         ID newUserId = record.getPrimary();
+        String content = String.format(Language.getLang("NewUserSignupNotify"), newUserId);
         String viewUrl = AppUtils.getContextPath() + "/app/list-and-view?id=" + newUserId;
-        String content = String.format(Language.getLang("NewUserSignupNotify"), newUserId, viewUrl);
+        content += String.format("[%s](%s)", Language.getLang("ClickEnableUser"), viewUrl);
 
         Message message = MessageBuilder.createMessage(ADMIN_USER, content, newUserId);
         Application.getNotifications().send(message);
+
         return newUserId;
     }
 }

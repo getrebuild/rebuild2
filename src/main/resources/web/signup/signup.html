@@ -23,14 +23,14 @@
               <div class="card-header"><a class="logo-img"></a></div>
               <div class="card-body">
                 <div class="form-group">
-                  <input class="form-control" id="sFullName" type="text" th:placeholder="${bundle.lang('FullName')}" autocomplete="off" />
+                  <input class="form-control" id="sFullName" type="text" th:placeholder="${bundle.lang('f.User.fullName')}" autocomplete="off" />
                   <p class="form-text">[[${bundle.lang('AdminWillReviewSignup')}]]</p>
                 </div>
                 <div class="form-group">
-                  <input class="form-control" id="sName" type="text" th:placeholder="${bundle.lang('Username')}" autocomplete="off" />
+                  <input class="form-control" id="sName" type="text" th:placeholder="${bundle.lang('f.User.loginName')}" autocomplete="off" />
                 </div>
                 <div class="form-group">
-                  <input class="form-control" id="sEmail" type="email" th:placeholder="${bundle.lang('Email')}" autocomplete="off" />
+                  <input class="form-control" id="sEmail" type="email" th:placeholder="${bundle.lang('f.User.email')}" autocomplete="off" />
                 </div>
                 <div class="form-group row pt-0">
                   <div class="col-7">
@@ -46,7 +46,7 @@
                 <div class="alert alert-success alert-icon alert-icon-border alert-sm hide">
                   <div class="icon"><span class="zmdi zmdi-check"></span></div>
                   <div class="message">
-                    <p>[[${bundle.lang('SignupSuccess')}]]<br /><a href="login">[[${bundle.lang('ReturnLogin')}]]</a></p>
+                    <p>[[${bundle.lang('SignupSubmitTips')}]]</p>
                   </div>
                 </div>
               </div>

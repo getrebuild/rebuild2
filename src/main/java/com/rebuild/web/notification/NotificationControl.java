@@ -102,7 +102,7 @@ public class NotificationControl extends BaseController {
                 .array();
         for (int i = 0; i < array.length; i++) {
             Object[] m = array[i];
-            m[0] = new Object[]{m[0], UserHelper.getName((ID) m[0])};
+            m[0] = new Object[] { m[0], UserHelper.getName((ID) m[0]) };
             m[1] = MessageBuilder.formatMessage((String) m[1], !preview, true);
             m[2] = CommonsUtils.formatClientDate((Date) m[2]);
             array[i] = m;

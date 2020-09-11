@@ -163,7 +163,7 @@ public class SystemConfigurationControl extends BaseController {
 
         String dMailAddr = defaultIfBlank(data, ConfigurationItem.MailAddr);
         if (!RegexUtils.isEMail(dMailAddr)) {
-            writeFailure(response, getLang(request, "SomeInvalid", "EmailServAddr"));
+            writeFailure(response, getLang(request, "SomeInvalid", "MailServAddr"));
             return;
         }
 
