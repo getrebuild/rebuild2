@@ -10,7 +10,11 @@ package com.rebuild.core.privileges;
 import cn.devezhao.bizz.privileges.Privileges;
 import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.bizz.security.EntityPrivileges;
-import cn.devezhao.bizz.security.member.*;
+import cn.devezhao.bizz.security.member.BusinessUnit;
+import cn.devezhao.bizz.security.member.MemberGroup;
+import cn.devezhao.bizz.security.member.NoMemberFoundException;
+import cn.devezhao.bizz.security.member.Role;
+import cn.devezhao.bizz.security.member.Team;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
@@ -19,6 +23,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.Initialization;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.bizz.Department;
+import com.rebuild.core.privileges.bizz.RoleGroup;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.privileges.bizz.ZeroPrivileges;
 import org.apache.commons.lang.StringUtils;
@@ -41,13 +46,15 @@ public class UserStore implements Initialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserStore.class);
 
-    final private Map<ID, com.rebuild.core.privileges.bizz.User> USERs = new ConcurrentHashMap<>();
+    final private Map<ID, User> USERs = new ConcurrentHashMap<>();
     final private Map<ID, Role> ROLEs = new ConcurrentHashMap<>();
     final private Map<ID, Department> DEPTs = new ConcurrentHashMap<>();
     final private Map<ID, Team> TEAMs = new ConcurrentHashMap<>();
 
     final private Map<String, ID> USERs_NAME2ID = new ConcurrentHashMap<>();
     final private Map<String, ID> USERs_MAIL2ID = new ConcurrentHashMap<>();
+
+    final private Map<ID, RoleGroup> USERs_ROLEGROUPs = new HashMap<>();
 
     final private PersistManagerFactory aPMFactory;
 
@@ -109,7 +116,7 @@ public class UserStore implements Initialization {
      * @return
      * @throws NoMemberFoundException
      */
-    public com.rebuild.core.privileges.bizz.User getUserByName(String username) throws NoMemberFoundException {
+    public User getUserByName(String username) throws NoMemberFoundException {
         ID userId = USERs_NAME2ID.get(normalIdentifier(username));
         if (userId == null) {
             throw new NoMemberFoundException("No User found: " + username);
@@ -122,7 +129,7 @@ public class UserStore implements Initialization {
      * @return
      * @throws NoMemberFoundException
      */
-    public com.rebuild.core.privileges.bizz.User getUserByEmail(String email) throws NoMemberFoundException {
+    public User getUserByEmail(String email) throws NoMemberFoundException {
         ID userId = USERs_MAIL2ID.get(normalIdentifier(email));
         if (userId == null) {
             throw new NoMemberFoundException("No User found: " + email);
@@ -135,7 +142,7 @@ public class UserStore implements Initialization {
      * @return
      * @throws NoMemberFoundException
      */
-    public com.rebuild.core.privileges.bizz.User getUser(String emailOrName) throws NoMemberFoundException {
+    public User getUser(String emailOrName) throws NoMemberFoundException {
         if (existsEmail(emailOrName)) {
             return getUserByEmail(emailOrName);
         } else {
@@ -148,8 +155,8 @@ public class UserStore implements Initialization {
      * @return
      * @throws NoMemberFoundException
      */
-    public com.rebuild.core.privileges.bizz.User getUser(ID userId) throws NoMemberFoundException {
-        com.rebuild.core.privileges.bizz.User u = USERs.get(userId);
+    public User getUser(ID userId) throws NoMemberFoundException {
+        User u = USERs.get(userId);
         if (u == null) {
             throw new NoMemberFoundException("No User found: " + userId);
         }
@@ -159,8 +166,8 @@ public class UserStore implements Initialization {
     /**
      * @return
      */
-    public com.rebuild.core.privileges.bizz.User[] getAllUsers() {
-        return USERs.values().toArray(new com.rebuild.core.privileges.bizz.User[0]);
+    public User[] getAllUsers() {
+        return USERs.values().toArray(new User[0]);
     }
 
     /**
@@ -247,12 +254,12 @@ public class UserStore implements Initialization {
         Object[] o = Application.createQueryNoFilter("select " + USER_FS + " from User where userId = ?")
                 .setParameter(1, userId)
                 .unique();
-        final com.rebuild.core.privileges.bizz.User newUser = new com.rebuild.core.privileges.bizz.User(
+        final User newUser = new User(
                 userId, (String) o[1], (String) o[2], (String) o[8], (String) o[3], (String) o[4], (Boolean) o[5]);
         final ID deptId = (ID) o[6];
         final ID roleId = (ID) o[7];
 
-        final com.rebuild.core.privileges.bizz.User oldUser = existsUser(userId) ? getUser(userId) : null;
+        final User oldUser = existsUser(userId) ? getUser(userId) : null;
         if (oldUser != null) {
             Role role = oldUser.getOwningRole();
             if (role != null) {
@@ -291,7 +298,7 @@ public class UserStore implements Initialization {
      * @param userId
      */
     public void removeUser(ID userId) {
-        final com.rebuild.core.privileges.bizz.User oldUser = getUser(userId);
+        final User oldUser = getUser(userId);
 
         // 移除成员
         if (oldUser.getOwningDept() != null) {
@@ -493,6 +500,14 @@ public class UserStore implements Initialization {
         TEAMs.remove(teamId);
     }
 
+    /**
+     * @param user
+     * @return
+     */
+    public RoleGroup getRoleGroup(ID user) {
+        return USERs_ROLEGROUPs.get(user);
+    }
+
     private static final String USER_FS = "userId,loginName,email,fullName,avatarUrl,isDisabled,deptId,roleId,workphone";
 
     @Override
@@ -502,7 +517,7 @@ public class UserStore implements Initialization {
         Object[][] array = aPMFactory.createQuery("select " + USER_FS + " from User").array();
         for (Object[] o : array) {
             ID userId = (ID) o[0];
-            com.rebuild.core.privileges.bizz.User user = new com.rebuild.core.privileges.bizz.User(
+            User user = new User(
                     userId, (String) o[1], (String) o[2], (String) o[8], (String) o[3], (String) o[4], (Boolean) o[5]);
             store(user);
         }

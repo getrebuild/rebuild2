@@ -37,7 +37,7 @@ public class UserServiceTest extends TestSupport {
         System.out.println("Created User : " + userId);
 
         Application.getBean(UserService.class)
-                .updateEnableUser(userId, SIMPLE_DEPT, SIMPLE_ROLE, true);
+                .updateEnableUser(userId, SIMPLE_DEPT, SIMPLE_ROLE, null, true);
         System.out.println("Enabled User : " + userId + " >> " + Application.getUserStore().getUser(userId).isActive());
 
         Application.getBean(UserService.class).delete(userId);

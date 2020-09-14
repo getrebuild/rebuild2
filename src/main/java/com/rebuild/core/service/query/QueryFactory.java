@@ -12,7 +12,7 @@ import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.query.NativeQuery;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
-import com.rebuild.core.privileges.bizz.RoleBaseQueryFilter;
+import com.rebuild.core.privileges.RoleBaseQueryFilter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;

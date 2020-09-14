@@ -34,7 +34,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author devezhao
@@ -68,6 +70,7 @@ public class UserControl extends EntityController {
         ret.put("system", "system".equals(checkedUser.getName()) || "admin".equals(checkedUser.getName()));
 
         ret.put("disabled", checkedUser.isDisabled());
+
         if (checkedUser.getOwningRole() != null) {
             ret.put("role", checkedUser.getOwningRole().getIdentity());
             ret.put("roleDisabled", checkedUser.getOwningRole().isDisabled());
@@ -86,10 +89,13 @@ public class UserControl extends EntityController {
 
         ID user = ID.valueOf(data.getString("user"));
         User u = Application.getUserStore().getUser(user);
-        final boolean beforeDisabled = u.isDisabled();
+
+        // 当前是从未激活状态
+        final boolean beforeUnEnabled = u.isDisabled() && (u.getOwningDept() == null || u.getOwningRole() == null);
 
         ID deptNew = null;
         ID roleNew = null;
+        ID[] roleAppends = null;
         if (data.containsKey("dept")) {
             deptNew = ID.valueOf(data.getString("dept"));
             if (u.getOwningDept() != null && u.getOwningDept().getIdentity().equals(deptNew)) {
@@ -102,17 +108,33 @@ public class UserControl extends EntityController {
                 roleNew = null;
             }
         }
+        if (data.containsKey("roleAppends")) {
+            String appends = data.getString("roleAppends");
+            Set<ID> set = new HashSet<>();
+            for (String s : appends.split(",")) {
+                if (ID.isId(s)) set.add(ID.valueOf(s));
+            }
+
+            if (roleNew != null) {
+                set.remove(deptNew);
+            } else if (u.getOwningRole() != null) {
+                set.remove(u.getOwningRole().getIdentity());
+            }
+
+            if (!set.isEmpty()) roleAppends = set.toArray(new ID[0]);
+        }
 
         Boolean enableNew = null;
         if (data.containsKey("enable")) {
             enableNew = data.getBoolean("enable");
         }
 
-        Application.getBean(UserService.class).updateEnableUser(user, deptNew, roleNew, enableNew);
+        Application.getBean(UserService.class)
+                .updateEnableUser(user, deptNew, roleNew, roleAppends, enableNew);
 
         // 是否需要发送激活通知
         u = Application.getUserStore().getUser(user);
-        if (beforeDisabled && u.isActive() && SMSender.availableMail() && u.getEmail() != null) {
+        if (beforeUnEnabled && u.isActive() && SMSender.availableMail() && u.getEmail() != null) {
             Object did = Application.createQuery(
                     "select logId from LoginLog where user = ?")
                     .setParameter(1, u.getId())
@@ -126,7 +148,7 @@ public class UserControl extends EntityController {
             }
         }
 
-        // 登录失效
+        // 禁用后马上使之登录失效
         if (!u.isActive()) {
             HttpSession s = Application.getSessionStore().getSession(u.getId());
             if (s != null) {

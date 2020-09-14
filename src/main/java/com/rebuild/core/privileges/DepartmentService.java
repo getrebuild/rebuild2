@@ -18,6 +18,7 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.service.BaseServiceImpl;
 import com.rebuild.core.service.DataSpecificationException;
+import com.rebuild.core.support.i18n.Language;
 import org.springframework.stereotype.Service;
 
 /**
@@ -60,14 +61,14 @@ public class DepartmentService extends BaseServiceImpl {
         if (record.hasValue("parentDept", false)) {
             ID parentDept = record.getID("parentDept");
             if (parentDept.equals(record.getPrimary())) {
-                throw new DataSpecificationException("父级部门不能选择自己");
+                throw new DataSpecificationException(Language.getLang("ParentDeptNotSelf"));
             }
 
             Department parent = Application.getUserStore().getDepartment(parentDept);
             Department that = Application.getUserStore().getDepartment(record.getPrimary());
 
             if (that.isChildren(parent, true)) {
-                throw new DataSpecificationException("子级部门不能同时作为父级部门");
+                throw new DataSpecificationException(Language.getLang("SubDeptNotAsParent"));
             }
         }
 
@@ -92,6 +93,9 @@ public class DepartmentService extends BaseServiceImpl {
         checkAdminGuard(BizzPermission.DELETE, null);
 
         Department dept = Application.getUserStore().getDepartment(deptId);
+        if (!dept.getMembers().isEmpty()) {
+            throw new DataSpecificationException("Has members");
+        }
         if (!dept.getChildren().isEmpty()) {
             throw new DataSpecificationException("Has child department");
         }
@@ -110,7 +114,7 @@ public class DepartmentService extends BaseServiceImpl {
         if (UserHelper.isAdmin(currentUser)) return;
 
         if (action == BizzPermission.CREATE || action == BizzPermission.DELETE) {
-            throw new PrivilegesException("无操作权限 (E2)");
+            throw new PrivilegesException(Language.getLang("NoOpPrivileges"));
         }
 
         // 用户可自己改自己的部门
@@ -118,6 +122,6 @@ public class DepartmentService extends BaseServiceImpl {
         if (action == BizzPermission.UPDATE && dept.equals(currentDeptOfUser)) {
             return;
         }
-        throw new PrivilegesException("无操作权限");
+        throw new PrivilegesException(Language.getLang("NoOpPrivileges"));
     }
 }

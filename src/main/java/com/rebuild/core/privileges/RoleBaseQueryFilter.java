@@ -5,7 +5,7 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-package com.rebuild.core.privileges.bizz;
+package com.rebuild.core.privileges;
 
 import cn.devezhao.bizz.privileges.DepthEntry;
 import cn.devezhao.bizz.privileges.Permission;
@@ -20,6 +20,8 @@ import cn.devezhao.persist4j.Filter;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
+import com.rebuild.core.privileges.bizz.Department;
+import com.rebuild.core.privileges.bizz.User;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.HashSet;

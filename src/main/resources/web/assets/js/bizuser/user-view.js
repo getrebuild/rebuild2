@@ -111,9 +111,11 @@ const toggleDisabled = function (disabled, alert) {
   }
   $.post('/admin/bizuser/enable-user', JSON.stringify(data), (res) => {
     if (res.error_code === 0) {
-      RbHighbar.success($lang('e.User') + ' ' + $lang(disabled ? 'Disabled' : 'Enabled'))
+      RbHighbar.success($lang((disabled ? 'SomeDisabled' : 'SomeEnabled') + ',e.User'))
       _reload(200)
-    } else RbHighbar.error(res.error_msg)
+    } else {
+      RbHighbar.error(res.error_msg)
+    }
   })
 }
 
@@ -134,8 +136,8 @@ class DlgEnableUser extends RbModalHandler {
   constructor(props) {
     super(props)
 
-    this.__title = $lang('ActiveUser')
     if (!props.enable) this.__title = $lang('ModifySome,' + (props.dept === true ? 'e.Department' : 'e.Role'))
+    else this.__title = $lang('ActiveUser')
   }
 
   render() {
@@ -151,12 +153,23 @@ class DlgEnableUser extends RbModalHandler {
             </div>
           )}
           {this.props.role === true && (
-            <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,f.User.roleId')}</label>
-              <div className="col-sm-7">
-                <UserSelector hideUser={true} hideDepartment={true} hideTeam={true} multiple={false} ref={(c) => (this._roleNew = c)} />
+            <React.Fragment>
+              <div className="form-group row">
+                <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,e.Role')}</label>
+                <div className="col-sm-7">
+                  <UserSelector hideUser={true} hideDepartment={true} hideTeam={true} multiple={false} ref={(c) => (this._roleNew = c)} />
+                </div>
               </div>
-            </div>
+              <div className="form-group row">
+                <label className="col-sm-3 col-form-label text-sm-right">
+                  {$lang('AppendRoles')} ({$lang('Optional')})
+                </label>
+                <div className="col-sm-7">
+                  <UserSelector hideUser={true} hideDepartment={true} hideTeam={true} ref={(c) => (this._roleAppends = c)} />
+                  <p className="form-text">{$lang('AppendRolesTips')}</p>
+                </div>
+              </div>
+            </React.Fragment>
           )}
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3" ref={(c) => (this._btns = c)}>
@@ -189,6 +202,9 @@ class DlgEnableUser extends RbModalHandler {
       if (v.length === 0) return RbHighbar.create($lang('PlsSelectSome,e.Role'))
       data.role = v[0]
     }
+    if (this._roleAppends) {
+      data.roleAppends = this._roleAppends.val().join(',')
+    }
 
     const $btns = $(this._btns).find('.btn').button('loading')
     $.post('/admin/bizuser/enable-user', JSON.stringify(data), (res) => {
@@ -196,9 +212,9 @@ class DlgEnableUser extends RbModalHandler {
         if (data.enable === true) RbHighbar.success($lang('SomeEnabled,e.User'))
         _reload(data.enable ? 200 : 0)
       } else {
+        $btns.button('reset')
         RbHighbar.error(res.error_msg)
       }
-      $btns.button('reset')
     })
   }
 }

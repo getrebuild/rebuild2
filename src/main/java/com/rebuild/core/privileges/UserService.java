@@ -16,6 +16,7 @@ import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
+import com.rebuild.core.metadata.RecordBuilder;
 import com.rebuild.utils.BlackList;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
@@ -30,6 +31,9 @@ import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.CommonsUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * for User
@@ -231,11 +235,12 @@ public class UserService extends BaseServiceImpl {
      * xxxNew 值为 null 表示不做修改
      *
      * @param user
-     * @param deptNew
-     * @param roleNew
-     * @param enableNew
+     * @param deptNew 新部门
+     * @param roleNew 新角色
+     * @param roleAppends 附加角色
+     * @param enableNew 激活状态
      */
-    public void updateEnableUser(ID user, ID deptNew, ID roleNew, Boolean enableNew) {
+    public void updateEnableUser(ID user, ID deptNew, ID roleNew, ID[] roleAppends, Boolean enableNew) {
         User u = Application.getUserStore().getUser(user);
         ID deptOld = null;
         // 检查是否需要更新部门
@@ -263,11 +268,57 @@ public class UserService extends BaseServiceImpl {
             record.setBoolean("isDisabled", !enableNew);
         }
         super.update(record);
+
+        // 附加角色
+        updateRoleAppends(user, roleAppends);
+
         Application.getUserStore().refreshUser(user);
 
         // 改变记录的所属部门
         if (deptOld != null) {
             TaskExecutors.submit(new ChangeOwningDeptTask(user, deptNew), Application.getCurrentUser());
+        }
+    }
+
+    /**
+     * 更新附加角色
+     *
+     * @param user
+     * @param roleAppends
+     */
+    protected void updateRoleAppends(ID user, ID[] roleAppends) {
+        Object[][] shown = Application.createQueryNoFilter(
+                "select memberId,roleId from RoleMember where userId = ?")
+                .setParameter(1, user)
+                .array();
+        if (shown.length == 0 && (roleAppends == null || roleAppends.length == 0)) {
+            return;
+        }
+
+        if (roleAppends == null || roleAppends.length == 0) {
+            for (Object[] o : shown) {
+                super.delete((ID) o[0]);
+            }
+            return;
+        }
+
+        Map<ID, ID> shownMap = new HashMap<>();
+        for (Object[] o : shown) {
+            shownMap.put((ID) o[1], (ID) o[0]);
+        }
+
+        for (ID append : roleAppends) {
+            if (shownMap.remove(append) == null) {
+                Record member = RecordBuilder.builder(EntityHelper.RoleMember)
+                        .add("roleId", append)
+                        .add("userId", user)
+                        .build(SYSTEM_USER);
+                super.create(member);
+            }
+        }
+
+        for (ID remove : shownMap.keySet()) {
+            super.delete(remove);
         }
     }
 
