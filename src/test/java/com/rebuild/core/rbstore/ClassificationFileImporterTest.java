@@ -36,6 +36,7 @@ public class ClassificationFileImporterTest extends TestSupport {
     }
 
     private static ID lastAdded = null;
+
     /**
      * 新建一个分类
      *
