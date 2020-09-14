@@ -1,3 +1,5 @@
+> 这是一个临时仓库，2.0 发布后将会关闭，请 star/fork 主项目 https://github.com/getrebuild/rebuild
+
 # REBUILD 2.0
 
 RB 2.0 将为你带来重大更新。
