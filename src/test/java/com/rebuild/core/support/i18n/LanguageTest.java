@@ -8,15 +8,10 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.support.i18n;
 
 import cn.devezhao.persist4j.Entity;
-import cn.devezhao.persist4j.Field;
-import cn.devezhao.persist4j.dialect.FieldType;
-import com.rebuild.core.TestSupport;
+import com.rebuild.TestSupport;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
-import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.service.approval.ApprovalState;
-import org.apache.commons.lang.StringUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

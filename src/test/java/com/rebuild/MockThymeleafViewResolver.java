@@ -5,7 +5,7 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-package com.rebuild.core;
+package com.rebuild;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

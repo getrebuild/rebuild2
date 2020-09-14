@@ -5,20 +5,20 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-package com.rebuild.core;
+package com.rebuild.api;
 
-import org.junit.Ignore;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import com.alibaba.fastjson.JSON;
+import org.junit.Test;
 
 /**
- * Context of spring tests
- *
  * @author devezhao
- * @since 2020/8/26
+ * @since 01/10/2019
  */
-public class ApplicationTest {
+public class SystemTimeTest {
 
-    void contextLoads() {
-    }
+	@Test
+	public void execute() {
+		JSON ret = new SystemTime().execute(null);
+		System.out.println(ret);
+	}
 }
