@@ -141,7 +141,7 @@ public class LanguageBundle implements JSONable {
         if (phKeys.length > 0) {
             Object[] phLangs = new Object[phKeys.length];
             for (int i = 0; i < phKeys.length; i++) {
-                phLangs[i] = StringUtils.defaultIfBlank(getLangBase(phKeys[i]), StringUtils.EMPTY);
+                phLangs[i] = getLang(phKeys[i]);
             }
             return MessageFormat.format(lang, phLangs);
         } else {

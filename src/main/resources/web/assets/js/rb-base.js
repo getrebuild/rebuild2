@@ -67,8 +67,8 @@ See LICENSE and COMMERCIAL in the project root for license information.
     headers: {
       'Content-Type': 'text/plain;charset=utf-8',
       'X-Client': 'RB/WEB-2.0',
-      'X-Csrf-Token': window.rb.csrfToken || '',
-      'X-Access-Token': window.rb.accessToken || '',
+      'X-Csrf-Token': rb.csrfToken || '',
+      'X-Access-Token': rb.accessToken || '',
     },
     cache: false,
     complete: function (xhr) {
@@ -189,7 +189,7 @@ var $urlp = function (key, qstr) {
   qstr = qstr.replace(/%20/g, ' ')
   qstr = qstr.substr(1) // remove first '?'
   var params = qstr.split('&')
-  var map = new Object()
+  var map = {}
   for (var i = 0, j = params.length; i < j; i++) {
     var kv = params[i].split('=')
     map[kv[0]] = kv[1]
@@ -204,7 +204,7 @@ var $val = function (el) {
   el = $(el)
   if (el.length === 0) return null
 
-  var nVal = null
+  var nVal
   var tagName = el.prop('tagName')
   var isCheckbox = tagName === 'INPUT' && el.attr('type') === 'checkbox'
   if (tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT') {
@@ -223,9 +223,9 @@ var $val = function (el) {
     return nVal === oVal ? null : nVal
   }
 
-  if ((oVal || 666) + '' === (nVal || 666) + '') return null // unmodified
+  if ($same(nVal, oVal)) return null // unmodified
+  // New value is empty
   if (!!oVal && !nVal) return ''
-  // new value is empty
   else return $.trim(nVal) || null
 }
 
@@ -368,13 +368,12 @@ var $pages = function (tp, cp) {
  * 是否相同。兼容对象或数组
  */
 var $same = function (a, b) {
-  if (!a && !b) return true
+  debugger
+  if (Object.is(a, b) || !a && !b) return true
   if (a && b) {
     if ($.type(a) === 'object' && $.type(b) === 'object') {
-      for (var k in a) {
-        if (a[k] !== b[k]) return false
-      }
-      return true
+      a = JSON.stringify(a);
+      b = JSON.stringify(b);
     } else if ($.type(a) === 'array' && $.type(b) === 'array') {
       a = a.join(',')
       b = b.join(',')
@@ -391,8 +390,7 @@ var $empty = function (a) {
   if (a === undefined || a === null || a === '') return true
   var type = $.type(a)
   if (type === 'array' && a.length === 0) return true
-  else if (type === 'object' && Object.keys(a).length === 0) return true
-  else return false
+  else return type === 'object' && Object.keys(a).length === 0;
 }
 
 /**

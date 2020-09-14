@@ -77,8 +77,8 @@ public class LoginToken extends BaseApi {
                 .setParameter(2, user)
                 .unique();
         if (foundUser != null && foundUser[0].equals(EncryptUtils.toSHA256Hex(password))) {
+            // Okay
             return null;
-
         } else {
             return Language.getLang("SomeError", "UsernameOrPassword");
         }

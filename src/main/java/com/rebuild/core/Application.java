@@ -73,9 +73,7 @@ import java.util.Map;
 public class Application {
 //    extends SpringBootServletInitializer {
 //    @Override
-//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-//        return builder.sources(Application.class);
-//    }
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {}
 
     protected static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
