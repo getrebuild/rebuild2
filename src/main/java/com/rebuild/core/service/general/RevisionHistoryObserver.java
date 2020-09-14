@@ -97,7 +97,7 @@ public class RevisionHistoryObserver extends OperatingObserver {
         if (mergeChange) {
             Record before = context.getBeforeRecord();
             Record after = context.getAfterRecord();
-            JSON revisionContent = new RecordMerger(before).merge(after);
+            JSON revisionContent = new RecordDifference(before).merge(after);
             record.setString("revisionContent", revisionContent.toJSONString());
         } else {
             record.setString("revisionContent", JSONUtils.EMPTY_ARRAY_STR);

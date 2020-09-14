@@ -24,39 +24,42 @@ import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import java.util.Map;
 
 /**
- * 记录合并
+ * 记录两个 Record 的不同
  *
  * @author devezhao
  * @since 2019/8/22
  */
-public class RecordMerger {
+public class RecordDifference {
 
-    private Record beforeRecord;
+    final private Record before;
 
     /**
-     * @param beforeRecord
+     * @param before
      */
-    protected RecordMerger(Record beforeRecord) {
-        this.beforeRecord = beforeRecord;
+    protected RecordDifference(Record before) {
+        this.before = before;
     }
 
     /**
-     * @param afterRecord
+     * 获取不同
+     *
+     * @param after
      * @return
      */
-    public JSON merge(Record afterRecord) {
-        if (beforeRecord == null && afterRecord == null) {
+    public JSON merge(Record after) {
+        if (before == null && after == null) {
             throw new RebuildException("Both records cannot be null");
         }
-        if (beforeRecord != null && afterRecord != null && !beforeRecord.getEntity().equals(afterRecord.getEntity())) {
+
+        if (before != null && after != null && !before.getEntity().equals(after.getEntity())) {
             throw new RebuildException("Both records must be the same entity");
         }
 
-        Entity entity = beforeRecord != null ? beforeRecord.getEntity() : afterRecord.getEntity();
+        Entity entity = before != null ? before.getEntity() : after.getEntity();
         Map<String, Object[]> merged = new CaseInsensitiveMap<>();
 
-        if (beforeRecord != null) {
-            JSONObject beforeSerialize = (JSONObject) beforeRecord.serialize();
+        if (before != null) {
+            JSONObject beforeSerialize = (JSONObject) before.serialize();
             for (Map.Entry<String, Object> e : beforeSerialize.entrySet()) {
                 String field = e.getKey();
                 if (isIgnoreField(entity.getField(field))) {
@@ -67,12 +70,12 @@ public class RecordMerger {
                 if (NullValue.is(beforeVal)) {
                     beforeVal = null;
                 }
-                merged.put(field, new Object[]{beforeVal, null});
+                merged.put(field, new Object[] { beforeVal, null });
             }
         }
 
-        if (afterRecord != null) {
-            JSONObject afterSerialize = (JSONObject) afterRecord.serialize();
+        if (after != null) {
+            JSONObject afterSerialize = (JSONObject) after.serialize();
             for (Map.Entry<String, Object> e : afterSerialize.entrySet()) {
                 String field = e.getKey();
                 if (isIgnoreField(entity.getField(field))) {
@@ -97,8 +100,8 @@ public class RecordMerger {
             }
 
             JSON item = JSONUtils.toJSONObject(
-                    new String[]{"field", "before", "after"},
-                    new Object[]{e.getKey(), val[0], val[1]});
+                    new String[] { "field", "before", "after" },
+                    new Object[] { e.getKey(), val[0], val[1] });
             array.add(item);
         }
         return array;
