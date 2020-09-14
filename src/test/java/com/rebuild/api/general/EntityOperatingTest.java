@@ -34,7 +34,7 @@ public class EntityOperatingTest extends TestSupport {
         // CREATE
 
         JSONObject data = new JSONObject();
-        data.put(EntityRecordCreator.META_FIELD, JSONUtils.toJSONObject("entity", TEST_ENTITY));
+        data.put(EntityRecordCreator.META_FIELD, JSONUtils.toJSONObject("entity", TestAllFields));
         data.put("TestAllFieldsName", "EntityCreateTest" + System.currentTimeMillis());
 
         Map<String, String> reqParams = new HashMap<>();
@@ -52,7 +52,7 @@ public class EntityOperatingTest extends TestSupport {
 
         data = new JSONObject();
         data.put(EntityRecordCreator.META_FIELD, JSONUtils.toJSONObject(
-                new String[]{"entity", "id"}, new String[]{TEST_ENTITY, createRecordId}));
+                new String[]{"entity", "id"}, new String[]{TestAllFields, createRecordId}));
         data.put("TestAllFieldsName", "UPDATE >> EntityCreateTest" + System.currentTimeMillis());
 
         reqParams = new HashMap<>();
@@ -81,7 +81,7 @@ public class EntityOperatingTest extends TestSupport {
     private void displayEntityGet(String recordId) {
         Map<String, String> reqParams = new HashMap<>();
         reqParams.put("id", recordId);
-        reqParams.put("fields", EntityListTest.getAllFields(MetadataHelper.getEntity(TEST_ENTITY)));
+        reqParams.put("fields", EntityListTest.getAllFields(MetadataHelper.getEntity(TestAllFields)));
         ApiContext apiContext = new ApiContext(reqParams, null, null, UserService.SYSTEM_USER);
 
         JSONObject result = (JSONObject) new EntityGet().execute(apiContext);

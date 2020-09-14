@@ -25,11 +25,15 @@ import org.junit.Test;
  */
 public class FieldWritebackTest extends TestSupport {
 
+    static {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+    }
+
     @Test
     public void testExecute() {
         // 添加配置
         Record triggerConfig = EntityHelper.forNew(EntityHelper.RobotTriggerConfig, UserService.SYSTEM_USER);
-        triggerConfig.setString("belongEntity", "SalesOrder999");
+        triggerConfig.setString("belongEntity", SalesOrder);
         triggerConfig.setInt("when", TriggerWhen.CREATE.getMaskValue());
         triggerConfig.setString("actionType", ActionType.FIELDWRITEBACK.name());
         String content = "{targetEntity:'relatedAccount.Account999', items:[{sourceField:'createdOn', targetField:'accountName'}]}";
@@ -37,8 +41,8 @@ public class FieldWritebackTest extends TestSupport {
         Application.getBean(RobotTriggerConfigService.class).create(triggerConfig);
 
         // 测试执行
-        Entity salesOrder999 = MetadataHelper.getEntity("SalesOrder999");
-        Entity account999 = MetadataHelper.getEntity("Account999");
+        Entity salesOrder999 = MetadataHelper.getEntity(SalesOrder);
+        Entity account999 = MetadataHelper.getEntity(Account);
 
         Record account999Record = EntityHelper.forNew(account999.getEntityCode(), SIMPLE_USER);
         account999Record.setString("accountName", "FWB" + System.nanoTime());

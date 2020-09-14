@@ -218,6 +218,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
         sharedAfter.setID("recordId", record);
         sharedAfter.setID("shareTo", to);
         sharedAfter.setString("belongEntity", entityName);
+        // TODO 目前仅共享读取权限
         sharedAfter.setInt("rights", BizzPermission.READ.getMask());
 
         Object[] hasShared = ((BaseService) delegateService).getPersistManagerFactory().createQuery(

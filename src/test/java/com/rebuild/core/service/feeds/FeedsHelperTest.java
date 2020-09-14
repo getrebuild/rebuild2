@@ -32,6 +32,8 @@ public class FeedsHelperTest extends TestSupport {
 
     @Test
     public void getNumOfComment() {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+
         ID feedsId = createFeeds();
         createComment(feedsId);
 

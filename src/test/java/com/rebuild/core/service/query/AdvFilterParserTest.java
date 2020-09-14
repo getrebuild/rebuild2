@@ -52,7 +52,7 @@ public class AdvFilterParserTest extends TestSupport {
     @Test
     public void testDateAndDatetime() {
         JSONObject filterExp = new JSONObject();
-        filterExp.put("entity", TEST_ENTITY);
+        filterExp.put("entity", TestAllFields);
         JSONArray items = new JSONArray();
         filterExp.put("items", items);
 

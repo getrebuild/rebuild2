@@ -15,9 +15,9 @@ import org.junit.Test;
  * @author devezhao zhaofang123@gmail.com
  * @since 2019/03/08
  */
+@Ignore
 public class SMSenderTest extends TestSupport {
 
-    @Ignore
     @Test
     public void testSendSMS() {
         if (SMSender.availableSMS()) {
@@ -25,7 +25,6 @@ public class SMSenderTest extends TestSupport {
         }
     }
 
-    @Ignore
     @Test
     public void testSendMail() {
         if (SMSender.availableMail()) {

@@ -25,7 +25,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,7 @@ import org.springframework.util.ResourceUtils;
 /**
  * JUnit4 测试基类
  */
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TestSupport {
 
@@ -65,14 +66,12 @@ public class TestSupport {
         Application.getSessionStore().clean();
     }
 
-    @Test
-    public void contextLoads() {
-    }
+//    @Test public void contextLoads() {}
 
     // -- 测试实体
 
     // 全部字段类型
-    protected static final String TEST_ENTITY = "TestAllFields";
+    protected static final String TestAllFields = "TestAllFields";
 
     // 业务实体
     protected static final String Account = "Account999";
@@ -100,9 +99,9 @@ public class TestSupport {
      */
     protected static void addTestEntities(boolean dropExists) throws Exception {
         if (dropExists) {
-            if (MetadataHelper.containsEntity(TEST_ENTITY)) {
-                LOG.warn("Dropping test entity : " + TEST_ENTITY);
-                new Entity2Schema(UserService.ADMIN_USER).dropEntity(MetadataHelper.getEntity(TEST_ENTITY), true);
+            if (MetadataHelper.containsEntity(TestAllFields)) {
+                LOG.warn("Dropping test entity : " + TestAllFields);
+                new Entity2Schema(UserService.ADMIN_USER).dropEntity(MetadataHelper.getEntity(TestAllFields), true);
             }
 
             if (MetadataHelper.containsEntity(SalesOrder)) {
@@ -116,9 +115,9 @@ public class TestSupport {
             }
         }
 
-        if (!MetadataHelper.containsEntity(TEST_ENTITY)) {
+        if (!MetadataHelper.containsEntity(TestAllFields)) {
             Entity2Schema entity2Schema = new Entity2Schema(UserService.ADMIN_USER);
-            String entityName = entity2Schema.createEntity(TEST_ENTITY.toUpperCase(), null, null, true);
+            String entityName = entity2Schema.createEntity(TestAllFields.toUpperCase(), null, null, true);
             Entity testEntity = MetadataHelper.getEntity(entityName);
 
             for (DisplayType dt : DisplayType.values()) {
@@ -163,11 +162,24 @@ public class TestSupport {
     /**
      * 添加一条测试记录
      *
+     * @return
+     */
+    protected static ID addRecordOfTestAllFields() {
+        return addRecordOfTestAllFields(SIMPLE_USER);
+    }
+
+    /**
+     * 添加一条测试记录
+     *
      * @param user
      * @return
      */
     protected static ID addRecordOfTestAllFields(ID user) {
-        Entity testEntity = MetadataHelper.getEntity(TEST_ENTITY);
+        if (user != null && Application.getSessionStore().get(true) == null) {
+            Application.getSessionStore().set(user);
+        }
+
+        Entity testEntity = MetadataHelper.getEntity(TestAllFields);
 
         // 自动添加权限
         if (!Application.getPrivilegesManager().allowCreate(user, testEntity.getEntityCode())) {

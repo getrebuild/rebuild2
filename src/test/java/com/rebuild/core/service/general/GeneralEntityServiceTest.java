@@ -36,6 +36,8 @@ public class GeneralEntityServiceTest extends TestSupport {
 
     @Test
     public void CRUD() {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+
         // 新建
         Record record = EntityHelper.forNew(EntityHelper.Role, UserService.ADMIN_USER);
         record.setString("name", "测试角色");
@@ -66,7 +68,7 @@ public class GeneralEntityServiceTest extends TestSupport {
 
     @Test
     public void checkRepeated() {
-        Record record = EntityHelper.forNew(MetadataHelper.getEntity(TEST_ENTITY).getEntityCode(), SIMPLE_USER);
+        Record record = EntityHelper.forNew(MetadataHelper.getEntity(TestAllFields).getEntityCode(), SIMPLE_USER);
         record.setString("TESTALLFIELDSName", "123");
 
         List<Record> repeated = Application.getGeneralEntityService().getCheckRepeated(record, 100);

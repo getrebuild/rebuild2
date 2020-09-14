@@ -24,6 +24,10 @@ import org.junit.Test;
  */
 public class ProjectManagerTest extends TestSupport {
 
+    static {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+    }
+
     private static final String USE_CODE = "RBTEST";
 
     private static ID _LastSavedProject;

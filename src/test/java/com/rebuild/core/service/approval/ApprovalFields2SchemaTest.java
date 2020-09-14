@@ -21,7 +21,7 @@ public class ApprovalFields2SchemaTest extends TestSupport {
 
     @Test
     public void testCreateFields() {
-        Entity test = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity test = MetadataHelper.getEntity(TestAllFields);
         boolean created = new ApprovalFields2Schema(UserService.ADMIN_USER).createFields(test);
         System.out.println("Fields of approval is created : " + created);
     }

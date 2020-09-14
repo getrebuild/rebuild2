@@ -34,7 +34,7 @@ public class QueryFactoryTest extends TestSupport {
 
     @Test
     public void testQueryAllDT() {
-        Entity allDT = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity allDT = MetadataHelper.getEntity(TestAllFields);
         StringBuilder sql = new StringBuilder("select ");
         for (Field f : allDT.getFields()) {
             sql.append(f.getName()).append(',');

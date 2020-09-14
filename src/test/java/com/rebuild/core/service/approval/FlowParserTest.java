@@ -38,7 +38,7 @@ public class FlowParserTest {
 
     @Test
     public void testFind() throws Exception {
-        FlowParser flowParser = createFlowParser(0);
+        FlowParser flowParser = createFlowParser(1);
         System.out.println("ROOT :");
         FlowNode root = flowParser.getNode("ROOT");
         System.out.println(root);
@@ -58,7 +58,7 @@ public class FlowParserTest {
      * @throws IOException
      */
     static FlowParser createFlowParser(int fileNo) throws IOException {
-        File file = ResourceUtils.getFile("approval-flow" + ((fileNo > 0 ? fileNo : "") + ".json"));
+        File file = ResourceUtils.getFile("classpath:approval-flow" + fileNo + ".json");
         try (InputStream in = new FileInputStream(file)) {
             JSONObject flowDefinition = JSON.parseObject(in, null);
             return new FlowParser(flowDefinition);

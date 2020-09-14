@@ -23,6 +23,10 @@ import java.io.IOException;
  */
 public class ApprovalProcessorTest extends TestSupport {
 
+    static {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+    }
+
     @Test
     public void testFlowGroup() throws Exception {
         final ID recordNew = addRecordOfTestAllFields(SIMPLE_USER);
@@ -63,13 +67,11 @@ public class ApprovalProcessorTest extends TestSupport {
     }
 
     private ID addApprovalConfig() throws IOException {
-        FlowParser flowParser = FlowParserTest.createFlowParser(0);
-
+        FlowParser flowParser = FlowParserTest.createFlowParser(1);
         Record record = EntityHelper.forNew(EntityHelper.RobotApprovalConfig, UserService.ADMIN_USER);
         record.setString("name", "ApprovalProcessorTest");
-        record.setString("belongEntity", TEST_ENTITY);
+        record.setString("belongEntity", TestAllFields);
         record.setString("flowDefinition", flowParser.getFlowDefinition().toJSONString());
-        record = Application.getBean(RobotApprovalConfigService.class).create(record);
-        return record.getPrimary();
+        return Application.getBean(RobotApprovalConfigService.class).create(record).getPrimary();
     }
 }

@@ -71,6 +71,6 @@ public class SeriesGeneratorTest extends TestSupport {
      * @see com.rebuild.core.metadata.impl.DisplayType#SERIES
      */
     private Field getSeriesField() {
-        return MetadataHelper.getField(TEST_ENTITY, "series");
+        return MetadataHelper.getField(TestAllFields, "series");
     }
 }

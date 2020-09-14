@@ -26,11 +26,15 @@ import org.junit.Test;
  */
 public class FieldAggregationTest extends TestSupport {
 
+    static {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+    }
+
     @Test
     public void testExecute() {
         // 添加配置
         Record triggerConfig = EntityHelper.forNew(EntityHelper.RobotTriggerConfig, UserService.SYSTEM_USER);
-        triggerConfig.setString("belongEntity", "SalesOrderItem999");
+        triggerConfig.setString("belongEntity", SalesOrderItem);
         triggerConfig.setInt("when", TriggerWhen.CREATE.getMaskValue() + TriggerWhen.DELETE.getMaskValue());
         triggerConfig.setString("actionType", ActionType.FIELDAGGREGATION.name());
         String content = "{targetEntity:'SalesOrder999Id.SalesOrder999', items:[{sourceField:'',calcMode:'SUM', targetField:'totalAmount'}]}";
@@ -38,7 +42,7 @@ public class FieldAggregationTest extends TestSupport {
         Application.getBean(RobotTriggerConfigService.class).create(triggerConfig);
 
         // 测试执行
-        Entity test = MetadataHelper.getEntity("SalesOrderItem999");
+        Entity test = MetadataHelper.getEntity(SalesOrderItem);
         RobotTriggerManager.instance.clean(test);
 
         TriggerAction[] as = RobotTriggerManager.instance.getActions(ID.newId(test.getEntityCode()), TriggerWhen.CREATE);
@@ -52,7 +56,7 @@ public class FieldAggregationTest extends TestSupport {
 
     @Test
     public void testEvaluator() {
-        Entity sourceEntity = MetadataHelper.getEntity("SalesOrder999");
+        Entity sourceEntity = MetadataHelper.getEntity(SalesOrder);
 
         JSONObject configUseFormula = JSON.parseObject("{ targetField:'totalAmount', calcMode:'FORMULA', sourceFormula:'{totalAmount$$$$SUM}*1.35' }");
         new AggregationEvaluator(

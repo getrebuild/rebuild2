@@ -42,8 +42,8 @@ public class FormsBuilderTest extends TestSupport {
 
     @Test
     public void testSetFormInitialValue() {
-        Entity SalesOrder999 = MetadataHelper.getEntity("SalesOrder999");
-        Entity SalesOrderItem999 = MetadataHelper.getEntity("SalesOrderItem999");
+        Entity SalesOrder999 = MetadataHelper.getEntity(SalesOrder);
+        Entity SalesOrderItem999 = MetadataHelper.getEntity(SalesOrderItem);
 
         JSONObject initial = JSONUtils.toJSONObject(FormsBuilder.DV_MAINID, ID.newId(SalesOrder999.getEntityCode()));
 

@@ -26,7 +26,7 @@ public class QiniuCloudTest extends TestSupport {
     public void testUploadAndMakeUrl() throws Exception {
         if (!QiniuCloud.instance().available()) return;
 
-        File file = ResourceUtils.getFile("classpath:approval-flow.json");
+        File file = ResourceUtils.getFile("classpath:classification-demo.xlsx");
         String uploadKey = QiniuCloud.instance().upload(file);
         System.out.println("uploadKey ... " + uploadKey);
 
@@ -55,7 +55,7 @@ public class QiniuCloudTest extends TestSupport {
     public void testPrivateUrl() {
         if (!QiniuCloud.instance().available()) return;
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             System.out.println(i + " = " + QiniuCloud.instance().url("rb/20190830/170016833__0190815223938.png"));
             ThreadPool.waitFor(300);
         }

@@ -28,7 +28,7 @@ public class AutoFillinManagerTest extends TestSupport {
 
     @Test
     public void testConversionCompatibleValue() {
-        Entity test = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity test = MetadataHelper.getEntity(TestAllFields);
         Field textField = test.getField("text");
 
         System.out.println(AutoFillinManager.instance.
@@ -48,7 +48,7 @@ public class AutoFillinManagerTest extends TestSupport {
         final String setField = "REFERENCE";
 
         Record config = EntityHelper.forNew(EntityHelper.AutoFillinConfig, UserService.SYSTEM_USER);
-        config.setString("belongEntity", TEST_ENTITY);
+        config.setString("belongEntity", TestAllFields);
         config.setString("belongField", setField);
         config.setString("sourceField", "TEXT");
         config.setString("targetField", "TEXT");
@@ -56,7 +56,7 @@ public class AutoFillinManagerTest extends TestSupport {
         config = Application.getCommonsService().create(config, false);
 
         try {
-            Entity test = MetadataHelper.getEntity(TEST_ENTITY);
+            Entity test = MetadataHelper.getEntity(TestAllFields);
             ID recordId = addRecordOfTestAllFields(SIMPLE_USER);
 
             JSONArray fills = AutoFillinManager.instance.getFillinValue(test.getField(setField), recordId);

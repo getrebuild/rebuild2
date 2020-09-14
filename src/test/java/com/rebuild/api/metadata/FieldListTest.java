@@ -26,7 +26,7 @@ public class FieldListTest extends TestSupport {
     @Test
     public void execute() {
         Map<String, String> reqParams = new HashMap<>();
-        reqParams.put("entity", "TestAllFields");
+        reqParams.put("entity", TestAllFields);
         ApiContext apiContext = new ApiContext(reqParams, null);
 
         JSONObject ret = (JSONObject) new FieldList().execute(apiContext);

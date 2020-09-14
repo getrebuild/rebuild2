@@ -27,11 +27,13 @@ public class AutoAssignTest extends TestSupport {
 
     @Test
     public void execute() {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+
         // 添加配置
-        Application.getSqlExecutor().execute("delete from robot_trigger_config where BELONG_ENTITY = '" + TEST_ENTITY + "'");
+        Application.getSqlExecutor().execute("delete from robot_trigger_config where BELONG_ENTITY = '" + TestAllFields + "'");
 
         Record triggerConfig = EntityHelper.forNew(EntityHelper.RobotTriggerConfig, UserService.SYSTEM_USER);
-        triggerConfig.setString("belongEntity", TEST_ENTITY);
+        triggerConfig.setString("belongEntity", TestAllFields);
         triggerConfig.setInt("when", TriggerWhen.CREATE.getMaskValue());
         triggerConfig.setString("actionType", ActionType.AUTOASSIGN.name());
         String content = "{cascades:null, assignRule:1, assignTo:['" + SIMPLE_USER.toLiteral() + "']}";

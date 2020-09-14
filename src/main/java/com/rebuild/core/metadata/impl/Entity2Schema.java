@@ -109,7 +109,7 @@ public class Entity2Schema extends Field2Schema {
             record.setString("comments", comments);
         }
         if (isDetail) {
-            record.setString("mainEntity", mainEntity);
+            record.setString("masterEntity", mainEntity);
         }
         record.setString("nameField", nameFiled);
         record = Application.getCommonsService().create(record);

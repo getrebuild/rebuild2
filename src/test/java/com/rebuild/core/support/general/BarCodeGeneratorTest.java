@@ -21,7 +21,7 @@ public class BarCodeGeneratorTest extends TestSupport {
 
     @Test
     public void getBarCodeContent() {
-        Field barcodeField = MetadataHelper.getEntity(TEST_ENTITY).getField("barcode");
+        Field barcodeField = MetadataHelper.getEntity(TestAllFields).getField("barcode");
         System.out.println(BarCodeGenerator.getBarCodeContent(barcodeField, null));
     }
 

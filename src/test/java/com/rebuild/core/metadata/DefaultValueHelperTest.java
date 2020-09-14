@@ -19,7 +19,7 @@ public class DefaultValueHelperTest extends TestSupport {
 
     @Test
     public void testExprDefaultValue() {
-        Field dateField = MetadataHelper.getField(TEST_ENTITY, "DATE1");
+        Field dateField = MetadataHelper.getField(TestAllFields, "DATE1");
         System.out.println(DefaultValueHelper.exprDefaultValue(dateField, "{NOW}"));
         System.out.println(DefaultValueHelper.exprDefaultValue(dateField, "{NOW - 1H}"));
         System.out.println(DefaultValueHelper.exprDefaultValue(dateField, "{NOW + 1M}"));

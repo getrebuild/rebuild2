@@ -34,8 +34,8 @@ public class EntityListTest extends TestSupport {
         JSONObject advFilter = new JSONObject();
 
         Map<String, String> reqParams = new HashMap<>();
-        reqParams.put("entity", TEST_ENTITY);
-        reqParams.put("fields", getAllFields(MetadataHelper.getEntity(TEST_ENTITY)));
+        reqParams.put("entity", TestAllFields);
+        reqParams.put("fields", getAllFields(MetadataHelper.getEntity(TestAllFields)));
         reqParams.put("page_size", "1");
         reqParams.put("q", "1");  // Quick query
         ApiContext apiContext = new ApiContext(reqParams, advFilter);

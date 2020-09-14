@@ -27,9 +27,9 @@ public class DataExporterTest extends TestSupport {
     @Test
     public void export() {
         JSONObject query = new JSONObject();
-        query.put("entity", TEST_ENTITY);
+        query.put("entity", TestAllFields);
         List<String> fields = new ArrayList<>();
-        for (Field field : MetadataHelper.getEntity(TEST_ENTITY).getFields()) {
+        for (Field field : MetadataHelper.getEntity(TestAllFields).getFields()) {
             fields.add(field.getName());
         }
         query.put("fields", fields);

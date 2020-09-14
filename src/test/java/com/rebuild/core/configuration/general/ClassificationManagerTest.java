@@ -22,7 +22,7 @@ public class ClassificationManagerTest extends TestSupport {
 
     @Test
     public void testFindByName() {
-        Entity test = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity test = MetadataHelper.getEntity(TestAllFields);
         Field classification = test.getField("classification");
 
         ID itemId = ClassificationManager.instance.findItemByName("南京", classification);

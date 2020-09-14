@@ -28,11 +28,13 @@ public class AutoShareTest extends TestSupport {
 
     @Test
     public void execute() {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+
         // 添加配置
-        Application.getSqlExecutor().execute("delete from robot_trigger_config where BELONG_ENTITY = '" + TEST_ENTITY + "'");
+        Application.getSqlExecutor().execute("delete from robot_trigger_config where BELONG_ENTITY = '" + TestAllFields + "'");
 
         Record triggerConfig = EntityHelper.forNew(EntityHelper.RobotTriggerConfig, UserService.SYSTEM_USER);
-        triggerConfig.setString("belongEntity", TEST_ENTITY);
+        triggerConfig.setString("belongEntity", TestAllFields);
         triggerConfig.setInt("when", TriggerWhen.CREATE.getMaskValue());
         triggerConfig.setString("actionType", ActionType.AUTOSHARE.name());
         String content = "{shareTo:['" + SIMPLE_USER.toLiteral() + "']}";
@@ -40,7 +42,9 @@ public class AutoShareTest extends TestSupport {
         Application.getBean(RobotTriggerConfigService.class).create(triggerConfig);
 
         // 测试执行
-        ID testId = addRecordOfTestAllFields(SIMPLE_USER);
+        // 由 Admin 创建
+        ID testId = addRecordOfTestAllFields(UserService.ADMIN_USER);
+
         boolean allowed = Application.getPrivilegesManager().allowViaShare(SIMPLE_USER, testId, BizzPermission.READ);
         Assert.assertTrue(allowed);
 

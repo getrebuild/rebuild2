@@ -26,7 +26,7 @@ public class ClassificationDataTest extends TestSupport {
     @Test
     public void execute() {
         Map<String, String> reqParams = new HashMap<>();
-        reqParams.put("entity", "TestAllFields");
+        reqParams.put("entity", TestAllFields);
         reqParams.put("field", "CLASSIFICATION");
         ApiContext apiContext = new ApiContext(reqParams, null);
 

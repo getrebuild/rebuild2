@@ -26,7 +26,7 @@ public class PrivilegesManagerTest extends TestSupport {
 
     @Test
     public void testEntityPrivileges() {
-        int entity = MetadataHelper.getEntity(TEST_ENTITY).getEntityCode();
+        int entity = MetadataHelper.getEntity(TestAllFields).getEntityCode();
 
         Application.getPrivilegesManager().allowCreate(SIMPLE_USER, entity);
         Application.getPrivilegesManager().allowDelete(SIMPLE_USER, entity);
@@ -45,11 +45,11 @@ public class PrivilegesManagerTest extends TestSupport {
 
     @Test
     public void testAllow() {
-        Entity test = MetadataHelper.getEntity("Account999");
+        Entity test = MetadataHelper.getEntity(Account);
         boolean allowAccount = Application.getPrivilegesManager().allow(SIMPLE_USER, ID.newId(test.getEntityCode()), BizzPermission.READ);
         assertFalse(allowAccount);
 
-        test = MetadataHelper.getEntity("SalesOrderItem999");
+        test = MetadataHelper.getEntity(SalesOrderItem);
         boolean allowSalesOrderItem = Application.getPrivilegesManager().allow(SIMPLE_USER, ID.newId(test.getEntityCode()), BizzPermission.READ);
         assertFalse(allowSalesOrderItem);
     }

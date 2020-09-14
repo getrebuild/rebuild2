@@ -11,6 +11,7 @@ import cn.devezhao.persist4j.Record;
 import com.rebuild.TestSupport;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
+import com.rebuild.core.privileges.UserService;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -20,6 +21,10 @@ import java.util.Arrays;
  * @since 2019/11/15
  */
 public class FilesHelperTest extends TestSupport {
+
+    static {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+    }
 
     @Test
     public void getFolders() {

@@ -22,14 +22,14 @@ public class MultiSelectManagerTest extends TestSupport {
 
     @Test
     public void getSelectList() {
-        Entity test = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity test = MetadataHelper.getEntity(TestAllFields);
         JSON ret = MultiSelectManager.instance.getSelectList(test.getField(DisplayType.MULTISELECT.name()));
         System.out.println(ret);
     }
 
     @Test
     public void getDefaultValue() {
-        Entity test = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity test = MetadataHelper.getEntity(TestAllFields);
         Long ret = MultiSelectManager.instance.getDefaultValue(test.getField(DisplayType.MULTISELECT.name()));
         System.out.println(ret);
     }

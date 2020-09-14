@@ -22,6 +22,10 @@ import org.junit.Test;
  */
 public class UserServiceTest extends TestSupport {
 
+    static {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+    }
+
     @Test
     public void users() {
         Record record = EntityHelper.forNew(EntityHelper.User, UserService.SYSTEM_USER);

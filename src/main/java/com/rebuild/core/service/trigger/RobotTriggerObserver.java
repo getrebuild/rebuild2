@@ -104,7 +104,7 @@ public class RobotTriggerObserver extends OperatingObserver {
 
         try {
             for (TriggerAction action : actions) {
-                LOG.info("Trigger [ " + action.getType() + " ] by record : " + primary);
+                LOG.info("Trigger [ {} ] executing on record ({}) : {}", action.getType(), when.name(), primary);
 
                 try {
                     action.execute(context);

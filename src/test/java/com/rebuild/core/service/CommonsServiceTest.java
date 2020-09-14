@@ -25,7 +25,7 @@ public class CommonsServiceTest extends TestSupport {
 
     @Test
     public void createOrUpdateAndDelete() {
-        Entity entity = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity entity = MetadataHelper.getEntity(TestAllFields);
 
         Record record = EntityHelper.forNew(entity.getEntityCode(), SIMPLE_USER);
         record.setString("TestAllFieldsName", "CommonsServiceTest" + System.currentTimeMillis());
@@ -44,7 +44,7 @@ public class CommonsServiceTest extends TestSupport {
     // No privileges access
     @Test(expected = PrivilegesException.class)
     public void useStrictMode() {
-        Entity entity = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity entity = MetadataHelper.getEntity(TestAllFields);
         Record record = EntityHelper.forNew(entity.getEntityCode(), SIMPLE_USER);
         record.setString("TestAllFieldsName", "CommonsServiceTest" + System.currentTimeMillis());
         Application.getCommonsService().create(record, true);

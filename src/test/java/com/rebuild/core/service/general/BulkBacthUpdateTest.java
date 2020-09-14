@@ -63,7 +63,7 @@ public class BulkBacthUpdateTest extends TestSupport {
 
     private JSONObject createCustomData() {
         JSONObject queryData = new JSONObject();
-        queryData.put("entity", TEST_ENTITY);
+        queryData.put("entity", TestAllFields);
         queryData.put("fields", new String[]{EntityHelper.OwningUser});
         queryData.put("advFilter", null);
         queryData.put("pageNo", 1);
@@ -72,7 +72,7 @@ public class BulkBacthUpdateTest extends TestSupport {
 
         JSONObject customData = JSONUtils.toJSONObject("queryData", queryData);
         customData.put("_dataRange", BatchOperatorQuery.DR_SELECTED);
-        customData.put("entity", TEST_ENTITY);
+        customData.put("entity", TestAllFields);
         return customData;
     }
 }

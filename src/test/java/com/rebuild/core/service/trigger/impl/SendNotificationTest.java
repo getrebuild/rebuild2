@@ -29,16 +29,20 @@ import static org.junit.Assert.assertEquals;
  */
 public class SendNotificationTest extends TestSupport {
 
+    static {
+        Application.getSessionStore().set(UserService.ADMIN_USER);
+    }
+
     @Test
     public void testExecute() {
         // 添加配置
         Application.getSqlExecutor().execute("delete from robot_trigger_config where BELONG_ENTITY = 'TestAllFields'");
 
         final ID toUser = SIMPLE_USER;
-        final Entity entity = MetadataHelper.getEntity(TEST_ENTITY);
+        final Entity entity = MetadataHelper.getEntity(TestAllFields);
 
         Record triggerConfig = EntityHelper.forNew(EntityHelper.RobotTriggerConfig, UserService.SYSTEM_USER);
-        triggerConfig.setString("belongEntity", "TestAllFields");
+        triggerConfig.setString("belongEntity", TestAllFields);
         triggerConfig.setInt("when", TriggerWhen.CREATE.getMaskValue() + TriggerWhen.DELETE.getMaskValue());
         triggerConfig.setString("actionType", ActionType.SENDNOTIFICATION.name());
         String content = String.format("{ typy:1, sendTo:['%s'], content:'SENDNOTIFICATION {createdBy} {3782732}' }", toUser);

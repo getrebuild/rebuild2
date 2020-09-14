@@ -19,11 +19,11 @@ public class ViewAddonsManagerTest extends TestSupport {
 
     @Test
     public void getViewTab() {
-        ViewAddonsManager.instance.getViewTab(TEST_ENTITY, UserService.ADMIN_USER);
+        ViewAddonsManager.instance.getViewTab(TestAllFields, UserService.ADMIN_USER);
     }
 
     @Test
     public void getViewAdd() {
-        ViewAddonsManager.instance.getViewAdd(TEST_ENTITY, SIMPLE_USER);
+        ViewAddonsManager.instance.getViewAdd(TestAllFields, SIMPLE_USER);
     }
 }

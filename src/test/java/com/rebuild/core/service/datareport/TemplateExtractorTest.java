@@ -35,18 +35,18 @@ public class TemplateExtractorTest extends TestSupport {
     public void testTransformVars() throws Exception {
         File template = ResourceUtils.getFile("classpath:report-template-v2.xlsx");
 
-        Entity test = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity test = MetadataHelper.getEntity(TestAllFields);
         System.out.println(new TemplateExtractor(template, true).transformVars(test));
 
-        if (MetadataHelper.containsEntity("SalesOrder999")) {
-            Entity SalesOrder999 = MetadataHelper.getEntity("SalesOrder999");
+        if (MetadataHelper.containsEntity(SalesOrder)) {
+            Entity SalesOrder999 = MetadataHelper.getEntity(SalesOrder);
             System.out.println(new TemplateExtractor(template, true).transformVars(SalesOrder999));
         }
     }
 
     @Test
     public void testGetRealField() {
-        Entity test = MetadataHelper.getEntity(TEST_ENTITY);
+        Entity test = MetadataHelper.getEntity(TestAllFields);
 
         String field = new TemplateExtractor(null, false)
                 .transformRealField(test, "所属用户");
