@@ -5,20 +5,20 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-package com.rebuild.api;
+package com.rebuild.utils;
 
-import com.alibaba.fastjson.JSON;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * @author devezhao
- * @since 01/10/2019
+ * @author devezhao zhaofang123@gmail.com
+ * @since 2019/03/08
  */
-public class SystemTimeTest {
+public class BlackListTest {
 
     @Test
-    public void execute() {
-        JSON ret = new SystemTime().execute(null);
-        System.out.println(ret);
+    public void testInList() {
+        Assert.assertTrue(BlackList.isBlack("admin"));
+        Assert.assertFalse(BlackList.isBlack("imnotadmin"));
     }
 }

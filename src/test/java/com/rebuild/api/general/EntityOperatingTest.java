@@ -14,7 +14,6 @@ import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityRecordCreator;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserService;
-import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.utils.JSONUtils;
 import org.junit.Assert;
 import org.junit.Test;

@@ -36,7 +36,7 @@ public class TaskExecutors extends DistributedJobBean {
 
     private static final ExecutorService EXECS = new ThreadPoolExecutor(
             MAX_TASKS_NUMBER, MAX_TASKS_NUMBER, 0L, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<>(MAX_TASKS_NUMBER * 10));
+            new LinkedBlockingQueue<>(MAX_TASKS_NUMBER * 6));
 
     private static final Map<String, HeavyTask<?>> TASKS = new ConcurrentHashMap<>();
 

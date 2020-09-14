@@ -19,52 +19,53 @@ import org.springframework.context.ApplicationContext;
 
 /**
  * 根据 METADATA 生成表的创建语句
- * 
+ *
  * @author Zhao Fangfang
  * @since 0.2, 2014-4-10
  */
 @SpringBootTest
 public class SchemaGenerator {
 
-	private static PersistManagerFactory PMF;
+    private static PersistManagerFactory PMF;
 
-	public static void main(String[] args) {
-		ApplicationContext ctx = SpringApplication.run(Application.class);
-		PMF = ctx.getBean(PersistManagerFactory.class);
+    public static void main(String[] args) {
+        ApplicationContext ctx = SpringApplication.run(Application.class);
+        PMF = ctx.getBean(PersistManagerFactory.class);
 
-		generate();
+        generate();
 
-		System.exit(0);
-	}
+        System.exit(0);
+    }
 
     /**
      * 生成全部实体
      */
     static void generate() {
-		for (Entity entity : PMF.getMetadataFactory().getEntities()) {
-			generate(entity.getEntityCode());
-		}
-	}
+        for (Entity entity : PMF.getMetadataFactory().getEntities()) {
+            generate(entity.getEntityCode());
+        }
+    }
 
     /**
      * 生成指定实体
+     *
      * @param entityCode
      */
-	static void generate(int entityCode) {
-		Entity entity = PMF.getMetadataFactory().getEntity(entityCode);
-		Element root = ((ConfigurationMetadataFactory) PMF.getMetadataFactory()).getConfigDocument().getRootElement();
-		Table table = new Table(
-				entity,
-				PMF.getDialect(),
-				root.selectSingleNode("//entity[@name='" + entity.getName() + "']").selectNodes("index"));
+    static void generate(int entityCode) {
+        Entity entity = PMF.getMetadataFactory().getEntity(entityCode);
+        Element root = ((ConfigurationMetadataFactory) PMF.getMetadataFactory()).getConfigDocument().getRootElement();
+        Table table = new Table(
+                entity,
+                PMF.getDialect(),
+                root.selectSingleNode("//entity[@name='" + entity.getName() + "']").selectNodes("index"));
 
-		String[] ddl = table.generateDDL(false, false, false);
-		
-		StringBuffer sb = new StringBuffer();
-		sb.append("-- ************ Entity [").append(entity.getName()).append("] DDL ************\n");
-		for (String d : ddl) {
-			sb.append(d).append("\n");
-		}
-		System.out.println(sb);
-	}
+        String[] ddl = table.generateDDL(false, false, false);
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("-- ************ Entity [").append(entity.getName()).append("] DDL ************\n");
+        for (String d : ddl) {
+            sb.append(d).append("\n");
+        }
+        System.out.println(sb);
+    }
 }
