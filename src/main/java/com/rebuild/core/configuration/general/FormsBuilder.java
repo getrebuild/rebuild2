@@ -65,7 +65,7 @@ public class FormsBuilder extends FormsManager {
      *
      * @param entity
      * @param user
-     * @param record
+     * @param record null 表示新建
      * @return
      */
     public JSON buildForm(String entity, ID user, ID record) {

@@ -8,9 +8,11 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild;
 
 import cn.devezhao.persist4j.Entity;
+import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.rebuild.core.Application;
+import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.Entity2Schema;
@@ -20,6 +22,7 @@ import com.rebuild.core.rbstore.MetaschemaImporter;
 import com.rebuild.core.support.task.TaskExecutors;
 import com.rebuild.utils.BlackList;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.math.RandomUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -155,5 +158,29 @@ public class TestSupport {
             MetaschemaImporter importer = new MetaschemaImporter(JSON.parseObject(metaschema));
             TaskExecutors.run(importer.setUser(UserService.ADMIN_USER));
         }
+    }
+
+    /**
+     * 添加一条测试记录
+     *
+     * @param user
+     * @return
+     */
+    protected static ID addRecordOfTestAllFields(ID user) {
+        Entity testEntity = MetadataHelper.getEntity(TEST_ENTITY);
+
+        // 自动添加权限
+        if (!Application.getPrivilegesManager().allowCreate(user, testEntity.getEntityCode())) {
+            Record p = EntityHelper.forNew(EntityHelper.RolePrivileges, user);
+            p.setID("roleId", SIMPLE_ROLE);
+            p.setInt("entity", testEntity.getEntityCode());
+            p.setString("definition", "{'A':1,'R':1,'C':4,'S':1,'D':1,'U':1}");
+            Application.getCommonsService().create(p, Boolean.FALSE);
+            Application.getUserStore().refreshRole(SIMPLE_ROLE);
+        }
+
+        Record record = EntityHelper.forNew(testEntity.getEntityCode(), user);
+        record.setString("text", "TEXT-" + RandomUtils.nextLong());
+        return Application.getGeneralEntityService().create(record).getPrimary();
     }
 }
