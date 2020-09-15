@@ -10,6 +10,7 @@ package com.rebuild.core.privileges;
 import cn.devezhao.bizz.privileges.Permission;
 import cn.devezhao.bizz.privileges.PrivilegesException;
 import cn.devezhao.bizz.privileges.impl.BizzPermission;
+import cn.devezhao.bizz.security.AccessDeniedException;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
@@ -94,10 +95,10 @@ public class DepartmentService extends BaseServiceImpl {
 
         Department dept = Application.getUserStore().getDepartment(deptId);
         if (!dept.getMembers().isEmpty()) {
-            throw new DataSpecificationException("Has members");
+            throw new OperationDeniedException("Has members");
         }
         if (!dept.getChildren().isEmpty()) {
-            throw new DataSpecificationException("Has child department");
+            throw new OperationDeniedException("Has sub-departments");
         }
 
         super.delete(deptId);

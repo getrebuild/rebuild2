@@ -368,7 +368,6 @@ var $pages = function (tp, cp) {
  * 是否相同。兼容对象或数组
  */
 var $same = function (a, b) {
-  debugger
   if (Object.is(a, b) || !a && !b) return true
   if (a && b) {
     if ($.type(a) === 'object' && $.type(b) === 'object') {

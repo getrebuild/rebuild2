@@ -62,12 +62,12 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
         }
 
         // ServletContext 共享变量
-        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.ENV, Application.devMode() ? "dev" : "prodution");
-        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.BASE_URL, AppUtils.getContextPath());
-        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.APP_NAME, RebuildConfiguration.get(ConfigurationItem.AppName));
-        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.STORAGE_URL, RebuildConfiguration.get(ConfigurationItem.StorageURL));
-        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.FILE_SHARABLE, RebuildConfiguration.get(ConfigurationItem.FileSharable));
-        thymeleafViewResolver.addStaticVariable(RebuildWebConstants.MARK_WATERMARK, RebuildConfiguration.get(ConfigurationItem.MarkWatermark));
+        thymeleafViewResolver.addStaticVariable(WebConstants.ENV, Application.devMode() ? "dev" : "prodution");
+        thymeleafViewResolver.addStaticVariable(WebConstants.BASE_URL, AppUtils.getContextPath());
+        thymeleafViewResolver.addStaticVariable(WebConstants.APP_NAME, RebuildConfiguration.get(ConfigurationItem.AppName));
+        thymeleafViewResolver.addStaticVariable(WebConstants.STORAGE_URL, RebuildConfiguration.get(ConfigurationItem.StorageURL));
+        thymeleafViewResolver.addStaticVariable(WebConstants.FILE_SHARABLE, RebuildConfiguration.get(ConfigurationItem.FileSharable));
+        thymeleafViewResolver.addStaticVariable(WebConstants.MARK_WATERMARK, RebuildConfiguration.get(ConfigurationItem.MarkWatermark));
     }
 
     /**
@@ -118,9 +118,12 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
             error = new ModelAndView(new FastJsonJsonView());
         }
 
+        int errorCode = status.value();
         String errorMsg = AppUtils.getErrorMessage(request, ex);
 
-        if (!(ex instanceof DataSpecificationException)) {
+        if (ex instanceof DataSpecificationException) {
+            errorCode = ((DataSpecificationException) ex).getErrorCode();
+        } else {
             String errorLog = "\n++ EXECUTE REQUEST ERROR(s) TRACE +++++++++++++++++++++++++++++++++++++++++++++" +
                     "\nUser    : " + ObjectUtils.defaultIfNull(AppUtils.getRequestUser(request), "-") +
                     "\nIP      : " + ServletUtils.getRemoteAddr(request) +
@@ -129,8 +132,8 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
                     "\nMessage : " + errorMsg + (model != null ? (" " + model.toString()) : "");
             LOG.error(errorLog, ex);
         }
-
-        error.getModel().put("error_code", status.value());
+        
+        error.getModel().put("error_code", errorCode);
         error.getModel().put("error_msg", errorMsg);
         return error;
     }

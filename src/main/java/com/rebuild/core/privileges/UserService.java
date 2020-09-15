@@ -8,27 +8,28 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.privileges;
 
 import cn.devezhao.bizz.privileges.Permission;
-import cn.devezhao.bizz.privileges.PrivilegesException;
 import cn.devezhao.bizz.privileges.impl.BizzPermission;
+import cn.devezhao.bizz.security.AccessDeniedException;
 import cn.devezhao.bizz.security.member.User;
 import cn.devezhao.commons.EncryptUtils;
+import cn.devezhao.commons.ObjectUtils;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
+import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.RecordBuilder;
-import com.rebuild.utils.BlackList;
+import com.rebuild.core.service.BaseServiceImpl;
+import com.rebuild.core.service.DataSpecificationException;
+import com.rebuild.core.service.notification.Message;
+import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.SMSender;
 import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.task.TaskExecutors;
-import com.rebuild.core.metadata.EntityHelper;
-import com.rebuild.core.service.BaseServiceImpl;
-import com.rebuild.core.service.DataSpecificationException;
-import com.rebuild.core.service.notification.Message;
-import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.utils.AppUtils;
+import com.rebuild.utils.BlackList;
 import com.rebuild.utils.CommonsUtils;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +100,14 @@ public class UserService extends BaseServiceImpl {
     public int delete(ID record) {
         checkAdminGuard(BizzPermission.DELETE, null);
 
+        Object[] hasLogin = Application.createQueryNoFilter(
+                "select count(logId) from LoginLog where user = ?")
+                .setParameter(1, record)
+                .unique();
+        if (ObjectUtils.toInt(hasLogin[0]) > 0) {
+            throw new OperationDeniedException("Already used");
+        }
+
         super.delete(record);
         Application.getUserStore().removeUser(record);
         return 1;
@@ -159,14 +168,14 @@ public class UserService extends BaseServiceImpl {
         if (UserHelper.isAdmin(currentUser)) return;
 
         if (action == BizzPermission.CREATE || action == BizzPermission.DELETE) {
-            throw new PrivilegesException(Language.getLang("NoOpPrivileges"));
+            throw new AccessDeniedException(Language.getLang("NoOpPrivileges"));
         }
 
         // 用户可自己改自己
         if (action == BizzPermission.UPDATE && currentUser.equals(user)) {
             return;
         }
-        throw new PrivilegesException(Language.getLang("NoOpPrivileges"));
+        throw new AccessDeniedException(Language.getLang("NoOpPrivileges"));
     }
 
     /**

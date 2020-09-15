@@ -12,13 +12,11 @@ let _Members
 let _PlanList
 
 $(document).ready(() => {
-  renderRbcomp(<UserSelector hideDepartment={true} hideRole={true} hideTeam={true} multiple={false} />, 'principal', function () {
+  renderRbcomp(<UserSelector hideDepartment={true} hideRole={true} hideTeam={true} multiple={false} defaultValue={wpc.principal} />, 'principal', function () {
     _Principal = this
-    _initUserComp(wpc.principal, _Principal)
   })
-  renderRbcomp(<UserSelector />, 'members', function () {
+  renderRbcomp(<UserSelector defaultValue={wpc.members} />, 'members', function () {
     _Members = this
-    _initUserComp(wpc.members, this)
   })
 
   if (wpc.scope === 2) $('#scope_2').attr('checked', true)
@@ -29,29 +27,22 @@ $(document).ready(() => {
   $('.J_add-plan').click(() => renderRbcomp(<PlanEdit projectId={wpc.id} flowNexts={_PlanList.getPlans()} seq={_PlanList.getMaxSeq() + 1000} />))
 
   const $btn = $('.J_save').click(() => {
-    const _data = {
+    const data = {
       scope: $('#scope_2').prop('checked') ? 2 : 1,
+      principal: _Principal.val().join(','),
       members: _Members.val().join(','),
       metadata: { id: wpc.id },
     }
-    if (!_data.members) return RbHighbar.create($lang('PlsSelectSome,f.ProjectConfig.members'))
+    if (!data.members) return RbHighbar.create($lang('PlsSelectSome,f.ProjectConfig.members'))
 
     $btn.button('loading')
-    $.post('/admin/projects/post', JSON.stringify(_data), (res) => {
+    $.post('/admin/projects/post', JSON.stringify(data), (res) => {
       if (res.error_code === 0) location.href = '../projects'
       else RbHighbar.error(res.error_msg)
       $btn.button('reset')
     })
   })
 })
-
-const _initUserComp = function (users, comp) {
-  if (users) {
-    $.post('/commons/search/user-selector', JSON.stringify(users.split(',')), (res) => {
-      if (res.error_code === 0 && res.data.length > 0) comp.setState({ selected: res.data })
-    })
-  }
-}
 
 // 面板列表
 class PlanList extends React.Component {

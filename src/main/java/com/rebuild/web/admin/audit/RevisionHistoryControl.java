@@ -17,6 +17,7 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.web.EntityController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,8 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/admin/audit/")
 public class RevisionHistoryControl extends EntityController {
 
-    @RequestMapping("revision-history")
-    public ModelAndView pageLogging() {
+    @GetMapping("revision-history")
+    public ModelAndView page() {
         return createModelAndView("/admin/audit/revision-history");
     }
 

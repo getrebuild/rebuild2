@@ -44,9 +44,6 @@ $(document).ready(function () {
   })
   $('.J_enable').click(() => toggleDisabled(false))
 
-  $('.J_changeRole').click(() => renderRbcomp(<DlgEnableUser user={userId} role={true} />))
-  $('.J_changeDept').click(() => renderRbcomp(<DlgEnableUser user={userId} dept={true} />))
-
   $('.J_resetpwd').click(() => {
     const newpwd = $random(null, true, 8) + '!8'
     RbAlert.create($lang('ResetPasswdConfirm').replace('%s', newpwd), {
@@ -66,12 +63,14 @@ $(document).ready(function () {
 
   if (rb.isAdminVerified) {
     $.get(`/admin/bizuser/check-user-status?id=${userId}`, (res) => {
-      if (res.error_code > 0) return
       if (res.data.system === true && rb.isAdminVerified === true) {
         $('.view-action').remove()
         $('.J_tips').removeClass('hide').find('.message p').text($lang('NotModifyAdminUser'))
         return
       }
+
+      $('.J_changeRole').click(() => renderRbcomp(<DlgEnableUser user={userId} role={res.data.role} roleAppends={res.data.roleAppends} />))
+      $('.J_changeDept').click(() => renderRbcomp(<DlgEnableUser user={userId} dept={res.data.dept} />))
 
       if (res.data.disabled === true) {
         $('.J_disable').remove()
@@ -79,24 +78,24 @@ $(document).ready(function () {
         if (!res.data.role || !res.data.dept) {
           $('.J_enable')
             .off('click')
-            .click(() => renderRbcomp(<DlgEnableUser enable={true} user={userId} dept={!res.data.dept} role={!res.data.role} />))
+            .click(() => renderRbcomp(<DlgEnableUser user={userId} enable={true} role={res.data.role} roleAppends={res.data.roleAppends} dept={res.data.dept} />))
         }
       } else {
         $('.J_enable').remove()
       }
 
-      if (res.data.active === true) return
-
-      const reasons = []
-      if (!res.data.role) reasons.push($lang('NotSpecRole'))
-      else if (res.data.roleDisabled) reasons.push($lang('OwningRoleDisabled'))
-      if (!res.data.dept) reasons.push($lang('NotSpecDept'))
-      else if (res.data.deptDisabled) reasons.push($lang('OwningDeptDisabled'))
-      if (res.data.disabled === true) reasons.push($lang('Disabled'))
-      $('.J_tips')
-        .removeClass('hide')
-        .find('.message p')
-        .text($lang('UserUnactiveReason').replace('%s', reasons.join(' / ')))
+      if (!res.data.active) {
+        const reasons = []
+        if (!res.data.role) reasons.push($lang('NotSpecRole'))
+        else if (res.data.roleDisabled) reasons.push($lang('OwningRoleDisabled'))
+        if (!res.data.dept) reasons.push($lang('NotSpecDept'))
+        else if (res.data.deptDisabled) reasons.push($lang('OwningDeptDisabled'))
+        if (res.data.disabled === true) reasons.push($lang('Disabled'))
+        $('.J_tips')
+          .removeClass('hide')
+          .find('.message p')
+          .text($lang('UserUnactiveReason').replace('%s', reasons.join(' / ')))
+      }
     })
   }
 })
@@ -127,7 +126,9 @@ const deleteUser = function (id, alert) {
     if (res.error_code === 0) {
       parent.location.hash = '!/View/'
       parent.location.reload()
-    } else RbHighbar.error(res.error_msg)
+    } else {
+      RbHighbar.error(res.error_msg)
+    }
   })
 }
 
@@ -136,28 +137,28 @@ class DlgEnableUser extends RbModalHandler {
   constructor(props) {
     super(props)
 
-    if (!props.enable) this.__title = $lang('ModifySome,' + (props.dept === true ? 'e.Department' : 'e.Role'))
-    else this.__title = $lang('ActiveUser')
+    if (props.enable) this._title = $lang('ActiveUser')
+    else this._title = $lang('ModifySome,' + (props.dept ? 'e.Department' : 'e.Role'))
   }
 
   render() {
     return (
-      <RbModal title={this.__title} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
+      <RbModal title={this._title} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
         <div className="form">
-          {this.props.dept === true && (
+          {this.props.dept && (
             <div className="form-group row">
               <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,f.User.deptId')}</label>
               <div className="col-sm-7">
-                <UserSelector hideUser={true} hideRole={true} hideTeam={true} multiple={false} ref={(c) => (this._deptNew = c)} />
+                <UserSelector hideUser={true} hideRole={true} hideTeam={true} multiple={false} defaultValue={this.props.dept} ref={(c) => (this._deptNew = c)} />
               </div>
             </div>
           )}
-          {this.props.role === true && (
+          {this.props.role && (
             <React.Fragment>
               <div className="form-group row">
                 <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,e.Role')}</label>
                 <div className="col-sm-7">
-                  <UserSelector hideUser={true} hideDepartment={true} hideTeam={true} multiple={false} ref={(c) => (this._roleNew = c)} />
+                  <UserSelector hideUser={true} hideDepartment={true} hideTeam={true} multiple={false} defaultValue={this.props.role} ref={(c) => (this._roleNew = c)} />
                 </div>
               </div>
               <div className="form-group row">
@@ -165,7 +166,7 @@ class DlgEnableUser extends RbModalHandler {
                   {$lang('AppendRoles')} ({$lang('Optional')})
                 </label>
                 <div className="col-sm-7">
-                  <UserSelector hideUser={true} hideDepartment={true} hideTeam={true} ref={(c) => (this._roleAppends = c)} />
+                  <UserSelector hideUser={true} hideDepartment={true} hideTeam={true} defaultValue={this.props.roleAppends} ref={(c) => (this._roleAppends = c)} />
                   <p className="form-text">{$lang('AppendRolesTips')}</p>
                 </div>
               </div>

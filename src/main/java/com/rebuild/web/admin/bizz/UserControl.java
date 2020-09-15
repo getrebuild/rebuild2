@@ -16,12 +16,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.DataListManager;
-import com.rebuild.core.support.RebuildConfiguration;
-import com.rebuild.core.support.SMSender;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.privileges.bizz.User;
+import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.SMSender;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.EntityController;
 import org.springframework.stereotype.Controller;
@@ -121,7 +121,9 @@ public class UserControl extends EntityController {
                 set.remove(u.getOwningRole().getIdentity());
             }
 
-            if (!set.isEmpty()) roleAppends = set.toArray(new ID[0]);
+            if (!set.isEmpty()) {
+                roleAppends = set.toArray(new ID[0]);
+            }
         }
 
         Boolean enableNew = null;
@@ -167,6 +169,7 @@ public class UserControl extends EntityController {
 
         int hasMember = 0;
         int hasChild = 0;
+
         if (bizz.getEntityCode() == EntityHelper.Department) {
             Department dept = Application.getUserStore().getDepartment(bizz);
             hasMember = dept.getMembers().size();
@@ -175,7 +178,7 @@ public class UserControl extends EntityController {
             Role role = Application.getUserStore().getRole(bizz);
             hasMember = role.getMembers().size();
         } else if (bizz.getEntityCode() == EntityHelper.User) {
-            // 仅检查是否登陆过。严谨些还应该检查是否有其他业务数据
+            // NOTE 仅检查是否登陆过。严谨些还应该检查是否有其他业务数据
             Object[] hasLogin = Application.createQueryNoFilter(
                     "select count(logId) from LoginLog where user = ?")
                     .setParameter(1, bizz)

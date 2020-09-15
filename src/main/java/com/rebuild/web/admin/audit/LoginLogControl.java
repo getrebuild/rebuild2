@@ -5,7 +5,7 @@ rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
 
-package com.rebuild.web.admin.bizz;
+package com.rebuild.web.admin.audit;
 
 import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.momentjava.Moment;
@@ -21,6 +21,7 @@ import com.rebuild.utils.LocationUtils;
 import com.rebuild.web.EntityController;
 import com.rebuild.web.OnlineSessionStore;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -36,27 +37,16 @@ import java.util.Date;
 @Controller
 public class LoginLogControl extends EntityController {
 
-    @RequestMapping("/admin/bizuser/login-logs")
+    @GetMapping("/admin/audit/login-logs")
     public ModelAndView pageList(HttpServletRequest request) {
         ID user = getRequestUser(request);
-        ModelAndView mv = createModelAndView("/admin/bizuser/login-logs", "LoginLog", user);
+        ModelAndView mv = createModelAndView("/admin/audit/login-logs", "LoginLog", user);
         JSON config = DataListManager.instance.getFieldsLayout("LoginLog", user);
         mv.getModel().put("DataListConfig", JSON.toJSONString(config));
         return mv;
     }
 
-    @RequestMapping("/commons/ip-location")
-    public void getIpLocation(HttpServletRequest request, HttpServletResponse response) {
-        String ip = getParameterNotNull(request, "ip");
-        try {
-            JSON location = LocationUtils.getLocation(ip);
-            writeSuccess(response, location);
-        } catch (Exception ex) {
-            writeFailure(response);
-        }
-    }
-
-    @RequestMapping("/admin/bizuser/online-users")
+    @GetMapping("/admin/audit/online-users")
     public void getOnlineUsers(HttpServletResponse response) {
         JSONArray users = new JSONArray();
         for (HttpSession s : Application.getSessionStore().getAllSession()) {
@@ -79,7 +69,7 @@ public class LoginLogControl extends EntityController {
         writeSuccess(response, users);
     }
 
-    @RequestMapping("/admin/bizuser/kill-session")
+    @RequestMapping("/admin/audit/kill-session")
     public void killSession(HttpServletRequest request, HttpServletResponse response) {
         ID user = getIdParameterNotNull(request, "user");
         HttpSession s = Application.getSessionStore().getSession(user);
@@ -91,5 +81,16 @@ public class LoginLogControl extends EntityController {
             }
         }
         writeSuccess(response);
+    }
+
+    @GetMapping("/commons/ip-location")
+    public void getIpLocation(HttpServletRequest request, HttpServletResponse response) {
+        String ip = getParameterNotNull(request, "ip");
+        try {
+            JSON location = LocationUtils.getLocation(ip);
+            writeSuccess(response, location);
+        } catch (Exception ex) {
+            writeFailure(response);
+        }
     }
 }

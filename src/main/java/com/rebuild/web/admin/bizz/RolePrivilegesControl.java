@@ -20,9 +20,10 @@ import com.rebuild.core.privileges.RoleService;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.EntityController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,7 +39,7 @@ import java.util.List;
 @RequestMapping("/admin/bizuser/")
 public class RolePrivilegesControl extends EntityController {
 
-    @RequestMapping("role-privileges")
+    @GetMapping("role-privileges")
     public ModelAndView pageList(HttpServletRequest request) {
         ID user = getRequestUser(request);
         ModelAndView mv = createModelAndView("/admin/bizuser/role-privileges", "Role", user);
@@ -46,7 +47,7 @@ public class RolePrivilegesControl extends EntityController {
         return mv;
     }
 
-    @RequestMapping("role/{id}")
+    @GetMapping("role/{id}")
     public ModelAndView pagePrivileges(@PathVariable String id, HttpServletRequest request) {
         ID user = getRequestUser(request);
         ID roleId = ID.valueOf(id);
@@ -63,20 +64,20 @@ public class RolePrivilegesControl extends EntityController {
         List<Object[]> entities = new ArrayList<>();
         for (Entity e : MetadataSorter.sortEntities()) {
             if (MetadataHelper.hasPrivilegesField(e)) {
-                entities.add(new Object[] { e.getEntityCode(), EasyMeta.getLabel(e) });
+                entities.add(new Object[]{e.getEntityCode(), EasyMeta.getLabel(e)});
             }
         }
         mv.getModel().put("Entities", entities);
     }
 
-    @RequestMapping("role-list")
+    @GetMapping("role-list")
     public void roleList(HttpServletResponse response) {
         Object[][] array = Application.createQuery("select roleId,name,isDisabled from Role").array();
         JSON retJson = JSONUtils.toJSONObjectArray(new String[]{"id", "name", "disabled"}, array);
         writeSuccess(response, retJson);
     }
 
-    @RequestMapping("privileges-list")
+    @GetMapping("privileges-list")
     public void privilegesList(HttpServletRequest request, HttpServletResponse response) {
         ID roleId = getIdParameterNotNull(request, "role");
         if (RoleService.ADMIN_ROLE.equals(roleId)) {
@@ -98,7 +99,7 @@ public class RolePrivilegesControl extends EntityController {
         writeSuccess(response, retJson);
     }
 
-    @RequestMapping(value = "privileges-update", method = RequestMethod.POST)
+    @PostMapping("privileges-update")
     public void privilegesUpdate(HttpServletRequest request, HttpServletResponse response) {
         JSON post = ServletUtils.getRequestJson(request);
         ID role = getIdParameterNotNull(request, "role");
@@ -106,7 +107,7 @@ public class RolePrivilegesControl extends EntityController {
         writeSuccess(response);
     }
 
-    @RequestMapping(value = "role-delete", method = RequestMethod.POST)
+    @PostMapping("role-delete")
     public void roleDelete(HttpServletRequest request, HttpServletResponse response) {
         ID role = getIdParameterNotNull(request, "id");
         ID transfer = getIdParameter(request, "transfer");  // TODO 转移到新角色

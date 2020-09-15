@@ -137,12 +137,6 @@ body {
   font-style: italic;
 }
 
-.text-disabled > small::after {
-  content: '[已禁用]';
-  font-size: 12px;
-  margin-left: 4px;
-}
-
 .text-underline {
   text-decoration: underline;
 }
@@ -1775,10 +1769,7 @@ th.column-fixed {
 
 .aside-tree li > a.text-disabled {
   color: #aaa;
-}
-
-.aside-tree li > a.text-disabled > small::after {
-  content: '[已停用]';
+  cursor: default;
 }
 
 .aside-tree > ul > li > a {

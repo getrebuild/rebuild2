@@ -18,29 +18,30 @@ var loadDeptTree = function () {
 }
 
 const renderDeptTree = function (dept, target) {
-  let child = $(
-    `<li data-id="${dept.id}"><a href="#dept=${dept.id}" class="text-truncate ${dept.disabled && ' text-disabled'}">${dept.name} ${dept.disabled ? '<small></small>' : ''}</a></li>`
+  const $dept = $(
+    `<li data-id="${dept.id}"><a href="#dept=${dept.id}" class="text-truncate ${dept.disabled && ' text-disabled'}" title="${dept.disabled ? $lang('Disabled') : ''}">${dept.name}</a></li>`
   ).appendTo(target)
-  child.find('a').click(function () {
-    $('.aside-tree li').removeClass('active')
-    child.addClass('active')
 
-    let ids = [child.data('id')]
-    child.find('li').each(function () {
+  $dept.find('a').click(function () {
+    $('.aside-tree li').removeClass('active')
+    $dept.addClass('active')
+
+    let ids = [$dept.data('id')]
+    $dept.find('li').each(function () {
       ids.push($(this).data('id'))
     })
     clickDept(ids)
     return false
   })
-  //let action = $('<div class="action"><a><i class="zmdi zmdi-close"></i></a><a><i class="zmdi zmdi-edit"></i></a></div>').appendTo(child)
+  //let $action = $('<div class="action"><a><i class="zmdi zmdi-close"></i></a><a><i class="zmdi zmdi-edit"></i></a></div>').appendTo($dept)
 
   if (dept.children && dept.children.length > 0) {
-    let parent = $('<ul class="list-unstyled"></ul>').appendTo(child)
+    const parent = $('<ul class="list-unstyled"></ul>').appendTo($dept)
     $(dept.children).each(function () {
       renderDeptTree(this, parent)
     })
   }
-  return child
+  return $dept
 }
 
 // To Override

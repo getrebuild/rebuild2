@@ -11,9 +11,9 @@ package com.rebuild.web;
  * @author devezhao
  * @since 2020/9/7
  */
-public class RebuildWebConstants {
+public class WebConstants {
 
-    // 全局
+    // Global
 
     /**
      * 运行环境
@@ -62,15 +62,18 @@ public class RebuildWebConstants {
      */
     public static final String ACCESS_TOKEN = "accessToken";
 
-    // 可用对象变量
+    // Object
 
     /**
      * 语言包
+     * @see com.rebuild.core.support.i18n.LanguageBundle
      */
     public static final String $BUNDLE = "bundle";
 
     /**
      * 用户
+     * @see com.rebuild.core.privileges.bizz.User
      */
     public static final String $USER = "user";
+
 }

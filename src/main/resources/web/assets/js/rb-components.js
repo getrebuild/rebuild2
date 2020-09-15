@@ -534,6 +534,17 @@ class UserSelector extends React.Component {
         }
       },
     })
+
+    if (this.props.defaultValue) {
+      let dv = this.props.defaultValue
+      if ($.type(this.props.defaultValue) === 'string') dv = dv.split(',')
+
+      $.post('/commons/search/user-selector', JSON.stringify(dv), (res) => {
+        if (res.error_code === 0 && res.data.length > 0) {
+          this.setState({ selected: res.data })
+        }
+      })
+    }
   }
 
   componentWillUnmount() {

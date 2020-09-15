@@ -522,7 +522,7 @@ class StartNodeConfig extends RbFormHandler {
 
   componentDidMount() {
     if (this.state.users === 'SPEC' && this.props.users) {
-      $.post('/commons/search/user-selector?entity=', JSON.stringify(this.props.users), (res) => {
+      $.post('/commons/search/user-selector', JSON.stringify(this.props.users), (res) => {
         if (res.data.length > 0) this.setState({ selectedUsers: res.data })
       })
     }

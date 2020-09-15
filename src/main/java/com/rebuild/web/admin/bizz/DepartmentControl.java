@@ -18,8 +18,9 @@ import com.rebuild.core.privileges.DepartmentService;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.web.EntityController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/admin/bizuser/")
 public class DepartmentControl extends EntityController {
 
-    @RequestMapping("departments")
+    @GetMapping("departments")
     public ModelAndView pageList(HttpServletRequest request) {
         ID user = getRequestUser(request);
         ModelAndView mv = createModelAndView("/admin/bizuser/dept-list", "Department", user);
@@ -43,7 +44,7 @@ public class DepartmentControl extends EntityController {
         return mv;
     }
 
-    @RequestMapping(value = "dept-delete", method = RequestMethod.POST)
+    @PostMapping("dept-delete")
     public void deptDelete(HttpServletRequest request, HttpServletResponse response) {
         ID dept = getIdParameterNotNull(request, "id");
         ID transfer = getIdParameter(request, "transfer");  // TODO 转移到新部门

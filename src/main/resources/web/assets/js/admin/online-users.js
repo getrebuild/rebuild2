@@ -53,7 +53,7 @@ class OnlineUserViewer extends RbModalHandler {
   }
 
   _load() {
-    $.get('/admin/bizuser/online-users', (res) => {
+    $.get('/admin/audit/online-users', (res) => {
       if (res.error_code === 0) this.setState({ users: res.data })
       else RbHighbar.error(res.error_msg)
     })
@@ -63,7 +63,7 @@ class OnlineUserViewer extends RbModalHandler {
     const that = this
     RbAlert.create($lang('KillSessionConfirm'), {
       confirm: function () {
-        $.post(`/admin/bizuser/kill-session?user=${user}`, () => {
+        $.post(`/admin/audit/kill-session?user=${user}`, () => {
           this.hide()
           that._load()
         })

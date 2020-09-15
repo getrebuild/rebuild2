@@ -12,6 +12,7 @@ import com.rebuild.core.service.general.recyclebin.RecycleRestore;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -28,8 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/admin/audit/")
 public class RecycleBinControl extends BaseController {
 
-    @RequestMapping("recycle-bin")
-    public ModelAndView pageLogging() {
+    @GetMapping("recycle-bin")
+    public ModelAndView page() {
         return createModelAndView("/admin/audit/recycle-bin");
     }
 

@@ -19,14 +19,18 @@ import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.web.EntityController;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author devezhao
@@ -36,16 +40,17 @@ import java.util.*;
 @RequestMapping("/admin/bizuser/")
 public class TeamControl extends EntityController {
 
-    @RequestMapping("teams")
+    @GetMapping("teams")
     public ModelAndView pageList(HttpServletRequest request) {
-        ID user = getRequestUser(request);
+        final ID user = getRequestUser(request);
+
         ModelAndView mv = createModelAndView("/admin/bizuser/team-list", "Team", user);
         JSON config = DataListManager.instance.getFieldsLayout("Team", user);
         mv.getModel().put("DataListConfig", JSON.toJSONString(config));
         return mv;
     }
 
-    @RequestMapping(value = "team-members", method = RequestMethod.GET)
+    @GetMapping("team-members")
     public void getMembers(HttpServletRequest request, HttpServletResponse response) {
         ID teamId = getIdParameterNotNull(request, "team");
         Team team = Application.getUserStore().getTeam(teamId);
@@ -61,7 +66,7 @@ public class TeamControl extends EntityController {
         writeSuccess(response, members);
     }
 
-    @RequestMapping(value = "team-members-add", method = RequestMethod.POST)
+    @PostMapping("team-members-add")
     public void addMembers(HttpServletRequest request, HttpServletResponse response) {
         final ID teamId = getIdParameterNotNull(request, "team");
 
@@ -74,7 +79,7 @@ public class TeamControl extends EntityController {
         writeSuccess(response);
     }
 
-    @RequestMapping(value = "team-members-del", method = RequestMethod.POST)
+    @PostMapping("team-members-del")
     public void deleteMembers(HttpServletRequest request, HttpServletResponse response) {
         ID teamId = getIdParameterNotNull(request, "team");
         ID userId = getIdParameterNotNull(request, "user");

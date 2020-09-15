@@ -198,7 +198,7 @@ class Share2Settings extends Share2Switch {
     super.componentDidMount()
 
     const p = this.props
-    if (p.shareTo && p.shareTo.length > 10) {
+    if (p.shareTo && p.shareTo.length >= 20) {
       $.post('/commons/search/user-selector', JSON.stringify(p.shareTo.split(',')), (res) => {
         if (res.error_code === 0 && res.data.length > 0) this._selector.setState({ selected: res.data })
       })

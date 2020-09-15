@@ -58,11 +58,11 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         Application.getSessionStore().setLocale(locale);
 
         if (htmlRequest) {
-            request.setAttribute(RebuildWebConstants.LOCALE, locale);
-            request.setAttribute(RebuildWebConstants.$BUNDLE, Language.getCurrentBundle());
+            request.setAttribute(WebConstants.LOCALE, locale);
+            request.setAttribute(WebConstants.$BUNDLE, Language.getCurrentBundle());
 
             // TODO CSRF
-            request.setAttribute(RebuildWebConstants.CSRF_TOKEN, CodecUtils.randomCode(60));
+            request.setAttribute(WebConstants.CSRF_TOKEN, CodecUtils.randomCode(60));
 
             // Side collapsed
             String sidebarCollapsed = ServletUtils.readCookie(request, "rb.sidebarCollapsed");
@@ -117,7 +117,7 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
                 Application.getSessionStore().storeLastActive(request);
 
                 // 前端使用
-                request.setAttribute(RebuildWebConstants.$USER, Application.getUserStore().getUser(requestUser));
+                request.setAttribute(WebConstants.$USER, Application.getUserStore().getUser(requestUser));
                 request.setAttribute("AllowCustomNav",
                         Application.getPrivilegesManager().allow(requestUser, ZeroEntry.AllowCustomNav));
             }
