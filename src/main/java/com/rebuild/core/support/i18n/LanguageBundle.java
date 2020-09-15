@@ -13,7 +13,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.JSONable;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +40,9 @@ public class LanguageBundle implements JSONable {
     private static final Pattern BR_PATT = Pattern.compile("\\[]");
     // 加粗
     private static final Pattern BOLD_PATT = Pattern.compile("\\*\\*(.*?)\\*\\*");
+
+    // Match `"{xx}"`
+    private static final Pattern PATT_LANG_KEY = Pattern.compile("\"\\{([0-9a-zA-Z._]+)}\"");
 
     private String locale;
     private JSONObject bundle;
@@ -130,11 +132,12 @@ public class LanguageBundle implements JSONable {
     public String getLang(String key, String... phKeys) {
         String lang = getLangBase(key);
         if (lang == null && parent != null) {
+            LOG.warn("Missing lang-key [{}] for [{}], use default", key, getLocale());
             lang = parent.getDefaultBundle().getLangBase(key);
         }
 
         if (lang == null) {
-            LOG.warn("Missing lang-key `{}` for `{}`", key, getLocale());
+            LOG.warn("Missing lang-key [{}]", key);
             return String.format("[%s]", key.toUpperCase());
         }
 
@@ -174,6 +177,26 @@ public class LanguageBundle implements JSONable {
         } else {
             return getLang(mixkey);
         }
+    }
+
+    /**
+     * 用于替换（JSON）配置中的语言 Key
+     *
+     * @param resource
+     * @return
+     */
+    public JSON replaceLangKey(JSON resource) {
+        String s = resource.toJSONString();
+        boolean noAny = true;
+        Matcher matcher = PATT_LANG_KEY.matcher(s);
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            s = s.replace(String.format("\"{%s}\"", key), '"' + getLang(key) + '"');
+            noAny = false;
+        }
+
+        if (noAny) return resource;
+        return (JSON) JSON.parse(s);
     }
 
     @Override

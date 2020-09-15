@@ -93,23 +93,8 @@ const loadRoles = function () {
         })
       )
 
-      $action.find('a.J_del').click(function () {
-        const alertExt = {
-          type: 'danger',
-          confirmText: $lang('Delete'),
-          confirm: function () {
-            deleteRole(_id, this)
-          },
-        }
-
-        $.get(`/admin/bizuser/delete-checks?id=${_id}`, function (res) {
-          if (res.data.hasMember === 0) {
-            RbAlert.create($lang('DeleteRoleSafeConfirm'), $lang('DeleteSome,e.Role'), { ...alertExt, icon: 'alert-circle-o' })
-          } else {
-            RbAlert.create($lang('DeleteRoleUnSafeConfirm').replace('%d', res.data.hasMember), $lang('DeleteSome,e.Role'), { ...alertExt, html: true })
-          }
-        })
-      })
+      // eslint-disable-next-line no-undef
+      $action.find('a.J_del').click(() => deleteRole(_id))
     })
   })
 }
@@ -171,14 +156,6 @@ const updatePrivileges = function () {
   const _data = { entity: privEntity, zero: privZero }
   $.post(`/admin/bizuser/privileges-update?role=${roleId}`, JSON.stringify(_data), (res) => {
     if (res.error_code === 0) location.reload()
-    else RbHighbar.error(res.error_msg)
-  })
-}
-
-const deleteRole = function (id, dlg) {
-  dlg.disabled(true)
-  $.post(`/admin/bizuser/role-delete?transfer=&id=${id}`, (res) => {
-    if (res.error_code === 0) location.replace(rb.baseUrl + '/admin/bizuser/role-privileges')
     else RbHighbar.error(res.error_msg)
   })
 }

@@ -74,7 +74,11 @@ public class UserControl extends EntityController {
         if (checkedUser.getOwningRole() != null) {
             ret.put("role", checkedUser.getOwningRole().getIdentity());
             ret.put("roleDisabled", checkedUser.getOwningRole().isDisabled());
+
+            // 附加角色
+            ret.put("roleAppends", Application.getUserStore().getMergedRole(id).getRoleAppends());
         }
+
         if (checkedUser.getOwningDept() != null) {
             ret.put("dept", checkedUser.getOwningDept().getIdentity());
             ret.put("deptDisabled", checkedUser.getOwningDept().isDisabled());

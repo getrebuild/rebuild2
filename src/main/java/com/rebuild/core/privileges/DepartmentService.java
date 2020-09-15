@@ -95,10 +95,10 @@ public class DepartmentService extends BaseServiceImpl {
 
         Department dept = Application.getUserStore().getDepartment(deptId);
         if (!dept.getMembers().isEmpty()) {
-            throw new OperationDeniedException("Has members");
+            throw new OperationDeniedException("HAS MEMBERS");
         }
         if (!dept.getChildren().isEmpty()) {
-            throw new OperationDeniedException("Has sub-departments");
+            throw new OperationDeniedException("HAS SUB-DEPARTMENTS");
         }
 
         super.delete(deptId);

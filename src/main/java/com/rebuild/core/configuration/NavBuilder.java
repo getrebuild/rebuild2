@@ -43,15 +43,15 @@ public class NavBuilder extends NavManager {
     private static final JSONArray NAVS_DEFAULT = JSONUtils.toJSONObjectArray(
             new String[]{"icon", "text", "type", "value"},
             new Object[][]{
-                    new Object[]{"chart-donut", "动态", "BUILTIN", NAV_FEEDS},
-                    new Object[]{"shape", "项目", "BUILTIN", NAV_PROJECT},
-                    new Object[]{"folder", "文件", "BUILTIN", NAV_FILEMRG}
+                    new Object[]{"chart-donut", "{e.Feeds}", "BUILTIN", NAV_FEEDS},
+                    new Object[]{"shape", "{e.ProjectConfig}", "BUILTIN", NAV_PROJECT},
+                    new Object[]{"folder", "{File}", "BUILTIN", NAV_FILEMRG}
             });
 
     // 新建项目
     private static final JSONObject NAV_PROJECT__ADD = JSONUtils.toJSONObject(
             new String[]{"icon", "text", "type", "value"},
-            new String[]{"plus", "添加项目", "BUILTIN", NAV_PROJECT + "--add"}
+            new String[]{"plus", "{AddProject}", "BUILTIN", NAV_PROJECT + "--add"}
     );
 
     /**
@@ -153,10 +153,11 @@ public class NavBuilder extends NavManager {
         if (activeNav == null) activeNav = "dashboard-home";
 
         JSONArray navs = NavBuilder.instance.getNavPortal(AppUtils.getRequestUser(request));
+        navs = (JSONArray) AppUtils.getReuqestBundle(request).replaceLangKey(navs);
+
         StringBuilder navsHtml = new StringBuilder();
         for (Object item : navs) {
-            navsHtml.append(renderNavItem((JSONObject) item, activeNav))
-                    .append('\n');
+            navsHtml.append(renderNavItem((JSONObject) item, activeNav)).append('\n');
         }
         return navsHtml.toString();
     }

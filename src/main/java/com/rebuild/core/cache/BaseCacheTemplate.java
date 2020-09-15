@@ -111,7 +111,7 @@ public abstract class BaseCacheTemplate<V extends Serializable> implements Cache
             return true;
         } catch (Exception ex) {
             LOG.warn("Acquisition J/Redis failed : " + ThrowableUtils.getRootCause(ex).getLocalizedMessage()
-                    + " !!! falling back to ehcache");
+                    + " !!! falling back to EhCache");
         }
         return false;
     }

@@ -167,22 +167,22 @@
                     <tr>
                       <td class="name"><a data-name="AllowCustomDataList">[[${bundle.lang('AllowSetSome,FieldShow')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R4"></i></td>
-                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Permission8')}]]</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Read')}]]</td>
                     </tr>
                     <tr>
                       <td class="name"><a data-name="AllowBatchUpdate">[[${bundle.lang('AllowSome,BatchUpdate')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R0"></i></td>
-                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Permission4')}]]</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Update')}]]</td>
                     </tr>
                     <tr class="hide">
                       <td class="name"><a data-name="AllowDataImport">[[${bundle.lang('AllowSome,DataImport')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R0"></i></td>
-                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Permission1')}]]</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Create')}]]</td>
                     </tr>
                     <tr>
                       <td class="name"><a data-name="AllowDataExport">[[${bundle.lang('AllowSome,DataExport')}]]</a></td>
                       <td class="text-center"><i data-action="Z" class="priv R0"></i></td>
-                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Permission8')}]]</td>
+                      <td colspan="5" class="text-muted">[[${bundle.lang('AllowSetSomePrePermission,Read')}]]</td>
                     </tr>
                   </tbody>
                 </table>
@@ -207,6 +207,7 @@
     </script>
     <script th:src="@{/assets/js/rb-forms.js}" type="text/babel"></script>
     <script th:src="@{/assets/js/rb-forms.exts.js}" type="text/babel"></script>
-    <script th:src="@{/assets/js/bizuser/roles.js}" type="text/babel"></script>
+    <script th:src="@{/assets/js/bizuser/role-view.js}" type="text/babel"></script>
+    <script th:src="@{/assets/js/bizuser/role-privileges.js}" type="text/babel"></script>
   </body>
 </html>

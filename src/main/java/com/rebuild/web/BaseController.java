@@ -13,7 +13,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.rebuild.api.Controller;
 import com.rebuild.core.Application;
-import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.i18n.LanguageBundle;
 import com.rebuild.utils.AppUtils;
 import org.apache.commons.lang.BooleanUtils;
@@ -55,9 +54,7 @@ public abstract class BaseController extends Controller {
      * @return
      */
     protected String getLang(HttpServletRequest request, String key, String...phKey) {
-        String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
-        LanguageBundle bundle = Application.getLanguage().getBundle(locale);
-        return bundle.getLang(key, phKey);
+        return AppUtils.getReuqestBundle(request).getLang(key, phKey);
     }
 
     /**

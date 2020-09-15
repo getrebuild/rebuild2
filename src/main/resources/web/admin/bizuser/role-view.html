@@ -34,7 +34,7 @@
             <div class="col-12 col-lg-6 btn-group J_mores">
               <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">[[${bundle.lang('More')}]] <i class="icon zmdi zmdi-more-vert"></i></button>
               <div class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item J_delete"><i class="icon zmdi zmdi-delete"></i> [[${bundle.lang('Delete')}]]</a>
+                <a class="dropdown-item J_delete-role"><i class="icon zmdi zmdi-delete"></i> [[${bundle.lang('Delete')}]]</a>
               </div>
             </div>
           </div>
@@ -53,12 +53,6 @@
     <script th:src="@{/assets/js/rb-forms.js}" type="text/babel"></script>
     <script th:src="@{/assets/js/rb-forms.exts.js}" type="text/babel"></script>
     <script th:src="@{/assets/js/rb-view.js}" type="text/babel"></script>
-    <script type="text/babel">
-      $(document).ready(() => {
-        $('.J_delete')
-          .off('click')
-          .click(() => {})
-      })
-    </script>
+    <script th:src="@{/assets/js/bizuser/role-view.js}" type="text/babel"></script>
   </body>
 </html>

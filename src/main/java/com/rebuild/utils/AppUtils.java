@@ -17,6 +17,7 @@ import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.support.i18n.Language;
+import com.rebuild.core.support.i18n.LanguageBundle;
 import com.rebuild.web.admin.AdminVerfiyControl;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.http.MediaType;
@@ -97,6 +98,15 @@ public class AppUtils {
         if (user == null) user = getRequestUserViaRbMobile(request, false);
         if (user == null) return null;
         return Application.getUserStore().getUser(user);
+    }
+
+    /**
+     * @param request
+     * @return
+     */
+    public static LanguageBundle getReuqestBundle(HttpServletRequest request) {
+        String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
+        return Application.getLanguage().getBundle(locale);
     }
 
     /**

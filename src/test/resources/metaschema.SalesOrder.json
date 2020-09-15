@@ -1,6 +1,6 @@
 {
   "entity": "SalesOrder999",
-  "entityLabel": "订单",
+  "entityLabel": "订单999",
   "nameField": "orderNumber",
   "fields": [
     {
@@ -135,7 +135,7 @@
   },
   "detail": {
     "entity": "SalesOrderItem999",
-    "entityLabel": "订单明细",
+    "entityLabel": "订单明细999",
     "nameField": "itemName",
     "fields": [
       {

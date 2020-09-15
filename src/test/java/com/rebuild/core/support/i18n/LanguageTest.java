@@ -8,10 +8,15 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.support.i18n;
 
 import cn.devezhao.persist4j.Entity;
+import com.alibaba.fastjson.JSON;
 import com.rebuild.TestSupport;
+import com.rebuild.core.Application;
+import com.rebuild.core.configuration.NavBuilder;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
+import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.service.approval.ApprovalState;
+import com.rebuild.utils.JSONUtils;
 import org.junit.Test;
 
 /**
@@ -31,5 +36,12 @@ public class LanguageTest extends TestSupport {
         System.out.println("f.createdOn > " + Language.getLang(entity.getField(EntityHelper.CreatedOn)));
         System.out.println("f.User.fullName > " + Language.getLang(entity.getField("fullName")));
         System.out.println("s.ApprovalState.PROCESSING > " + Language.getLang(ApprovalState.PROCESSING));
+    }
+
+    @Test
+    public void replaceLangKey() {
+        JSON resource = NavBuilder.instance.getNavPortal(UserService.ADMIN_USER);
+        resource = Application.getLanguage().getDefaultBundle().replaceLangKey(resource);
+        System.out.println(JSONUtils.prettyPrint(resource));
     }
 }

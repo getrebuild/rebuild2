@@ -7,6 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.privileges.bizz;
 
+import cn.devezhao.bizz.security.member.Role;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.privileges.RoleService;
 import com.rebuild.core.privileges.UserService;
@@ -25,6 +26,8 @@ public class User extends cn.devezhao.bizz.security.member.User {
     private String workphone;
     private String fullName;
     private String avatarUrl;
+
+    protected MergedRole mergedRole;
 
     public User(ID userId, String loginName, String email, String workphone,
                 String fullName, String avatarUrl, boolean disabled) {
@@ -101,5 +104,12 @@ public class User extends cn.devezhao.bizz.security.member.User {
             return false;
         }
         return getOwningRole() != null && !getOwningRole().isDisabled();
+    }
+
+    /**
+     * @return Returns {@link MergedRole} or {@link Role}
+     */
+    public Role getPrivilegesRole() {
+        return mergedRole == null ? getOwningRole() : mergedRole;
     }
 }

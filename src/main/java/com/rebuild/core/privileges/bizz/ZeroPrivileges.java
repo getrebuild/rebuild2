@@ -20,17 +20,20 @@ import java.io.Serializable;
  *
  * @author devezhao
  * @see EntityPrivileges
- * @see ZeroEntry
  * @since 10/11/2018
  */
 public class ZeroPrivileges implements Privileges {
     private static final long serialVersionUID = 7185091441777921842L;
 
+    public static final String ZERO_FLAG = "Z";
+
+    public static final int ZERO_MASK = 4;
+
     private final String zreoKey;
     private final String definition;
 
     /**
-     * @param zreoKey    {@link ZeroEntry}
+     * @param zreoKey {@link ZeroEntry}
      * @param definition
      */
     public ZeroPrivileges(String zreoKey, String definition) {
@@ -50,11 +53,18 @@ public class ZeroPrivileges implements Privileges {
 
     @Override
     public boolean allowed(Permission action, Serializable targetGuard) {
-        return definition.contains(":4");  // {"Z":4}
+        return definition.contains(":" + ZERO_MASK);  // {"Z":4}
     }
 
     @Override
     public DepthEntry superlative(Permission action) {
         return BizzDepthEntry.GLOBAL;
+    }
+
+    /**
+     * @return
+     */
+    public String getDefinition() {
+        return definition;
     }
 }

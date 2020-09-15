@@ -10,20 +10,15 @@ package com.rebuild.core.privileges;
 import cn.devezhao.bizz.privileges.Privileges;
 import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.bizz.security.EntityPrivileges;
-import cn.devezhao.bizz.security.member.BusinessUnit;
-import cn.devezhao.bizz.security.member.MemberGroup;
-import cn.devezhao.bizz.security.member.NoMemberFoundException;
-import cn.devezhao.bizz.security.member.Role;
-import cn.devezhao.bizz.security.member.Team;
+import cn.devezhao.bizz.security.member.*;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.Application;
 import com.rebuild.core.Initialization;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.bizz.Department;
-import com.rebuild.core.privileges.bizz.RoleGroup;
+import com.rebuild.core.privileges.bizz.MergedRole;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.privileges.bizz.ZeroPrivileges;
 import org.apache.commons.lang.StringUtils;
@@ -54,7 +49,7 @@ public class UserStore implements Initialization {
     final private Map<String, ID> USERs_NAME2ID = new ConcurrentHashMap<>();
     final private Map<String, ID> USERs_MAIL2ID = new ConcurrentHashMap<>();
 
-    final private Map<ID, RoleGroup> USERs_ROLEGROUPs = new HashMap<>();
+    final private Map<ID, MergedRole> USERs_MERGEDROLEs = new ConcurrentHashMap<>();
 
     final private PersistManagerFactory aPMFactory;
 
@@ -251,7 +246,7 @@ public class UserStore implements Initialization {
      * @param userId
      */
     public void refreshUser(ID userId) {
-        Object[] o = Application.createQueryNoFilter("select " + USER_FS + " from User where userId = ?")
+        Object[] o = aPMFactory.createQuery("select " + USER_FS + " from User where userId = ?")
                 .setParameter(1, userId)
                 .unique();
         final User newUser = new User(
@@ -287,6 +282,21 @@ public class UserStore implements Initialization {
         }
         if (roleId != null) {
             getRole(roleId).addMember(newUser);
+
+            // 附加权限（角色）
+            Object[][] appends = aPMFactory.createQuery("select roleId from RoleMember where userId = ?")
+                    .setParameter(1, userId)
+                    .array();
+            Set<Role> active = new HashSet<>();
+            for (Object[] a : appends) {
+                @SuppressWarnings("SuspiciousMethodCalls") Role role = ROLEs.get(a[0]);
+                if (role != null && !role.isDisabled()) {
+                    active.add(role);
+                }
+            }
+            USERs_MERGEDROLEs.put(userId, new MergedRole(newUser, active));
+        } else {
+            USERs_MERGEDROLEs.remove(userId);
         }
 
         store(newUser);
@@ -504,8 +514,8 @@ public class UserStore implements Initialization {
      * @param user
      * @return
      */
-    public RoleGroup getRoleGroup(ID user) {
-        return USERs_ROLEGROUPs.get(user);
+    public MergedRole getMergedRole(ID user) {
+        return USERs_MERGEDROLEs.getOrDefault(user, MergedRole.NULL);
     }
 
     private static final String USER_FS = "userId,loginName,email,fullName,avatarUrl,isDisabled,deptId,roleId,workphone";
@@ -563,6 +573,8 @@ public class UserStore implements Initialization {
             this.refreshTeam((ID) o[0]);
         }
         LOG.info("Loaded [ " + TEAMs.size() + " ] teams.");
+
+
     }
 
     /**

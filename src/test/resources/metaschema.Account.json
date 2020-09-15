@@ -1,6 +1,6 @@
 {
   "entity": "Account999",
-  "entityLabel": "客户",
+  "entityLabel": "客户999",
   "nameField": "accountName",
   "fields": [
     {

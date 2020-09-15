@@ -66,8 +66,6 @@ public class TestSupport {
         Application.getSessionStore().clean();
     }
 
-//    @Test public void contextLoads() {}
-
     // -- 测试实体
 
     // 全部字段类型

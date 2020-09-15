@@ -22,7 +22,7 @@ import org.springframework.context.ApplicationContext;
  * 根据 METADATA 生成语言
  *
  * @author Zhao Fangfang
- * @since 0.2, 2020-09-10
+ * @since 2020-09-10
  */
 public class LanguageGenerator {
 
