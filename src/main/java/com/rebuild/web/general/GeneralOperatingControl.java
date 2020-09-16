@@ -31,6 +31,7 @@ import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.service.ServiceSpec;
 import com.rebuild.core.service.general.BulkContext;
 import com.rebuild.core.service.general.EntityService;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
 import com.rebuild.web.InvalidParameterException;
@@ -67,8 +68,8 @@ public class GeneralOperatingControl extends BaseController {
         Record record;
         try {
             record = EntityHelper.parse((JSONObject) formJson, user);
-        } catch (DataSpecificationException know) {
-            writeFailure(response, know.getLocalizedMessage());
+        } catch (DataSpecificationException known) {
+            writeFailure(response, known.getLocalizedMessage());
             return;
         }
 
@@ -85,8 +86,8 @@ public class GeneralOperatingControl extends BaseController {
 
         try {
             record = Application.getService(record.getEntity().getEntityCode()).createOrUpdate(record);
-        } catch (AccessDeniedException | DataSpecificationException know) {
-            writeFailure(response, know.getLocalizedMessage());
+        } catch (AccessDeniedException | DataSpecificationException known) {
+            writeFailure(response, known.getLocalizedMessage());
             return;
         } catch (GenericJdbcException ex) {
             if (ex.getCause() instanceof DataTruncation) {
@@ -145,8 +146,8 @@ public class GeneralOperatingControl extends BaseController {
                 BulkContext context = new BulkContext(user, BizzPermission.DELETE, null, cascades, records);
                 affected = ((EntityService) ies).bulk(context);
             }
-        } catch (AccessDeniedException | DataSpecificationException know) {
-            writeFailure(response, know.getLocalizedMessage());
+        } catch (AccessDeniedException | DataSpecificationException known) {
+            writeFailure(response, known.getLocalizedMessage());
             return;
         }
 
@@ -181,8 +182,8 @@ public class GeneralOperatingControl extends BaseController {
                 BulkContext context = new BulkContext(user, BizzPermission.ASSIGN, assignTo, cascades, records);
                 affected = ies.bulk(context);
             }
-        } catch (AccessDeniedException know) {
-            writeFailure(response, know.getLocalizedMessage());
+        } catch (AccessDeniedException known) {
+            writeFailure(response, known.getLocalizedMessage());
             return;
         }
 
@@ -224,8 +225,8 @@ public class GeneralOperatingControl extends BaseController {
                     affected += ies.bulk(context);
                 }
             }
-        } catch (AccessDeniedException know) {
-            writeFailure(response, know.getLocalizedMessage());
+        } catch (AccessDeniedException known) {
+            writeFailure(response, known.getLocalizedMessage());
             return;
         }
 
@@ -257,8 +258,8 @@ public class GeneralOperatingControl extends BaseController {
                 BulkContext context = new BulkContext(user, EntityService.UNSHARE, accessIds, record);
                 affected = ies.bulk(context);
             }
-        } catch (AccessDeniedException know) {
-            writeFailure(response, know.getLocalizedMessage());
+        } catch (AccessDeniedException known) {
+            writeFailure(response, known.getLocalizedMessage());
             return;
         }
 
@@ -322,8 +323,8 @@ public class GeneralOperatingControl extends BaseController {
                 affected += ies.bulk(context);
             }
 
-        } catch (AccessDeniedException know) {
-            writeFailure(response, know.getLocalizedMessage());
+        } catch (AccessDeniedException known) {
+            writeFailure(response, known.getLocalizedMessage());
             return;
         }
 
@@ -371,7 +372,7 @@ public class GeneralOperatingControl extends BaseController {
                 sameEntityCode = id0.getEntityCode();
             }
             if (sameEntityCode != id0.getEntityCode()) {
-                throw new InvalidParameterException("只能批量处理同一实体的记录");
+                throw new InvalidParameterException(Language.getLang("BatchOpMustSameEntity"));
             }
             idList.add(ID.valueOf(id));
         }
@@ -408,7 +409,7 @@ public class GeneralOperatingControl extends BaseController {
             if (MetadataHelper.containsEntity(c)) {
                 casList.add(c);
             } else {
-                LOG.warn("Unknow entity in cascades : " + c);
+                LOG.warn("Unknown entity in cascades : " + c);
             }
         }
         return casList.toArray(new String[0]);

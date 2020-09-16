@@ -14,7 +14,10 @@ import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.NoRecordFoundException;
+import com.rebuild.core.support.i18n.Language;
 import org.springframework.util.Assert;
+
+import java.awt.*;
 
 /**
  * @author devezhao
@@ -54,7 +57,7 @@ public class ApprovalHelper {
         Object[] o = Application.getQueryFactory().uniqueNoFilter(recordId,
                 EntityHelper.ApprovalId, EntityHelper.ApprovalId + ".name", EntityHelper.ApprovalState, EntityHelper.ApprovalStepNode);
         if (o == null) {
-            throw new NoRecordFoundException("记录不存在或你无权查看");
+            throw new NoRecordFoundException(Language.getLang("NotReadRecordTips"));
         }
         return new ApprovalStatus((ID) o[0], (String) o[1], (Integer) o[2], (String) o[3], recordId);
     }

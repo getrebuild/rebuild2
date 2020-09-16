@@ -78,7 +78,7 @@ public class EntityCreate extends BaseApi {
         }
 
         if (!MetadataHelper.containsEntity(useEntity)) {
-            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Invalid post/data : Unknow entity : " + useEntity);
+            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Invalid post/data : Unknown entity : " + useEntity);
         }
 
         Entity entity = MetadataHelper.getEntity(useEntity);

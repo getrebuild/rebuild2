@@ -96,7 +96,7 @@ public class FieldAggregation implements TriggerAction {
             depth = 1;
         }
         if (depth > maxTriggerDepth) {
-            throw new TriggerException("Too many trigger-chain with triggers : " + depth);
+            throw new TriggerException("Too many trigger chains : " + depth);
         }
 
         this.prepare(operatingContext);

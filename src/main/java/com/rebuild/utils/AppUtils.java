@@ -144,10 +144,10 @@ public class AppUtils {
 
         // 已知异常
         if (exception != null) {
-            Throwable know = ThrowableUtils.getRootCause(exception);
-            if (know instanceof DataTruncation) {
+            Throwable known = ThrowableUtils.getRootCause(exception);
+            if (known instanceof DataTruncation) {
                 return Language.getLang("ErrorOutMaxInput");
-            } else if (know instanceof AccessDeniedException) {
+            } else if (known instanceof AccessDeniedException) {
                 return Language.getLang("Error403");
             }
         }

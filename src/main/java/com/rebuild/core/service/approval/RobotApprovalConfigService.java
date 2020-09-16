@@ -17,6 +17,7 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.AdminGuard;
 import com.rebuild.core.service.DataSpecificationException;
+import com.rebuild.core.support.i18n.Language;
 import org.springframework.stereotype.Service;
 
 /**
@@ -50,7 +51,7 @@ public class RobotApprovalConfigService extends BaseConfigurationService impleme
         if (record.hasValue("flowDefinition")) {
             int inUsed = ApprovalHelper.checkInUsed(record.getPrimary());
             if (inUsed > 0) {
-                throw new DataSpecificationException("有 " + inUsed + " 条记录正在使用此流程，禁止修改");
+                throw new DataSpecificationException(Language.formatLang("UpdateApprovalInUsedOnX", inUsed));
             }
         }
         return super.update(record);
@@ -60,7 +61,7 @@ public class RobotApprovalConfigService extends BaseConfigurationService impleme
     public int delete(ID recordId) {
         int inUsed = ApprovalHelper.checkInUsed(recordId);
         if (inUsed > 0) {
-            throw new DataSpecificationException("有 " + inUsed + " 条记录正在使用此流程，禁止删除");
+            throw new DataSpecificationException(Language.formatLang("DeleteApprovalInUsedOnX", inUsed));
         }
         return super.delete(recordId);
     }

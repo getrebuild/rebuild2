@@ -79,7 +79,7 @@ public class RecycleRestore {
 
         final List<Record> willRestores = new ArrayList<>(conver2Record(JSON.parseObject((String) main[0]), (ID) main[1]));
         if (willRestores.isEmpty()) {
-            throw new RebuildException("记录实体已经不存在");
+            throw new RebuildException("Record entity not exists");
         }
         recycleIds.add((ID) main[2]);
 
@@ -120,7 +120,7 @@ public class RecycleRestore {
 
         } catch (Throwable ex) {
             TransactionManual.rollback(status);
-            throw new RebuildException("恢复数据失败", ex);
+            throw new RebuildException("Failed to restore data", ex);
         }
     }
 

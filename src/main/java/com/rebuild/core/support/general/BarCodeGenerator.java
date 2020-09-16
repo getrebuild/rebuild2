@@ -104,7 +104,7 @@ public class BarCodeGenerator {
             return new MultiFormatWriter().encode(content, format, width, height, hints);
 
         } catch (WriterException ex) {
-            throw new RebuildException("Encode BarCode failed : " + content, ex);
+            throw new RebuildException("Encode BarCode error : " + content, ex);
         }
     }
 
@@ -124,7 +124,7 @@ public class BarCodeGenerator {
             return dest;
 
         } catch (IOException ex) {
-            throw new RebuildException("Write BarCode failed : " + content, ex);
+            throw new RebuildException("Write BarCode error : " + content, ex);
         }
     }
 }

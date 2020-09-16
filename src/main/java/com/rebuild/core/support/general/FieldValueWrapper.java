@@ -341,13 +341,13 @@ public class FieldValueWrapper {
         if (id.getEntityCode() == EntityHelper.ClassificationData) {
             String hasValue = ClassificationManager.instance.getFullName(id);
             if (hasValue == null) {
-                throw new NoRecordFoundException("No ClassificationData found by ID : " + id);
+                throw new NoRecordFoundException("No ClassificationData found by id : " + id);
             }
             return hasValue;
         } else if (id.getEntityCode() == EntityHelper.PickList) {
             String hasValue = PickListManager.instance.getLabel(id);
             if (hasValue == null) {
-                throw new NoRecordFoundException("No PickList found by ID : " + id);
+                throw new NoRecordFoundException("No PickList found by id : " + id);
             }
             return hasValue;
         }
@@ -355,7 +355,7 @@ public class FieldValueWrapper {
         Field nameField = MetadataHelper.getNameField(entity);
         Object[] nameValue = Application.getQueryFactory().uniqueNoFilter(id, nameField.getName());
         if (nameValue == null) {
-            throw new NoRecordFoundException("No record found by ID : " + id);
+            throw new NoRecordFoundException("No record found by id : " + id);
         }
 
         Object nameLabel = instance.wrapFieldValue(nameValue[0], nameField, true);

@@ -25,8 +25,4 @@ public class MetadataException extends RebuildException {
     public MetadataException(Throwable cause) {
         super(cause);
     }
-
-    public MetadataException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
 }

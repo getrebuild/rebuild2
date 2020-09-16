@@ -25,6 +25,7 @@ import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.service.query.AdvFilterParser;
+import com.rebuild.core.support.i18n.Language;
 import org.apache.commons.lang.StringUtils;
 
 import java.text.DecimalFormat;
@@ -152,7 +153,7 @@ public abstract class ChartData extends SetUser<ChartData> implements ChartSpec 
     private Field[] getValidFields(JSONObject item) {
         String fieldName = item.getString("field");
         if (MetadataHelper.getLastJoinField(getSourceEntity(), fieldName) == null) {
-            throw new ChartsException("字段 [" + fieldName.toUpperCase() + " ] 不存在，请调整图表配置");
+            throw new ChartsException(Language.formatLang("ReConfChartTips", fieldName.toUpperCase()));
         }
 
         Field[] fields = new Field[2];

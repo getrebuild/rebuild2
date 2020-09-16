@@ -213,7 +213,7 @@ public class LoginControl extends BaseController {
                 UA = String.format("%s-%s (%s)",
                         uas.getBrowser(), uas.getBrowserVersion().getMajorVersion(), uas.getOperatingSystem());
             } catch (Exception ex) {
-                LOG.warn("Unknow user-agent : " + UA);
+                LOG.warn("Unknown user-agent : " + UA);
                 UA = "UNKNOW";
             }
         }

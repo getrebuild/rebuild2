@@ -387,7 +387,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
             stepGroup.add(o);
         }
         if (firstStep == null) {
-            throw new RebuildException(Language.formatLang("InvalidapprovalRecordX", this.record));
+            throw new ConfigurationException(Language.formatLang("InvalidapprovalRecordX", this.record));
         }
 
         JSONArray steps = new JSONArray();

@@ -16,18 +16,6 @@ import com.rebuild.core.RebuildException;
 public class SetupException extends RebuildException {
     private static final long serialVersionUID = 2967864326290626538L;
 
-    public SetupException() {
-        super();
-    }
-
-    public SetupException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
-
-    public SetupException(String msg) {
-        super(msg);
-    }
-
     public SetupException(Throwable cause) {
         super(cause);
     }

@@ -39,7 +39,7 @@ public class FieldList extends BaseApi {
     public JSON execute(ApiContext context) throws ApiInvokeException {
         String entity = context.getParameterNotBlank("entity");
         if (!MetadataHelper.containsEntity(entity)) {
-            throw new ApiInvokeException("Unknow entity : " + entity);
+            throw new ApiInvokeException("Unknown entity : " + entity);
         }
 
         Entity thatEntity = MetadataHelper.getEntity(entity);

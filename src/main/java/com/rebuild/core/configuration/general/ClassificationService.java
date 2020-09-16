@@ -18,6 +18,7 @@ import com.rebuild.core.privileges.AdminGuard;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.service.general.QuickCodeReindexTask;
+import com.rebuild.core.support.i18n.Language;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,7 @@ public class ClassificationService extends BaseConfigurationService implements A
                 .array();
         for (Object[] o : used) {
             if (StringUtils.contains((String) o[0], recordId.toLiteral())) {
-                throw new DataSpecificationException("此分类数据正在被使用，不能删除");
+                throw new DataSpecificationException(Language.getLang("DeleteClassDataInUsed"));
             }
         }
 

@@ -103,7 +103,7 @@ public class ClassificationControl extends BaseController {
             }
             item.setInt("level", level);
         } else {
-            writeFailure(response, getLang(request, "InvalidArgs"));
+            writeFailure(response, getLang(request, "InvalidParams"));
             return;
         }
 
@@ -149,7 +149,7 @@ public class ClassificationControl extends BaseController {
                     .setParameter(1, dataId)
                     .array();
         } else {
-            writeFailure(response, getLang(request, "InvalidArgs"));
+            writeFailure(response, getLang(request, "InvalidParams"));
             return;
         }
         writeSuccess(response, child);

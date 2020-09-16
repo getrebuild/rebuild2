@@ -46,7 +46,7 @@ public class ActionFactory {
         try {
             return type.newInstance(context);
         } catch (NoSuchMethodException ex) {
-            throw new TriggerException("无效操作类型: " + type, ex);
+            throw new TriggerException("Unknown trigger type : " + type);
         }
     }
 }

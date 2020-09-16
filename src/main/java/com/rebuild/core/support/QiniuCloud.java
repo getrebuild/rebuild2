@@ -110,7 +110,7 @@ public class QiniuCloud {
     public String upload(URL url) throws Exception {
         File tmp = HttpUtils.readBinary(url.toString());
         if (tmp == null) {
-            throw new RebuildException("无法从 URL 读取文件 : " + url);
+            throw new RebuildException("Cannot read file from URL : " + url);
         }
 
         try {
@@ -165,10 +165,10 @@ public class QiniuCloud {
             if (resp.isOK()) {
                 return true;
             } else {
-                throw new RebuildException("删除文件失败 : " + this.bucketName + " < " + key + " : " + resp.bodyString());
+                throw new RebuildException("Failed to delete file : " + this.bucketName + " < " + key + " : " + resp.bodyString());
             }
         } catch (QiniuException e) {
-            throw new RebuildException("删除文件失败 : " + this.bucketName + " < " + key, e);
+            throw new RebuildException("Failed to delete file : " + this.bucketName + " < " + key, e);
         }
     }
 

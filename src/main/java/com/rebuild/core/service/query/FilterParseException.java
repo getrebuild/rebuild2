@@ -16,19 +16,7 @@ import com.rebuild.core.RebuildException;
 public class FilterParseException extends RebuildException {
     private static final long serialVersionUID = -8014993130546304986L;
 
-    public FilterParseException() {
-        super();
-    }
-
-    public FilterParseException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
-
     public FilterParseException(String msg) {
         super(msg);
-    }
-
-    public FilterParseException(Throwable cause) {
-        super(cause);
     }
 }

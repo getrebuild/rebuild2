@@ -532,7 +532,7 @@ public class FormsBuilder extends FormsManager {
                     }
                 }
             } else {
-                LOG.warn("Unknow value pair : " + field + " = " + value);
+                LOG.warn("Unknown value pair : " + field + " = " + value);
             }
         }
 

@@ -10,6 +10,7 @@ package com.rebuild.core.service.approval;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -123,7 +124,7 @@ public class FlowParser {
         if (nodeMap.containsKey(nodeId)) {
             return nodeMap.get(nodeId);
         }
-        throw new ApprovalException("无效节点 : " + nodeId);
+        throw new ApprovalException(Language.getLang("SomeInvalid", "f.RobotApprovalStep.node") + " : " + nodeId);
     }
 
     /**

@@ -72,7 +72,7 @@ public class AdminCli {
             }
         }
 
-        return StringUtils.defaultIfBlank(result, "Unknow command : " + commands[0]);
+        return StringUtils.defaultIfBlank(result, "Unknown command : " + commands[0]);
     }
 
     /**

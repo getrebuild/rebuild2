@@ -56,7 +56,7 @@ public class UsersGetting extends BaseController {
         } else if ("Team".equalsIgnoreCase(type)) {
             members = Application.getUserStore().getAllTeams();
         } else {
-            throw new InvalidParameterException("Unknow type of bizz : " + type);
+            throw new InvalidParameterException("Unknown type of bizz : " + type);
         }
         // 排序
         members = UserHelper.sortMembers(members);

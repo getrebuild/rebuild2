@@ -54,6 +54,6 @@ public enum FeedsType {
                 return t;
             }
         }
-        throw new IllegalArgumentException("Unknow mask : " + typeMask);
+        throw new IllegalArgumentException("Unknown mask : " + typeMask);
     }
 }

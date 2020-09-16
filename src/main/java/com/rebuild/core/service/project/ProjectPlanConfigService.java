@@ -14,6 +14,7 @@ import com.rebuild.core.configuration.BaseConfigurationService;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.AdminGuard;
 import com.rebuild.core.service.DataSpecificationException;
+import com.rebuild.core.support.i18n.Language;
 import org.springframework.stereotype.Service;
 
 /**
@@ -54,7 +55,7 @@ public class ProjectPlanConfigService extends BaseConfigurationService implement
                 .setParameter(1, planId)
                 .unique();
         if ((Long) count[0] > 0) {
-            throw new DataSpecificationException("面板下有 " + count[0] + " 个任务，无法删除");
+            throw new DataSpecificationException(Language.formatLang("DeletePlanHasXTasks", count[0]));
         }
         return super.delete(planId);
     }

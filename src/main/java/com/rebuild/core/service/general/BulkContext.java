@@ -137,6 +137,6 @@ public class BulkContext {
         } else if (customData != null) {
             return MetadataHelper.getEntity(customData.getString("entity"));
         }
-        throw new RebuildException("No record for operate");
+        throw new RebuildException("No operation record");
     }
 }

@@ -86,7 +86,7 @@ public class DataExporter extends SetUser<DataExporter> {
                 }
             }
         } catch (IOException e) {
-            throw new RebuildException("Could't write .csv file", e);
+            throw new RebuildException("Cannot write .csv file", e);
         }
     }
 

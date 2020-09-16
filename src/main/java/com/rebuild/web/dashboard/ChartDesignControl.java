@@ -27,6 +27,7 @@ import com.rebuild.core.service.dashboard.DashboardConfigService;
 import com.rebuild.core.service.dashboard.charts.ChartData;
 import com.rebuild.core.service.dashboard.charts.ChartsException;
 import com.rebuild.core.service.dashboard.charts.ChartsFactory;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.EntityController;
 import com.rebuild.web.InvalidParameterException;
@@ -66,11 +67,11 @@ public class ChartDesignControl extends EntityController {
                     .setParameter(1, chartId)
                     .unique();
             if (chart == null) {
-                response.sendError(404, "无效图表: " + chartId);
+                response.sendError(404, "Invalid chart : " + chartId);
                 return null;
             }
             if (!UserHelper.isAdmin(user) && !user.equals(chart[3])) {
-                response.sendError(403, "你不能修改他人的图表");
+                response.sendError(403, Language.getLang("NotOpOtherUserSome", "Chart"));
                 return null;
             }
 
@@ -84,11 +85,11 @@ public class ChartDesignControl extends EntityController {
             mv.getModel().put("chartOwningAdmin", UserHelper.isAdmin(user));
             entityMeta = MetadataHelper.getEntity(entity);
         } else {
-            throw new InvalidParameterException("无效图表参数");
+            throw new InvalidParameterException(Language.getLang("InvalidParams"));
         }
 
         if (!Application.getPrivilegesManager().allowRead(getRequestUser(request), entityMeta.getEntityCode())) {
-            response.sendError(403, "你没有读取 [" + EasyMeta.getLabel(entityMeta) + "] 的权限，因此无法设计此图表");
+            response.sendError(403, Language.formatLang("NoReadEntity", EasyMeta.getLabel(entityMeta)));
             return null;
         }
 

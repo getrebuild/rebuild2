@@ -24,6 +24,7 @@ import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.support.SetUser;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -112,7 +113,7 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
 
         String equationHold = equation;
         if ((equation = validEquation(equation)) == null) {
-            throw new FilterParseException("无效高级表达式 : " + equationHold);
+            throw new FilterParseException(Language.getLang("InvalidAdvExpr") + " : " + equationHold);
         }
 
         if ("OR".equalsIgnoreCase(equation)) {
@@ -182,7 +183,7 @@ public class AdvFilterParser extends SetUser<AdvFilterParser> {
 
         Field fieldMeta = MetadataHelper.getLastJoinField(rootEntity, field);
         if (fieldMeta == null) {
-            LOG.warn("Unknow field '" + field + "' in '" + rootEntity.getName() + "'");
+            LOG.warn("Unknown field '" + field + "' in '" + rootEntity.getName() + "'");
             return null;
         }
 

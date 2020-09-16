@@ -357,7 +357,7 @@ public class MetadataHelper {
         if (entity.containsField(fieldName)) {
             return true;
         }
-        LOG.warn("Unknow field '" + fieldName + "' in '" + entity + "'");
+        LOG.warn("Unknown field '" + fieldName + "' in '" + entity + "'");
         return false;
     }
 

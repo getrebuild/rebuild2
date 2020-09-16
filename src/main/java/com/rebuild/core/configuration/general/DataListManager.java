@@ -89,7 +89,7 @@ public class DataListManager extends BaseLayoutManager {
                 String field = item.getString("field");
                 Field lastField = MetadataHelper.getLastJoinField(entityMeta, field);
                 if (lastField == null) {
-                    LOG.warn("Unknow field '" + field + "' in '" + entity + "'");
+                    LOG.warn("Unknown field '" + field + "' in '" + entity + "'");
                     continue;
                 }
 

@@ -14,6 +14,7 @@ import com.rebuild.core.configuration.ConfigBean;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.service.general.ObservableService;
+import com.rebuild.core.support.i18n.Language;
 import org.springframework.util.Assert;
 
 import java.util.Set;
@@ -44,6 +45,6 @@ public abstract class BaseTaskService extends ObservableService {
                 : ProjectManager.instance.getProject(taskOrProject, null);
         if (c != null && c.get("members", Set.class).contains(user)) return true;
 
-        throw new DataSpecificationException("非项目成员禁止操作");
+        throw new DataSpecificationException(Language.getLang("NonMemberNotOp"));
     }
 }

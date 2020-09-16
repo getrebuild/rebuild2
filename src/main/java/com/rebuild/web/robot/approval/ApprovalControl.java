@@ -175,8 +175,8 @@ public class ApprovalControl extends BaseController {
         if (aformData != null && aformData.size() > 1) {
             try {
                 addedRecord = EntityHelper.parse(aformData, getRequestUser(request));
-            } catch (DataSpecificationException know) {
-                writeFailure(response, know.getLocalizedMessage());
+            } catch (DataSpecificationException known) {
+                writeFailure(response, known.getLocalizedMessage());
                 return;
             }
         }

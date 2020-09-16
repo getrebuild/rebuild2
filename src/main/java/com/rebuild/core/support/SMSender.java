@@ -17,6 +17,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.configuration.ConfigurationException;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.HttpUtils;
 import org.apache.commons.lang.StringUtils;
@@ -80,7 +81,7 @@ public class SMSender {
         if (specAccount == null || specAccount.length < 4
                 || StringUtils.isBlank(specAccount[0]) || StringUtils.isBlank(specAccount[1])
                 || StringUtils.isBlank(specAccount[2]) || StringUtils.isBlank(specAccount[3])) {
-            throw new ConfigurationException("邮箱账户未配置/无效");
+            throw new ConfigurationException(Language.getLang("SomeAccountConfError", "Email"));
         }
 
         Map<String, Object> params = new HashMap<>();
@@ -184,7 +185,7 @@ public class SMSender {
         if (specAccount == null || specAccount.length < 3
                 || StringUtils.isBlank(specAccount[0]) || StringUtils.isBlank(specAccount[1])
                 || StringUtils.isBlank(specAccount[2])) {
-            throw new ConfigurationException("短信账户未配置/无效");
+            throw new ConfigurationException(Language.getLang("SomeAccountConfError", "Sms"));
         }
 
         Map<String, Object> params = new HashMap<>();

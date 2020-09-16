@@ -18,6 +18,7 @@ import com.rebuild.core.service.dashboard.ChartManager;
 import com.rebuild.core.service.dashboard.charts.builtin.ApprovalList;
 import com.rebuild.core.service.dashboard.charts.builtin.BuiltinChart;
 import com.rebuild.core.service.dashboard.charts.builtin.FeedsSchedule;
+import com.rebuild.core.support.i18n.Language;
 
 /**
  * @author devezhao
@@ -33,7 +34,7 @@ public class ChartsFactory {
     public static ChartData create(ID chartId) throws ChartsException {
         ConfigBean chart = ChartManager.instance.getChart(chartId);
         if (chart == null) {
-            throw new ChartsException("无效图表");
+            throw new ChartsException(Language.getLang("SomeInvalid", "Chart"));
         }
 
         JSONObject config = (JSONObject) chart.getJSON("config");
@@ -50,12 +51,12 @@ public class ChartsFactory {
     public static ChartData create(JSONObject config, ID user) throws ChartsException {
         String e = config.getString("entity");
         if (!MetadataHelper.containsEntity(e)) {
-            throw new ChartsException("源实体 [" + e + "] 不存在");
+            throw new ChartsException(Language.formatLang("SourceEntityMiss", e));
         }
 
         Entity entity = MetadataHelper.getEntity(e);
         if (user == null || !Application.getPrivilegesManager().allowRead(user, entity.getEntityCode())) {
-            throw new ChartsException("没有读取 [" + EasyMeta.getLabel(entity) + "] 的权限");
+            throw new ChartsException(Language.formatLang("NoReadEntity", EasyMeta.getLabel(entity)));
         }
 
         String type = config.getString("type");
@@ -84,7 +85,7 @@ public class ChartsFactory {
                 }
             }
         }
-        throw new ChartsException("未知的图表类型 : " + type);
+        throw new ChartsException("Unknown chart type : " + type);
     }
 
     /**

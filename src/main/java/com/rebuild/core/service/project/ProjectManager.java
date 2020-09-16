@@ -17,6 +17,7 @@ import com.rebuild.core.configuration.ConfigManager;
 import com.rebuild.core.configuration.ConfigurationException;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
@@ -131,7 +132,7 @@ public class ProjectManager implements ConfigManager {
                 return e.clone();
             }
         }
-        throw new ConfigurationException("无权访问该项目或项目已删除");
+        throw new ConfigurationException(Language.getLang("CannotReadProjectTips"));
     }
 
     /**
@@ -158,13 +159,13 @@ public class ProjectManager implements ConfigManager {
         }
 
         if (projectId == null) {
-            throw new ConfigurationException("项目任务不存在或已被删除");
+            throw new ConfigurationException(Language.getLang("CannotReadTaskTips"));
         }
 
         try {
             return getProject(projectId, user);
         } catch (ConfigurationException ex) {
-            throw new AccessDeniedException("无权访问该项目任务", ex);
+            throw new AccessDeniedException(Language.getLang("NoReadTask"), ex);
         }
     }
 
@@ -220,11 +221,10 @@ public class ProjectManager implements ConfigManager {
             projectId = o != null ? (ID) o[0] : null;
         }
 
-        ConfigBean[] eee = getPlansOfProject(projectId);
-        for (ConfigBean e : eee) {
+        for (ConfigBean e : getPlansOfProject(projectId)) {
             if (e.getID("id").equals(planId)) return e;
         }
-        throw new ConfigurationException("无效任务面板 (" + planId + ")");
+        throw new ConfigurationException(Language.getLang("SomeInvalid", "e.ProjectPlanConfig") + " : " + planId);
     }
 
     @Override

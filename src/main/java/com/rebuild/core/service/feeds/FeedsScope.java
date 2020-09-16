@@ -49,6 +49,6 @@ public enum FeedsScope {
                 return s;
             }
         }
-        throw new IllegalArgumentException("Unknow scope : " + any);
+        throw new IllegalArgumentException("Unknown scope : " + any);
     }
 }
