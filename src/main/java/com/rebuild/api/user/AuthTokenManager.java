@@ -13,7 +13,7 @@ import com.rebuild.core.Application;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * 授权 Token 统一管理
+ * 授权（登录） Token 统一管理
  *
  * @author devezhao
  * @since 2020/3/11
@@ -46,17 +46,17 @@ public class AuthTokenManager {
      * 验证 Token
      *
      * @param token
-     * @param verifyAfterDestroy
+     * @param verifyAndDestroy
      * @return
      */
-    public static ID verifyToken(String token, boolean verifyAfterDestroy) {
+    public static ID verifyToken(String token, boolean verifyAndDestroy) {
         if (StringUtils.isBlank(token)) {
             return null;
         }
 
         token = TOKEN_PREFIX + token;
         ID user = (ID) Application.getCommonsCache().getx(token);
-        if (user != null && verifyAfterDestroy) {
+        if (user != null && verifyAndDestroy) {
             Application.getCommonsCache().evict(token);
         }
         return user;

@@ -133,7 +133,7 @@ public final class ServerStatus {
             fw = new FileWriter(test);
             IOUtils.write(CodecUtils.randomCode(1024), fw);
             if (!test.exists()) {
-                return Status.error(name, "Couldn't create file in temp Directory");
+                return Status.error(name, "Cannot create file in temp-directory");
             } else {
                 FileUtils.deleteQuietly(test);
             }

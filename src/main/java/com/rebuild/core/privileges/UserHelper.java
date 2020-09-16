@@ -342,7 +342,7 @@ public class UserHelper {
                 font = font.deriveFont((float) 81.0);
                 return font;
             } catch (Exception ex) {
-                LOG.warn("Couldn't create Font: SourceHanSansK-Regular.ttf", ex);
+                LOG.warn("Cannot create Font: SourceHanSansK-Regular.ttf", ex);
             }
         }
         // Use default

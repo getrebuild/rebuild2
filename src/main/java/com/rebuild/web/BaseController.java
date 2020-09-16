@@ -12,8 +12,6 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.rebuild.api.Controller;
-import com.rebuild.core.Application;
-import com.rebuild.core.support.i18n.LanguageBundle;
 import com.rebuild.utils.AppUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -24,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 基础 Controller
+ * Root Controller
  *
  * @author zhaofang123@gmail.com
  * @since 05/21/2017
@@ -42,7 +40,7 @@ public abstract class BaseController extends Controller {
         }
 
         if (user == null) {
-            throw new InvalidParameterException("无效请求用户");
+            throw new InvalidParameterException(getLang(request, "BadRequestUser"));
         }
         return user;
     }
@@ -52,8 +50,9 @@ public abstract class BaseController extends Controller {
      * @param key
      * @param phKey
      * @return
+     * @see AppUtils#getReuqestBundle(HttpServletRequest)
      */
-    protected String getLang(HttpServletRequest request, String key, String...phKey) {
+    protected String getLang(HttpServletRequest request, String key, String... phKey) {
         return AppUtils.getReuqestBundle(request).getLang(key, phKey);
     }
 
@@ -62,11 +61,10 @@ public abstract class BaseController extends Controller {
      * @param key
      * @param phValues
      * @return
+     * @see AppUtils#getReuqestBundle(HttpServletRequest)
      */
     protected String formatLang(HttpServletRequest request, String key, Object... phValues) {
-        String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
-        LanguageBundle bundle = Application.getLanguage().getBundle(locale);
-        return bundle.formatLang(key, phValues);
+        return AppUtils.getReuqestBundle(request).formatLang(key, phValues);
     }
 
     /**
@@ -120,102 +118,98 @@ public abstract class BaseController extends Controller {
     }
 
     /**
-     * @param req
+     * @param request
      * @param name
      * @return
      */
-    protected String getParameter(HttpServletRequest req, String name) {
-        return req.getParameter(name);
+    protected String getParameter(HttpServletRequest request, String name) {
+        return request.getParameter(name);
     }
 
     /**
-     * @param req
+     * @param request
      * @param name
      * @param defaultValue
      * @return
      */
-    protected String getParameter(HttpServletRequest req, String name, String defaultValue) {
-        return StringUtils.defaultIfBlank(getParameter(req, name), defaultValue);
+    protected String getParameter(HttpServletRequest request, String name, String defaultValue) {
+        return StringUtils.defaultIfBlank(getParameter(request, name), defaultValue);
     }
 
     /**
-     * @param req
+     * @param request
      * @param name
      * @return
      */
-    protected String getParameterNotNull(HttpServletRequest req, String name) {
-        String v = req.getParameter(name);
+    protected String getParameterNotNull(HttpServletRequest request, String name) {
+        String v = request.getParameter(name);
         if (StringUtils.isEmpty(v)) {
-            throw new InvalidParameterException("无效参数 [" + name + "=" + v + "]");
+            throw new InvalidParameterException(getLang(request, "BadRequestParams") + " [" + name + "=" + v + "]");
         }
         return v;
     }
 
     /**
-     * @param req
+     * @param request
      * @param name
      * @return
      */
-    protected Integer getIntParameter(HttpServletRequest req, String name) {
-        return getIntParameter(req, name, null);
+    protected Integer getIntParameter(HttpServletRequest request, String name) {
+        return getIntParameter(request, name, null);
     }
 
     /**
-     * @param req
+     * @param request
      * @param name
      * @param defaultValue
      * @return
      */
-    protected Integer getIntParameter(HttpServletRequest req, String name, Integer defaultValue) {
-        String v = req.getParameter(name);
-        if (v == null) {
-            return defaultValue;
-        }
-        return NumberUtils.toInt(v, defaultValue);
+    protected Integer getIntParameter(HttpServletRequest request, String name, Integer defaultValue) {
+        String v = request.getParameter(name);
+        return v == null ? defaultValue : NumberUtils.toInt(v, defaultValue);
     }
 
     /**
-     * @param req
+     * @param request
      * @param name
      * @return
+     * @see BooleanUtils#toBoolean(String)
      */
-    protected boolean getBoolParameter(HttpServletRequest req, String name) {
-        String v = req.getParameter(name);
+    protected boolean getBoolParameter(HttpServletRequest request, String name) {
+        String v = request.getParameter(name);
         return v != null && BooleanUtils.toBoolean(v);
     }
 
     /**
-     * @param req
+     * @param request
      * @param name
      * @param defaultValue
      * @return
      */
-    protected boolean getBoolParameter(HttpServletRequest req, String name, boolean defaultValue) {
-        String v = req.getParameter(name);
+    protected boolean getBoolParameter(HttpServletRequest request, String name, boolean defaultValue) {
+        String v = request.getParameter(name);
         return v == null ? defaultValue : BooleanUtils.toBoolean(v);
     }
 
     /**
-     * @param req
+     * @param request
      * @param name
      * @return
      */
-    protected ID getIdParameter(HttpServletRequest req, String name) {
-        String v = req.getParameter(name);
+    protected ID getIdParameter(HttpServletRequest request, String name) {
+        String v = request.getParameter(name);
         return ID.isId(v) ? ID.valueOf(v) : null;
     }
 
     /**
-     * @param req
+     * @param request
      * @param name
      * @return
      */
-    protected ID getIdParameterNotNull(HttpServletRequest req, String name) {
-        String v = req.getParameter(name);
-        if (ID.isId(v)) {
-            return ID.valueOf(v);
-        }
-        throw new InvalidParameterException("无效ID参数 [" + name + "=" + v + "]");
+    protected ID getIdParameterNotNull(HttpServletRequest request, String name) {
+        String v = request.getParameter(name);
+        if (ID.isId(v)) return ID.valueOf(v);
+        throw new InvalidParameterException(getLang(request, "BadRequestParams") + " [" + name + "=" + v + "]");
     }
 
     /**

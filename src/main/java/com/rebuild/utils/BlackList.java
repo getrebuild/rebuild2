@@ -45,7 +45,7 @@ public class BlackList {
                 BLACKLIST = JSON.parseArray(s);
 
             } catch (IOException e) {
-                LOG.error("Couldn't load [blacklist.json] file! This feature is missed : " + e);
+                LOG.error("Cannot load [blacklist.json] file! This feature is missed : " + e);
                 BLACKLIST = JSONUtils.EMPTY_ARRAY;
             }
         }

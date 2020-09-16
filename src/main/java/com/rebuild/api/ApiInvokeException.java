@@ -18,10 +18,6 @@ import com.rebuild.core.RebuildException;
 public class ApiInvokeException extends RebuildException {
     private static final long serialVersionUID = -5069862757215287578L;
 
-    // 内部错误
-    public static final int ERR_SERVER = 500;
-    // 业务错误
-    public static final int ERR_BIZ = Controller.CODE_ERROR;
     // 鉴权错误
     public static final int ERR_BADAUTH = 401;
     // 无效API
@@ -33,7 +29,7 @@ public class ApiInvokeException extends RebuildException {
     // 违反数据约束
     public static final int ERR_DATASPEC = 420;
 
-    private int errorCode = ERR_BIZ;
+    private int errorCode = Controller.CODE_ERROR;
 
     public ApiInvokeException(String errorMsg) {
         super(errorMsg);

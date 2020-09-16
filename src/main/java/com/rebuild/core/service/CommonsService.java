@@ -129,7 +129,7 @@ public class CommonsService extends BaseService {
      * @param strictMode
      */
     public void delete(ID[] deletes, boolean strictMode) {
-        Assert.notNull(deletes, "[deleted] cannot be null");
+        Assert.notNull(deletes, "[deletes] cannot be null");
         for (ID id : deletes) {
             delete(id, strictMode);
         }

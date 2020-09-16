@@ -7,6 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.service;
 
+import com.rebuild.api.Controller;
 import com.rebuild.core.RebuildException;
 
 /**
@@ -19,7 +20,7 @@ public class DataSpecificationException extends RebuildException {
     private static final long serialVersionUID = -1636949017780407060L;
 
     // 业务码
-    private int errorCode = 400;
+    private int errorCode = Controller.CODE_ERROR;
 
     public DataSpecificationException() {
         super();

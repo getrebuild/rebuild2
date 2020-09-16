@@ -30,7 +30,7 @@ public class ApprovalHelper {
      */
     public static ID getSubmitter(ID record) {
         Object[] approvalId = Application.getQueryFactory().uniqueNoFilter(record, EntityHelper.ApprovalId);
-        Assert.notNull(approvalId, "Couldn't found approval of record : " + record);
+        Assert.notNull(approvalId, "Cannot found approval of record : " + record);
         return getSubmitter(record, (ID) approvalId[0]);
     }
 

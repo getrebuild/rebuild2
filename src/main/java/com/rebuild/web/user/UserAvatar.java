@@ -107,7 +107,7 @@ public class UserAvatar extends BaseController {
                 avatarFile = UserHelper.generateAvatar(fullName, false);
 
             } catch (IOException ex) {
-                LOG.warn("Couldn't generate avatar", ex);
+                LOG.warn("Cannot generate avatar", ex);
 
                 response.sendRedirect(AppUtils.getContextPath() + "/assets/img/avatar.png");
                 return;

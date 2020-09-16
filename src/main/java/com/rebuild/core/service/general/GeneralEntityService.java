@@ -121,7 +121,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
         Map<String, Set<ID>> recordsOfCascaded = getCascadedRecords(record, cascades, BizzPermission.DELETE);
         for (Map.Entry<String, Set<ID>> e : recordsOfCascaded.entrySet()) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug("级联删除 - " + e.getKey() + " > " + e.getValue());
+                LOG.debug("Cascade delete - " + e.getKey() + " > " + e.getValue());
             }
 
             for (ID id : e.getValue()) {
@@ -134,7 +134,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
                     try {
                         deleted = this.deleteInternal(id);
                     } catch (DataSpecificationException ex) {
-                        LOG.warn("Couldn't delete : " + id + " Ex : " + ex);
+                        LOG.warn("Cannot delete : " + id + " Ex : " + ex);
                     } finally {
                         if (deleted > 0) {
                             affected++;

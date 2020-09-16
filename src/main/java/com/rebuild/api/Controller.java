@@ -25,6 +25,8 @@ public abstract class Controller {
     public static final int CODE_OK = 0;
     // 错误
     public static final int CODE_ERROR = 400;
+    // 未知错误
+    public static final int CODE_SERV_ERROR = 500;
 
     /**
      * Logging

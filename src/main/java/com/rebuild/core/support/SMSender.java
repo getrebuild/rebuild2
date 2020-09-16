@@ -95,7 +95,7 @@ public class SMSender {
             try {
                 mailbody = getMailTemplate();
             } catch (IOException e) {
-                LOG.error("Couldn't load template of mail", e);
+                LOG.error("Cannot load template for email", e);
                 return null;
             }
 

@@ -39,11 +39,11 @@ public class EntityGet extends BaseApi {
         final ID queryId = context.getParameterAsId("id");
         final Entity useEntity = MetadataHelper.getEntity(queryId.getEntityCode());
         if (!useEntity.isQueryable()) {
-            throw new ApiInvokeException(ApiInvokeException.ERR_BIZ, "Unsupportted operation for entity/id : " + queryId);
+            throw new ApiInvokeException("Unsupportted operation for entity/id : " + queryId);
         }
 
         if (!Application.getPrivilegesManager().allowRead(context.getBindUser(), queryId)) {
-            return formatFailure("无权读取记录或记录不存在 : " + queryId);
+            return formatFailure("No permission to read the record or the record does not exist : " + queryId);
         }
 
         String[] fields = context.getParameterNotBlank("fields").split(",");
@@ -55,7 +55,7 @@ public class EntityGet extends BaseApi {
         Query query = Application.getQueryFactory().createQueryNoFilter(sql);
         Object[] queryed = query.setParameter(1, queryId).unique();
         if (queryed == null) {
-            return formatFailure("记录不存在 : " + queryId);
+            return formatFailure("Record not exists : " + queryId);
         }
 
         return formatSuccess(ApiDataListWrapper.buildItem(query.getSelectItems(), queryed));

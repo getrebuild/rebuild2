@@ -296,7 +296,7 @@ public class Installer implements InstallState {
             }
 
         } catch (SQLException sqlex) {
-            LOG.error("Couldn't execute SQL : " + sql, sqlex);
+            LOG.error("Cannot execute SQL : " + sql, sqlex);
         }
     }
 

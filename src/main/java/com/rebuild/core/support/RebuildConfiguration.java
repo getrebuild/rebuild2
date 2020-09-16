@@ -45,7 +45,7 @@ public class RebuildConfiguration extends KVStorage {
         if (d != null) {
             data = new File(d);
             if (!data.exists() && !data.mkdirs()) {
-                LOG.error("Couldn't mkdirs for data : " + data);
+                LOG.error("Cannot mkdirs for data : " + data);
             }
         }
 
@@ -53,7 +53,7 @@ public class RebuildConfiguration extends KVStorage {
             data = FileUtils.getUserDirectory();
             data = new File(data, ".rebuild");
             if (!data.exists() && !data.mkdirs()) {
-                LOG.error("Couldn't mkdirs for data : " + data);
+                LOG.error("Cannot mkdirs for data : " + data);
             }
         }
 
@@ -78,7 +78,7 @@ public class RebuildConfiguration extends KVStorage {
         File temp = getFileOfData("temp");
         if (!temp.exists()) {
             if (!temp.mkdirs()) {
-                throw new RebuildException("Couldn't mkdirs : " + temp);
+                throw new RebuildException("Cannot mkdirs : " + temp);
             }
         }
         return filepath == null ? temp : new File(temp, filepath);

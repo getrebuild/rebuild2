@@ -37,19 +37,20 @@ public class EntityUpdate extends EntityCreate {
     public JSON execute(ApiContext context) throws ApiInvokeException {
         final Entity useEntity = getUseEntity(context);
         if (!useEntity.isQueryable() || !useEntity.isUpdatable()) {
-            throw new ApiInvokeException(ApiInvokeException.ERR_BIZ, "Unsupportted operation for entity : " + useEntity.getName());
+            throw new ApiInvokeException("Unsupportted operation for entity : " + useEntity.getName());
         }
 
         Record recordUpdate = new EntityRecordCreator(
                 useEntity, (JSONObject) context.getPostData(), context.getBindUser(), true)
                 .create();
         if (recordUpdate.getPrimary() == null) {
-            return formatFailure("非可更新记录");
+            return formatFailure("Non-updatable record");
         }
 
         Collection<String> repeatedFields = checkRepeated(recordUpdate);
         if (!repeatedFields.isEmpty()) {
-            return formatFailure("更新字段 " + StringUtils.join(repeatedFields, "/") + " 中存在重复值",
+            return formatFailure(
+                    "There are duplicate field values : " + StringUtils.join(repeatedFields, "/"),
                     ApiInvokeException.ERR_DATASPEC);
         }
 

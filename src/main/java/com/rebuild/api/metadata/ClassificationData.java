@@ -45,12 +45,12 @@ public class ClassificationData extends BaseApi {
 
         Field thatField = MetadataHelper.getField(entity, field);
         if (EasyMeta.getDisplayType(thatField) != DisplayType.CLASSIFICATION) {
-            throw new ApiInvokeException("None CLASSIFICATION field : " + entity + "." + field);
+            throw new ApiInvokeException("Non classification field : " + entity + "." + field);
         }
 
         dataId = ClassificationManager.instance.getUseClassification(thatField, true);
         if (dataId == null) {
-            throw new ApiInvokeException("Bad CLASSIFICATION field : " + entity + "." + field);
+            throw new ApiInvokeException("Bad classification field : " + entity + "." + field);
         }
         openLevel = ClassificationManager.instance.getOpenLevel(thatField);
 

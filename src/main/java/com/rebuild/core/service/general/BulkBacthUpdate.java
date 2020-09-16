@@ -76,7 +76,7 @@ public class BulkBacthUpdate extends BulkOperator {
                     ges.update(record);
                     this.addSucceeded();
                 } catch (DataSpecificationException ex) {
-                    LOG.warn("Couldn't update : " + id + " Ex : " + ex);
+                    LOG.warn("Cannot update : " + id + " Ex : " + ex);
                 }
             } else {
                 LOG.warn("No have privileges to UPDATE : " + context.getOpUser() + " > " + id);

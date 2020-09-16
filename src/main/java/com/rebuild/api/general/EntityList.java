@@ -41,11 +41,11 @@ public class EntityList extends EntityGet {
         final String entity = context.getParameterNotBlank("entity");
         final Entity useEntity = MetadataHelper.getEntity(entity);
         if (!useEntity.isQueryable()) {
-            throw new ApiInvokeException(ApiInvokeException.ERR_BIZ, "Unsupportted operation for entity : " + entity);
+            throw new ApiInvokeException("Unsupportted operation for entity : " + entity);
         }
 
         if (!Application.getPrivilegesManager().allowRead(context.getBindUser(), useEntity.getEntityCode())) {
-            return formatFailure("无权读取 [" + EasyMeta.getLabel(useEntity) + "] 记录");
+            return formatFailure("No permission to read records of " + EasyMeta.getLabel(useEntity));
         }
 
         String[] fields = context.getParameterNotBlank("fields").split(",");
@@ -59,7 +59,7 @@ public class EntityList extends EntityGet {
             sortBy = EntityHelper.ModifiedOn + ":desc";
 
         } else if (!useEntity.containsField(sortBy.split(":")[0])) {
-            return formatFailure("无效排序字段 : " + sortBy.split(":")[0]);
+            return formatFailure("Invalid sort field : " + sortBy.split(":")[0]);
         }
 
         JSON useFilter = context.getPostData();

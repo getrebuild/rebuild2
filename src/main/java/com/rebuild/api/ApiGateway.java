@@ -108,7 +108,7 @@ public class ApiGateway extends Controller implements Initialization {
             errorCode = ApiInvokeException.ERR_DATASPEC;
             errorMsg = ex.getLocalizedMessage();
         } catch (Throwable ex) {
-            errorCode = ApiInvokeException.ERR_SERVER;
+            errorCode = CODE_ERROR;
             errorMsg = ex.getLocalizedMessage();
         } finally {
             Application.getSessionStore().clean();
@@ -155,14 +155,14 @@ public class ApiGateway extends Controller implements Initialization {
         // 明文签名
         if (timestamp == null && signType == null) {
             if (!apiConfig.getString("appSecret").equals(sign)) {
-                throw new ApiInvokeException(ApiInvokeException.ERR_BADAUTH, "Invalid [sign] " + sign);
+                throw new ApiInvokeException(ApiInvokeException.ERR_BADAUTH, "Invalid [sign] : " + sign);
             }
         }
         // 密文签名
         else {
             long systemTime = System.currentTimeMillis() / 1000;
             if (Math.abs(systemTime - ObjectUtils.toLong(timestamp)) > (Application.devMode() ? 100 : 15)) {
-                throw new ApiInvokeException(ApiInvokeException.ERR_BADAUTH, "Invalid [timestamp] " + appid);
+                throw new ApiInvokeException(ApiInvokeException.ERR_BADAUTH, "Invalid [timestamp] : " + appid);
             }
 
             StringBuilder sign2 = new StringBuilder();
@@ -182,11 +182,11 @@ public class ApiGateway extends Controller implements Initialization {
             } else if ("SHA1".equals(signType)) {
                 sign2sign = EncryptUtils.toSHA1Hex(sign2.toString());
             } else {
-                throw new ApiInvokeException(ApiInvokeException.ERR_BADAUTH, "Invalid [sign_type] " + signType);
+                throw new ApiInvokeException(ApiInvokeException.ERR_BADAUTH, "Invalid [sign_type] : " + signType);
             }
 
             if (!sign.equals(sign2sign)) {
-                throw new ApiInvokeException(ApiInvokeException.ERR_BADAUTH, "Invalid [sign] " + sign);
+                throw new ApiInvokeException(ApiInvokeException.ERR_BADAUTH, "Invalid [sign] : " + sign);
             }
         }
 
@@ -209,7 +209,7 @@ public class ApiGateway extends Controller implements Initialization {
     private String getParameterNotNull(Map<String, String> params, String name) {
         String v = params.get(name);
         if (StringUtils.isBlank(v)) {
-            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Parameter [" + name + "] cannot be empty");
+            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Parameter [" + name + "] cannot be blank");
         }
         return v;
     }

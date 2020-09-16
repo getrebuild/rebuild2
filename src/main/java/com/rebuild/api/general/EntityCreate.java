@@ -42,19 +42,20 @@ public class EntityCreate extends BaseApi {
     public JSON execute(ApiContext context) throws ApiInvokeException {
         final Entity useEntity = getUseEntity(context);
         if (!useEntity.isQueryable() || !useEntity.isCreatable()) {
-            throw new ApiInvokeException(ApiInvokeException.ERR_BIZ, "Unsupportted operation for entity : " + useEntity.getName());
+            throw new ApiInvokeException( "Unsupportted operation for entity : " + useEntity.getName());
         }
 
         Record recordNew = new EntityRecordCreator(
                 useEntity, (JSONObject) context.getPostData(), context.getBindUser(), true)
                 .create();
         if (recordNew.getPrimary() != null) {
-            return formatFailure("非可新建记录");
+            return formatFailure("Non-creatable record");
         }
 
         Collection<String> repeatedFields = checkRepeated(recordNew);
         if (!repeatedFields.isEmpty()) {
-            return formatFailure("新建字段 " + StringUtils.join(repeatedFields, "/") + " 中存在重复值",
+            return formatFailure(
+                    "There are duplicate field values : " + StringUtils.join(repeatedFields, "/"),
                     ApiInvokeException.ERR_DATASPEC);
         }
 
