@@ -7,16 +7,15 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core.support;
 
+import cn.devezhao.commons.CodecUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.utils.HttpUtils;
 import com.rebuild.utils.JSONUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Locale;
-import java.util.UUID;
 
 /**
  * 授权许可
@@ -59,8 +58,9 @@ public final class License {
         if (SN == null) {
             SN = String.format("ZR%d%s-%s",
                     Application.BUILD,
-                    StringUtils.leftPad(Locale.getDefault().getCountry(), 3, "0"),
-                    UUID.randomUUID().toString().replace("-", "").substring(0, 14).toUpperCase());
+                    Locale.getDefault().getCountry().substring(0, 2),
+                    CodecUtils.randomCode(14).toUpperCase());
+
             if (Application.serversReady()) {
                 RebuildConfiguration.set(ConfigurationItem.SN, SN);
             }

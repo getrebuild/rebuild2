@@ -41,11 +41,11 @@ public class ApprovalFields2Schema extends Field2Schema {
             return false;
         }
 
-        Field apporvalId = createUnsafeField(approvalEntity, EntityHelper.ApprovalId, "审批流程",
+        Field apporvalId = createUnsafeField(approvalEntity, EntityHelper.ApprovalId, Language.getLang("f.approvalId"),
                 DisplayType.REFERENCE, true, false, false, true, null, "RobotApprovalConfig", CascadeModel.Ignore, null, null);
-        Field apporvalState = createUnsafeField(approvalEntity, EntityHelper.ApprovalState, "审批状态",
+        Field apporvalState = createUnsafeField(approvalEntity, EntityHelper.ApprovalState, Language.getLang("f.approvalState"),
                 DisplayType.STATE, true, false, false, true, null, null, null, null, ApprovalState.DRAFT.getName());
-        Field apporvalStepId = createUnsafeField(approvalEntity, EntityHelper.ApprovalStepNode, "当前步骤",
+        Field apporvalStepId = createUnsafeField(approvalEntity, EntityHelper.ApprovalStepNode, Language.getLang("f.approvalStepNode"),
                 DisplayType.TEXT, true, false, false, true, null, null, null, null, null);
 
         boolean schemaReady = schema2Database(approvalEntity, new Field[]{apporvalId, apporvalState, apporvalStepId});

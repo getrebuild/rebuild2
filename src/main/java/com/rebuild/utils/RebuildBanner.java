@@ -25,16 +25,11 @@ public class RebuildBanner {
 
     static final String FLAG_LINE = "####################################################################";
 
-    public static String formatBanner(String... texts) {
-        return formatBanner(true, texts);
-    }
-
     /**
-     * @param hasCommon
      * @param texts
      * @return
      */
-    public static String formatBanner(boolean hasCommon, String... texts) {
+    public static String formatBanner(String... texts) {
         StringBuilder banner = new StringBuilder()
                 .append("\n").append(FLAG_LINE).append("\n\n");
 
@@ -42,10 +37,20 @@ public class RebuildBanner {
             banner.append("  ").append(t).append("\n");
         }
 
-        if (hasCommon) {
-            banner.append(COMMON_BANNER).append("\n");
-        }
+        banner.append(COMMON_BANNER).append("\n");
 
         return banner.append("\n").append(FLAG_LINE).toString();
+    }
+
+    /**
+     * @param texts
+     * @return
+     */
+    public static String formatSimple(String... texts) {
+        StringBuilder banner = new StringBuilder("\n\n");
+        for (String t : texts) {
+            banner.append("  ").append(t).append("\n");
+        }
+        return banner.toString();
     }
 }

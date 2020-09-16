@@ -124,27 +124,27 @@ public class Entity2Schema extends Field2Schema {
 
             if (haveNameField) {
                 createUnsafeField(
-                        tempEntity, nameFiled, Language.formatLang("SomeName", entityLabel), DisplayType.TEXT, false, true, true, true, null, null, null, null, null);
+                        tempEntity, nameFiled, Language.formatLang("XName", entityLabel), DisplayType.TEXT, false, true, true, true, null, null, null, null, null);
             }
 
-            createBuiltinField(tempEntity, EntityHelper.CreatedBy, "创建人", DisplayType.REFERENCE, null, "User", null);
-            createBuiltinField(tempEntity, EntityHelper.CreatedOn, "创建时间", DisplayType.DATETIME, null, null, null);
-            createBuiltinField(tempEntity, EntityHelper.ModifiedBy, "修改人", DisplayType.REFERENCE, null, "User", null);
-            createBuiltinField(tempEntity, EntityHelper.ModifiedOn, "修改时间", DisplayType.DATETIME, null, null, null);
+            createBuiltinField(tempEntity, EntityHelper.CreatedBy, Language.getLang("f.createdBy"), DisplayType.REFERENCE, null, "User", null);
+            createBuiltinField(tempEntity, EntityHelper.CreatedOn, Language.getLang("f.createdOn"), DisplayType.DATETIME, null, null, null);
+            createBuiltinField(tempEntity, EntityHelper.ModifiedBy, Language.getLang("f.modifiedBy"), DisplayType.REFERENCE, null, "User", null);
+            createBuiltinField(tempEntity, EntityHelper.ModifiedOn, Language.getLang("f.modifiedOn"), DisplayType.DATETIME, null, null, null);
 
             // 明细实体关联字段
             // 明细实体无所属用户或部门，使用主实体的
             if (isDetail) {
                 String mainLabel = EasyMeta.valueOf(mainEntity).getLabel();
                 String mainPrimary = mainEntity + "Id";
-                createBuiltinField(tempEntity, mainPrimary, mainLabel, DisplayType.REFERENCE, "引用主记录", mainEntity, CascadeModel.Delete);
+                createBuiltinField(tempEntity, mainPrimary, mainLabel, DisplayType.REFERENCE, Language.getLang("RefMainRecord"), mainEntity, CascadeModel.Delete);
             } else {
                 // 助记码/搜索码
                 createUnsafeField(
-                        tempEntity, EntityHelper.QuickCode, "助记码", DisplayType.TEXT, true, false, false, true, null, null, null, null, null);
+                        tempEntity, EntityHelper.QuickCode, Language.getLang("f.quickCode"), DisplayType.TEXT, true, false, false, true, null, null, null, null, null);
 
-                createBuiltinField(tempEntity, EntityHelper.OwningUser, "所属用户", DisplayType.REFERENCE, null, "User", null);
-                createBuiltinField(tempEntity, EntityHelper.OwningDept, "所属部门", DisplayType.REFERENCE, null, "Department", null);
+                createBuiltinField(tempEntity, EntityHelper.OwningUser, Language.getLang("f.owningUser"), DisplayType.REFERENCE, null, "User", null);
+                createBuiltinField(tempEntity, EntityHelper.OwningDept, Language.getLang("f.owningDept"), DisplayType.REFERENCE, null, "Department", null);
             }
         } catch (Throwable ex) {
             LOG.error(null, ex);

@@ -139,8 +139,11 @@ public class Application {
                 success = init();
 
                 if (success) {
-                    time = System.currentTimeMillis() - time;
-                    LOG.info("Rebuild boot successful in " + time + " ms. Local URL : " + localUrl);
+                    String infos = RebuildBanner.formatSimple(
+                            "Rebuild boot successful in " + (System.currentTimeMillis() - time) + " ms.",
+                            "AUTHORITY : " + StringUtils.join(License.queryAuthority().values(), " | "),
+                            "LOCAL URL : " + localUrl);
+                    LOG.info(infos);
                 }
 
             } else {
@@ -208,8 +211,6 @@ public class Application {
         }
 
         APPLICATION_CONTEXT.registerShutdownHook();
-
-        LOG.info("\n  REBUILD AUTHORITY :\n  " + StringUtils.join(License.queryAuthority().values(), " | "));
 
         return true;
     }
