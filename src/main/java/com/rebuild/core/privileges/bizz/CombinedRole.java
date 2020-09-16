@@ -12,6 +12,9 @@ import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.bizz.security.EntityPrivileges;
 import cn.devezhao.bizz.security.member.Role;
 import cn.devezhao.persist4j.engine.ID;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.rebuild.core.Application;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -24,16 +27,7 @@ import java.util.*;
  * @author zhaofang123@gmail.com
  * @since 09/16/2018
  */
-public class MergedRole extends Role {
-
-    /**
-     * 无角色
-     */
-    public static final MergedRole NULL = new MergedRole();
-
-    private MergedRole() {
-        super(null, "MERGEDROLE#NULL", true);
-    }
+public class CombinedRole extends Role {
 
     /**
      * 权限掩码
@@ -47,114 +41,115 @@ public class MergedRole extends Role {
             BizzPermission.SHARE.getMask()
     };
 
-    private Role main;
-    private Set<Role> roleAppends = Collections.emptySet();
+    final private Role roleMain;
+    final private Set<Role> roleAppends;
 
     /**
      * @param user
      * @param appends
      */
-    public MergedRole(User user, Set<Role> appends) {
-        super(user.getOwningRole().getIdentity(), user.getOwningRole().getName(), user.getOwningRole().isDisabled());
-        this.main = user.getOwningRole();
-
+    public CombinedRole(User user, Set<Role> appends) {
+        super(user.getMainRole().getIdentity(), user.getMainRole().getName(), user.getMainRole().isDisabled());
+        this.roleMain = user.getMainRole();
         this.roleAppends = appends;
+
         this.mergePrivileges();
-        user.mergedRole = this;
+        user.setCombinedRole(this);
     }
 
     @Override
     public boolean addMember(Principal user) {
-        throw new UnsupportedOperationException();
+        return roleMain.addMember(user);
     }
 
     @Override
     public boolean removeMember(Principal user) {
-        throw new UnsupportedOperationException();
+        return roleMain.removeMember(user);
     }
 
     @Override
     public boolean isMember(Principal user) {
-        return main != null && main.isMember(user);
+        return roleMain.isMember(user);
     }
 
     @Override
     public boolean isMember(Serializable identity) {
-        return main != null && main.isMember(identity);
+        return roleMain.isMember(identity);
     }
 
     @Override
     public Set<Principal> getMembers() {
-        return main == null ? Collections.emptySet() : main.getMembers();
+        return roleMain.getMembers();
     }
 
     @SuppressWarnings("deprecation")
     @Override
     public Enumeration<? extends Principal> members() {
-        return main == null ? Collections.emptyEnumeration() : main.members();
-    }
-
-    @Override
-    public boolean isDisabled() {
-        return main == null || super.isDisabled();
+        return roleMain.members();
     }
 
     /**
-     * @param roleId
+     * 获取附加角色
+     *
      * @return
      */
-    public boolean containsRole(ID roleId) {
-        for (Role r : roleAppends) {
-            if (r.getIdentity().equals(roleId)) return true;
-        }
-
-        if (main != null) return main.getIdentity().equals(roleId);
-        else return false;
-    }
-
-    /**
-     * @return
-     */
-    public ID[] getRoleAppends() {
+    public Set<ID> getRoleAppends() {
         Set<ID> set = new HashSet<>();
         for (Role r : roleAppends) set.add((ID) r.getIdentity());
-        return set.toArray(new ID[0]);
+        return Collections.unmodifiableSet(set);
     }
 
     /**
-     * 合并权限
+     * 合并主角色与附加角色权限（向上合并）
      */
     protected void mergePrivileges() {
-        for (Privileges priv : main.getAllPrivileges()) {
+        for (Privileges priv : roleMain.getAllPrivileges()) {
             addPrivileges(priv);
         }
 
-        for (Role role : roleAppends) {
-            for (Privileges priv : role.getAllPrivileges()) {
-                addPrivileges(mergePrivileges(priv, getPrivileges(priv.getIdentity())));
+        for (Role ra : roleAppends) {
+            for (Privileges priv : ra.getAllPrivileges()) {
+                Privileges mp = mergePrivileges(priv, getPrivileges(priv.getIdentity()));
+                addPrivileges(mp);
             }
+        }
+
+        // DEBUG
+        if (Application.devMode()) {
+            for (Privileges priv : getAllPrivileges()) {
+                System.out.println();
+                System.out.println("Combined Privileges : " + priv.getIdentity());
+                System.out.println("M " + getDefinition(roleMain.getPrivileges(priv.getIdentity())));
+                for (Role ra : roleAppends) {
+                    System.out.println("A " + getDefinition(ra.getPrivileges(priv.getIdentity())));
+                }
+                System.out.println("--");
+                System.out.println("T " + getDefinition(getPrivileges(priv.getIdentity())));
+            }
+            System.out.println();
         }
     }
 
     private Privileges mergePrivileges(Privileges a, Privileges b) {
-        if (b == null) return a;
+        if (b == null || b == Privileges.NONE) return a;
+        if (b == Privileges.ROOT) return b;
 
         // Only one key
         if (a instanceof ZeroPrivileges) {
-            Map<String, Integer> aDefMap = parseDefinitionMasks(((ZeroPrivileges) a).getDefinition());
-            if (aDefMap.get(ZeroPrivileges.ZERO_FLAG) == ZeroPrivileges.ZERO_MASK) {
+            JSONObject aDefMap = JSON.parseObject(getDefinition(a));
+            if (aDefMap.getIntValue(ZeroPrivileges.ZERO_FLAG) == ZeroPrivileges.ZERO_MASK) {
                 return a;
             } else {
                 return b;
             }
         }
 
-        Map<String, Integer> aDefMap = parseDefinitionMasks(((EntityPrivileges) a).getDefinition());
-        Map<String, Integer> bDefMap = parseDefinitionMasks(((EntityPrivileges) b).getDefinition());
+        Map<String, Integer> aDefMap = parseDefinitionMasks(getDefinition(a));
+        Map<String, Integer> bDefMap = parseDefinitionMasks(getDefinition(b));
 
-        Map<String, Integer> defMap = new HashMap<>();
+        Map<String, Integer> defMap = new LinkedHashMap<>();
 
-        for (String key : aDefMap.keySet()) {
+        for (String key : aDefMap.keySet().toArray(new String[0])) {
             Integer aMask = aDefMap.remove(key);
             Integer bMask = bDefMap.remove(key);
             defMap.put(key, mergeMaskValue(aMask, bMask));
@@ -164,7 +159,7 @@ public class MergedRole extends Role {
             defMap.put(e.getKey(), e.getValue());
         }
 
-        Set<String> defs = new HashSet<>();
+        List<String> defs = new ArrayList<>();
         for (Map.Entry<String, Integer> e : defMap.entrySet()) {
             defs.add(e.getKey() + ":" + e.getValue());
         }
@@ -174,7 +169,7 @@ public class MergedRole extends Role {
     }
 
     private Map<String, Integer> parseDefinitionMasks(String d) {
-        Map<String, Integer> map = new HashMap<>();
+        Map<String, Integer> map = new LinkedHashMap<>();
         for (String s : d.split(",")) {
             String[] ss = s.split(":");
             map.put(ss[0], Integer.valueOf(ss[1]));
@@ -199,5 +194,11 @@ public class MergedRole extends Role {
             maskValue += mask;
         }
         return maskValue;
+    }
+
+    private String getDefinition(Privileges priv) {
+        if (priv instanceof ZeroPrivileges) return ((ZeroPrivileges) priv).getDefinition();
+        else if (priv instanceof EntityPrivileges) return ((EntityPrivileges) priv).getDefinition();
+        else return null;
     }
 }

@@ -27,7 +27,7 @@ public class User extends cn.devezhao.bizz.security.member.User {
     private String fullName;
     private String avatarUrl;
 
-    protected MergedRole mergedRole;
+    private CombinedRole combinedRole;
 
     public User(ID userId, String loginName, String email, String workphone,
                 String fullName, String avatarUrl, boolean disabled) {
@@ -86,10 +86,14 @@ public class User extends cn.devezhao.bizz.security.member.User {
      * @return
      */
     public boolean isAdmin() {
-        if (getIdentity().equals(UserService.ADMIN_USER)) {
-            return true;
-        }
-        return getOwningRole() != null && getOwningRole().getIdentity().equals(RoleService.ADMIN_ROLE);
+        if (getIdentity().equals(UserService.ADMIN_USER)
+                || getIdentity().equals(UserService.SYSTEM_USER)) return true;
+
+        Role role = getOwningRole();
+        if (role == null) return false;
+        if (role.getIdentity().equals(RoleService.ADMIN_ROLE)) return true;
+
+        return role instanceof CombinedRole && ((CombinedRole) role).getRoleAppends().contains(RoleService.ADMIN_ROLE);
     }
 
     /**
@@ -107,9 +111,26 @@ public class User extends cn.devezhao.bizz.security.member.User {
     }
 
     /**
-     * @return Returns {@link MergedRole} or {@link Role}
+     * @param combinedRole
      */
-    public Role getPrivilegesRole() {
-        return mergedRole == null ? getOwningRole() : mergedRole;
+    protected void setCombinedRole(CombinedRole combinedRole) {
+        this.combinedRole = combinedRole;
+    }
+
+    /**
+     * @return Returns {@link CombinedRole} or {@link Role}
+     */
+    @Override
+    public Role getOwningRole() {
+        return combinedRole != null ? combinedRole : getMainRole();
+    }
+
+    /**
+     * 获取主角色
+     *
+     * @return
+     */
+    public Role getMainRole() {
+        return super.getOwningRole();
     }
 }

@@ -10,22 +10,14 @@ package com.rebuild.core.privileges;
 import com.rebuild.core.RebuildException;
 
 /**
- * 禁止操作
+ * 禁止操作/非法操作
  *
  * @author zhaofang123@gmail.com
  * @since 09/15/2020
  */
 public class OperationDeniedException extends RebuildException {
 
-    public OperationDeniedException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
-
     public OperationDeniedException(String msg) {
         super(msg);
-    }
-
-    public OperationDeniedException(Throwable cause) {
-        super(cause);
     }
 }

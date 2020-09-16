@@ -100,6 +100,10 @@ public class UserService extends BaseServiceImpl {
     public int delete(ID record) {
         checkAdminGuard(BizzPermission.DELETE, null);
 
+        if (ADMIN_USER.equals(record) || SYSTEM_USER.equals(record)) {
+            throw new OperationDeniedException("ADMIN/SYSTEM USER");
+        }
+
         Object[] hasLogin = Application.createQueryNoFilter(
                 "select count(logId) from LoginLog where user = ?")
                 .setParameter(1, record)
@@ -172,9 +176,8 @@ public class UserService extends BaseServiceImpl {
         }
 
         // 用户可自己改自己
-        if (action == BizzPermission.UPDATE && currentUser.equals(user)) {
-            return;
-        }
+        if (action == BizzPermission.UPDATE && currentUser.equals(user)) return;
+
         throw new AccessDeniedException(Language.getLang("NoOpPrivileges"));
     }
 

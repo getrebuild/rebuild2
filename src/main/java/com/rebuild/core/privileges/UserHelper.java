@@ -10,10 +10,12 @@ package com.rebuild.core.privileges;
 import cn.devezhao.bizz.security.member.BusinessUnit;
 import cn.devezhao.bizz.security.member.Member;
 import cn.devezhao.bizz.security.member.NoMemberFoundException;
+import cn.devezhao.bizz.security.member.Role;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.rebuild.core.Application;
+import com.rebuild.core.privileges.bizz.CombinedRole;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -411,5 +413,18 @@ public class UserHelper {
             Arrays.sort(members, Comparator.comparing(Member::getName));
         }
         return members;
+    }
+
+    /**
+     * @param user
+     * @return
+     * @see CombinedRole
+     */
+    public static Set<ID> getRoleAppends(ID user) {
+        Role role = Application.getUserStore().getUser(user).getOwningRole();
+        if (role instanceof CombinedRole) {
+            return ((CombinedRole) role).getRoleAppends();
+        }
+        return null;
     }
 }

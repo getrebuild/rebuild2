@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Initialization;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.bizz.Department;
-import com.rebuild.core.privileges.bizz.MergedRole;
+import com.rebuild.core.privileges.bizz.CombinedRole;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.privileges.bizz.ZeroPrivileges;
 import org.apache.commons.lang.StringUtils;
@@ -41,17 +41,17 @@ public class UserStore implements Initialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserStore.class);
 
-    final private Map<ID, User> USERs = new ConcurrentHashMap<>();
-    final private Map<ID, Role> ROLEs = new ConcurrentHashMap<>();
-    final private Map<ID, Department> DEPTs = new ConcurrentHashMap<>();
-    final private Map<ID, Team> TEAMs = new ConcurrentHashMap<>();
+    final private Map<ID, User> USERS = new ConcurrentHashMap<>();
+    final private Map<ID, Role> ROLES = new ConcurrentHashMap<>();
+    final private Map<ID, Department> DEPTS = new ConcurrentHashMap<>();
+    final private Map<ID, Team> TEAMS = new ConcurrentHashMap<>();
 
-    final private Map<String, ID> USERs_NAME2ID = new ConcurrentHashMap<>();
-    final private Map<String, ID> USERs_MAIL2ID = new ConcurrentHashMap<>();
-
-    final private Map<ID, MergedRole> USERs_MERGEDROLEs = new ConcurrentHashMap<>();
+    final private Map<String, ID> USERS_NAME2ID = new ConcurrentHashMap<>();
+    final private Map<String, ID> USERS_MAIL2ID = new ConcurrentHashMap<>();
 
     final private PersistManagerFactory aPMFactory;
+
+    private boolean isLoaded;
 
     protected UserStore(PersistManagerFactory aPMFactory) {
         this.aPMFactory = aPMFactory;
@@ -62,7 +62,7 @@ public class UserStore implements Initialization {
      * @return
      */
     public boolean existsName(String username) {
-        return USERs_NAME2ID.containsKey(normalIdentifier(username));
+        return USERS_NAME2ID.containsKey(normalIdentifier(username));
     }
 
     /**
@@ -70,7 +70,7 @@ public class UserStore implements Initialization {
      * @return
      */
     public boolean existsEmail(String email) {
-        return USERs_MAIL2ID.containsKey(normalIdentifier(email));
+        return USERS_MAIL2ID.containsKey(normalIdentifier(email));
     }
 
     /**
@@ -86,7 +86,7 @@ public class UserStore implements Initialization {
      * @return
      */
     public boolean existsUser(ID userId) {
-        return USERs.containsKey(userId);
+        return USERS.containsKey(userId);
     }
 
     /**
@@ -95,13 +95,13 @@ public class UserStore implements Initialization {
      */
     public boolean existsAny(ID bizzId) {
         if (bizzId.getEntityCode() == EntityHelper.User) {
-            return USERs.containsKey(bizzId);
+            return USERS.containsKey(bizzId);
         } else if (bizzId.getEntityCode() == EntityHelper.Role) {
-            return ROLEs.containsKey(bizzId);
+            return ROLES.containsKey(bizzId);
         } else if (bizzId.getEntityCode() == EntityHelper.Department) {
-            return DEPTs.containsKey(bizzId);
+            return DEPTS.containsKey(bizzId);
         } else if (bizzId.getEntityCode() == EntityHelper.Team) {
-            return TEAMs.containsKey(bizzId);
+            return TEAMS.containsKey(bizzId);
         }
         return false;
     }
@@ -112,7 +112,7 @@ public class UserStore implements Initialization {
      * @throws NoMemberFoundException
      */
     public User getUserByName(String username) throws NoMemberFoundException {
-        ID userId = USERs_NAME2ID.get(normalIdentifier(username));
+        ID userId = USERS_NAME2ID.get(normalIdentifier(username));
         if (userId == null) {
             throw new NoMemberFoundException("No User found: " + username);
         }
@@ -125,7 +125,7 @@ public class UserStore implements Initialization {
      * @throws NoMemberFoundException
      */
     public User getUserByEmail(String email) throws NoMemberFoundException {
-        ID userId = USERs_MAIL2ID.get(normalIdentifier(email));
+        ID userId = USERS_MAIL2ID.get(normalIdentifier(email));
         if (userId == null) {
             throw new NoMemberFoundException("No User found: " + email);
         }
@@ -151,7 +151,7 @@ public class UserStore implements Initialization {
      * @throws NoMemberFoundException
      */
     public User getUser(ID userId) throws NoMemberFoundException {
-        User u = USERs.get(userId);
+        User u = USERS.get(userId);
         if (u == null) {
             throw new NoMemberFoundException("No User found: " + userId);
         }
@@ -162,7 +162,7 @@ public class UserStore implements Initialization {
      * @return
      */
     public User[] getAllUsers() {
-        return USERs.values().toArray(new User[0]);
+        return USERS.values().toArray(new User[0]);
     }
 
     /**
@@ -171,7 +171,7 @@ public class UserStore implements Initialization {
      * @throws NoMemberFoundException
      */
     public Department getDepartment(ID deptId) throws NoMemberFoundException {
-        Department b = DEPTs.get(deptId);
+        Department b = DEPTS.get(deptId);
         if (b == null) {
             throw new NoMemberFoundException("No Department found: " + deptId);
         }
@@ -182,7 +182,7 @@ public class UserStore implements Initialization {
      * @return
      */
     public Department[] getAllDepartments() {
-        return DEPTs.values().toArray(new Department[0]);
+        return DEPTS.values().toArray(new Department[0]);
     }
 
     /**
@@ -192,7 +192,7 @@ public class UserStore implements Initialization {
      */
     public Department[] getTopDepartments() {
         List<Department> top = new ArrayList<>();
-        for (Department dept : DEPTs.values()) {
+        for (Department dept : DEPTS.values()) {
             if (dept.getParent() == null) {
                 top.add(dept);
             }
@@ -206,7 +206,7 @@ public class UserStore implements Initialization {
      * @throws NoMemberFoundException
      */
     public Role getRole(ID roleId) throws NoMemberFoundException {
-        Role r = ROLEs.get(roleId);
+        Role r = ROLES.get(roleId);
         if (r == null) {
             throw new NoMemberFoundException("No Role found: " + roleId);
         }
@@ -217,7 +217,7 @@ public class UserStore implements Initialization {
      * @return
      */
     public Role[] getAllRoles() {
-        return ROLEs.values().toArray(new Role[0]);
+        return ROLES.values().toArray(new Role[0]);
     }
 
     /**
@@ -226,7 +226,7 @@ public class UserStore implements Initialization {
      * @throws NoMemberFoundException
      */
     public Team getTeam(ID teamId) throws NoMemberFoundException {
-        Team t = TEAMs.get(teamId);
+        Team t = TEAMS.get(teamId);
         if (t == null) {
             throw new NoMemberFoundException("No Team found: " + teamId);
         }
@@ -237,7 +237,7 @@ public class UserStore implements Initialization {
      * @return
      */
     public Team[] getAllTeams() {
-        return TEAMs.values().toArray(new Team[0]);
+        return TEAMS.values().toArray(new Team[0]);
     }
 
     /**
@@ -273,30 +273,17 @@ public class UserStore implements Initialization {
 
             // 邮箱可更改
             if (oldUser.getEmail() != null) {
-                USERs_MAIL2ID.remove(normalIdentifier(oldUser.getEmail()));
+                USERS_MAIL2ID.remove(normalIdentifier(oldUser.getEmail()));
             }
         }
 
         if (deptId != null) {
             getDepartment(deptId).addMember(newUser);
         }
+
         if (roleId != null) {
             getRole(roleId).addMember(newUser);
-
-            // 附加权限（角色）
-            Object[][] appends = aPMFactory.createQuery("select roleId from RoleMember where userId = ?")
-                    .setParameter(1, userId)
-                    .array();
-            Set<Role> active = new HashSet<>();
-            for (Object[] a : appends) {
-                @SuppressWarnings("SuspiciousMethodCalls") Role role = ROLEs.get(a[0]);
-                if (role != null && !role.isDisabled()) {
-                    active.add(role);
-                }
-            }
-            USERs_MERGEDROLEs.put(userId, new MergedRole(newUser, active));
-        } else {
-            USERs_MERGEDROLEs.remove(userId);
+            refreshUserRoleAppends(newUser);
         }
 
         store(newUser);
@@ -322,19 +309,19 @@ public class UserStore implements Initialization {
         }
 
         // 移除缓存
-        for (Map.Entry<String, ID> e : USERs_NAME2ID.entrySet()) {
+        for (Map.Entry<String, ID> e : USERS_NAME2ID.entrySet()) {
             if (e.getValue().equals(userId)) {
-                USERs_NAME2ID.remove(e.getKey());
+                USERS_NAME2ID.remove(e.getKey());
                 break;
             }
         }
-        for (Map.Entry<String, ID> e : USERs_MAIL2ID.entrySet()) {
+        for (Map.Entry<String, ID> e : USERS_MAIL2ID.entrySet()) {
             if (e.getValue().equals(userId)) {
-                USERs_MAIL2ID.remove(e.getKey());
+                USERS_MAIL2ID.remove(e.getKey());
                 break;
             }
         }
-        USERs.remove(userId);
+        USERS.remove(userId);
     }
 
     /**
@@ -343,7 +330,7 @@ public class UserStore implements Initialization {
      * @param roleId
      */
     public void refreshRole(ID roleId) {
-        final Role oldRole = ROLEs.get(roleId);
+        final Role oldRole = ROLES.get(roleId);
         if (oldRole != null) {
             for (Principal u : toMemberArray(oldRole)) {
                 oldRole.removeMember(u);
@@ -364,7 +351,9 @@ public class UserStore implements Initialization {
         }
 
         loadPrivileges(newRole);
-        ROLEs.put(roleId, newRole);
+
+        ROLES.put(roleId, newRole);
+        refreshRoleAppends(roleId);
     }
 
     /**
@@ -386,7 +375,9 @@ public class UserStore implements Initialization {
         for (Principal u : toMemberArray(role)) {
             role.removeMember(u);
         }
-        ROLEs.remove(roleId);
+
+        ROLES.remove(roleId);
+        refreshRoleAppends(roleId);
     }
 
     /**
@@ -395,7 +386,7 @@ public class UserStore implements Initialization {
      * @param deptId
      */
     public void refreshDepartment(ID deptId) {
-        final Department oldDept = DEPTs.get(deptId);
+        final Department oldDept = DEPTS.get(deptId);
         if (oldDept != null) {
             for (Principal u : toMemberArray(oldDept)) {
                 oldDept.removeMember(u);
@@ -436,11 +427,11 @@ public class UserStore implements Initialization {
                 newDept.addChild(child);
             }
 
-        } else if (newParent != null && DEPTs.get(newParent) != null /* init */) {
+        } else if (newParent != null && DEPTS.get(newParent) != null /* init */) {
             getDepartment(newParent).addChild(newDept);
         }
 
-        DEPTs.put(deptId, newDept);
+        DEPTS.put(deptId, newDept);
     }
 
     /**
@@ -465,7 +456,7 @@ public class UserStore implements Initialization {
         for (Principal u : toMemberArray(dept)) {
             dept.removeMember(u);
         }
-        DEPTs.remove(deptId);
+        DEPTS.remove(deptId);
     }
 
     /**
@@ -474,7 +465,7 @@ public class UserStore implements Initialization {
      * @param teamId
      */
     public void refreshTeam(ID teamId) {
-        final Team oldTeam = TEAMs.get(teamId);
+        final Team oldTeam = TEAMS.get(teamId);
         if (oldTeam != null) {
             for (Principal u : toMemberArray(oldTeam)) {
                 oldTeam.removeMember(u);
@@ -494,7 +485,7 @@ public class UserStore implements Initialization {
             newTeam.addMember(getUser((ID) member[0]));
         }
 
-        TEAMs.put(teamId, newTeam);
+        TEAMS.put(teamId, newTeam);
     }
 
     /**
@@ -507,15 +498,48 @@ public class UserStore implements Initialization {
         for (Principal u : toMemberArray(team)) {
             team.removeMember(u);
         }
-        TEAMs.remove(teamId);
+        TEAMS.remove(teamId);
     }
 
     /**
      * @param user
-     * @return
      */
-    public MergedRole getMergedRole(ID user) {
-        return USERs_MERGEDROLEs.getOrDefault(user, MergedRole.NULL);
+    private void refreshUserRoleAppends(User user) {
+        // 最高权限无需合并
+        if (user.getMainRole().getIdentity().equals(RoleService.ADMIN_ROLE)) {
+            return;
+        }
+
+        // 附加权限（角色）
+        Object[][] appends = aPMFactory.createQuery("select roleId from RoleMember where userId = ?")
+                .setParameter(1, user.getId())
+                .array();
+        Set<Role> actived = new HashSet<>();
+        for (Object[] a : appends) {
+            Role role = ROLES.get(a[0]);
+            if (role != null && !role.isDisabled()) {
+                actived.add(role);
+            }
+        }
+
+        if (actived.isEmpty()) return;
+        new CombinedRole(user, actived);
+    }
+
+    /**
+     * @param roleId
+     */
+    private void refreshRoleAppends(ID roleId) {
+        // 初始化时无需处理
+        if (!isLoaded) return;
+
+        for (User user : USERS.values()) {
+            Role role = user.getOwningRole();
+            if (role.getIdentity().equals(roleId)
+                    || (role instanceof CombinedRole && ((CombinedRole) role).getRoleAppends().contains(roleId))) {
+                refreshUserRoleAppends(user);
+            }
+        }
     }
 
     private static final String USER_FS = "userId,loginName,email,fullName,avatarUrl,isDisabled,deptId,roleId,workphone";
@@ -531,7 +555,7 @@ public class UserStore implements Initialization {
                     userId, (String) o[1], (String) o[2], (String) o[8], (String) o[3], (String) o[4], (Boolean) o[5]);
             store(user);
         }
-        LOG.info("Loaded [ " + USERs.size() + " ] users.");
+        LOG.info("Loaded [ " + USERS.size() + " ] users.");
 
         // 角色
 
@@ -539,7 +563,14 @@ public class UserStore implements Initialization {
         for (Object[] o : array) {
             this.refreshRole((ID) o[0]);
         }
-        LOG.info("Loaded [ " + ROLEs.size() + " ] roles.");
+        LOG.info("Loaded [ " + ROLES.size() + " ] roles.");
+
+        // 附加角色
+        for (User user : USERS.values()) {
+            if (user.getMainRole() != null) {
+                refreshUserRoleAppends(user);
+            }
+        }
 
         // 部门
 
@@ -564,7 +595,7 @@ public class UserStore implements Initialization {
             }
         }
 
-        LOG.info("Loaded [ " + DEPTs.size() + " ] departments.");
+        LOG.info("Loaded [ " + DEPTS.size() + " ] departments.");
 
         // 团队
 
@@ -572,19 +603,19 @@ public class UserStore implements Initialization {
         for (Object[] o : array) {
             this.refreshTeam((ID) o[0]);
         }
-        LOG.info("Loaded [ " + TEAMs.size() + " ] teams.");
+        LOG.info("Loaded [ " + TEAMS.size() + " ] teams.");
 
-
+        isLoaded = true;
     }
 
     /**
      * @param user
      */
     private void store(User user) {
-        USERs.put(user.getId(), user);
-        USERs_NAME2ID.put(normalIdentifier(user.getName()), user.getId());
+        USERS.put(user.getId(), user);
+        USERS_NAME2ID.put(normalIdentifier(user.getName()), user.getId());
         if (user.getEmail() != null) {
-            USERs_MAIL2ID.put(normalIdentifier(user.getEmail()), user.getId());
+            USERS_MAIL2ID.put(normalIdentifier(user.getEmail()), user.getId());
         }
     }
 

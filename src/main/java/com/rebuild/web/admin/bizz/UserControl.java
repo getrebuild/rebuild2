@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.DataListManager;
 import com.rebuild.core.metadata.EntityHelper;
+import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.privileges.bizz.User;
@@ -48,8 +49,9 @@ public class UserControl extends EntityController {
 
     @GetMapping("users")
     public ModelAndView pageList(HttpServletRequest request) {
-        ID user = getRequestUser(request);
+        final ID user = getRequestUser(request);
         ModelAndView mv = createModelAndView("/admin/bizuser/user-list", "User", user);
+
         JSON config = DataListManager.instance.getFieldsLayout("User", user);
         mv.getModel().put("DataListConfig", JSON.toJSONString(config));
         return mv;
@@ -57,13 +59,13 @@ public class UserControl extends EntityController {
 
     @RequestMapping("check-user-status")
     public void checkUserStatus(HttpServletRequest request, HttpServletResponse response) {
-        ID id = getIdParameterNotNull(request, "id");
-        if (!Application.getUserStore().existsUser(id)) {
+        final ID user = getIdParameterNotNull(request, "id");
+        if (!Application.getUserStore().existsUser(user)) {
             writeFailure(response);
             return;
         }
 
-        User checkedUser = Application.getUserStore().getUser(id);
+        User checkedUser = Application.getUserStore().getUser(user);
 
         Map<String, Object> ret = new HashMap<>();
         ret.put("active", checkedUser.isActive());
@@ -76,7 +78,7 @@ public class UserControl extends EntityController {
             ret.put("roleDisabled", checkedUser.getOwningRole().isDisabled());
 
             // 附加角色
-            ret.put("roleAppends", Application.getUserStore().getMergedRole(id).getRoleAppends());
+            ret.put("roleAppends", UserHelper.getRoleAppends(user));
         }
 
         if (checkedUser.getOwningDept() != null) {
