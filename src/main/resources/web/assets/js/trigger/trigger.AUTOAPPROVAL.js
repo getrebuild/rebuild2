@@ -16,7 +16,7 @@ class ContentAutoApproval extends ActionContentSpec {
         <form className="simple">
           <div className="form-group row pt-1">
             <label className="col-12 col-lg-3 col-form-label text-lg-right">
-              {$lang('UseSome,e.RobotApprovalConfig')} ({$lang('Optional')})
+              {$lang('UseApproval')} ({$lang('Optional')})
             </label>
             <div className="col-12 col-lg-8">
               <select className="form-control form-control-sm" ref={(c) => (this._useApproval = c)}>

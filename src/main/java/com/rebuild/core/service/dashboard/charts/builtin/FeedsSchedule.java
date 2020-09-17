@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.service.dashboard.charts.ChartData;
 import com.rebuild.core.service.notification.MessageBuilder;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 
 import java.util.Date;
@@ -43,7 +44,7 @@ public class FeedsSchedule extends ChartData implements BuiltinChart {
 
     @Override
     public String getChartTitle() {
-        return "我的日程";
+        return Language.getLang("MySchedule");
     }
 
     @Override

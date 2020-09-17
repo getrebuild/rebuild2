@@ -62,7 +62,7 @@ $(document).ready(() => {
     render_preview()
   }
   $('.J_filter').click(() => {
-    renderRbcomp(<AdvFilter title="设置过滤条件" entity={wpc.sourceEntity} filter={esourceFilter} inModal={true} confirm={saveFilter} canNoFilters={true} />)
+    renderRbcomp(<AdvFilter title={$lang('DataFilter')} entity={wpc.sourceEntity} filter={esourceFilter} inModal={true} confirm={saveFilter} canNoFilters={true} />)
   })
 
   const cts = $('.chart-type > a').click(function () {
@@ -78,14 +78,12 @@ $(document).ready(() => {
 
   // 保存按钮
   $('.rb-toggle-left-sidebar')
-    .attr('title', '保存')
+    .attr('title', $lang('Save'))
     .off('click')
     .on('click', () => {
       const cfg = build_config()
-      if (!cfg) {
-        RbHighbar.create('当前图表无数据')
-        return
-      }
+      if (!cfg) return RbHighbar.create($lang('ChartNodata'))
+
       const data = {
         config: JSON.stringify(cfg),
         title: cfg.title,
@@ -124,7 +122,7 @@ $(document).ready(() => {
       }
     }
   }
-  if (!wpc.chartId) $('<h4 class="chart-undata must-center">当前图表无数据</h4>').appendTo('#chart-preview')
+  if (!wpc.chartId) $(`<h4 class="chart-undata must-center">${$lang('ChartNodata')}</h4>`).appendTo('#chart-preview')
 
   window.onbeforeunload = function () {
     const ccfg = build_config()
@@ -142,21 +140,21 @@ $(document).ready(() => {
 })
 
 const CTs = {
-  SUM: '求和',
-  AVG: '平均值',
-  MAX: '最大值',
-  MIN: '最小值',
-  COUNT: '计数',
-  COUNT2: '去重计数',
-  Y: '按年',
-  Q: '按季',
-  M: '按月',
-  D: '按日',
-  H: '按时',
-  L1: '一级',
-  L2: '二级',
-  L3: '三级',
-  L4: '四级',
+  SUM: $lang('CalcSUM'),
+  AVG: $lang('CalcAVG'),
+  MAX: $lang('CalcMAX'),
+  MIN: $lang('CalcMIN'),
+  COUNT: $lang('CalcCOUNT'),
+  COUNT2: $lang('CalcCOUNT2'),
+  Y: $lang('CalcDateY'),
+  Q: $lang('CalcDateQ'),
+  M: $lang('CalcDateM'),
+  D: $lang('CalcDateD'),
+  H: $lang('CalcDateH'),
+  L1: $lang('CalcClass1Level'),
+  L2: $lang('CalcClass1Leve2'),
+  L3: $lang('CalcClass1Leve3'),
+  L4: $lang('CalcClass1Leve4'),
 }
 
 let dlgAxisProps
@@ -313,7 +311,7 @@ const render_preview = () => {
 
       const cfg = build_config()
       if (!cfg) {
-        $('#chart-preview').html('<h4 class="chart-undata must-center">当前图表无数据</h4>')
+        $('#chart-preview').html(`<h4 class="chart-undata must-center">${$lang('ChartNodata')}</h4>`)
         return
       }
 
@@ -324,7 +322,7 @@ const render_preview = () => {
         renderRbcomp(c, 'chart-preview', function () {
           render_preview_chart = this
         })
-      else $('#chart-preview').html('<h4 class="chart-undata must-center">不支持的图表类型</h4>')
+      else $('#chart-preview').html(`<h4 class="chart-undata must-center">${$lang('UnsupportChartType')}</h4>`)
     },
     400,
     'chart-preview'
@@ -333,7 +331,7 @@ const render_preview = () => {
 
 // 构造配置
 const build_config = () => {
-  const cfg = { entity: wpc.sourceEntity, title: $val('#chart-title') || '未命名图表' }
+  const cfg = { entity: wpc.sourceEntity, title: $val('#chart-title') || $lang('UnnameChart') }
   cfg.type = $('.chart-type>a.select').data('type')
   if (!cfg.type) return
 
@@ -380,17 +378,17 @@ class DlgAxisProps extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title="显示样式" ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang('ShowStyles')} ref={(c) => (this._dlg = c)}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">別名</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('Alias')}</label>
             <div className="col-sm-7">
-              <input className="form-control form-control-sm" placeholder="默认" data-id="label" value={this.state.label || ''} onChange={this.handleChange} />
+              <input className="form-control form-control-sm" placeholder={$lang('Default')} data-id="label" value={this.state.label || ''} onChange={this.handleChange} />
             </div>
           </div>
           {this.state.isNumAxis !== true ? null : (
             <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">小数位</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('DecimalLength')}</label>
               <div className="col-sm-7">
                 <select className="form-control form-control-sm" value={this.state.scale || 2} data-id="scale" onChange={this.handleChange}>
                   <option value="0">0</option>
@@ -407,10 +405,10 @@ class DlgAxisProps extends RbFormHandler {
           <div className="form-group row footer">
             <div className="col-sm-7 offset-sm-3">
               <button className="btn btn-primary btn-space" type="button" onClick={() => this.saveProps()}>
-                确定
+                {$lang('Confirm')}
               </button>
               <a className="btn btn-link btn-space" onClick={() => this.hide()}>
-                取消
+                {$lang('Cancel')}
               </a>
             </div>
           </div>

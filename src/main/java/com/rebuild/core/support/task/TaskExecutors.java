@@ -101,12 +101,14 @@ public class TaskExecutors extends DistributedJobBean {
     /**
      * 停止任务
      */
-    public void shutdown() {
+    public static void shutdown() {
         List<Runnable> runs = EXECS.shutdownNow();
         if (!runs.isEmpty()) {
             LOG.warn("{} task(s) were interrupted", runs.size());
         }
     }
+
+    // --
 
     @Scheduled(cron = "0 15,35,55 * * * ?")
     public void executeJob() {

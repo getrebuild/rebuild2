@@ -65,4 +65,14 @@ public class Numerical extends Axis {
             return String.format("%s(%s)", FormatCalc.COUNT, super.getSqlName());
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

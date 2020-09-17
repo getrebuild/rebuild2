@@ -128,6 +128,8 @@ public class Application {
             spring.setWebApplicationType(WebApplicationType.NONE);
         }
 
+        spring.addListeners(new CloseListener());
+
         APPLICATION_CONTEXT = spring.run(args);
 
         String localUrl = String.format("http://localhost:%s%s",
@@ -141,7 +143,7 @@ public class Application {
 
                 if (success) {
                     String infos = RebuildBanner.formatSimple(
-                            "Rebuild (" + VER + ") boot successful in " + (System.currentTimeMillis() - time) + " ms.",
+                            "Rebuild (" + VER + ") start successfully in " + (System.currentTimeMillis() - time) + " ms.",
                             "License   : " + StringUtils.join(License.queryAuthority().values(), " | "),
                             "Local URL : " + localUrl);
                     LOG.info(infos);
@@ -154,7 +156,7 @@ public class Application {
 
         } catch (Exception ex) {
             serversReady = false;
-            LOG.error(RebuildBanner.formatBanner("REBUILD BOOTING FILAED !!!"), ex);
+            LOG.error(RebuildBanner.formatBanner("REBUILD STARTUP FILAED !!!"), ex);
 
         } finally {
             if (!success) {
@@ -178,7 +180,7 @@ public class Application {
 
         if (!(serversReady = ServerStatus.checkAll())) {
             LOG.error(RebuildBanner.formatBanner(
-                    "REBUILD BOOTING FAILURE DURING THE STATUS CHECK.", "PLEASE VIEW LOGS FOR MORE DETAILS."));
+                    "REBUILD STARTUP FILAED DURING THE STATUS CHECK.", "PLEASE VIEW LOGS FOR MORE DETAILS."));
             return false;
         }
 

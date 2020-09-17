@@ -47,7 +47,7 @@ public class LanguageControl extends BaseController {
     public void getLanguageBundle(HttpServletRequest request, HttpServletResponse response) {
         response.setContentType(ServletUtils.CT_JS);
 
-        final LanguageBundle bundle = Language.getCurrentBundle();
+        final LanguageBundle bundle = AppUtils.getReuqestBundle(request);
 
         // whether the generated ETag should be weak
         // SPEC: length of W/ + " + 0 + 32bits md5 hash + "

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -144,6 +145,7 @@ public class Language implements Initialization {
      *
      * @return
      * @see OnlineSessionStore#getLocale()
+     * @see com.rebuild.utils.AppUtils#getReuqestBundle(HttpServletRequest)
      */
     public static LanguageBundle getCurrentBundle() {
         return Application.getLanguage().getBundle(Application.getSessionStore().getLocale());

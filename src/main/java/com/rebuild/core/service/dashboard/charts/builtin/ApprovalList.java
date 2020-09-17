@@ -21,6 +21,7 @@ import com.rebuild.core.service.approval.ApprovalHelper;
 import com.rebuild.core.service.approval.ApprovalState;
 import com.rebuild.core.service.dashboard.charts.ChartData;
 import com.rebuild.core.support.general.FieldValueWrapper;
+import com.rebuild.core.support.i18n.Language;
 
 import java.util.*;
 
@@ -47,7 +48,7 @@ public class ApprovalList extends ChartData implements BuiltinChart {
 
     @Override
     public String getChartTitle() {
-        return "我的审批";
+        return Language.getLang("MyApproval");
     }
 
     @Override

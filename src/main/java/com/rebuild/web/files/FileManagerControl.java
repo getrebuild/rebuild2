@@ -66,7 +66,7 @@ public class FileManagerControl extends BaseController {
 
             ID fileId = ID.valueOf(file);
             if (!allowOperating(user, fileId)) {
-                writeFailure(response, getLang(request, "NoFilePrivilegesSome", "Delete"));
+                writeFailure(response, getLang(request, "NoFilePermissionSome", "Delete"));
                 return;
             }
 
@@ -90,7 +90,7 @@ public class FileManagerControl extends BaseController {
             }
             ID fileId = ID.valueOf(file);
             if (!allowOperating(user, fileId)) {
-                writeFailure(response, getLang(request, "NoFilePrivilegesSome", "Modify"));
+                writeFailure(response, getLang(request, "NoFilePermissionSome", "Modify"));
                 return;
             }
 

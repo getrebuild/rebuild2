@@ -56,7 +56,7 @@ public class DashboardManager extends ShareToManager {
         if (detected == null) {
             Record record = EntityHelper.forNew(EntityHelper.DashboardConfig, user);
             record.setString("config", JSONUtils.EMPTY_ARRAY_STR);
-            record.setString("title", Language.getLang("SomeDashboard", UserHelper.isAdmin(user) ? "Default" : "My"));
+            record.setString("title", Language.getLang(UserHelper.isAdmin(user) ? "DefaultDashboard" : "MyDashboard"));
             record.setString("shareTo", UserHelper.isAdmin(user) ? SHARE_ALL : SHARE_SELF);
             Application.getBean(DashboardConfigService.class).create(record);
         }

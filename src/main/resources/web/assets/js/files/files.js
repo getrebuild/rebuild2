@@ -114,7 +114,7 @@ const previewFile = function (e, path, checkId) {
   if (checkId) {
     $.get(`/files/check-readable?id=${checkId}`, (res) => {
       if (res.data) RbPreview.create(path)
-      else RbHighbar.error($lang('NoPrivilegesReadFile'))
+      else RbHighbar.error($lang('NoPermissionReadFile'))
     })
   } else RbPreview.create(path)
 }

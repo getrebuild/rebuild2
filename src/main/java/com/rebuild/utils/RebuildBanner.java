@@ -11,7 +11,9 @@ import com.rebuild.core.Application;
 import org.apache.commons.lang.SystemUtils;
 
 /**
+ * @author devezhao
  * @see org.springframework.boot.Banner
+ * @since 09/17/2020
  */
 public class RebuildBanner {
 

@@ -321,7 +321,7 @@ class DlgDashSettings extends RbFormHandler {
               <input
                 className="form-control form-control-sm"
                 value={this.state.title || ''}
-                placeholder={$lang('DefaultSome,e.DashboardConfig')}
+                placeholder={$lang('DefaultDashboard')}
                 data-id="title"
                 onChange={this.handleChange}
                 maxLength="40"
@@ -356,7 +356,7 @@ class DlgDashSettings extends RbFormHandler {
   save() {
     const _data = {
       shareTo: this._shareTo.getData().shareTo,
-      title: this.state.title || $lang('DefaultSome,e.DashboardConfig'),
+      title: this.state.title || $lang('DefaultDashboard'),
     }
     _data.metadata = { id: this.props.dashid, entity: 'DashboardConfig' }
 
@@ -403,7 +403,7 @@ class DlgDashAdd extends RbFormHandler {
               <input
                 className="form-control form-control-sm"
                 value={this.state.title || ''}
-                placeholder={$lang('MySome,e.DashboardConfig')}
+                placeholder={$lang('MyDashboard')}
                 data-id="title"
                 onChange={this.handleChange}
                 maxLength="40"
@@ -436,7 +436,7 @@ class DlgDashAdd extends RbFormHandler {
 
   save = () => {
     const _data = {
-      title: this.state.title || $lang('MySome,e.DashboardConfig'),
+      title: this.state.title || $lang('MyDashboard'),
       metadata: { entity: 'DashboardConfig' },
     }
     if (this.state.copy === true) _data.__copy = gridstack_serialize
