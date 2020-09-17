@@ -294,7 +294,10 @@ class DlgAddChart extends RbFormHandler {
       $(res.data).each(function () {
         $('<option value="' + this.name + '">' + this.label + '</option>').appendTo(entity_el)
       })
-      this.__select2 = entity_el.select2({ placeholder: $lang('SelectSome,DataSource') })
+      this.__select2 = entity_el.select2({
+        allowClear: false,
+        placeholder: $lang('SelectSome,DataSource')
+      })
     })
   }
 

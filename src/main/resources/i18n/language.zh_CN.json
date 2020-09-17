@@ -1274,7 +1274,7 @@
   "f.RobotApprovalStep.isCanceled": "是否取消",
   "f.RobotApprovalStep.approvedTime": "审批时间",
   "f.RobotApprovalStep.state": "审批结果",
-  "e.RebuildApi": "API 密钥",
+  "e.RebuildApi": "API密钥",
   "f.RebuildApi.appSecret": "APPSECRET",
   "f.RebuildApi.bindIps": "IP白名单",
   "f.RebuildApi.bindUser": "绑定用户",
