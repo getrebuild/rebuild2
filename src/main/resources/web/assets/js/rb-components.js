@@ -521,6 +521,7 @@ class UserSelector extends React.Component {
       },
       'shown.bs.dropdown': function () {
         that._input && that._input.focus()
+        $(that._scroller).find('li.active').removeClass('active')
       },
       'hide.bs.dropdown': function (e) {
         if (!e.clickEvent || !e.clickEvent.target) return
@@ -578,25 +579,29 @@ class UserSelector extends React.Component {
     })
   }
 
+  _tryActive($active, $el) {
+    if ($el && $el.length === 1) {
+      $active.removeClass('active')
+      $el.addClass('active')
+    }
+  }
+
   _keyEvent(e) {
-    // if (e.keyCode === 40) {
-    //   const $next = this._$foucsedItem ? this._$foucsedItem.next() : $(this._scroller).find('li:eq(0)')
-    //   if ($next.length > 0) {
-    //     this._$foucsedItem && this._$foucsedItem.removeClass('active')
-    //     $next.addClass('active')
-    //     this._$foucsedItem = $next
-    //   }
-    // } else if (e.keyCode === 38 && this._$foucsedItem) {
-    //   const $prev = this._$foucsedItem.prev()
-    //   if ($prev && $prev.length > 0) {
-    //     this._$foucsedItem.removeClass('active')
-    //     $prev.addClass('active')
-    //     this._$foucsedItem = $prev
-    //   }
-    // } else if (e.keyCode === 13 && this._$foucsedItem) {
-    //   this._$foucsedItem.trigger('click')
-    //   $stopEvent(e)
-    // }
+    if (e.keyCode === 40) {
+      const $active = $(this._scroller).find('li.active')
+      const $next = $active.length === 0 ? $(this._scroller).find('li:eq(0)') : $active.next()
+      this._tryActive($active, $next)
+    } else if (e.keyCode === 38) {
+      const $active = $(this._scroller).find('li.active')
+      const $prev = $active.length === 0 ? null : $active.prev()
+      this._tryActive($active, $prev)
+    } else if (e.keyCode === 13) {
+      const $active = $(this._scroller).find('li.active')
+      if ($active.length === 1) {
+        $active.trigger('click')
+        $stopEvent(e)
+      }
+    }
   }
 
   searchItems(e) {

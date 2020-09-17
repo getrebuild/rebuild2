@@ -322,25 +322,41 @@ var _globalSearch = function () {
     }
   })
 
-  var activeModel
   var aModels = $('.search-models a').click(function () {
     var s = $('.search-input-gs').val()
     location.href = $(this).data('url') + ($(this).hasClass('QUERY') ? '?' : '#') + 'gs=' + $encode(s)
   })
   if (aModels.length === 0) return
-  activeModel = aModels.eq(0).addClass('active')
 
   $(document).click(function (e) {
     if ($(e.target).parents('.search-container').length === 0) $('.search-models').hide()
   })
+
+  var _tryActive = function ($active, $el) {
+    if ($el.length === 1) {
+      $active.removeClass('active')
+      $el.addClass('active')
+    }
+  }
+
+  aModels.eq(0).addClass('active')
   $('.search-container input')
     .on('focus', function (e) {
       $('.search-models').show()
     })
     .on('keydown', function (e) {
-      var s = $('.search-input-gs').val()
-      if (e.keyCode === 13 && s) {
-        location.href = activeModel.data('url') + (activeModel.hasClass('QUERY') ? '?' : '#') + 'gs=' + $encode(s)
+      if (e.keyCode === 37) {
+        var $active = $('.search-models .active')
+        _tryActive($active, $active.prev())
+      } else if (e.keyCode === 39) {
+        var $active = $('.search-models .active')
+        _tryActive($active, $active.next())
+      } else if (e.keyCode === 13) {
+        var s = $('.search-input-gs').val()
+        if (s) {
+          var $active = $('.search-models .active')
+          location.href = $active.data('url') + ($active.hasClass('QUERY') ? '?' : '#') + 'gs=' + $encode(s)
+        }
       }
     })
 }
