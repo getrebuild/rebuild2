@@ -13,7 +13,6 @@ import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.rebuild.core.Application;
-import com.rebuild.core.support.general.FieldValueWrapper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserHelper;
@@ -21,6 +20,7 @@ import com.rebuild.core.service.NoRecordFoundException;
 import com.rebuild.core.service.approval.ApprovalHelper;
 import com.rebuild.core.service.approval.ApprovalState;
 import com.rebuild.core.service.dashboard.charts.ChartData;
+import com.rebuild.core.support.general.FieldValueWrapper;
 
 import java.util.*;
 

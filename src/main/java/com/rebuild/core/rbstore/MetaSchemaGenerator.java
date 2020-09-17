@@ -176,8 +176,8 @@ public class MetaSchemaGenerator {
         JSONArray items = new JSONArray();
         for (ConfigBean e : entries) {
             JSONObject item = JSONUtils.toJSONObject(
-                    new String[] { "text", "default", "mask" },
-                    new Object[] { e.getString("text"), e.getBoolean("default"), e.getLong("mask") });
+                    new String[]{"text", "default", "mask"},
+                    new Object[]{e.getString("text"), e.getBoolean("default"), e.getLong("mask")});
             items.add(item);
         }
         return items;

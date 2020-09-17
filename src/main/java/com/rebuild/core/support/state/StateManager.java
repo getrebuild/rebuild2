@@ -68,8 +68,8 @@ public class StateManager {
         for (Object c : state.getEnumConstants()) {
             StateSpec ss = (StateSpec) c;
             JSONObject item = JSONUtils.toJSONObject(
-                    new String[] { "id", "text", "default" },
-                    new Object[] { ss.getState(), Language.getLang(ss), ss.isDefault() });
+                    new String[]{"id", "text", "default"},
+                    new Object[]{ss.getState(), Language.getLang(ss), ss.isDefault()});
             options.add(item);
         }
 

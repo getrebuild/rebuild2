@@ -33,7 +33,7 @@ public class ZeroPrivileges implements Privileges {
     private final String definition;
 
     /**
-     * @param zreoKey {@link ZeroEntry}
+     * @param zreoKey    {@link ZeroEntry}
      * @param definition
      */
     public ZeroPrivileges(String zreoKey, String definition) {

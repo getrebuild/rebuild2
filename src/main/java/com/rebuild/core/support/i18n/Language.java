@@ -91,6 +91,7 @@ public class Language implements Initialization {
 
     /**
      * 默认语言包
+     *
      * @return
      */
     public LanguageBundle getDefaultBundle() {
@@ -153,7 +154,7 @@ public class Language implements Initialization {
      * @param phKeys 可替换语言 Key 中的 {0} {1}
      * @return
      */
-    public static String getLang(String key, String...phKeys) {
+    public static String getLang(String key, String... phKeys) {
         return getCurrentBundle().getLang(key, phKeys);
     }
 
@@ -162,7 +163,7 @@ public class Language implements Initialization {
      * @param phValues 可格式化语言 Key 中的 %s %d
      * @return
      */
-    public static String formatLang(String key, Object...phValues) {
+    public static String formatLang(String key, Object... phValues) {
         return getCurrentBundle().formatLang(key, phValues);
     }
 

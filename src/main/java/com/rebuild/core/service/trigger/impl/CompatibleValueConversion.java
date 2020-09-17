@@ -12,10 +12,10 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.engine.NullValue;
 import com.rebuild.core.configuration.general.PickListManager;
-import com.rebuild.core.support.general.FieldValueWrapper;
 import com.rebuild.core.metadata.DefaultValueHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
+import com.rebuild.core.support.general.FieldValueWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -18,12 +18,12 @@ import com.rebuild.core.configuration.general.AdvFilterService;
 import com.rebuild.core.configuration.general.LayoutConfigService;
 import com.rebuild.core.configuration.general.PickListService;
 import com.rebuild.core.configuration.general.ShareToManager;
-import com.rebuild.core.support.i18n.Language;
-import com.rebuild.core.support.task.HeavyTask;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.*;
 import com.rebuild.core.privileges.UserService;
+import com.rebuild.core.support.i18n.Language;
+import com.rebuild.core.support.task.HeavyTask;
 import com.rebuild.utils.JSONUtils;
 
 import java.util.ArrayList;
@@ -241,7 +241,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
                 schemaField.getString("defaultValue"));
 
         if (DisplayType.PICKLIST == dt || DisplayType.MULTISELECT == dt) {
-            picklistHolders.add(new Object[] { unsafeField, readyPickList(schemaField.getJSONArray("items")) });
+            picklistHolders.add(new Object[]{unsafeField, readyPickList(schemaField.getJSONArray("items"))});
         }
 
         return unsafeField;
@@ -252,8 +252,8 @@ public class MetaschemaImporter extends HeavyTask<String> {
         for (Object o : items) {
             JSONObject item = (JSONObject) o;
             show.add(JSONUtils.toJSONObject(
-                    new String[] { "text", "default", "mask" },
-                    new Object[] { item.getString("text"), item.getBoolean("default"), item.getLong("mask") }));
+                    new String[]{"text", "default", "mask"},
+                    new Object[]{item.getString("text"), item.getBoolean("default"), item.getLong("mask")}));
         }
 
         return JSONUtils.toJSONObject("show", show);

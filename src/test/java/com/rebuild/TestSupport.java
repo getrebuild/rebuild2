@@ -119,7 +119,9 @@ public class TestSupport {
             Entity testEntity = MetadataHelper.getEntity(entityName);
 
             for (DisplayType dt : DisplayType.values()) {
-                if (dt == DisplayType.ID || dt == DisplayType.LOCATION || dt == DisplayType.ANYREFERENCE || dt == DisplayType.N2NREFERENCE) continue;
+                if (dt == DisplayType.ID || dt == DisplayType.LOCATION || dt == DisplayType.ANYREFERENCE || dt == DisplayType.N2NREFERENCE) {
+                    continue;
+                }
 
                 String fieldName = dt.name().toUpperCase();
                 if (BlackList.isBlack(fieldName)) fieldName += "1";

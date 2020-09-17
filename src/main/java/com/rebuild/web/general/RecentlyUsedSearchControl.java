@@ -10,8 +10,8 @@ package com.rebuild.web.general;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.support.general.FieldValueWrapper;
 import com.rebuild.core.service.general.RecentlyUsedHelper;
+import com.rebuild.core.support.general.FieldValueWrapper;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
 import org.apache.commons.lang.StringUtils;
@@ -74,8 +74,8 @@ public class RecentlyUsedSearchControl extends BaseController {
             }
 
             data.add(JSONUtils.toJSONObject(
-                    new String[]{ "id", "text" },
-                    new String[]{ id.toLiteral(), label }));
+                    new String[]{"id", "text"},
+                    new String[]{id.toLiteral(), label}));
         }
 
         if (groupName != null) {

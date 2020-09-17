@@ -17,7 +17,6 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
-import org.apache.commons.codec.language.bm.Lang;
 
 import java.util.Arrays;
 import java.util.Comparator;

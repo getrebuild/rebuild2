@@ -42,7 +42,7 @@ public class EntityCreate extends BaseApi {
     public JSON execute(ApiContext context) throws ApiInvokeException {
         final Entity useEntity = getUseEntity(context);
         if (!useEntity.isQueryable() || !useEntity.isCreatable()) {
-            throw new ApiInvokeException( "Unsupportted operation for entity : " + useEntity.getName());
+            throw new ApiInvokeException("Unsupportted operation for entity : " + useEntity.getName());
         }
 
         Record recordNew = new EntityRecordCreator(

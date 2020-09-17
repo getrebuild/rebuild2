@@ -70,7 +70,7 @@ public class RecordDifference {
                 if (NullValue.is(beforeVal)) {
                     beforeVal = null;
                 }
-                merged.put(field, new Object[] { beforeVal, null });
+                merged.put(field, new Object[]{beforeVal, null});
             }
         }
 
@@ -100,8 +100,8 @@ public class RecordDifference {
             }
 
             JSON item = JSONUtils.toJSONObject(
-                    new String[] { "field", "before", "after" },
-                    new Object[] { e.getKey(), val[0], val[1] });
+                    new String[]{"field", "before", "after"},
+                    new Object[]{e.getKey(), val[0], val[1]});
             array.add(item);
         }
         return array;

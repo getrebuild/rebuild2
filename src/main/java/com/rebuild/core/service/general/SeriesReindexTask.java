@@ -13,12 +13,12 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.util.support.QueryHelper;
 import com.rebuild.core.Application;
-import com.rebuild.core.support.task.HeavyTask;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserService;
 import com.rebuild.core.service.general.series.SeriesGeneratorFactory;
+import com.rebuild.core.support.task.HeavyTask;
 
 /**
  * 自动编号字段值重建

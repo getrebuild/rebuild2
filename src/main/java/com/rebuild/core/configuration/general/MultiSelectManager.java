@@ -20,8 +20,8 @@ import java.util.List;
  * 多选字段
  *
  * @author ZHAO
- * @since 2019/9/27
  * @see PickListManager
+ * @since 2019/9/27
  */
 public class MultiSelectManager extends PickListManager {
 

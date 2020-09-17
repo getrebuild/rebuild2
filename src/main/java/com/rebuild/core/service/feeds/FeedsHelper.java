@@ -16,7 +16,6 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.utils.AppUtils;
-import com.rebuild.utils.CommonsUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.HashMap;

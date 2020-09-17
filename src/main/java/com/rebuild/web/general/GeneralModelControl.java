@@ -19,7 +19,6 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.support.i18n.I18nUtils;
-import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.EntityController;
 import org.springframework.stereotype.Controller;

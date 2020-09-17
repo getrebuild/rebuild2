@@ -14,17 +14,17 @@ import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
-import com.rebuild.core.metadata.impl.MetaEntityService;
-import com.rebuild.core.support.RebuildConfiguration;
-import com.rebuild.core.support.task.TaskExecutors;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.MetadataSorter;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.metadata.impl.Entity2Schema;
+import com.rebuild.core.metadata.impl.MetaEntityService;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.rbstore.MetaSchemaGenerator;
 import com.rebuild.core.service.general.QuickCodeReindexTask;
+import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.task.TaskExecutors;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
 import com.rebuild.web.commons.FileDownloader;
@@ -128,7 +128,7 @@ public class MetaEntityControl extends BaseController {
         if (StringUtils.isNotBlank(mainEntity)) {
             if (!MetadataHelper.containsEntity(mainEntity)) {
                 writeFailure(response,
-                        getLang(request,"SomeInvalid", "MainEntity") + " : " + mainEntity);
+                        getLang(request, "SomeInvalid", "MainEntity") + " : " + mainEntity);
                 return;
             }
 

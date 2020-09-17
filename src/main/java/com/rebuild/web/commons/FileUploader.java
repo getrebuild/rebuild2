@@ -8,9 +8,9 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web.commons;
 
 import cn.devezhao.commons.ObjectUtils;
+import com.rebuild.core.service.files.FilesHelper;
 import com.rebuild.core.support.QiniuCloud;
 import com.rebuild.core.support.RebuildConfiguration;
-import com.rebuild.core.service.files.FilesHelper;
 import com.rebuild.web.BaseController;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;

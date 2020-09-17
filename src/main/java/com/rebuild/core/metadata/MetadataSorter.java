@@ -23,9 +23,9 @@ import java.util.List;
  * 元数据辅助类，注意此类返回的数据会过滤和排序
  *
  * @author devezhao
- * @since 09/30/2018
  * @see EasyMeta
  * @see MetadataHelper
+ * @since 09/30/2018
  */
 public class MetadataSorter {
 

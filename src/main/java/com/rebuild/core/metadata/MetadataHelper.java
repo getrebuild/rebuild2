@@ -26,8 +26,8 @@ import java.util.List;
  * 实体元数据
  *
  * @author zhaofang123@gmail.com
- * @since 08/13/2018
  * @see EasyMeta
+ * @since 08/13/2018
  */
 public class MetadataHelper {
 

@@ -19,7 +19,6 @@ import com.rebuild.core.service.project.ProjectHelper;
 import com.rebuild.core.service.project.ProjectManager;
 import com.rebuild.core.service.query.AdvFilterParser;
 import com.rebuild.core.support.i18n.I18nUtils;
-import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
 import org.apache.commons.lang.StringEscapeUtils;

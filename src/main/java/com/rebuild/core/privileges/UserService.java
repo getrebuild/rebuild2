@@ -247,10 +247,10 @@ public class UserService extends BaseServiceImpl {
      * xxxNew 值为 null 表示不做修改
      *
      * @param user
-     * @param deptNew 新部门
-     * @param roleNew 新角色
+     * @param deptNew     新部门
+     * @param roleNew     新角色
      * @param roleAppends 附加角色
-     * @param enableNew 激活状态
+     * @param enableNew   激活状态
      */
     public void updateEnableUser(ID user, ID deptNew, ID roleNew, ID[] roleAppends, Boolean enableNew) {
         User u = Application.getUserStore().getUser(user);

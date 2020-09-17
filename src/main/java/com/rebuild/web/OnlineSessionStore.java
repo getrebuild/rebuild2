@@ -9,9 +9,9 @@ package com.rebuild.web;
 
 import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.engine.ID;
+import com.rebuild.core.privileges.CurrentCaller;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
-import com.rebuild.core.privileges.CurrentCaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.NamedThreadLocal;
@@ -48,6 +48,7 @@ public class OnlineSessionStore extends CurrentCaller implements HttpSessionList
 
     /**
      * 最近访问 [时间, 路径]
+     *
      * @see #storeLastActive(HttpServletRequest)
      */
     public static final String SK_LASTACTIVE = WebUtils.KEY_PREFIX + "Session-LastActive";

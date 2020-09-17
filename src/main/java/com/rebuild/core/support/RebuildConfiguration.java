@@ -22,10 +22,9 @@ import java.util.List;
  * 全局系统配置
  *
  * @author devezhao
- * @since 10/14/2018
- *
  * @see ConfigurationItem
  * @see com.rebuild.core.RebuildEnvironmentPostProcessor
+ * @since 10/14/2018
  */
 public class RebuildConfiguration extends KVStorage {
 

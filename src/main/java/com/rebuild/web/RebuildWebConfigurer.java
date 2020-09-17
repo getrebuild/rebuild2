@@ -132,7 +132,7 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
                     "\nMessage : " + errorMsg + (model != null ? (" " + model.toString()) : "");
             LOG.error(errorLog, ex);
         }
-        
+
         error.getModel().put("error_code", errorCode);
         error.getModel().put("error_msg", errorMsg);
         return error;

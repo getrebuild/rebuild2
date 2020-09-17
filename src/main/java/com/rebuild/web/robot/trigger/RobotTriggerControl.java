@@ -94,7 +94,7 @@ public class RobotTriggerControl extends BaseController {
         List<String[]> list = new ArrayList<>();
         for (Entity e : MetadataSorter.sortEntities(null, false, true)) {
             if (action.isUsableSourceEntity(e.getEntityCode())) {
-                list.add(new String[] { e.getName(), EasyMeta.getLabel(e) });
+                list.add(new String[]{e.getName(), EasyMeta.getLabel(e)});
             }
         }
         writeSuccess(response, list);

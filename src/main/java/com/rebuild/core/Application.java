@@ -224,7 +224,7 @@ public class Application {
         return true;
     }
 
-    public static void debug(String ... args) {
+    public static void debug(String... args) {
         debugMode = true;
         Application.main(args);
     }

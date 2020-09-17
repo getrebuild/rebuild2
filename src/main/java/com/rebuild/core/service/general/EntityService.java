@@ -10,8 +10,8 @@ package com.rebuild.core.service.general;
 import cn.devezhao.bizz.privileges.Permission;
 import cn.devezhao.bizz.privileges.impl.BizzPermission;
 import cn.devezhao.persist4j.engine.ID;
-import com.rebuild.core.support.task.TaskExecutors;
 import com.rebuild.core.service.ServiceSpec;
+import com.rebuild.core.support.task.TaskExecutors;
 
 /**
  * 业务实体用

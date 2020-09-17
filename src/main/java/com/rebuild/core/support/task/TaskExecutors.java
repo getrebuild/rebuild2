@@ -99,6 +99,7 @@ public class TaskExecutors extends DistributedJobBean {
     }
 
     /**
+     * 停止任务
      */
     public void shutdown() {
         List<Runnable> runs = EXECS.shutdownNow();

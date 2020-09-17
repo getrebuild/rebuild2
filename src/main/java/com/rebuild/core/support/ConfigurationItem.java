@@ -79,9 +79,7 @@ public enum ConfigurationItem {
     DefaultLanguage("zh_CN"),
 
     // 激活 Redis 队列
-    RedisQueueEnable(false)
-
-    ;
+    RedisQueueEnable(false);
 
     private Object defaultVal;
 

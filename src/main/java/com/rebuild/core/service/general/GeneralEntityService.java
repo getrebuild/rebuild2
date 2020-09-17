@@ -13,10 +13,6 @@ import cn.devezhao.persist4j.*;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
-import com.rebuild.core.support.ConfigurationItem;
-import com.rebuild.core.support.RebuildConfiguration;
-import com.rebuild.core.support.i18n.Language;
-import com.rebuild.core.support.task.TaskExecutors;
 import com.rebuild.core.metadata.DefaultValueHelper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -36,6 +32,10 @@ import com.rebuild.core.service.general.recyclebin.RecycleStore;
 import com.rebuild.core.service.general.series.SeriesGeneratorFactory;
 import com.rebuild.core.service.notification.NotificationObserver;
 import com.rebuild.core.service.trigger.RobotTriggerObserver;
+import com.rebuild.core.support.ConfigurationItem;
+import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.core.support.i18n.Language;
+import com.rebuild.core.support.task.TaskExecutors;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -305,7 +305,7 @@ public class GeneralEntityService extends ObservableService implements EntitySer
     /**
      * 获取级联操作记录
      *
-     * @param recordMain    主记录
+     * @param recordMain      主记录
      * @param cascadeEntities 级联实体
      * @param action          动作
      * @return

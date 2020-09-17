@@ -66,12 +66,14 @@ public class WebConstants {
 
     /**
      * 语言包
+     *
      * @see com.rebuild.core.support.i18n.LanguageBundle
      */
     public static final String $BUNDLE = "bundle";
 
     /**
      * 用户
+     *
      * @see com.rebuild.core.privileges.bizz.User
      */
     public static final String $USER = "user";

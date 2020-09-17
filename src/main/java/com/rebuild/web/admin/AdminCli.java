@@ -7,13 +7,10 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.web.admin;
 
-import com.rebuild.core.Application;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.setup.Installer;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.data.relational.core.sql.In;
-import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.List;

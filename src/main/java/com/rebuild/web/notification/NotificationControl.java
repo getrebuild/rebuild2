@@ -15,7 +15,6 @@ import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.approval.ApprovalState;
 import com.rebuild.core.service.notification.MessageBuilder;
 import com.rebuild.core.support.i18n.I18nUtils;
-import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
 import org.springframework.stereotype.Controller;
@@ -103,7 +102,7 @@ public class NotificationControl extends BaseController {
                 .array();
         for (int i = 0; i < array.length; i++) {
             Object[] m = array[i];
-            m[0] = new Object[] { m[0], UserHelper.getName((ID) m[0]) };
+            m[0] = new Object[]{m[0], UserHelper.getName((ID) m[0])};
             m[1] = MessageBuilder.formatMessage((String) m[1], !preview, true);
             m[2] = I18nUtils.formatDate((Date) m[2]);
             array[i] = m;
