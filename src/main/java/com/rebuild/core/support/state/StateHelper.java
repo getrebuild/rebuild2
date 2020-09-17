@@ -60,7 +60,7 @@ public class StateHelper {
      * @throws IllegalArgumentException
      */
     public static Class<?> getSatetClass(String stateClass) throws IllegalArgumentException {
-        Assert.notNull(stateClass, "[stateClass] not be null");
+        Assert.notNull(stateClass, "[stateClass] cannot be null");
 
         // fix V1
         if ("com.rebuild.server.helper.state.HowtoState".equalsIgnoreCase(stateClass)) {
@@ -96,7 +96,7 @@ public class StateHelper {
      * @throws IllegalArgumentException
      */
     public static StateSpec valueOf(Class<?> stateClass, int state) throws IllegalArgumentException {
-        Assert.notNull(stateClass, "[stateClass] not be null");
+        Assert.notNull(stateClass, "[stateClass] cannot be null");
 
         Object[] constants = stateClass.getEnumConstants();
         for (Object c : constants) {

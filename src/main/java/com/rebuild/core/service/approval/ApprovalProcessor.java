@@ -243,7 +243,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
      * @return
      */
     protected FlowNode getNextNode(String currentNode) {
-        Assert.notNull(currentNode, "[currentNode] not be null");
+        Assert.notNull(currentNode, "[currentNode] cannot be null");
 
         List<FlowNode> nextNodes = getFlowParser().getNextNodes(currentNode);
         if (nextNodes.isEmpty()) {
@@ -285,7 +285,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
      * @return
      */
     protected FlowNodeGroup getNextNodes(String currentNode) {
-        Assert.notNull(currentNode, "[currentNode] not be null");
+        Assert.notNull(currentNode, "[currentNode] cannot be null");
 
         FlowNodeGroup nodes = new FlowNodeGroup();
         FlowNode next = null;
@@ -324,7 +324,7 @@ public class ApprovalProcessor extends SetUser<ApprovalProcessor> {
      * @return
      */
     private FlowParser getFlowParser() {
-        Assert.notNull(approval, "[approval] not be null");
+        Assert.notNull(approval, "[approval] cannot be null");
         if (flowParser != null) {
             return flowParser;
         }

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <th:block th:replace="~{/_include/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/lib/widget/bootstrap-slider.min.css}" />
+    <th:block th:replace="~{/_include/header}" />
     <title>[[${bundle.lang('FieldInfo')}]]</title>
     <style type="text/css">
       .col-form-label {
@@ -209,7 +209,7 @@
                     <label class="col-md-12 col-xl-3 col-lg-4 col-form-label text-lg-right">[[${bundle.lang('SeriesFormat')}]]</label>
                     <div class="col-md-12 col-xl-6 col-lg-8">
                       <input class="form-control form-control-sm" type="text" id="seriesFormat" value="{YYYYMMDD}-{0000}" />
-                      <p class="form-text mb-0 help">[[${bundle.lang('SeriesFormatTips')}]]</p>
+                      <p class="form-text mb-0 help" th:utext="${bundle.lang('SeriesFormatTips')}"></p>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -263,7 +263,7 @@
                 <div class="form-group row J_for-STATE pt-0 pb-0 hide">
                   <label class="col-md-12 col-xl-3 col-lg-4 col-form-label text-lg-right">[[${bundle.lang('StateClass')}]]</label>
                   <div class="col-md-12 col-xl-6 col-lg-8">
-                    <div class="form-control-plaintext code" id="stateClass"></div>
+                    <div class="form-control-plaintext code text-danger" id="stateClass"></div>
                   </div>
                 </div>
                 <div class="J_for-BARCODE hide">
@@ -282,7 +282,7 @@
                     <label class="col-md-12 col-xl-3 col-lg-4 col-form-label text-lg-right">[[${bundle.lang('CodeFormat')}]]</label>
                     <div class="col-md-12 col-xl-6 col-lg-8">
                       <input class="form-control form-control-sm" type="text" id="barcodeFormat" />
-                      <p class="form-text mb-0 help">[[${bundle.lang('BarCodeFormatTips')}]]</p>
+                      <p class="form-text mb-0 help" th:utext="${bundle.lang('BarCodeFormatTips')}"></p>
                     </div>
                   </div>
                 </div>

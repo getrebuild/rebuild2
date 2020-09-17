@@ -67,7 +67,7 @@ public class QueryFactory {
      * @return
      */
     public Query createQuery(String ajql, Filter filter) {
-        Assert.notNull(filter, "[filter] not be null");
+        Assert.notNull(filter, "[filter] cannot be null");
         return aPMFactory.createQuery(ajql)
                 .setTimeout(QUERY_TIMEOUT)
                 .setSlowLoggerTime(SLOW_LOGGER_TIME)
@@ -134,7 +134,7 @@ public class QueryFactory {
      * @return
      */
     private String buildUniqueSql(ID recordId, String... fields) {
-        Assert.notNull(recordId, "[recordId] not be null");
+        Assert.notNull(recordId, "[recordId] cannot be null");
 
         Entity entity = MetadataHelper.getEntity(recordId.getEntityCode());
         if (fields.length == 0) {

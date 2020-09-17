@@ -80,20 +80,8 @@ public final class UpgradeDatabase {
     /**
      * @return
      */
-    public int getDbVer() {
+    protected int getDbVer() {
         String dbVer = RebuildConfiguration.get(ConfigurationItem.DBVer, true);
         return ObjectUtils.toInt(dbVer, 0);
-    }
-
-    private static final UpgradeDatabase INSTANCE = new UpgradeDatabase();
-
-    private UpgradeDatabase() {
-    }
-
-    /**
-     * @return
-     */
-    public static UpgradeDatabase getInstance() {
-        return INSTANCE;
     }
 }

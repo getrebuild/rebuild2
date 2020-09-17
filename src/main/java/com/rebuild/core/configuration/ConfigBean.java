@@ -25,10 +25,10 @@ import java.util.Map;
 public class ConfigBean implements Serializable, Cloneable, JSONable {
     private static final long serialVersionUID = -2618040374508703332L;
 
-    private Map<String, Object> entryMap;
+    private Map<String, Object> data;
 
     public ConfigBean() {
-        this.entryMap = new HashMap<>();
+        this.data = new HashMap<>();
     }
 
     /**
@@ -37,38 +37,42 @@ public class ConfigBean implements Serializable, Cloneable, JSONable {
      * @return
      */
     public ConfigBean set(String name, Object value) {
-        Assert.notNull(name, "'name' must not be null");
+        Assert.notNull(name, "[name] cannot be null");
         if (value == null) {
-            entryMap.remove(name);
+            data.remove(name);
         } else {
-            entryMap.put(name, value);
+            data.put(name, value);
         }
         return this;
     }
 
     public ID getID(String name) {
-        return (ID) entryMap.get(name);
+        return (ID) data.get(name);
     }
 
     public String getString(String name) {
-        return (String) entryMap.get(name);
+        return (String) data.get(name);
     }
 
     public Boolean getBoolean(String name) {
-        return (Boolean) entryMap.get(name);
+        return (Boolean) data.get(name);
     }
 
     public Integer getInteger(String name) {
-        return (Integer) entryMap.get(name);
+        return (Integer) data.get(name);
+    }
+
+    public Long getLong(String name) {
+        return (Long) data.get(name);
     }
 
     public JSON getJSON(String name) {
-        return (JSON) entryMap.get(name);
+        return (JSON) data.get(name);
     }
 
     @SuppressWarnings({"unchecked", "unused"})
     public <T> T get(String name, Class<T> returnType) {
-        return (T) entryMap.get(name);
+        return (T) data.get(name);
     }
 
     @Override
@@ -79,7 +83,7 @@ public class ConfigBean implements Serializable, Cloneable, JSONable {
         }
 
         ConfigBean c = new ConfigBean();
-        for (Map.Entry<String, Object> e : this.entryMap.entrySet()) {
+        for (Map.Entry<String, Object> e : this.data.entrySet()) {
             Object v = e.getValue();
             if (v instanceof JSON) {
                 v = JSONUtils.clone((JSON) v);
@@ -91,14 +95,14 @@ public class ConfigBean implements Serializable, Cloneable, JSONable {
 
     @Override
     public JSON toJSON() {
-        return (JSONObject) JSON.toJSON(this.entryMap);
+        return (JSONObject) JSON.toJSON(this.data);
     }
 
     @Override
     public JSON toJSON(String... specFields) {
         Map<String, Object> map = new HashMap<>();
         for (String s : specFields) {
-            map.put(s, entryMap.get(s));
+            map.put(s, data.get(s));
         }
         return (JSONObject) JSON.toJSON(map);
     }

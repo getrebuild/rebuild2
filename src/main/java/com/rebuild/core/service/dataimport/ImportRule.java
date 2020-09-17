@@ -101,10 +101,10 @@ public class ImportRule {
      * @throws IllegalArgumentException
      */
     public static ImportRule parse(JSONObject rule) throws IllegalArgumentException {
-        Assert.notNull(rule.getString("entity"), "Node `entity`");
-        Assert.notNull(rule.getString("file"), "Node `file`");
-        Assert.notNull(rule.getInteger("repeat_opt"), "Node `repeat_opt`");
-        Assert.notNull(rule.getJSONObject("fields_mapping"), "Node `fields_mapping`");
+        Assert.notNull(rule.getString("entity"), "Node `entity` cannot be null");
+        Assert.notNull(rule.getString("file"), "Node `file` cannot be null");
+        Assert.notNull(rule.getInteger("repeat_opt"), "Node `repeat_opt` cannot be null");
+        Assert.notNull(rule.getJSONObject("fields_mapping"), "Node `fields_mapping` cannot be null");
 
         Entity entity = MetadataHelper.getEntity(rule.getString("entity"));
         File file = RebuildConfiguration.getFileOfTemp(rule.getString("file"));

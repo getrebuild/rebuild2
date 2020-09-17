@@ -180,9 +180,11 @@ public class UserControl extends EntityController {
             Department dept = Application.getUserStore().getDepartment(bizz);
             hasMember = dept.getMembers().size();
             hasChild = dept.getChildren().size();
+
         } else if (bizz.getEntityCode() == EntityHelper.Role) {
-            Role role = Application.getUserStore().getRole(bizz);
-            hasMember = role.getMembers().size();
+            hasMember = UserHelper.getMembers(bizz).length;
+            hasMember += UserHelper.getRoleMembers(bizz).size();
+
         } else if (bizz.getEntityCode() == EntityHelper.User) {
             // NOTE 仅检查是否登陆过。严谨些还应该检查是否有其他业务数据
             Object[] hasLogin = Application.createQueryNoFilter(

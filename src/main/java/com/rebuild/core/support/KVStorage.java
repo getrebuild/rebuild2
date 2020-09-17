@@ -72,17 +72,17 @@ public class KVStorage {
 
     /**
      * @param key
-     * @param reload
+     * @param noCache
      * @param defaultValue
      * @return
      */
-    protected static String getValue(final String key, boolean reload, Object defaultValue) {
+    protected static String getValue(final String key, boolean noCache, Object defaultValue) {
         String value = null;
 
         if (Application.serversReady()) {
             // 0. 从缓存
             value = Application.getCommonsCache().get(key);
-            if (value != null && !reload) {
+            if (value != null && !noCache) {
                 return value;
             }
 

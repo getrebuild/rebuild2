@@ -74,7 +74,7 @@ public class EntityCreate extends BaseApi {
 
         final String useEntity = metadata == null ? null : metadata.getString("entity");
         if (metadata == null || useEntity == null) {
-            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Invalid post/data : `metadata` element not be empty");
+            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Invalid post/data : [metadata] element not be null");
         }
 
         if (!MetadataHelper.containsEntity(useEntity)) {

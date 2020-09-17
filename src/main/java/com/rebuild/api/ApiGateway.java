@@ -209,7 +209,7 @@ public class ApiGateway extends Controller implements Initialization {
     private String getParameterNotNull(Map<String, String> params, String name) {
         String v = params.get(name);
         if (StringUtils.isBlank(v)) {
-            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Parameter [" + name + "] cannot be blank");
+            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Parameter [" + name + "] cannot be null");
         }
         return v;
     }

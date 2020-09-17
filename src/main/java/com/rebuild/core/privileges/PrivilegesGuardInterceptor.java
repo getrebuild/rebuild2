@@ -114,7 +114,7 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
                 Field stmField = MetadataHelper.getDetailToMainField(entity);
                 ID mainid = ((Record) idOrRecord).getID(stmField.getName());
                 if (mainid == null || !Application.getPrivilegesManager().allowUpdate(caller, mainid)) {
-                    throw new AccessDeniedException(Language.getLang("YouNoSomePrivileges", "AddDetail"));
+                    throw new AccessDeniedException(Language.getLang("YouNoSomePermission", "AddDetail"));
                 }
                 allowed = true;
 
@@ -204,9 +204,9 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
         }
 
         if (target == null) {
-            return String.format(Language.formatLang("YouNoSomeXPrivileges", actionKey), EasyMeta.getLabel(entity));
+            return Language.formatLang("YouNoSomePermission", actionKey) + " (" + EasyMeta.getLabel(entity) + ")";
         } else {
-            return Language.formatLang("YouNoSomeRecordPrivileges", actionKey);
+            return Language.formatLang("YouNoSomeRecordPermission", actionKey);
         }
     }
 
@@ -220,7 +220,7 @@ public class PrivilegesGuardInterceptor implements MethodInterceptor, Guard {
      * @param record
      */
     public static void setNoPermissionPassOnce(ID record) {
-        Assert.notNull(record, "'record' not be null");
+        Assert.notNull(record, "[record] cannot be null");
         IN_NOPERMISSION_PASS.set(record);
     }
 }

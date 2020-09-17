@@ -195,11 +195,11 @@ public class RebuildConfiguration extends KVStorage {
 
     /**
      * @param name
-     * @param reload
+     * @param noCache
      * @return
      */
-    public static String get(ConfigurationItem name, boolean reload) {
-        return getValue(name.name(), reload, name.getDefaultValue());
+    public static String get(ConfigurationItem name, boolean noCache) {
+        return getValue(name.name(), noCache, name.getDefaultValue());
     }
 
     /**

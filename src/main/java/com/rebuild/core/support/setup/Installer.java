@@ -114,13 +114,7 @@ public class Installer implements InstallState {
         License.SN();
 
         // Clean cached
-        if (isUseRedis()) {
-            try (Jedis jedis = Application.getCommonsCache().getJedisPool().getResource()) {
-                jedis.flushAll();
-            }
-        } else {
-            Application.getCommonsCache().getEhcacheCache().clear();
-        }
+        clearAllCache();
     }
 
     /**
@@ -157,7 +151,7 @@ public class Installer implements InstallState {
             return props;
         }
 
-        Assert.notNull(dbProps, "[databaseProps] must be null");
+        Assert.notNull(dbProps, "[databaseProps] cannot be null");
         String dbUrl = String.format(
                 "jdbc:mysql://%s:%d/%s?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull&useSSL=false&sessionVariables=default_storage_engine=InnoDB",
                 dbProps.getString("dbHost"),
@@ -326,5 +320,18 @@ public class Installer implements InstallState {
      */
     public static boolean isInstalled() {
         return new Installer().checkInstalled();
+    }
+
+    /**
+     * 清除所有缓存
+     */
+    public static void clearAllCache() {
+        if (isUseRedis()) {
+            try (Jedis jedis = Application.getCommonsCache().getJedisPool().getResource()) {
+                jedis.flushAll();
+            }
+        } else {
+            Application.getCommonsCache().getEhcacheCache().clear();
+        }
     }
 }

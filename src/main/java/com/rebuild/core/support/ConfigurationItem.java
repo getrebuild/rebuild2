@@ -8,14 +8,15 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.support;
 
 /**
- * 可配置系统项，所有配置应在此处声明
+ * 系统配置项，所有配置应在此处声明
  *
  * @author devezhao
  * @since 12/25/2018
  */
 public enum ConfigurationItem {
 
-    SN,
+    // 由系统指定的
+    SN, DBVer, AppBuild,
 
     // 通用
     AppName("REBUILD"),
@@ -37,9 +38,6 @@ public enum ConfigurationItem {
 
     // 数据目录
     DataDirectory,
-
-    // 数据库版本
-    DBVer(0L),
 
     // 新建记录表单不显示不可创建字段
     FormHideUncreateField(false),

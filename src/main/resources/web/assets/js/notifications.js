@@ -91,7 +91,7 @@ class MessageList extends React.Component {
           </div>
           {append && (
             <a title={$lang('ClickViewReleated')} className="badge link" href={`${rb.baseUrl}/app/list-and-view?id=${item[5]}`}>
-              {$lang('View0')}
+              {$lang('OpenView')}
             </a>
           )}
         </span>

@@ -171,19 +171,19 @@ class PlanEdit extends RbFormHandler {
               <label className="custom-control custom-control-sm custom-radio mb-1 mt-1">
                 <input className="custom-control-input" type="radio" name="flowStatus" value="1" checked={~~this.state.flowStatus === 1} onChange={this.handleChange} />
                 <span className="custom-control-label">
-                  {$lang('FlowStatus1')} <p className="text-muted mb-0 fs-12">{$lang('FlowStatus1Tips')}</p>
+                  {$lang('PlanStatus1')} <p className="text-muted mb-0 fs-12">{$lang('PlanStatus1Tips')}</p>
                 </span>
               </label>
               <label className="custom-control custom-control-sm custom-radio mb-1">
                 <input className="custom-control-input" type="radio" name="flowStatus" value="2" checked={~~this.state.flowStatus === 2} onChange={this.handleChange} />
                 <span className="custom-control-label">
-                  {$lang('FlowStatus2')} <p className="text-muted mb-0 fs-12">{$lang('FlowStatus2Tips')}</p>
+                  {$lang('PlanStatus2')} <p className="text-muted mb-0 fs-12">{$lang('PlanStatus2Tips')}</p>
                 </span>
               </label>
               <label className="custom-control custom-control-sm custom-radio mb-1">
                 <input className="custom-control-input" type="radio" name="flowStatus" value="3" checked={~~this.state.flowStatus === 3} onChange={this.handleChange} />
                 <span className="custom-control-label">
-                  {$lang('FlowStatus3')} <p className="text-muted mb-0 fs-12">{$lang('FlowStatus3Tips')}</p>
+                  {$lang('PlanStatus3')} <p className="text-muted mb-0 fs-12">{$lang('PlanStatus3Tips')}</p>
                 </span>
               </label>
             </div>

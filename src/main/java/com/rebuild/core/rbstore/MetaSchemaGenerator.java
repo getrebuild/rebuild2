@@ -19,6 +19,7 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserService;
+import com.rebuild.utils.JSONUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -75,11 +76,13 @@ public class MetaSchemaGenerator {
         // 实体
         EasyMeta easyEntity = EasyMeta.valueOf(entity);
         schemaEntity.put("entity", entity.getName());
+        schemaEntity.put("entityIcon", easyEntity.getIcon());
         schemaEntity.put("entityLabel", easyEntity.getLabel());
         if (easyEntity.getComments() != null) {
             schemaEntity.put("comments", easyEntity.getComments());
         }
         schemaEntity.put("nameField", entity.getNameField().getName());
+        schemaEntity.put("quickFields", easyEntity.getExtraAttr("quickFields"));
 
         JSONArray metaFields = new JSONArray();
         for (Field field : entity.getFields()) {
@@ -146,6 +149,7 @@ public class MetaSchemaGenerator {
         schemaField.put("nullable", field.isNullable());
         schemaField.put("updatable", field.isUpdatable());
         schemaField.put("repeatable", field.isRepeatable());
+        schemaField.put("queryable", field.isQueryable());
         Object defaultVal = field.getDefaultValue();
         if (defaultVal != null && StringUtils.isNotBlank((String) defaultVal)) {
             schemaField.put("defaultValue", defaultVal);
@@ -154,7 +158,7 @@ public class MetaSchemaGenerator {
         if (dt == DisplayType.REFERENCE) {
             schemaField.put("refEntity", field.getReferenceEntity().getName());
             schemaField.put("refEntityLabel", EasyMeta.getLabel(field.getReferenceEntity()));
-        } else if (dt == DisplayType.PICKLIST) {
+        } else if (dt == DisplayType.PICKLIST || dt == DisplayType.MULTISELECT) {
             schemaField.put("items", performPickList(field));
         }
 
@@ -166,16 +170,15 @@ public class MetaSchemaGenerator {
         return schemaField;
     }
 
-    /**
-     * @param field
-     * @return
-     */
     private JSON performPickList(Field field) {
         ConfigBean[] entries = PickListManager.instance.getPickListRaw(
                 field.getOwnEntity().getName(), field.getName(), false);
         JSONArray items = new JSONArray();
         for (ConfigBean e : entries) {
-            items.add(new Object[]{e.getString("text"), e.getBoolean("default")});
+            JSONObject item = JSONUtils.toJSONObject(
+                    new String[] { "text", "default", "mask" },
+                    new Object[] { e.getString("text"), e.getBoolean("default"), e.getLong("mask") });
+            items.add(item);
         }
         return items;
     }

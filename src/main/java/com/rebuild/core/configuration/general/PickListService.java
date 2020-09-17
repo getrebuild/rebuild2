@@ -51,7 +51,7 @@ public class PickListService extends BaseConfigurationService implements AdminGu
      * @param config
      */
     public void updateBatch(Field field, JSONObject config) {
-        Assert.notNull(config, "无效配置");
+        Assert.notNull(config, "[config] cannot be null");
         ID user = Application.getCurrentUser();
 
         JSONArray showItems = config.getJSONArray("show");

@@ -18,6 +18,7 @@ import com.rebuild.core.configuration.general.AdvFilterService;
 import com.rebuild.core.configuration.general.LayoutConfigService;
 import com.rebuild.core.configuration.general.PickListService;
 import com.rebuild.core.configuration.general.ShareToManager;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.task.HeavyTask;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
@@ -86,7 +87,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
     private String verfiyEntity(JSONObject entity) {
         String entityName = entity.getString("entity");
         if (MetadataHelper.containsEntity(entityName)) {
-            return "实体名称重复: " + entityName;
+            return Language.getLang("SomeDuplicate", "EntityName") + " : " + entityName;
         }
 
         for (Object o : entity.getJSONArray("fields")) {
@@ -94,7 +95,7 @@ public class MetaschemaImporter extends HeavyTask<String> {
             if (DisplayType.REFERENCE.name().equalsIgnoreCase(field.getString("displayType"))) {
                 String refEntity = field.getString("refEntity");
                 if (!entityName.equals(refEntity) && !MetadataHelper.containsEntity(refEntity)) {
-                    return "缺少必要的引用实体: " + field.getString("fieldLabel") + " (" + refEntity + ")";
+                    return Language.getLang("MissRefEntity") + " : " + field.getString("fieldLabel") + " (" + refEntity + ")";
                 }
             }
         }
@@ -178,12 +179,23 @@ public class MetaschemaImporter extends HeavyTask<String> {
             }
         }
 
+        Record needUpdate = EntityHelper.forUpdate(EasyMeta.valueOf(entity).getMetaId(), this.getUser(), false);
+
         String nameField = schemaEntity.getString("nameField");
         if (nameField != null) {
-            EasyMeta easyMeta = EasyMeta.valueOf(entity);
-            Record updateNameField = EntityHelper.forUpdate(easyMeta.getMetaId(), this.getUser(), false);
-            updateNameField.setString("nameField", nameField);
-            Application.getCommonsService().update(updateNameField);
+            needUpdate.setString("nameField", nameField);
+        }
+        String entityIcon = schemaEntity.getString("entityIcon");
+        if (entityIcon != null) {
+            needUpdate.setString("icon", entityIcon);
+        }
+        String quickFields = schemaEntity.getString("quickFields");
+        if (quickFields != null) {
+            needUpdate.setString("extConfig", JSONUtils.toJSONObject("quickFields", quickFields).toJSONString());
+        }
+
+        if (needUpdate.getAvailableFieldIterator().hasNext()) {
+            Application.getCommonsService().update(needUpdate);
         }
 
         // 布局
@@ -221,14 +233,15 @@ public class MetaschemaImporter extends HeavyTask<String> {
                 true,
                 schemaField.getBooleanValue("updatable"),
                 !schemaField.containsKey("repeatable") || schemaField.getBooleanValue("repeatable"),
+                !schemaField.containsKey("queryable") || schemaField.getBooleanValue("queryable"),
                 schemaField.getString("comments"),
                 schemaField.getString("refEntity"),
                 null,
                 extConfig,
                 schemaField.getString("defaultValue"));
 
-        if (DisplayType.PICKLIST == dt) {
-            picklistHolders.add(new Object[]{unsafeField, readyPickList(schemaField.getJSONArray("items"))});
+        if (DisplayType.PICKLIST == dt || DisplayType.MULTISELECT == dt) {
+            picklistHolders.add(new Object[] { unsafeField, readyPickList(schemaField.getJSONArray("items")) });
         }
 
         return unsafeField;
@@ -237,14 +250,13 @@ public class MetaschemaImporter extends HeavyTask<String> {
     private JSONObject readyPickList(JSONArray items) {
         JSONArray show = new JSONArray();
         for (Object o : items) {
-            JSONArray item = (JSONArray) o;
-            show.add(JSONUtils.toJSONObject(new String[]{"text", "default"},
-                    new Object[]{item.get(0), item.get(1)}));
+            JSONObject item = (JSONObject) o;
+            show.add(JSONUtils.toJSONObject(
+                    new String[] { "text", "default", "mask" },
+                    new Object[] { item.getString("text"), item.getBoolean("default"), item.getLong("mask") }));
         }
 
-        JSONObject config = new JSONObject();
-        config.put("show", show);
-        return config;
+        return JSONUtils.toJSONObject("show", show);
     }
 
     private void performLayout(String entity, String type, JSON config) {

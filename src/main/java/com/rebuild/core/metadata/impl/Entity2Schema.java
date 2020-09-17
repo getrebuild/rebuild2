@@ -124,7 +124,7 @@ public class Entity2Schema extends Field2Schema {
 
             if (haveNameField) {
                 createUnsafeField(
-                        tempEntity, nameFiled, Language.formatLang("XName", entityLabel), DisplayType.TEXT, false, true, true, true, null, null, null, null, null);
+                        tempEntity, nameFiled, Language.formatLang("XName", entityLabel), DisplayType.TEXT, false, true, true, true, true, null, null, null, null, null);
             }
 
             createBuiltinField(tempEntity, EntityHelper.CreatedBy, Language.getLang("f.createdBy"), DisplayType.REFERENCE, null, "User", null);
@@ -141,7 +141,7 @@ public class Entity2Schema extends Field2Schema {
             } else {
                 // 助记码/搜索码
                 createUnsafeField(
-                        tempEntity, EntityHelper.QuickCode, Language.getLang("f.quickCode"), DisplayType.TEXT, true, false, false, true, null, null, null, null, null);
+                        tempEntity, EntityHelper.QuickCode, Language.getLang("f.quickCode"), DisplayType.TEXT, true, false, false, true, false, null, null, null, null, null);
 
                 createBuiltinField(tempEntity, EntityHelper.OwningUser, Language.getLang("f.owningUser"), DisplayType.REFERENCE, null, "User", null);
                 createBuiltinField(tempEntity, EntityHelper.OwningDept, Language.getLang("f.owningDept"), DisplayType.REFERENCE, null, "Department", null);
@@ -252,7 +252,7 @@ public class Entity2Schema extends Field2Schema {
     private Field createBuiltinField(Entity entity, String fieldName, String fieldLabel, DisplayType displayType, String comments,
                                      String refEntity, CascadeModel cascade) {
         return createUnsafeField(
-                entity, fieldName, fieldLabel, displayType, false, false, false, true, comments, refEntity, cascade, null, null);
+                entity, fieldName, fieldLabel, displayType, false, false, false, true, true, comments, refEntity, cascade, null, null);
     }
 
     /**

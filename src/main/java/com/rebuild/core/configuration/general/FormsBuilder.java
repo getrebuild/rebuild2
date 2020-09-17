@@ -81,7 +81,7 @@ public class FormsBuilder extends FormsManager {
      * @return
      */
     public JSON buildView(String entity, ID user, ID record) {
-        Assert.notNull(record, "[record] not be null");
+        Assert.notNull(record, "[record] cannot be null");
         return buildModel(entity, user, record, true);
     }
 
@@ -93,8 +93,8 @@ public class FormsBuilder extends FormsManager {
      * @return
      */
     private JSON buildModel(String entity, ID user, ID record, boolean viewMode) {
-        Assert.notNull(entity, "[entity] not be null");
-        Assert.notNull(user, "[user] not be null");
+        Assert.notNull(entity, "[entity] cannot be null");
+        Assert.notNull(user, "[user] cannot be null");
 
         final Entity entityMeta = MetadataHelper.getEntity(entity);
 
@@ -123,10 +123,10 @@ public class FormsBuilder extends FormsManager {
                 approvalState = null;
 
                 if (!Application.getPrivilegesManager().allowUpdate(user, mainRecordId)) {
-                    return formatModelError(Language.formatLang("YouNoSomePrivileges", "AddDetail"));
+                    return formatModelError(Language.formatLang("YouNoSomePermission", "AddDetail"));
                 }
             } else if (!Application.getPrivilegesManager().allowCreate(user, entityMeta.getEntityCode())) {
-                return formatModelError(Language.getLang("YouNoSomePrivileges", "Create"));
+                return formatModelError(Language.getLang("YouNoSomePermission", "Create"));
             } else {
                 approvalState = getHadApproval(entityMeta, null);
             }
@@ -143,7 +143,7 @@ public class FormsBuilder extends FormsManager {
         // 编辑
         else {
             if (!Application.getPrivilegesManager().allowUpdate(user, record)) {
-                return formatModelError(Language.getLang("YouNoSomeRecordPrivileges", "Update"));
+                return formatModelError(Language.getLang("YouNoSomeRecordPermission", "Update"));
             }
 
             approvalState = getHadApproval(entityMeta, record);

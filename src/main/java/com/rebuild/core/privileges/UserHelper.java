@@ -21,7 +21,9 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.bizz.Department;
 import com.rebuild.core.privileges.bizz.User;
+import com.rebuild.utils.AppUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.slf4j.Logger;
@@ -416,6 +418,8 @@ public class UserHelper {
     }
 
     /**
+     * 获取用户的附加角色
+     *
      * @param user
      * @return
      * @see CombinedRole
@@ -426,5 +430,22 @@ public class UserHelper {
             return ((CombinedRole) role).getRoleAppends();
         }
         return null;
+    }
+
+    /**
+     * 获取附加了指定角色的用户
+     *
+     * @param roleId
+     * @return
+     */
+    public static Set<ID> getRoleMembers(ID roleId) {
+        Object[][] array = Application.createQueryNoFilter(
+                "select userId from RoleMember where roleId = ?")
+                .setParameter(1, roleId)
+                .array();
+
+        Set<ID> set = new HashSet<>();
+        for (Object[] o : array) set.add((ID) o[0]);
+        return set;
     }
 }

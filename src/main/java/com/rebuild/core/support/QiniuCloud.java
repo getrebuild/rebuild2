@@ -78,7 +78,7 @@ public class QiniuCloud {
      * @return
      */
     public Auth getAuth() {
-        Assert.notNull(auth, "云存储账户未配置");
+        Assert.notNull(auth, "Qiniu account not config");
         return auth;
     }
 

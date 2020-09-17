@@ -86,7 +86,7 @@ public class Field2Schema {
         }
 
         Field field = createUnsafeField(
-                entity, fieldName, fieldLabel, type, true, true, true, true, comments, refEntity, null, extConfig, null);
+                entity, fieldName, fieldLabel, type, true, true, true, true, true, comments, refEntity, null, extConfig, null);
 
         boolean schemaReady = schema2Database(entity, new Field[]{field});
         if (!schemaReady) {
@@ -200,6 +200,7 @@ public class Field2Schema {
      * @param creatable
      * @param updatable
      * @param repeatable
+     * @param queryable
      * @param comments
      * @param refEntity
      * @param cascade
@@ -209,7 +210,7 @@ public class Field2Schema {
      * @see #createField(Entity, String, DisplayType, String, String, JSON)
      */
     public Field createUnsafeField(Entity entity, String fieldName, String fieldLabel, DisplayType dt,
-                                   boolean nullable, boolean creatable, boolean updatable, boolean repeatable, String comments, String refEntity, CascadeModel cascade,
+                                   boolean nullable, boolean creatable, boolean updatable, boolean repeatable, boolean queryable, String comments, String refEntity, CascadeModel cascade,
                                    JSON extConfig, Object defaultValue) {
         if (dt == DisplayType.SERIES) {
             nullable = false;
@@ -220,8 +221,10 @@ public class Field2Schema {
             nullable = true;
             creatable = false;
             updatable = false;
+            queryable = false;
         } else if (EntityHelper.AutoId.equalsIgnoreCase(fieldName)) {
             repeatable = false;
+            queryable = false;
         }
 
         Record recordOfField = EntityHelper.forNew(EntityHelper.MetaField, user);
@@ -235,6 +238,7 @@ public class Field2Schema {
         recordOfField.setBoolean("creatable", creatable);
         recordOfField.setBoolean("updatable", updatable);
         recordOfField.setBoolean("repeatable", repeatable);
+        recordOfField.setBoolean("queryable", queryable);
 
         if (StringUtils.isNotBlank(comments)) {
             recordOfField.setString("comments", comments);
@@ -282,21 +286,14 @@ public class Field2Schema {
         // 以下会改变一些属性，因为并不想他们保存在元数据中
 
         boolean autoValue = EntityHelper.AutoId.equalsIgnoreCase(fieldName);
-        if (EntityHelper.ApprovalState.equalsIgnoreCase(fieldName)) {
-            defaultValue = ApprovalState.DRAFT.getState();
-        }
 
         // 系统级字段非空
-        if (MetadataHelper.isCommonsField(fieldName)
-                && !(MetadataHelper.isApprovalField(fieldName) || fieldName.equalsIgnoreCase(EntityHelper.QuickCode))) {
-            nullable = false;
-        } else {
-            nullable = true;
-        }
+        nullable = !MetadataHelper.isCommonsField(fieldName)
+                || (MetadataHelper.isApprovalField(fieldName) || fieldName.equalsIgnoreCase(EntityHelper.QuickCode));
 
         Field unsafeField = new FieldImpl(fieldName, physicalName, fieldLabel, null,
                 creatable, updatable, Boolean.TRUE, entity, dt.getFieldType(), maxLength, CascadeModel.Ignore,
-                nullable, repeatable, autoValue, DECIMAL_SCALE, defaultValue);
+                nullable, repeatable, autoValue, DECIMAL_SCALE, null);
         if (entity instanceof UnsafeEntity) {
             ((UnsafeEntity) entity).addField(unsafeField);
         }

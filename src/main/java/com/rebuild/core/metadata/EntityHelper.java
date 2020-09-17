@@ -66,8 +66,8 @@ public class EntityHelper {
      * @return
      */
     public static Record forUpdate(ID recordId, ID user, boolean bindCommons) {
-        Assert.notNull(recordId, "[recordId] not be bull");
-        Assert.notNull(user, "[user] not be bull");
+        Assert.notNull(recordId, "[recordId] cannot be null");
+        Assert.notNull(user, "[user] cannot be null");
 
         Entity entity = MetadataHelper.getEntity(recordId.getEntityCode());
         Record record = new StandardRecord(entity, user);
@@ -102,8 +102,8 @@ public class EntityHelper {
      * @return
      */
     private static Record forNew(Entity entity, ID user, boolean bindCommons) {
-        Assert.notNull(entity, "[entity] not be bull");
-        Assert.notNull(user, "[user] not be bull");
+        Assert.notNull(entity, "[entity] cannot be null");
+        Assert.notNull(user, "[user] cannot be null");
 
         Record record = new StandardRecord(entity, user);
         if (bindCommons) {

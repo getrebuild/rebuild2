@@ -196,7 +196,7 @@ public class MetaEntityControl extends BaseController {
         else writeFailure(response);
     }
 
-    @RequestMapping("entity/entity-export")
+    @GetMapping("entity/entity-export")
     public void entityExport(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Entity entity = getEntityById(getIdParameterNotNull(request, "id"));
 

@@ -117,7 +117,7 @@ public abstract class BaseCacheTemplate<V extends Serializable> implements Cache
     }
 
     private String unityKey(String key) {
-        Assert.isTrue(StringUtils.isNotBlank(key), "[key] not be null");
+        Assert.isTrue(StringUtils.isNotBlank(key), "[key] cannot be null");
         return (keyPrefix + key).toLowerCase();
     }
 }

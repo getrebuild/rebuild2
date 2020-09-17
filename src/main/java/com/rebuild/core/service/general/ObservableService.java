@@ -117,7 +117,7 @@ public abstract class ObservableService extends Observable implements ServiceSpe
      */
     protected Record record(Record base) {
         final ID primary = base.getPrimary();
-        Assert.notNull(primary, "Record primary not be bull");
+        Assert.notNull(primary, "Record primary cannot be null");
 
         StringBuilder sql = new StringBuilder("select ");
         for (Iterator<String> iter = base.getAvailableFieldIterator(); iter.hasNext(); ) {

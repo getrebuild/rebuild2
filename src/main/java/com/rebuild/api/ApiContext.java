@@ -94,7 +94,7 @@ public class ApiContext {
     public String getParameterNotBlank(String name) throws ApiInvokeException {
         String value = getParameterMap().get(name);
         if (StringUtils.isBlank(value)) {
-            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Parameter [" + name + "] cannot be empty");
+            throw new ApiInvokeException(ApiInvokeException.ERR_BADPARAMS, "Parameter [" + name + "] cannot be null");
         }
         return value;
     }

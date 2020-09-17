@@ -57,7 +57,7 @@ public class GeneralListControl extends EntityController {
         }
 
         if (!Application.getPrivilegesManager().allowRead(user, thatEntity.getEntityCode())) {
-            response.sendError(403, getLang(request, "YouNoPrivilegeAccessSome", "Page"));
+            response.sendError(403, getLang(request, "YouNoPermissionAccessSome", "Page"));
             return null;
         }
 

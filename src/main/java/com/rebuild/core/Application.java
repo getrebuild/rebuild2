@@ -8,6 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core;
 
 import cn.devezhao.bizz.security.AccessDeniedException;
+import cn.devezhao.commons.ObjectUtils;
 import cn.devezhao.commons.excel.Cell;
 import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.Query;
@@ -140,9 +141,9 @@ public class Application {
 
                 if (success) {
                     String infos = RebuildBanner.formatSimple(
-                            "Rebuild boot successful in " + (System.currentTimeMillis() - time) + " ms.",
-                            "AUTHORITY : " + StringUtils.join(License.queryAuthority().values(), " | "),
-                            "LOCAL URL : " + localUrl);
+                            "Rebuild (" + VER + ") boot successful in " + (System.currentTimeMillis() - time) + " ms.",
+                            "License   : " + StringUtils.join(License.queryAuthority().values(), " | "),
+                            "Local URL : " + localUrl);
                     LOG.info(infos);
                 }
 
@@ -182,7 +183,15 @@ public class Application {
         }
 
         // 升级数据库
-        UpgradeDatabase.getInstance().upgradeQuietly();
+        new UpgradeDatabase().upgradeQuietly();
+
+        // 版本升级会清除缓存
+        int lastBuild = ObjectUtils.toInt(RebuildConfiguration.get(ConfigurationItem.AppBuild, true), 0);
+        if (lastBuild < BUILD) {
+            LOG.warn("CLEAR ALL CACHE AFTER THE FIRST UPGRADE : " + BUILD);
+            Installer.clearAllCache();
+            RebuildConfiguration.set(ConfigurationItem.AppBuild, BUILD);
+        }
 
         // 刷新配置缓存
         for (ConfigurationItem item : ConfigurationItem.values()) {

@@ -119,7 +119,7 @@ public class TestSupport {
             Entity testEntity = MetadataHelper.getEntity(entityName);
 
             for (DisplayType dt : DisplayType.values()) {
-                if (dt == DisplayType.ID || dt == DisplayType.LOCATION || dt == DisplayType.ANYREFERENCE) continue;
+                if (dt == DisplayType.ID || dt == DisplayType.LOCATION || dt == DisplayType.ANYREFERENCE || dt == DisplayType.N2NREFERENCE) continue;
 
                 String fieldName = dt.name().toUpperCase();
                 if (BlackList.isBlack(fieldName)) fieldName += "1";
@@ -142,16 +142,16 @@ public class TestSupport {
             }
         }
 
-        if (!MetadataHelper.containsEntity(Account)) {
+        if (!MetadataHelper.containsEntity(SalesOrder)) {
             String metaschema = FileUtils.readFileToString(
-                    ResourceUtils.getFile("classpath:metaschema.Account.json"));
+                    ResourceUtils.getFile("classpath:schema-SalesOrder.json"));
             MetaschemaImporter importer = new MetaschemaImporter(JSON.parseObject(metaschema));
             TaskExecutors.run(importer.setUser(UserService.ADMIN_USER));
         }
 
-        if (!MetadataHelper.containsEntity(SalesOrder)) {
+        if (!MetadataHelper.containsEntity(Account)) {
             String metaschema = FileUtils.readFileToString(
-                    ResourceUtils.getFile("classpath:metaschema.SalesOrder.json"));
+                    ResourceUtils.getFile("classpath:schema-Account.json"));
             MetaschemaImporter importer = new MetaschemaImporter(JSON.parseObject(metaschema));
             TaskExecutors.run(importer.setUser(UserService.ADMIN_USER));
         }

@@ -176,7 +176,7 @@ public class ProjectManager implements ConfigManager {
      * @return
      */
     public ConfigBean[] getPlansOfProject(ID projectId) {
-        Assert.notNull(projectId, "[projectId] not be null");
+        Assert.notNull(projectId, "[projectId] cannot be null");
 
         final String ckey = CKEY_PLAN + projectId;
         ConfigBean[] cache = (ConfigBean[]) Application.getCommonsCache().getx(ckey);

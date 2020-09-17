@@ -22,9 +22,9 @@ public class UpgradeDatabaseTest extends TestSupport {
     @Test
     public void testUpgrade() throws Exception {
         // It's okay
-        UpgradeDatabase.getInstance().upgrade();
+        new UpgradeDatabase().upgrade();
         // It's okay too
-        UpgradeDatabase.getInstance().upgrade();
+        new UpgradeDatabase().upgrade();
     }
 
     @Test

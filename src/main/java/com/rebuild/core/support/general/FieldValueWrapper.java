@@ -29,6 +29,7 @@ import com.rebuild.core.service.NoRecordFoundException;
 import com.rebuild.core.service.approval.ApprovalState;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.util.Assert;
 
 import java.text.DecimalFormat;
 
@@ -332,10 +333,7 @@ public class FieldValueWrapper {
      * @throws NoRecordFoundException If no record found
      */
     public static String getLabel(ID id, String defaultValue) throws NoRecordFoundException {
-        if (id == null) {
-            throw new NoRecordFoundException("[id] must not be null");
-        }
-
+        Assert.notNull(id, "[id] cannot be null");
         Entity entity = MetadataHelper.getEntity(id.getEntityCode());
 
         if (id.getEntityCode() == EntityHelper.ClassificationData) {

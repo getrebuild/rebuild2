@@ -12,6 +12,7 @@ import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.setup.Installer;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.data.relational.core.sql.In;
 import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
@@ -94,14 +95,7 @@ public class AdminCli {
 
         String name = commands[1];
         if ("clean".equals(name)) {
-            if (Installer.isUseRedis()) {
-                try (Jedis jedis = Application.getCommonsCache().getJedisPool().getResource()) {
-                    jedis.flushAll();
-                }
-            } else {
-                Application.getCommonsCache().getEhcacheCache().clear();
-            }
-
+            Installer.clearAllCache();
         } else {
             result = "Bad arguments";
         }
