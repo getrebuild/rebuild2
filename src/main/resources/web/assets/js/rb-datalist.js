@@ -179,6 +179,8 @@ class RbList extends React.Component {
 
     // 首次由 AdvFilter 加载
     if (wpc.advFilter !== true) this.fetchList(this.__buildQuick())
+
+    $(document).on('keydown', (e) => this._keyEvent(e))
   }
 
   fetchList(filter) {
@@ -333,6 +335,29 @@ class RbList extends React.Component {
 
     $stopEvent(e)
     return false
+  }
+
+  _tryActive($el) {
+    if ($el.length === 1) {
+      this._clickRow({ target: $el.find('.custom-checkbox') }, true)
+    }
+  }
+
+  _keyEvent(e) {
+    if (!$(e.target).is('body')) return
+    if (!(e.keyCode === 40 || e.keyCode === 38 || e.keyCode === 13)) return
+
+    const $chk = $(this._rblistBody).find('>tr .custom-control-input:checked').last()
+    if ($chk.length === 0) return
+
+    const $tr = $chk.eq(0).parents('tr')
+    if (e.keyCode === 40) {
+      this._tryActive($tr.next())
+    } else if (e.keyCode === 38) {
+      this._tryActive($tr.prev())
+    } else {
+      $('.J_view').trigger('click')
+    }
   }
 
   // 外部接口
@@ -586,12 +611,12 @@ CellRenders.addRender('PHONE', function (v, s, k) {
 })
 
 const APPROVAL_STATE_CLAZZs = {
-  审批中: 'warning',
   PROCESSING: 'warning',
-  驳回: 'danger',
   REJECTED: 'danger',
-  通过: 'success',
   APPROVED: 'success',
+  '审批中': 'warning',
+  '驳回': 'danger',
+  '通过': 'success',
 }
 CellRenders.addRender('STATE', function (v, s, k) {
   if (k.endsWith('.approvalState')) {

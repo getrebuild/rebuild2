@@ -330,7 +330,7 @@ class FileShare extends RbModalHandler {
               {EXPIRES_TIME.map((item) => {
                 return (
                   <li key={`time-${item[0]}`} className={`list-inline-item ${this.state.time === item[0] && 'active'}`}>
-                    <a onClick={this.changTime} data-time={item[0]}>
+                    <a onClick={this.changTime} data-time={item[0]} _title={$lang('Validity')}>
                       {item[1]}
                     </a>
                   </li>

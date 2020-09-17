@@ -11,7 +11,6 @@ import cn.devezhao.commons.CodecUtils;
 import cn.devezhao.commons.web.ServletUtils;
 import com.rebuild.core.Application;
 import com.rebuild.core.RebuildException;
-import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.i18n.LanguageBundle;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.web.BaseController;

@@ -122,12 +122,12 @@ class LevelBox extends React.Component {
           </div>
         </form>
         <div className="rb-scroller mt-3">
-          <ol className="dd-list unset-list">
+          <ol className="dd-list unset-list" _title={$lang('NoClassData')}>
             {(this.state.items || []).map((item) => {
               const active = this.state.activeId === item[0]
               return (
                 <li className={`dd-item ${active ? ' active' : ''}`} key={item[0]} onClick={() => this.clickItem(item[0])}>
-                  <div className={`dd-handle ${item[3] ? ' text-disabled' : ''}`}>
+                  <div className={`dd-handle ${item[3] ? ' text-disabled' : ''}`} title={item[3] ? $lang('Disabled') : null}>
                     {item[1]}
                     {item[3] && <small />}
                   </div>

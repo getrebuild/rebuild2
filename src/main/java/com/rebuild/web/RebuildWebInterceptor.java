@@ -158,23 +158,24 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
      * @return
      */
     private String detectLocale(HttpServletRequest request) {
-        // 1. Session
+        // 0. Session
         String locale = (String) ServletUtils.getSessionAttribute(request, AppUtils.SK_LOCALE);
+        if (locale != null) return locale;
+
+        // 1. Cookie
+        locale = ServletUtils.readCookie(request, LanguageControl.CK_LOCALE);
         if (locale == null) {
-            // 2. Cookie
-            locale = ServletUtils.readCookie(request, LanguageControl.CK_LOCALE);
-            if (locale == null) {
-                // 3. User-Local
-                locale = request.getLocale().getLanguage();
-            }
+            // 2. User-Local
+            locale = request.getLocale().getLanguage();
         }
 
-        if (Application.getLanguage().available(locale)) {
-            return locale;
+        // 3. Default
+        if (!Application.getLanguage().available(locale)) {
+            locale = RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
         }
 
-        // 4. Default
-        return RebuildConfiguration.get(ConfigurationItem.DefaultLanguage);
+        ServletUtils.setSessionAttribute(request, AppUtils.SK_LOCALE, locale);
+        return locale;
     }
 
     /**

@@ -132,8 +132,9 @@ body {
 }
 
 .text-disabled {
-  color: #aaa;
+  color: #aaa !important;
   font-style: italic;
+  cursor: default;
 }
 
 .text-underline {
@@ -163,7 +164,7 @@ body {
 }
 
 .text-none:empty::after {
-  content: '无';
+  content: attr(_title);
   color: #999;
 }
 
@@ -2570,7 +2571,7 @@ form {
   left: 108px;
 }
 
-.timeline.approved-steps > div.joint0 {
+.timeline.approved-steps > div.no-joint {
   border-right: 3px solid #409eff;
   border-radius: 9px;
 }
@@ -2588,16 +2589,12 @@ form {
 
 .timeline.approved-steps > div.joint::after {
   position: absolute;
-  content: '会签';
+  content: attr(_title);
   right: -35px;
   top: 50%;
   margin-top: -10px;
   font-size: 12px;
   color: #777;
-}
-
-.timeline.approved-steps > div.joint.or::after {
-  content: '或签';
 }
 
 .timeline.approved-steps .timeline-item {
@@ -3011,6 +3008,10 @@ form {
 .file-share .expires ul li.active a {
   background-color: #4285f4;
   color: #fff;
+}
+
+.file-share .expires ul li.active a::after {
+  content: attr(_title);
 }
 
 .file-share .form-control {
@@ -3573,7 +3574,7 @@ a.avatar.x26 img {
 
 .select2-container--default.warning-data-filter .select2-results::after {
   display: block;
-  content: '当前字段已启用数据过滤';
+  content: attr(_title);
   background-color: #f5f5f5;
   color: #aaa;
   padding: 5px 10px;

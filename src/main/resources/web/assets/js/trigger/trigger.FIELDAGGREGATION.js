@@ -107,7 +107,7 @@ class ContentFieldAggregation extends ActionContentSpec {
                 </div>
                 <div className="col-5">
                   <div className={this.state.calcMode === 'FORMULA' ? '' : 'hide'}>
-                    <div className="form-control-plaintext formula" ref={(c) => (this._$formula = c)} onClick={this.showFormula}></div>
+                    <div className="form-control-plaintext formula" _title={$lang('CalcFORMULA')} ref={(c) => (this._$formula = c)} onClick={this.showFormula}></div>
                     <p>
                       {$lang('CalcFORMULA')} ({$lang('SourceField')})
                     </p>
@@ -331,7 +331,7 @@ class FormulaCalc extends RbAlert {
   renderContent() {
     return (
       <div className="formula-calc">
-        <div className="form-control-plaintext formula mb-2" ref={(c) => (this._$formula = c)}></div>
+        <div className="form-control-plaintext formula mb-2" _title={$lang('CalcFORMULA')} ref={(c) => (this._$formula = c)}></div>
         <div className="row">
           <div className="col-6">
             <div className="fields rb-scroller" ref={(c) => (this._$fields = c)}>

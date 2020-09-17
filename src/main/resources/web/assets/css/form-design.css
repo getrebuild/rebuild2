@@ -131,9 +131,13 @@ See LICENSE and COMMERCIAL in the project root for license information.
 }
 
 .form-preview .divider .dd-handle > span:empty::after {
-  content: '分栏线';
+  content: attr(_title);
   font-style: italic;
   color: #999;
+}
+
+.form-preview .divider .dd-handle:hover > span:empty::after {
+  color: #fff;
 }
 
 .form-preview .dd-item,
@@ -142,8 +146,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 }
 
 .field-list {
-  padding: 0 20px;
-  padding-bottom: 35px;
+  padding: 0 20px 35px;
 }
 
 .field-list .dd-item .dd-handle {
@@ -156,7 +159,6 @@ See LICENSE and COMMERCIAL in the project root for license information.
   float: right;
   font-size: 1.6rem;
   color: #999;
-  float: right;
 }
 
 .field-list .dd-item:hover .dd-handle::before {

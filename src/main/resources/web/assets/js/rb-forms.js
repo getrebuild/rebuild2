@@ -1016,12 +1016,13 @@ class RbFormReference extends RbFormElement {
 
   renderElement() {
     if (this.props.readonly) return super.renderElement(this.props.value ? this.props.value.text : null)
-    // return <select ref={(c) => this._fieldValue = c} className="form-control form-control-sm" />
+
+    const hasDataFilter = this.props.referenceDataFilter && (this.props.referenceDataFilter.items || []).length > 0
     return (
       <div className="input-group datetime-field">
-        <select ref={(c) => (this._fieldValue = c)} className="form-control form-control-sm" />
+        <select ref={(c) => (this._fieldValue = c)} className="form-control form-control-sm" title={hasDataFilter ? $lang('FieldUseDataFilter') : null} />
         <div className="input-group-append">
-          <button className="btn btn-secondary" type="button" onClick={this.showSearch}>
+          <button className="btn btn-secondary" type="button" onClick={this.showSearcher}>
             <i className="icon zmdi zmdi-search" />
           </button>
         </div>
@@ -1062,12 +1063,10 @@ class RbFormReference extends RbFormElement {
     } else {
       const entity = this.props.$$$parent.props.entity
       const field = this.props.field
-      const hasDataFilter = this.props.referenceDataFilter && (this.props.referenceDataFilter.items || []).length > 0
       this.__select2 = $initReferenceSelect2(this._fieldValue, {
         name: field,
         label: this.props.label,
         entity: entity,
-        appendClass: hasDataFilter ? 'warning-data-filter' : '',
       })
 
       const val = this.state.value
@@ -1111,7 +1110,7 @@ class RbFormReference extends RbFormElement {
     } else this.__select2.val(null).trigger('change')
   }
 
-  showSearch = () => {
+  showSearcher = () => {
     const that = this
     referenceSearch__call = function (selected) {
       selected = selected[0]

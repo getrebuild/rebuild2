@@ -584,11 +584,10 @@ class ApprovalStepViewer extends React.Component {
     })
     if (sss.length < 2) return sss
 
-    let clazz = 'joint0'
-    if (s[0].signMode === 'OR') clazz = 'joint or'
-    else if (s[0].signMode === 'AND') clazz = 'joint'
+    const sm = s[0].signMode
+    const clazz = sm === 'OR' || sm === 'AND' ? 'joint' : 'no-joint'
     return (
-      <div key={kp} className={clazz}>
+      <div key={kp} className={clazz} _title={sm === 'OR' ? $lang('SignOr') : sm === 'AND' ? $lang('SignAnd') : null}>
         {sss}
       </div>
     )

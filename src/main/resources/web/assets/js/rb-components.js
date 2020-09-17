@@ -423,7 +423,7 @@ class UserSelector extends React.Component {
         return (
           <li key={`o-${item.id}`} className="select2-results__option" data-id={item.id} onClick={(e) => this.clickItem(e)}>
             <i className={`zmdi ${!this.props.hideSelection && this.containsItem(item.id) ? ' zmdi-check' : ''}`}></i>
-            {this.state.tabType === 'User' && <img src={`${rb.baseUrl}/account/user-avatar/${item.id}`} className="avatar" />}
+            {this.state.tabType === 'User' && <img alt="Avatar" src={`${rb.baseUrl}/account/user-avatar/${item.id}`} className="avatar" />}
             <span className="text">{item.text}</span>
           </li>
         )
@@ -583,6 +583,16 @@ class UserSelector extends React.Component {
     if ($el && $el.length === 1) {
       $active.removeClass('active')
       $el.addClass('active')
+
+      const st = $(this._scroller).scrollTop()
+      const et = $el.position().top
+      if (et >= 0) {
+        const top = et + st - (222 - 36)  // maxHeight - elementHeight
+        if (top > 0) $(this._scroller).scrollTop(top)
+      } else {
+        const top = st + et
+        if (top >= 0) $(this._scroller).scrollTop(top)
+      }
     }
   }
 

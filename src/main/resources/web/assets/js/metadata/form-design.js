@@ -118,7 +118,7 @@ const render_item = function (data) {
   const item = $('<div class="dd-item"></div>').appendTo('.form-preview')
   if (data.isFull === true) item.addClass('w-100')
 
-  const handle = $(`<div class="dd-handle J_field" data-field="${data.fieldName}" data-label="${data.fieldLabel}"><span>${data.fieldLabel}</span></div>`).appendTo(item)
+  const handle = $(`<div class="dd-handle J_field" data-field="${data.fieldName}" data-label="${data.fieldLabel}"><span _title="${$lang('Divider')}">${data.fieldLabel}</span></div>`).appendTo(item)
   if (data.creatable === false) handle.addClass('readonly')
   else if (data.nullable === false) handle.addClass('not-nullable')
   // 填写提示

@@ -8,9 +8,5 @@
     "enable": true
   },
   "eslint.onIgnoredFiles": "warn",
-  "eslint.validate": ["javascript", "javascriptreact"],
-  "prettier.semi": false,
-  "prettier.singleQuote": true,
-  "prettier.bracketSpacing": true,
-  "prettier.printWidth": 200
+  "eslint.validate": ["javascript", "javascriptreact"]
 }
