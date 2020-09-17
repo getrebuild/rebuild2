@@ -18,6 +18,7 @@ import com.rebuild.core.support.general.FieldValueWrapper;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.service.feeds.FeedsType;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
@@ -64,7 +65,7 @@ public class RelatedListControl extends BaseController {
                 nameValue = FieldValueWrapper.NO_LABEL_PREFIX + o[0].toString().toUpperCase();
             }
             o[1] = nameValue;
-            o[2] = CommonsUtils.formatClientDate((Date) o[2]);
+            o[2] = I18nUtils.formatDate((Date) o[2]);
         }
 
         JSON ret = JSONUtils.toJSONObject(

@@ -14,6 +14,7 @@ import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.approval.ApprovalState;
 import com.rebuild.core.service.notification.MessageBuilder;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
@@ -104,7 +105,7 @@ public class NotificationControl extends BaseController {
             Object[] m = array[i];
             m[0] = new Object[] { m[0], UserHelper.getName((ID) m[0]) };
             m[1] = MessageBuilder.formatMessage((String) m[1], !preview, true);
-            m[2] = CommonsUtils.formatClientDate((Date) m[2]);
+            m[2] = I18nUtils.formatDate((Date) m[2]);
             array[i] = m;
         }
         writeSuccess(response, array);
@@ -127,7 +128,7 @@ public class NotificationControl extends BaseController {
             Object[] m = array[i];
             m[0] = new Object[]{m[0], UserHelper.getName((ID) m[0])};
             m[1] = MessageBuilder.formatMessage((String) m[1]);
-            m[2] = CommonsUtils.formatClientDate((Date) m[2]);
+            m[2] = I18nUtils.formatDate((Date) m[2]);
 
             // 审批状态
             ID approvalStep = (ID) m[3];

@@ -22,6 +22,7 @@ import com.rebuild.core.service.feeds.FeedsHelper;
 import com.rebuild.core.service.feeds.FeedsScope;
 import com.rebuild.core.service.feeds.FeedsType;
 import com.rebuild.core.service.query.AdvFilterParser;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
@@ -229,8 +230,8 @@ public class FeedsListControl extends BaseController {
         item.put("id", o[0]);
         item.put("self", o[1].equals(user));
         item.put("createdBy", new Object[]{o[1], UserHelper.getName((ID) o[1])});
-        item.put("createdOn", CommonsUtils.formatClientDate((Date) o[2]));
-        item.put("modifedOn", CommonsUtils.formatClientDate((Date) o[3]));
+        item.put("createdOn", I18nUtils.formatDate((Date) o[2]));
+        item.put("modifedOn", I18nUtils.formatDate((Date) o[3]));
         item.put("content", FeedsHelper.formatContent((String) o[4]));
         if (o[5] != null) {
             item.put("images", JSON.parse((String) o[5]));

@@ -166,7 +166,7 @@ class PlanEdit extends RbFormHandler {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">工作流状态</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('PlanStatus')}</label>
             <div className="col-sm-7">
               <label className="custom-control custom-control-sm custom-radio mb-1 mt-1">
                 <input className="custom-control-input" type="radio" name="flowStatus" value="1" checked={~~this.state.flowStatus === 1} onChange={this.handleChange} />

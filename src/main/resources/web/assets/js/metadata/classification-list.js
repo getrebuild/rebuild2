@@ -28,8 +28,7 @@ class GridList extends React.Component {
                     {item[1]}
                   </a>
                   <p className="text-muted text-truncate">
-                    {~~item[3] + 1}
-                    {$lang('XLevelClass')}
+                    {$lang('XLevelClass').replace('%d', ~~item[3] + 1)}
                   </p>
                 </div>
                 <div className="card-footer card-footer-contrast">
@@ -37,7 +36,7 @@ class GridList extends React.Component {
                     <a onClick={() => this._handleEdit(item)}>
                       <i className="zmdi zmdi-edit"></i>
                     </a>
-                    <a onClick={() => this._handleDelete(item[0])} className="danger">
+                    <a onClick={() => this._handleDelete(item[0])} className="danger-hover">
                       <i className="zmdi zmdi-delete"></i>
                     </a>
                   </div>

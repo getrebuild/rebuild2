@@ -9,6 +9,7 @@ package com.rebuild.core.metadata;
 
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.Field;
+import cn.devezhao.persist4j.dialect.FieldType;
 import cn.devezhao.persist4j.engine.ID;
 import cn.devezhao.persist4j.metadata.BaseMeta;
 import com.rebuild.core.Application;
@@ -94,7 +95,7 @@ public class MetadataSorter {
     protected static Field[] sortFields(Field[] fields, DisplayType... usesTypes) {
         List<BaseMeta> fieldsList = new ArrayList<>();
         for (Field field : fields) {
-            if (!field.isQueryable()) continue;
+            if (!field.isQueryable() || field.getType() == FieldType.PRIMARY) continue;
 
             if (usesTypes.length == 0) {
                 fieldsList.add(field);

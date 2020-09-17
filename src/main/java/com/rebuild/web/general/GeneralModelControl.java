@@ -18,6 +18,7 @@ import com.rebuild.core.configuration.general.ViewAddonsManager;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.privileges.bizz.User;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.EntityController;
@@ -129,8 +130,8 @@ public class GeneralModelControl extends EntityController {
             return;
         }
 
-        recordMeta[0] = CommonsUtils.formatClientDate((Date) recordMeta[0]);
-        recordMeta[1] = CommonsUtils.formatClientDate((Date) recordMeta[1]);
+        recordMeta[0] = I18nUtils.formatDate((Date) recordMeta[0]);
+        recordMeta[1] = I18nUtils.formatDate((Date) recordMeta[1]);
 
         String[] owning = null;
         List<String[]> sharingList = null;

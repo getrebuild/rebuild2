@@ -32,7 +32,7 @@ class OnlineUserViewer extends RbModalHandler {
                   </td>
                   <td className="cell-detail">
                     <code className="text-break">{item.activeUrl || $lang('None')}</code>
-                    <span className="cell-detail-description">{item.activeTime}</span>
+                    <span className="cell-detail-description"><DateShow date={item.activeTime} /></span>
                   </td>
                   <td className="actions text-right">
                     <button className="btn btn-danger btn-sm bordered" type="button" onClick={() => this._killSession(item.user)}>

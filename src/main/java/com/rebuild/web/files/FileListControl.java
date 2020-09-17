@@ -22,6 +22,7 @@ import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.files.FilesHelper;
 import com.rebuild.core.service.project.ProjectManager;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
@@ -157,7 +158,7 @@ public class FileListControl extends BaseController {
             item.put("fileType", o[2]);
             item.put("fileSize", FileUtils.byteCountToDisplaySize(ObjectUtils.toLong(o[3])));
             item.put("uploadBy", new Object[]{o[4], UserHelper.getName((ID) o[4])});
-            item.put("uploadOn", CommonsUtils.formatClientDate((Date) o[5]));
+            item.put("uploadOn", I18nUtils.formatDate((Date) o[5]));
             item.put("inFolder", o[6]);
 
             ID relatedRecord = (ID) o[7];

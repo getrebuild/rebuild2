@@ -18,6 +18,7 @@ import com.rebuild.core.privileges.UserHelper;
 import com.rebuild.core.service.project.ProjectHelper;
 import com.rebuild.core.service.project.ProjectManager;
 import com.rebuild.core.service.query.AdvFilterParser;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
@@ -149,9 +150,9 @@ public class ProjectTaskControl extends BaseController {
         String taskNumber = o[1].toString();
         if (StringUtils.isNotBlank((String) o[0])) taskNumber = o[0] + "-" + taskNumber;
 
-        String createdOn = CommonsUtils.formatClientDate((Date) o[4]);
-        String deadline = CommonsUtils.formatClientDate((Date) o[5]);
-        String endTime = CommonsUtils.formatClientDate((Date) o[10]);
+        String createdOn = I18nUtils.formatDate((Date) o[4]);
+        String deadline = I18nUtils.formatDate((Date) o[5]);
+        String endTime = I18nUtils.formatDate((Date) o[10]);
 
         Object[] executor = o[6] == null ? null : new Object[]{o[6], UserHelper.getName((ID) o[6])};
 

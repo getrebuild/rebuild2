@@ -32,7 +32,7 @@ class ApprovalList extends ConfigList {
                 <a className="icon" title={$lang('Modify')} onClick={() => this.handleEdit(item)}>
                   <i className="zmdi zmdi-edit" />
                 </a>
-                <a className="icon" title={$lang('Delete')} onClick={() => this.handleDelete(item[0])}>
+                <a className="icon danger-hover" title={$lang('Delete')} onClick={() => this.handleDelete(item[0])}>
                   <i className="zmdi zmdi-delete" />
                 </a>
               </td>

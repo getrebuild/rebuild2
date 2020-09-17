@@ -91,8 +91,7 @@ class LevelBox extends React.Component {
       <div className={`col-md-3 ${this.state.turnOn ? '' : 'off'}`}>
         <div className="float-left">
           <h5 className="text-bold">
-            {~~this.props.level + 1}
-            {$lang('XLevelClass')}
+            {$lang('XLevelClass').replace('%d', ~~this.props.level + 1)}
           </h5>
         </div>
         {this.props.level < 1 ? null : (
@@ -310,7 +309,7 @@ const saveOpenLevel = function () {
           RbHighbar.error(res.error_msg)
         } else {
           saveOpenLevel_last = level
-          RbHighbar.success($lang('EnabledXLevelClassData').replace('%d', level + 1))
+          RbHighbar.success($lang('EnabledXLevelClass').replace('%d', level + 1))
         }
       })
     },

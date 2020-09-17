@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.privileges.UserHelper;
-import com.rebuild.utils.CommonsUtils;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
 import org.springframework.stereotype.Controller;
@@ -49,7 +49,7 @@ public class ProjectCommentControl extends BaseController {
         JSONArray ret = new JSONArray();
         for (Object[] o : array) {
             if (o[2] != null) o[2] = JSON.parse((String) o[2]);
-            o[3] = CommonsUtils.formatClientDate((Date) o[3]);
+            o[3] = I18nUtils.formatDate((Date) o[3]);
             o[4] = new Object[]{o[4], UserHelper.getName((ID) o[4])};
             o[5] = user.equals(o[5]);
 

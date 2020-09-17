@@ -7,11 +7,8 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.utils;
 
-import cn.devezhao.commons.CalendarUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
-import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -86,16 +83,5 @@ public class CommonsUtils {
             return text.substring(0, maxLength);
         }
         return text;
-    }
-
-    /**
-     * 客户端所需的日期时间格式（带时区偏移）
-     *
-     * @param date
-     * @return
-     */
-    public static String formatClientDate(Date date) {
-        if (date == null) return null;
-        return CalendarUtils.getUTCWithZoneDateTimeFormat().format(date);
     }
 }

@@ -25,6 +25,7 @@ import com.rebuild.core.service.dashboard.DashboardConfigService;
 import com.rebuild.core.service.dashboard.DashboardManager;
 import com.rebuild.core.service.dashboard.charts.ChartsFactory;
 import com.rebuild.core.service.dashboard.charts.builtin.BuiltinChart;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
@@ -150,7 +151,7 @@ public class DashboardControl extends BaseController {
 
             charts = Application.createQueryNoFilter(sql).setParameter(1, useBizz).array();
             for (Object[] o : charts) {
-                o[3] = CommonsUtils.formatClientDate((Date) o[3]);
+                o[3] = I18nUtils.formatDate((Date) o[3]);
                 o[4] = EasyMeta.getLabel(MetadataHelper.getEntity((String) o[4]));
             }
         }

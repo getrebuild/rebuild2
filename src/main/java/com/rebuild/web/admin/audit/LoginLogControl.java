@@ -8,7 +8,6 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web.admin.audit;
 
 import cn.devezhao.commons.web.WebUtils;
-import cn.devezhao.momentjava.Moment;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -16,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.configuration.general.DataListManager;
 import com.rebuild.core.privileges.UserHelper;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.utils.LocationUtils;
 import com.rebuild.web.EntityController;
@@ -55,10 +55,10 @@ public class LoginLogControl extends EntityController {
 
             Object[] active = (Object[]) s.getAttribute(OnlineSessionStore.SK_LASTACTIVE);
             if (active == null) {
-                active = new Object[]{"", "/dashboard/home"};
+                active = new Object[]{null, "/dashboard/home"};
             } else {
                 active = active.clone();
-                active[0] = Moment.moment(new Date((Long) active[0])).fromNow();
+                active[0] = I18nUtils.formatDate(new Date((Long) active[0]));
             }
 
             JSONObject item = JSONUtils.toJSONObject(

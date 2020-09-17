@@ -9,6 +9,7 @@ package com.rebuild.api;
 
 import cn.devezhao.commons.CalendarUtils;
 import com.alibaba.fastjson.JSON;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 
@@ -24,7 +25,7 @@ public class SystemTime extends BaseApi {
     public JSON execute(ApiContext context) {
         JSON data = JSONUtils.toJSONObject(
                 new String[]{"time"},
-                new Object[]{CommonsUtils.formatClientDate(CalendarUtils.now())});
+                new Object[]{I18nUtils.formatDate(CalendarUtils.now())});
         return formatSuccess(data);
     }
 }
