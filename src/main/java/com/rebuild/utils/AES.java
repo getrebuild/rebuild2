@@ -10,8 +10,6 @@ package com.rebuild.utils;
 import com.rebuild.core.RebuildException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -23,8 +21,6 @@ import javax.crypto.spec.SecretKeySpec;
  * @since 2017-1-2
  */
 public class AES {
-
-    private static final Logger LOG = LoggerFactory.getLogger(AES.class);
 
     /**
      * @param input
@@ -74,9 +70,8 @@ public class AES {
     public static String decryptQuietly(String input) {
         try {
             return decrypt(input);
-        } catch (RebuildException ex) {
-            LOG.warn("Decrypting error (Use blank input) : " + input);
-            return StringUtils.EMPTY;
+        } catch (RebuildException ignored) {
+            return null;
         }
     }
 

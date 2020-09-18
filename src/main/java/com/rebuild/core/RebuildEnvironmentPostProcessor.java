@@ -7,6 +7,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.core;
 
+import ch.qos.logback.classic.LoggerContext;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.setup.InstallState;
 import com.rebuild.core.support.setup.Installer;
@@ -14,6 +15,7 @@ import com.rebuild.utils.AES;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.StaticLoggerBinder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -41,10 +43,16 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication application) {
+        try {
+            ((LoggerContext) StaticLoggerBinder.getSingleton().getLoggerFactory()).resetTurboFilterList();
+        } catch (Exception ignored) {
+            // run 期间不打印日志为哪般
+        }
+
         // 从安装文件
         File file = getInstallFile();
         if (file != null && file.exists()) {
-            LOG.info("Loading file of install : " + file);
+            LOG.info("Loading install file : " + file);
 
             try {
                 Properties temp = PropertiesLoaderUtils.loadProperties(new FileSystemResource(file));
@@ -111,8 +119,12 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
             String value = ps.getProperty(name);
             if ((value.startsWith("AES(") || value.startsWith("aes(")) && value.endsWith(")")) {
                 value = value.substring(4, value.length() - 1);
-                value = AES.decryptQuietly(value);
-                ps.put(name, value);
+                String newValue = AES.decryptQuietly(value);
+                if (newValue == null) {
+                    newValue = StringUtils.EMPTY;
+                    LOG.warn("Decrypting error (Use blank string) : " + name);
+                }
+                ps.put(name, newValue);
             }
         }
     }

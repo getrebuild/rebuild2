@@ -14,7 +14,6 @@ import cn.devezhao.bizz.security.member.Role;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rebuild.core.Application;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
@@ -115,19 +114,17 @@ public class CombinedRole extends Role {
         }
 
         // DEBUG
-        if (Application.devMode()) {
-            for (Privileges priv : getAllPrivileges()) {
-                System.out.println();
-                System.out.println("Combined Privileges : " + priv.getIdentity());
-                System.out.println("M " + getDefinition(roleMain.getPrivileges(priv.getIdentity())));
-                for (Role ra : roleAppends) {
-                    System.out.println("A " + getDefinition(ra.getPrivileges(priv.getIdentity())));
-                }
-                System.out.println("--");
-                System.out.println("T " + getDefinition(getPrivileges(priv.getIdentity())));
-            }
-            System.out.println();
-        }
+//        for (Privileges priv : getAllPrivileges()) {
+//            System.out.println();
+//            System.out.println("Combined Privileges : " + priv.getIdentity());
+//            System.out.println("M " + getDefinition(roleMain.getPrivileges(priv.getIdentity())));
+//            for (Role ra : roleAppends) {
+//                System.out.println("A " + getDefinition(ra.getPrivileges(priv.getIdentity())));
+//            }
+//            System.out.println("--");
+//            System.out.println("T " + getDefinition(getPrivileges(priv.getIdentity())));
+//        }
+//        System.out.println();
     }
 
     private Privileges mergePrivileges(Privileges a, Privileges b) {
