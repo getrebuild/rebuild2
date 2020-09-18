@@ -2,6 +2,10 @@
 db.url: jdbc:mysql://127.0.0.1:3306/rebuild10?useUnicode=true&characterEncoding=UTF8&zeroDateTimeBehavior=convertToNull&useSSL=false&sessionVariables=default_storage_engine=InnoDB
 db.user: rebuild
 db.passwd: rebuild
+# Use built-in ehcache if redis not defined or unavailable
+db.CacheHost: 127.0.0.1
+db.CachePort: 16379
+db.CachePassword: AES(vXwBKYUosMpJRO9jeG9+IA==)
 
 # REBUILD
 rebuild:
@@ -19,11 +23,6 @@ rebuild:
   MailPassword: AES(vRnLDh4PVen2faMH+itQuFjzwBcWtCTO6qslkF36VAoKxKZT7YVYoWKjP8gPrEIS)
   MailAddr: hi@smtp.getrebuild.com
   MailName: REBUILD
-  # Cache - Use https://redis.io/
-  # Use built-in ehcache if redis not defined or unavailable
-  CacheHost: 127.0.0.1
-  CachePort: 16379
-  CachePassword: AES(vXwBKYUosMpJRO9jeG9+IA==)
 
 # TOMCAT (Built-in)
 server:

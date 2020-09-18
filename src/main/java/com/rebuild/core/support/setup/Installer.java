@@ -14,7 +14,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.RebuildEnvironmentPostProcessor;
 import com.rebuild.core.cache.RedisDriver;
-import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.License;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.utils.AES;
@@ -38,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import static com.rebuild.core.support.ConfigurationItem.*;
+
 /**
  * 系统安装
  *
@@ -48,13 +49,14 @@ public class Installer implements InstallState {
 
     private static final Logger LOG = LoggerFactory.getLogger(Installer.class);
 
+    public static final String CONF_PREFIX = "db.";
+
     // 快速安装模式（H2 数据库）
     private boolean quickMode;
 
     private JSONObject installProps;
 
-    private Installer() {
-    }
+    private Installer() { }
 
     /**
      * @param installProps
@@ -73,28 +75,31 @@ public class Installer implements InstallState {
         this.installDatabase();
         this.installAdmin();
 
-        // Save install state (file)
-        File dest = RebuildConfiguration.getFileOfData(INSTALL_FILE);
         Properties installProps = buildConnectionProps(null);
+
+        String dbPasswd = (String) installProps.remove("db.passwd");
+        if (StringUtils.isNotBlank(dbPasswd)) {
+            installProps.put("db.passwd", String.format("AES(%s)", AES.encrypt(dbPasswd)));
+        }
+
         // Redis
         JSONObject cacheProps = this.installProps.getJSONObject("cacheProps");
         if (cacheProps != null && !cacheProps.isEmpty()) {
-            installProps.put(ConfigurationItem.CacheHost.name(), cacheProps.getString(ConfigurationItem.CacheHost.name()));
-            installProps.put(ConfigurationItem.CachePort.name(), cacheProps.getString(ConfigurationItem.CachePort.name()));
-            installProps.put(ConfigurationItem.CachePassword.name(), cacheProps.getString(ConfigurationItem.CachePassword.name()));
-        }
-        // 加密
-        String dbPasswd = (String) installProps.remove("db.passwd");
-        installProps.put("db.passwd.aes",
-                StringUtils.isBlank(dbPasswd) ? StringUtils.EMPTY : AES.encrypt(dbPasswd));
-        String cachePasswd = (String) installProps.remove(ConfigurationItem.CachePassword.name());
-        installProps.put(ConfigurationItem.CachePassword.name() + ".aes",
-                StringUtils.isBlank(cachePasswd) ? StringUtils.EMPTY : AES.encrypt(cachePasswd));
+            installProps.put(CONF_PREFIX + CacheHost.name(), cacheProps.getString(CacheHost.name()));
+            installProps.put(CONF_PREFIX + CachePort.name(), cacheProps.getString(CachePort.name()));
 
+            String cachePasswd = cacheProps.getString(CachePassword.name());
+            if (StringUtils.isNotBlank(cachePasswd)) {
+                installProps.put(CONF_PREFIX + CachePassword.name(), String.format("AES(%s)", AES.encrypt(cachePasswd)));
+            }
+        }
+
+        // Save install state (file)
+        File dest = RebuildConfiguration.getFileOfData(INSTALL_FILE);
         try {
             FileUtils.deleteQuietly(dest);
             try (OutputStream os = new FileOutputStream(dest)) {
-                installProps.store(os, "INSTALL FILE FOR REBUILD. DON'T DELETE OR MODIFY IT!!!");
+                installProps.store(os, "INSTALL FILE FOR REBUILD (v2). DON'T DELETE OR MODIFY IT!!!");
                 LOG.warn("Stored install file : " + dest);
             }
 

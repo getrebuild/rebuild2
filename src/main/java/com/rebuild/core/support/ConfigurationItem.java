@@ -15,8 +15,12 @@ package com.rebuild.core.support;
  */
 public enum ConfigurationItem {
 
-    // 由系统指定的
+    // 系统指定
     SN, DBVer, AppBuild,
+    // 数据目录（命令行指定）
+    DataDirectory,
+    // 缓存服务（安装/配置文件指定）
+    CacheHost, CachePort, CacheUser, CachePassword,
 
     // 通用
     AppName("REBUILD"),
@@ -27,17 +31,11 @@ public enum ConfigurationItem {
     // 云存储
     StorageURL, StorageApiKey, StorageApiSecret, StorageBucket,
 
-    // 缓存服务
-    CacheHost, CachePort, CacheUser, CachePassword,
-
     // 邮件
     MailUser, MailPassword, MailAddr, MailName(AppName),
 
     // 短信
     SmsUser, SmsPassword, SmsSign(AppName),
-
-    // 数据目录
-    DataDirectory,
 
     // 新建记录表单不显示不可创建字段
     FormHideUncreateField(false),

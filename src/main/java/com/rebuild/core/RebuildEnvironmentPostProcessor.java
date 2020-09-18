@@ -9,7 +9,9 @@ package com.rebuild.core;
 
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.setup.InstallState;
+import com.rebuild.core.support.setup.Installer;
 import com.rebuild.utils.AES;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -50,10 +52,17 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
                 // 兼容 V1
                 for (String name : temp.stringPropertyNames()) {
                     String value = temp.getProperty(name);
-                    if (name.startsWith("db.") || name.startsWith("rebuild.")) {
+                    if (name.endsWith(".aes")) {
+                        name = name.substring(0, name.length() - 4);
+                        if (StringUtils.isNotBlank(value)) {
+                            value = "AES(" + value + ")";
+                        }
+                    }
+
+                    if (name.startsWith(Installer.CONF_PREFIX)) {
                         ps.put(name, value);
                     } else {
-                        ps.put(V2_PREFIX + name, value);
+                        ps.put(Installer.CONF_PREFIX + name, value);
                     }
                 }
 
@@ -71,16 +80,19 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
         for (ConfigurationItem item : ConfigurationItem.values()) {
             String name = V2_PREFIX + item.name();
             String value = env.getProperty(name);
-            if (value != null) {
-                decryptedProperties.put(name, value);
-            }
+            if (value != null) decryptedProperties.put(name, value);
+
+            name = Installer.CONF_PREFIX + item.name();
+            value = env.getProperty(name);
+            if (value != null) decryptedProperties.put(name, value);
         }
+
         aesDecrypt(decryptedProperties);
 
         // 必填项
-        if (env.getProperty("rebuild.CacheHost") == null) decryptedProperties.put("rebuild.CacheHost", "127.0.0.1");
-        if (env.getProperty("rebuild.CachePort") == null) decryptedProperties.put("rebuild.CachePort", "6379");
-        if (env.getProperty("rebuild.CachePassword") == null) decryptedProperties.put("rebuild.CachePassword", "");
+        if (env.getProperty("db.CacheHost") == null) decryptedProperties.put("db.CacheHost", "127.0.0.1");
+        if (env.getProperty("db.CachePort") == null) decryptedProperties.put("db.CachePort", "6379");
+        if (env.getProperty("db.CachePassword") == null) decryptedProperties.put("db.CachePassword", "");
 
         PropertiesPropertySource propertySource = new PropertiesPropertySource(".decrypted", decryptedProperties);
         env.getPropertySources().addFirst(propertySource);
