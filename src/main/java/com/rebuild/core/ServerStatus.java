@@ -17,6 +17,8 @@ import com.rebuild.core.support.setup.Installer;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -34,6 +36,8 @@ import java.util.List;
  * @since 10/31/2018
  */
 public final class ServerStatus {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ServerStatus.class);
 
     private static Date StartupTime;
 
@@ -189,9 +193,9 @@ public final class ServerStatus {
             this.error = error;
 
             if (success) {
-                Application.LOG.debug("Checking " + toString());
+                LOG.debug("Checking " + toString());
             } else {
-                Application.LOG.error("Checking " + toString());
+                LOG.error("Checking " + toString());
             }
         }
 

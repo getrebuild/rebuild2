@@ -10,6 +10,7 @@ package com.rebuild.core.support;
 import com.rebuild.core.RebuildException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.util.ResourceUtils;
 
@@ -176,7 +177,7 @@ public class RebuildConfiguration extends KVStorage {
         List<String> list = new ArrayList<>();
         for (ConfigurationItem item : items) {
             String v = get(item, !useCache);
-            if (v == null) {
+            if (StringUtils.isBlank(v)) {
                 return null;
             }
             list.add(v);

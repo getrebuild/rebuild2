@@ -62,21 +62,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 后台类入口
+ * 启动类/后台类入口
  *
  * @author zhaofang123@gmail.com
  * @since 05/18/2018
  */
 @SpringBootApplication(scanBasePackages = {"com.rebuild"}, exclude = {
-        DataSourceAutoConfiguration.class, JdbcRepositoriesAutoConfiguration.class, JdbcTemplateAutoConfiguration.class,
-        RedisAutoConfiguration.class, CacheAutoConfiguration.class})
+        DataSourceAutoConfiguration.class,
+        JdbcRepositoriesAutoConfiguration.class,
+        JdbcTemplateAutoConfiguration.class,
+        RedisAutoConfiguration.class,
+        CacheAutoConfiguration.class })
 @ImportResource("classpath:application-bean.xml")
 public class Application {
-//    extends SpringBootServletInitializer {
-//    @Override
-//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {}
 
-    protected static final Logger LOG = LoggerFactory.getLogger(Application.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
     /**
      * Rebuild Version

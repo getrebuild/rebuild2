@@ -382,7 +382,7 @@ class Task extends React.Component {
               </div>
               {!this.state.endTime && this.state.deadline && (
                 <div className="task-time">
-                  <span className={`badge badge-${this._outDeadline(this.state.deadline) ? 'danger' : 'primary'}`}>
+                  <span className={`badge badge-${$expired(this.state.deadline) ? 'danger' : 'primary'}`}>
                     {$lang('f.ProjectTask.deadline')} <DateShow date={this.state.deadline} />
                   </span>
                 </div>
@@ -427,10 +427,6 @@ class Task extends React.Component {
       this.setState({ status: status })
       __PlanRefs[this.props.planid].refreshTasks()
     })
-  }
-
-  _outDeadline(date) {
-    return moment(date.substr(0, 19)).isBefore(moment())
   }
 }
 

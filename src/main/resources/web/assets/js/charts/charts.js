@@ -632,8 +632,7 @@ class ApprovalList extends BaseChart {
                 className={`progress-bar bg-${s[0]} ${this.state.viewState === item[0] ? 'text-bold' : ''}`}
                 title={`${s[1]} : ${item[1]} (${sp})`}
                 style={{ width: sp }}
-                onClick={() => this._changeState(item[0])}
-              >
+                onClick={() => this._changeState(item[0])}>
                 {s[1]} ({item[1]})
               </div>
             )
@@ -670,7 +669,9 @@ class ApprovalList extends BaseChart {
                     <td className="user-avatar cell-detail user-info">
                       <img src={`${rb.baseUrl}/account/user-avatar/${item[0]}`} />
                       <span>{item[1]}</span>
-                      <span className="cell-detail-description">{item[2]}</span>
+                      <span className="cell-detail-description">
+                        <DateShow date={item[2]} />
+                      </span>
                     </td>
                     <td className="cell-detail">
                       <a href={`${rb.baseUrl}/app/list-and-view?id=${item[3]}`}>{item[4]}</a>
@@ -770,20 +771,18 @@ class FeedsSchedule extends BaseChart {
             </thead>
             <tbody>
               {data.map((item, idx) => {
-                // 超时
-                const timeover = item.scheduleLeft && item.scheduleLeft.substr(0, 1) === '-'
-                if (timeover) item.scheduleLeft = item.scheduleLeft.substr(1)
-
+                // 过期
+                const _expired = $expired(item.scheduleTime)
                 return (
                   <tr key={'schedule-' + idx}>
                     <td>
                       <a title={$lang('ViewDetails')} href={`${rb.baseUrl}/app/list-and-view?id=${item.id}`} className="content" dangerouslySetInnerHTML={{ __html: item.content }} />
                     </td>
                     <td className="cell-detail">
-                      <div>{item.scheduleTime}</div>
-                      <span className={`cell-detail-description ${timeover ? 'text-warning' : ''}`}>
-                        {item.scheduleLeft}
-                        {timeover ? ` (${$lang('Expires')})` : ''}
+                      <div>{item.scheduleTime.substr(0, 16)}</div>
+                      <span className={`cell-detail-description ${_expired ? 'text-warning' : ''}`}>
+                        {$fromNow(item.scheduleTime)}
+                        {_expired && ` (${$lang('Expires')})`}
                       </span>
                     </td>
                     <td className="actions text-right">

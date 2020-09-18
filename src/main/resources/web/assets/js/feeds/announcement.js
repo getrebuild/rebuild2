@@ -10,7 +10,7 @@ class AnnouncementModal extends React.Component {
   state = { ...this.props }
 
   render() {
-    const contentHtml = converEmoji(this.props.content.replace(/\n/g, '<br />'))
+    const contentHtml = $converEmoji(this.props.content.replace(/\n/g, '<br />'))
     return (
       <div className="modal" tabIndex={this.state.tabIndex || -1} ref={(c) => (this._dlg = c)}>
         <div className="modal-dialog modal-dialog-centered">

@@ -29,13 +29,13 @@ class FeedsPost extends React.Component {
           </li>
           <li className="list-inline-item">
             <a onClick={() => this.setState({ type: 4 })} className={`${activeType === 4 ? activeClass : ''}`}>
-              {$lang('FeedsType3')}
+              {$lang('FeedsType4')}
             </a>
           </li>
           {rb.isAdminUser && (
             <li className="list-inline-item">
               <a onClick={() => this.setState({ type: 3 })} className={`${activeType === 3 ? activeClass : ''}`}>
-                {$lang('FeedsType4')}
+                {$lang('FeedsType3')}
               </a>
             </li>
           )}

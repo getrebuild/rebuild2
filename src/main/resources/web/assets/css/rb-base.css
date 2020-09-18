@@ -20138,12 +20138,12 @@ fieldset[disabled] .btn-dark:hover {
   float: left;
 }
 
-.table tbody tr td.user-info span {
+.table tbody tr td.user-info > span {
   padding-left: 40px;
 }
 
 @media (max-width: 767.98px) {
-  .table tbody tr td.user-info span {
+  .table tbody tr td.user-info > span {
     padding-left: 0;
   }
 }

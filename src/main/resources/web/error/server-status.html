@@ -44,20 +44,20 @@
             </td>
           </tr>
           <tr th:each="s : ${status}">
-            <th>[[${s.name}]]</td>
+            <th>[[${s.name}]]</th>
             <td>
               <span class="text-success" th:if="${s.success}">OK</span>
               <span class="text-danger" th:if="${!s.success}">[[${s.error}]]</span>
             </td>
           </tr>
           <tr>
-            <th>Memory Usage</td>
+            <th>Memory Usage</th>
             <td>
               [[${MemoryUsage[1]}]]% ([[${MemoryUsage[0]}]]MB)
             </td>
           </tr>
           <tr>
-            <th>System Load</td>
+            <th>System Load</th>
             <td>
               [[${SystemLoad}]]
             </td>

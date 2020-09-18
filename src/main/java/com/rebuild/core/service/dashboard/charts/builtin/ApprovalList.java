@@ -8,7 +8,6 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.service.dashboard.charts.builtin;
 
 import cn.devezhao.commons.ObjectUtils;
-import cn.devezhao.momentjava.Moment;
 import cn.devezhao.persist4j.Entity;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
@@ -21,6 +20,7 @@ import com.rebuild.core.service.approval.ApprovalHelper;
 import com.rebuild.core.service.approval.ApprovalState;
 import com.rebuild.core.service.dashboard.charts.ChartData;
 import com.rebuild.core.support.general.FieldValueWrapper;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.core.support.i18n.Language;
 
 import java.util.*;
@@ -88,7 +88,7 @@ public class ApprovalList extends ChartData implements BuiltinChart {
             rearray.add(new Object[]{
                     s,
                     UserHelper.getName(s),
-                    Moment.moment((Date) o[1]).fromNow(),
+                    I18nUtils.formatDate((Date) o[1]),
                     o[2],
                     label,
                     o[3],

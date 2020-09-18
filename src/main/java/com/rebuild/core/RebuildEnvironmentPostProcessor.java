@@ -10,6 +10,8 @@ package com.rebuild.core;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.setup.InstallState;
 import com.rebuild.utils.AES;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -29,16 +31,18 @@ import java.util.Properties;
 @Component
 public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor, InstallState {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RebuildEnvironmentPostProcessor.class);
+
     private static final String V2_PREFIX = "rebuild.";
 
     private static ConfigurableEnvironment ENV_HOLD;
 
     @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+    public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication application) {
         // 从安装文件
         File file = getInstallFile();
         if (file != null && file.exists()) {
-            Application.LOG.info("Loading file of install : " + file);
+            LOG.info("Loading file of install : " + file);
 
             try {
                 Properties temp = PropertiesLoaderUtils.loadProperties(new FileSystemResource(file));
@@ -55,7 +59,7 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
 
                 aesDecrypt(ps);
                 PropertiesPropertySource installedSource = new PropertiesPropertySource(".rebuild", temp);
-                environment.getPropertySources().addFirst(installedSource);
+                env.getPropertySources().addFirst(installedSource);
 
             } catch (IOException ex) {
                 throw new IllegalStateException("Load file of install failed : " + file.toString(), ex);
@@ -66,16 +70,22 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
         Properties decryptedProperties = new Properties();
         for (ConfigurationItem item : ConfigurationItem.values()) {
             String name = V2_PREFIX + item.name();
-            String value = environment.getProperty(name);
+            String value = env.getProperty(name);
             if (value != null) {
                 decryptedProperties.put(name, value);
             }
         }
         aesDecrypt(decryptedProperties);
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(".decrypted", decryptedProperties);
-        environment.getPropertySources().addFirst(propertySource);
 
-        ENV_HOLD = environment;
+        // 必填项
+        if (env.getProperty("rebuild.CacheHost") == null) decryptedProperties.put("rebuild.CacheHost", "127.0.0.1");
+        if (env.getProperty("rebuild.CachePort") == null) decryptedProperties.put("rebuild.CachePort", "6379");
+        if (env.getProperty("rebuild.CachePassword") == null) decryptedProperties.put("rebuild.CachePassword", "");
+
+        PropertiesPropertySource propertySource = new PropertiesPropertySource(".decrypted", decryptedProperties);
+        env.getPropertySources().addFirst(propertySource);
+
+        ENV_HOLD = env;
     }
 
     /**

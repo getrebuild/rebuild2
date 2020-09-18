@@ -8,7 +8,6 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.service.dashboard.charts.builtin;
 
 import cn.devezhao.commons.CalendarUtils;
-import cn.devezhao.momentjava.Moment;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -16,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.service.dashboard.charts.ChartData;
 import com.rebuild.core.service.notification.MessageBuilder;
+import com.rebuild.core.support.i18n.I18nUtils;
 import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.JSONUtils;
 
@@ -57,7 +57,6 @@ public class FeedsSchedule extends ChartData implements BuiltinChart {
                 .setLimit(200)
                 .array();
 
-        final long nowTime = CalendarUtils.now().getTime();
         JSONArray list = new JSONArray();
         for (Object[] o : array) {
             // 有完成时间表示已完成
@@ -66,19 +65,13 @@ public class FeedsSchedule extends ChartData implements BuiltinChart {
                 continue;
             }
 
-            final Date date = (Date) o[1];
-            String scheduleTime = CalendarUtils.getUTCDateTimeFormat().format(date).substring(0, 16);
-            String fromNow = Moment.moment(date).fromNow();
-            if (nowTime > date.getTime()) {
-                fromNow = "-" + fromNow;
-            }
-
+            String scheduleTime = I18nUtils.formatDate((Date) o[1]);
             String content = (String) o[2];
             content = MessageBuilder.formatMessage(content);
 
             JSONObject item = JSONUtils.toJSONObject(
-                    new String[]{"id", "scheduleTime", "scheduleLeft", "content"},
-                    new Object[]{o[0], scheduleTime, fromNow, content});
+                    new String[]{"id", "scheduleTime", "content"},
+                    new Object[]{o[0], scheduleTime, content});
             list.add(item);
         }
 

@@ -4,7 +4,7 @@ Copyright (c) REBUILD <https://getrebuild.com/> and/or its owners. All rights re
 rebuild is dual-licensed under commercial and open source licenses (GPLv3).
 See LICENSE and COMMERCIAL in the project root for license information.
 */
-/* global converEmoji, FeedsEditor */
+/* global FeedsEditor */
 
 const FeedsSorts = {
   newer: $lang('FeedsSortNewer'),
@@ -532,7 +532,7 @@ class Pagination extends React.Component {
 // 渲染动态内容
 function __renderRichContent(e) {
   // 表情和换行不在后台转换，因为不同客户端所需的格式不同
-  const contentHtml = converEmoji(e.content.replace(/\n/g, '<br />'))
+  const contentHtml = $converEmoji(e.content.replace(/\n/g, '<br />'))
   const contentMore = e.contentMore || {}
   return (
     <div className="rich-content">
@@ -558,7 +558,8 @@ function __renderRichContent(e) {
         {e.relatedRecord && (
           <div>
             <span>
-              <i className={`icon zmdi zmdi-${e.relatedRecord.icon}`} /> {e.relatedRecord.entityLabel} :{' '}
+              <i className={`icon zmdi zmdi-${e.relatedRecord.icon}`} />
+              {` ${e.relatedRecord.entityLabel} : `}
             </span>
             <a href={`${rb.baseUrl}/app/list-and-view?id=${e.relatedRecord.id}`} title={$lang('ClickViewReleated')}>
               {e.relatedRecord.text}
