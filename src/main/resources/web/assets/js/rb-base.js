@@ -60,7 +60,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
     var v = $(item).attr('content')
     if (v === 'true') v = true
     else if (v === 'false') v = false
-    window.rb[k] = v
+    window.rb[k] = v || ''
   })
 
   $.ajaxSetup({

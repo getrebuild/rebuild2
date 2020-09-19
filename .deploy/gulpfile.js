@@ -67,6 +67,7 @@ function _assetsHex(file) {
 
 function compileHtml(cb) {
   return src(`${WEB_ROOT}/**/*.html`)
+    .pipe(filter(file => !/node_modules/.test(file.path)))
     .pipe(
       replace(/<script type="text\/babel">([\s\S]*)<\/script>/igm, (m, p) => {
         if (p.trim().length === 0) return '<!-- No script -->'
