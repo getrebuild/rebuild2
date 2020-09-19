@@ -26,8 +26,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -91,13 +91,7 @@ public class SMSender {
         params.put("from_name", specAccount[3]);
         params.put("subject", subject);
         if (useTemplate) {
-            Element mailbody;
-            try {
-                mailbody = getMailTemplate();
-            } catch (IOException e) {
-                LOG.error("Cannot load template for email", e);
-                return null;
-            }
+            Element mailbody = getMailTemplate();
 
             mailbody.selectFirst(".rb-title").text(subject);
             mailbody.selectFirst(".rb-content").html(content);
@@ -141,10 +135,11 @@ public class SMSender {
 
     /**
      * @return
-     * @throws IOException
      */
-    protected static Element getMailTemplate() throws IOException {
+    protected static Element getMailTemplate() {
         String content = CommonsUtils.getStringOfRes("i18n/email.zh_CN.html");
+        Assert.notNull(content, "Cannot load template of email");
+
         Document html = Jsoup.parse(content);
         return html.body();
     }

@@ -9,6 +9,8 @@ package com.rebuild.utils;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
@@ -23,6 +25,8 @@ import java.util.regex.Pattern;
  * @since 01/31/2019
  */
 public class CommonsUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CommonsUtils.class);
 
     private static final Pattern PATT_PLAINTEXT = Pattern.compile("[A-Za-z0-9_\\-\\u4e00-\\u9fa5]+");
 
@@ -97,12 +101,8 @@ public class CommonsUtils {
      * @return
      * @see org.springframework.util.ResourceUtils#getFile(URI)
      */
-    public static InputStream getStreamOfRes(String file) {
-        try {
-            return new ClassPathResource(file).getInputStream();
-        } catch (IOException ex) {
-            throw new IllegalArgumentException("Bad file path or name : " + file, ex);
-        }
+    public static InputStream getStreamOfRes(String file) throws IOException {
+        return new ClassPathResource(file).getInputStream();
     }
 
     /**
@@ -112,9 +112,12 @@ public class CommonsUtils {
      * @return
      * @throws IOException
      */
-    public static String getStringOfRes(String file) throws IOException {
+    public static String getStringOfRes(String file) {
         try (InputStream is = getStreamOfRes(file)) {
             return IOUtils.toString(is, "utf-8");
+        } catch (IOException ex) {
+            LOG.error("Cannot load file of res : " + file);
+            return null;
         }
     }
 }

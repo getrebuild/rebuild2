@@ -13,6 +13,7 @@ import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.utils.CommonsUtils;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,14 +67,8 @@ public class UrlSafe extends BaseController {
 
         // 首次
         if (TRUSTED_URLS == null) {
-            try {
-                String s = CommonsUtils.getStringOfRes("trusted-urls.json");
-                TRUSTED_URLS = JSON.parseArray(s);
-
-            } catch (IOException ignored) {
-                TRUSTED_URLS = JSONUtils.EMPTY_ARRAY;
-            }
-
+            String s = CommonsUtils.getStringOfRes("trusted-urls.json");
+            TRUSTED_URLS = JSON.parseArray(StringUtils.defaultIfBlank(s, JSONUtils.EMPTY_ARRAY_STR));
             TRUSTED_URLS.add("getrebuild.com");
         }
 

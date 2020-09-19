@@ -36,11 +36,7 @@ public class CommonPageResolver extends BaseController {
         String url = request.getRequestURI();
         url = url.substring(url.lastIndexOf("/") + 1);
 
-        String content = null;
-        try {
-            content = CommonsUtils.getStringOfRes("web/" + url);
-        } catch (IOException ignored) {
-        }
+        String content = CommonsUtils.getStringOfRes("web/" + url);
 
         if (content == null) {
             response.sendError(404);

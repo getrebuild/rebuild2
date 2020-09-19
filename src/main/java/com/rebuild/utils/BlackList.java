@@ -10,10 +10,6 @@ package com.rebuild.utils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import org.apache.commons.lang.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 
 /**
  * 黑名单词 src/main/resources/blacklist.json
@@ -23,8 +19,6 @@ import java.io.IOException;
  * @since 01/31/2019
  */
 public class BlackList {
-
-    private static final Logger LOG = LoggerFactory.getLogger(BlackList.class);
 
     private static JSONArray BLACKLIST = null;
 
@@ -36,18 +30,10 @@ public class BlackList {
      */
     public static boolean isBlack(String text) {
         if (BLACKLIST == null) {
-            try {
-                String s = CommonsUtils.getStringOfRes("blacklist.json");
-                BLACKLIST = JSON.parseArray(s);
-
-            } catch (IOException e) {
-                LOG.error("Cannot load [blacklist.json] file! This feature is missed : " + e);
-                BLACKLIST = JSONUtils.EMPTY_ARRAY;
-            }
+            String s = CommonsUtils.getStringOfRes("blacklist.json");
+            BLACKLIST = JSON.parseArray(s == null ? JSONUtils.EMPTY_ARRAY_STR : s);
         }
-
-        return BLACKLIST.contains(text.toLowerCase())
-                || isSqlKeyword(text);
+        return BLACKLIST.contains(text.toLowerCase()) || isSqlKeyword(text);
     }
 
     /**
