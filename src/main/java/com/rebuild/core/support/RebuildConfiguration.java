@@ -12,10 +12,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.springframework.util.ResourceUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,20 +80,6 @@ public class RebuildConfiguration extends KVStorage {
             }
         }
         return filepath == null ? temp : new File(temp, filepath);
-    }
-
-    /**
-     * 获取 classpath 下的配置文件
-     *
-     * @param file
-     * @return
-     */
-    public static File getFileOfRes(String file) {
-        try {
-            return ResourceUtils.getFile("classpath:" + file);
-        } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Bad file path or name : " + file);
-        }
     }
 
     /**

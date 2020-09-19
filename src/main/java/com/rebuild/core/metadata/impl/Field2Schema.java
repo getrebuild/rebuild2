@@ -258,7 +258,7 @@ public class Field2Schema {
 
         if (StringUtils.isNotBlank(refEntity)) {
             if (!MetadataHelper.containsEntity(refEntity)) {
-                throw new MetadataException(Language.getLang("SomeInvalid,RefEntity") + " : " + refEntity);
+                throw new MetadataException(Language.getLang("SomeInvalid", "RefEntity") + " : " + refEntity);
             }
             recordOfField.setString("refEntity", refEntity);
             if (cascade != null) {

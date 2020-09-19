@@ -78,12 +78,15 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         // 服务状态
         if (!Application.serversReady()) {
             boolean gotError = requestUri.endsWith("/error") || requestUri.contains("/error/");
-            if (gotError) return false;
-            
+
             if (checkInstalled()) {
                 LOG.error("Server Unavailable : " + requestUri);
-                sendRedirect(response, "/error/server-status", null);
-                return false;
+                if (gotError) {
+                    return true;
+                } else {
+                    sendRedirect(response, "/error/server-status", null);
+                    return false;
+                }
 
             } else if (!requestUri.contains("/setup/")) {
                 sendRedirect(response, "/setup/install", null);

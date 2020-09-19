@@ -8,11 +8,10 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.support.setup;
 
 import cn.devezhao.commons.ObjectUtils;
-import com.rebuild.core.support.RebuildConfiguration;
+import com.rebuild.utils.CommonsUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -37,7 +36,7 @@ public class UpgradeScriptReader {
      */
     public Map<Integer, String[]> read() throws IOException {
         List<String> sqlScripts;
-        try (InputStream is = new FileInputStream(RebuildConfiguration.getFileOfRes("scripts/db-upgrade.sql"))) {
+        try (InputStream is = CommonsUtils.getStreamOfRes("scripts/db-upgrade.sql")) {
             sqlScripts = IOUtils.readLines(is, "utf-8");
         }
 

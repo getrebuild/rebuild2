@@ -19,20 +19,17 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.state.StateSpec;
+import com.rebuild.utils.CommonsUtils;
 import com.rebuild.web.OnlineSessionStore;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -46,23 +43,18 @@ public class Language implements Initialization {
 
     private static final Logger LOG = LoggerFactory.getLogger(Language.class);
 
-    private static final String LB_PREFIX = "language.";
+    private static final String[] LOCALES = new String[] { "zh_CN", "en" };
 
-    private static final String LB_SUFFIX = ".json";
+    private static final String BUNDLE_FILE = "i18n/language.%s.json";
 
     private Map<String, LanguageBundle> bundleMap = new HashMap<>();
 
     @Override
     public void init() throws Exception {
-        File[] files = ResourceUtils.getFile("classpath:i18n/")
-                .listFiles((dir, name) -> name.startsWith(LB_PREFIX) && name.endsWith(LB_SUFFIX));
-
-        for (File file : Objects.requireNonNull(files)) {
-            String locale = file.getName().substring(LB_PREFIX.length());
-            locale = locale.substring(0, locale.length() - 5);
+        for (String locale : LOCALES) {
             LOG.info("Loading language bundle : " + locale);
 
-            try (InputStream is = new FileInputStream(file)) {
+            try (InputStream is = CommonsUtils.getStreamOfRes(String.format(BUNDLE_FILE, locale))) {
                 JSONObject o = JSON.parseObject(is, null);
                 LanguageBundle bundle = new LanguageBundle(locale, o, this);
                 bundleMap.put(locale, bundle);

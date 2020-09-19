@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Set;
 
 /**
@@ -24,7 +25,7 @@ import java.util.Set;
 public class TemplateExtractorTest extends TestSupport {
 
     @Test
-    public void testExtractVars() throws Exception {
+    public void testExtractVars() throws FileNotFoundException {
         File template = ResourceUtils.getFile("classpath:report-template-v2.xlsx");
         Set<String> vars = new TemplateExtractor(template, true).extractVars();
         System.out.println(vars);
@@ -32,7 +33,7 @@ public class TemplateExtractorTest extends TestSupport {
     }
 
     @Test
-    public void testTransformVars() throws Exception {
+    public void testTransformVars() throws FileNotFoundException {
         File template = ResourceUtils.getFile("classpath:report-template-v2.xlsx");
 
         Entity test = MetadataHelper.getEntity(TestAllFields);

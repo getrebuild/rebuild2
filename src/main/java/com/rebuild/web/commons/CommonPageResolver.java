@@ -8,16 +8,14 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.web.commons;
 
 import cn.devezhao.commons.web.ServletUtils;
+import com.rebuild.utils.CommonsUtils;
 import com.rebuild.web.BaseController;
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -38,11 +36,18 @@ public class CommonPageResolver extends BaseController {
         String url = request.getRequestURI();
         url = url.substring(url.lastIndexOf("/") + 1);
 
-        File file = ResourceUtils.getFile("classpath:web/" + url);
-        String content = FileUtils.readFileToString(file, "utf-8");
+        String content = null;
+        try {
+            content = CommonsUtils.getStringOfRes("web/" + url);
+        } catch (IOException ignored) {
+        }
 
-        ServletUtils.setContentType(response, ServletUtils.CT_PLAIN);
-        ServletUtils.write(response, content);
+        if (content == null) {
+            response.sendError(404);
+        } else {
+            ServletUtils.setContentType(response, ServletUtils.CT_PLAIN);
+            ServletUtils.write(response, content);
+        }
     }
 
     @GetMapping("/p/**")

@@ -39,6 +39,11 @@ public class LanguageTest extends TestSupport {
     }
 
     @Test
+    public void getMdLang() {
+        System.out.println("Support MD > " + Language.getLang("SystemFailureMemo"));
+    }
+
+    @Test
     public void replaceLangKey() {
         JSON resource = NavBuilder.instance.getNavPortal(UserService.ADMIN_USER);
         resource = Application.getLanguage().getDefaultBundle().replaceLangKey(resource);

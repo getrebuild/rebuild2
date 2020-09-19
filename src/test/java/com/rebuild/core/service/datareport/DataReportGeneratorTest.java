@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * @author devezhao
@@ -27,7 +28,7 @@ import java.io.File;
 public class DataReportGeneratorTest extends TestSupport {
 
     @Test
-    public void testGeneratorV2Simple() throws Exception {
+    public void testGeneratorV2Simple() throws FileNotFoundException {
         File template = ResourceUtils.getFile("classpath:report-template-v2.xlsx");
         ID record = addRecordOfTestAllFields(SIMPLE_USER);
 
@@ -36,7 +37,7 @@ public class DataReportGeneratorTest extends TestSupport {
     }
 
     @Test
-    public void testGeneratorV2() throws Exception {
+    public void testGeneratorV2() throws FileNotFoundException {
         File template = ResourceUtils.getFile("classpath:report-template-v2.xlsx");
 
         Entity SalesOrder999 = MetadataHelper.getEntity(SalesOrder);

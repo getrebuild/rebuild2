@@ -27,7 +27,6 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -145,8 +144,8 @@ public class SMSender {
      * @throws IOException
      */
     protected static Element getMailTemplate() throws IOException {
-        File tmp = RebuildConfiguration.getFileOfRes("i18n/email.zh_CN.html");
-        Document html = Jsoup.parse(tmp, "utf-8");
+        String content = CommonsUtils.getStringOfRes("i18n/email.zh_CN.html");
+        Document html = Jsoup.parse(content);
         return html.body();
     }
 

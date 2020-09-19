@@ -17,18 +17,16 @@ import com.rebuild.core.cache.RedisDriver;
 import com.rebuild.core.support.License;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.utils.AES;
+import com.rebuild.utils.CommonsUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-import org.springframework.util.ResourceUtils;
 import redis.clients.jedis.Jedis;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -223,8 +221,10 @@ public class Installer implements InstallState {
      * @throws IOException
      */
     protected String[] getDbInitScript() throws IOException {
-        File script = ResourceUtils.getFile("classpath:scripts/db-init.sql");
-        List<?> LS = FileUtils.readLines(script, "utf-8");
+        List<String> LS;
+        try (InputStream is = CommonsUtils.getStreamOfRes("scripts/db-init.sql")) {
+            LS = IOUtils.readLines(is, "utf-8");
+        }
 
         List<String> SQLS = new ArrayList<>();
         StringBuilder SQL = new StringBuilder();

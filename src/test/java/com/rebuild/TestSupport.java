@@ -52,7 +52,7 @@ public class TestSupport {
         RebuildStarted = true;
 
         try {
-            addTestEntities(false);
+            addTestEntities(true);
         } catch (Exception ex) {
             LOG.error("Add entities of test error!", ex);
             System.exit(-1);
@@ -144,16 +144,16 @@ public class TestSupport {
             }
         }
 
-        if (!MetadataHelper.containsEntity(SalesOrder)) {
+        if (!MetadataHelper.containsEntity(Account)) {
             String metaschema = FileUtils.readFileToString(
-                    ResourceUtils.getFile("classpath:schema-SalesOrder.json"));
+                    ResourceUtils.getFile("classpath:schema-Account.json"));
             MetaschemaImporter importer = new MetaschemaImporter(JSON.parseObject(metaschema));
             TaskExecutors.run(importer.setUser(UserService.ADMIN_USER));
         }
 
-        if (!MetadataHelper.containsEntity(Account)) {
+        if (!MetadataHelper.containsEntity(SalesOrder)) {
             String metaschema = FileUtils.readFileToString(
-                    ResourceUtils.getFile("classpath:schema-Account.json"));
+                    ResourceUtils.getFile("classpath:schema-SalesOrder.json"));
             MetaschemaImporter importer = new MetaschemaImporter(JSON.parseObject(metaschema));
             TaskExecutors.run(importer.setUser(UserService.ADMIN_USER));
         }

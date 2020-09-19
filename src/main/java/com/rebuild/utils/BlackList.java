@@ -9,13 +9,10 @@ package com.rebuild.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
@@ -40,8 +37,7 @@ public class BlackList {
     public static boolean isBlack(String text) {
         if (BLACKLIST == null) {
             try {
-                File file = ResourceUtils.getFile("classpath:blacklist.json");
-                String s = FileUtils.readFileToString(file, "UTF-8");
+                String s = CommonsUtils.getStringOfRes("blacklist.json");
                 BLACKLIST = JSON.parseArray(s);
 
             } catch (IOException e) {

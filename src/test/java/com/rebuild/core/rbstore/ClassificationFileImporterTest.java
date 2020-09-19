@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * @author ZHAO
@@ -26,7 +27,7 @@ import java.io.File;
 public class ClassificationFileImporterTest extends TestSupport {
 
     @Test
-    public void exec() throws Exception {
+    public void exec() throws FileNotFoundException {
         ID newClass = getClassification();
         File file = ResourceUtils.getFile("classpath:classification-demo.xlsx");
 

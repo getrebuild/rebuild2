@@ -250,10 +250,17 @@ public class MetaschemaImporter extends HeavyTask<String> {
     private JSONObject readyPickList(JSONArray items) {
         JSONArray show = new JSONArray();
         for (Object o : items) {
-            JSONObject item = (JSONObject) o;
-            show.add(JSONUtils.toJSONObject(
-                    new String[]{"text", "default", "mask"},
-                    new Object[]{item.getString("text"), item.getBoolean("default"), item.getLong("mask")}));
+            JSONArray item = (JSONArray) o;
+
+            JSONObject opt = JSONUtils.toJSONObject(
+                    new String[]{"text", "default"},
+                    new Object[]{item.getString(0), item.getBoolean(1)});
+
+            // MultiSelect
+            if (item.size() > 2) {
+                opt.put("mask", item.getLongValue(2));
+            }
+            show.add(opt);
         }
 
         return JSONUtils.toJSONObject("show", show);

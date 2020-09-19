@@ -19,7 +19,6 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.metadata.impl.EasyMeta;
 import com.rebuild.core.privileges.UserService;
-import com.rebuild.utils.JSONUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -173,12 +172,12 @@ public class MetaSchemaGenerator {
     private JSON performPickList(Field field) {
         ConfigBean[] entries = PickListManager.instance.getPickListRaw(
                 field.getOwnEntity().getName(), field.getName(), false);
+
         JSONArray items = new JSONArray();
         for (ConfigBean e : entries) {
-            JSONObject item = JSONUtils.toJSONObject(
-                    new String[]{"text", "default", "mask"},
-                    new Object[]{e.getString("text"), e.getBoolean("default"), e.getLong("mask")});
-            items.add(item);
+            items.add(new Object[] {
+                    e.getString("text"), e.getBoolean("default"), e.getLong("mask")
+            });
         }
         return items;
     }

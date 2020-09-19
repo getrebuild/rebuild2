@@ -13,8 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.net.URL;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
@@ -56,8 +55,7 @@ public class DataFileParserTest extends TestSupport {
         }
     }
 
-    static DataFileParser getDataFileParser(String fileName) throws Exception {
-        URL testFile = ResourceUtils.getURL("classpath:" + fileName);
-        return new DataFileParser(new File(testFile.toURI()));
+    static DataFileParser getDataFileParser(String fileName) throws FileNotFoundException {
+        return new DataFileParser(ResourceUtils.getFile("classpath:" + fileName));
     }
 }

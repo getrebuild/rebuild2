@@ -7,8 +7,13 @@ See LICENSE and COMMERCIAL in the project root for license information.
 
 package com.rebuild.utils;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.core.io.ClassPathResource;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.util.regex.Pattern;
 
 /**
@@ -83,5 +88,33 @@ public class CommonsUtils {
             return text.substring(0, maxLength);
         }
         return text;
+    }
+
+    /**
+     * 获取 classpath 下的配置文件流
+     *
+     * @param file
+     * @return
+     * @see org.springframework.util.ResourceUtils#getFile(URI)
+     */
+    public static InputStream getStreamOfRes(String file) {
+        try {
+            return new ClassPathResource(file).getInputStream();
+        } catch (IOException ex) {
+            throw new IllegalArgumentException("Bad file path or name : " + file, ex);
+        }
+    }
+
+    /**
+     * 获取 classpath 下的配置文件内容
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    public static String getStringOfRes(String file) throws IOException {
+        try (InputStream is = getStreamOfRes(file)) {
+            return IOUtils.toString(is, "utf-8");
+        }
     }
 }
