@@ -25,12 +25,12 @@
       "queryable": true,
       "items": [
         [
-          "1",
+          "P1",
           false
         ],
         [
-          "2",
-          false
+          "P2",
+          true
         ]
       ]
     },
@@ -149,7 +149,7 @@
         ],
         [
           "M2",
-          false,
+          true,
           2
         ]
       ]
