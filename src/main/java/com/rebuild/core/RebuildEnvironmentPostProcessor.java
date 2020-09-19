@@ -52,11 +52,11 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
         // 从安装文件
         File file = getInstallFile();
         if (file != null && file.exists()) {
-            LOG.info("Loading install file : " + file);
+            LOG.info("Use installation file : " + file);
 
             try {
                 Properties temp = PropertiesLoaderUtils.loadProperties(new FileSystemResource(file));
-                Properties ps = new Properties();
+                Properties filePs = new Properties();
                 // 兼容 V1
                 for (String name : temp.stringPropertyNames()) {
                     String value = temp.getProperty(name);
@@ -68,42 +68,38 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
                     }
 
                     if (name.startsWith(Installer.CONF_PREFIX)) {
-                        ps.put(name, value);
+                        filePs.put(name, value);
                     } else {
-                        ps.put(Installer.CONF_PREFIX + name, value);
+                        filePs.put(Installer.CONF_PREFIX + name, value);
                     }
                 }
 
-                aesDecrypt(ps);
-                PropertiesPropertySource installedSource = new PropertiesPropertySource(".rebuild", temp);
-                env.getPropertySources().addFirst(installedSource);
+                aesDecrypt(filePs);
+                env.getPropertySources().addFirst(new PropertiesPropertySource(".rebuild", filePs));
 
             } catch (IOException ex) {
                 throw new IllegalStateException("Load file of install failed : " + file.toString(), ex);
             }
         }
 
-        // 解密
-        Properties decryptedProperties = new Properties();
+        Properties confPs = new Properties();
         for (ConfigurationItem item : ConfigurationItem.values()) {
             String name = V2_PREFIX + item.name();
             String value = env.getProperty(name);
-            if (value != null) decryptedProperties.put(name, value);
+            if (value != null) confPs.put(name, value);
 
             name = Installer.CONF_PREFIX + item.name();
             value = env.getProperty(name);
-            if (value != null) decryptedProperties.put(name, value);
+            if (value != null) confPs.put(name, value);
         }
 
-        aesDecrypt(decryptedProperties);
-
         // 必填项
-        if (env.getProperty("db.CacheHost") == null) decryptedProperties.put("db.CacheHost", "127.0.0.1");
-        if (env.getProperty("db.CachePort") == null) decryptedProperties.put("db.CachePort", "6379");
-        if (env.getProperty("db.CachePassword") == null) decryptedProperties.put("db.CachePassword", "");
+        if (env.getProperty("db.CacheHost") == null) confPs.put("db.CacheHost", "127.0.0.1");
+        if (env.getProperty("db.CachePort") == null) confPs.put("db.CachePort", "6379");
+        if (env.getProperty("db.CachePassword") == null) confPs.put("db.CachePassword", "");
 
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(".decrypted", decryptedProperties);
-        env.getPropertySources().addFirst(propertySource);
+        aesDecrypt(confPs);
+        env.getPropertySources().addFirst(new PropertiesPropertySource(".configuration", confPs));
 
         ENV_HOLD = env;
     }

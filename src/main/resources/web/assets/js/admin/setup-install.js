@@ -143,7 +143,7 @@ class DatabaseConf extends React.Component {
           <div className="form-group row">
             <div className="col-sm-3 col-form-label text-sm-right">{$lang('DbName')}</div>
             <div className="col-sm-7">
-              <input type="text" className="form-control form-control-sm" name="dbName" value={this.state.dbName || ''} onChange={this.handleValue} placeholder="rebuild10" />
+              <input type="text" className="form-control form-control-sm" name="dbName" value={this.state.dbName || ''} onChange={this.handleValue} placeholder="rebuild20" />
               <div className="form-text">{$lang('DbNameTips')}</div>
             </div>
           </div>
@@ -179,7 +179,7 @@ class DatabaseConf extends React.Component {
           </button>
           <div className="float-right">
             <button className="btn btn-link text-right mr-2" disabled={this.state.inTest} onClick={this._testConnection}>
-              {this.state.inTest && <i className="zmdi icon zmdi-refresh zmdi-hc-spin" />}
+              {this.state.inTest && <i className="zmdi icon zmdi-refresh zmdi-hc-spin mr-1" />}
               {$lang('TestConnection')}
             </button>
             <button className="btn btn-secondary" onClick={this._next}>
@@ -203,7 +203,7 @@ class DatabaseConf extends React.Component {
       dbType: 'mysql',
       dbHost: this.state.dbHost || '127.0.0.1',
       dbPort: this.state.dbPort || 3306,
-      dbName: this.state.dbName || 'rebuild10',
+      dbName: this.state.dbName || 'rebuild20',
       dbUser: this.state.dbUser || 'rebuild',
       dbPassword: this.state.dbPassword || 'rebuild',
     }
@@ -301,7 +301,7 @@ class CacheConf extends DatabaseConf {
           <div className="float-right">
             {this.state.cacheType === 'redis' && (
               <button className="btn btn-link text-right mr-2" disabled={this.state.inTest} onClick={this._testConnection}>
-                {this.state.inTest && <i className="zmdi icon zmdi-refresh zmdi-hc-spin" />}
+                {this.state.inTest && <i className="zmdi icon zmdi-refresh zmdi-hc-spin mr-1" />}
                 {$lang('TestConnection')}
               </button>
             )}

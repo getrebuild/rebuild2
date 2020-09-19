@@ -61,7 +61,9 @@
                 <div class="tab-pane active" id="ENTITY">
                   <select class="form-control form-control-sm J_menuEntity">
                     <option value="">[[${bundle.lang('SelectSome,RelatedEntry')}]]</option>
-                    <optgroup th:label="${bundle.lang('BizEntity')}"></optgroup>
+                    <optgroup th:label="${bundle.lang('BizEntity')}">
+                      <!-- Biz entities -->
+                    </optgroup>
                     <optgroup th:label="${bundle.lang('SysBuiltIn')}">
                       <option value="$FILEMRG$" data-icon="folder">[[${bundle.lang('File')}]]</option>
                       <option value="$FEEDS$" data-icon="chart-donut">[[${bundle.lang('e.Feeds')}]]</option>

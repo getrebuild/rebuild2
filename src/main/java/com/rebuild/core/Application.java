@@ -40,6 +40,7 @@ import com.rebuild.utils.RebuildBanner;
 import com.rebuild.utils.codec.RbDateCodec;
 import com.rebuild.utils.codec.RbRecordCodec;
 import com.rebuild.web.OnlineSessionStore;
+import com.rebuild.web.RebuildWebConfigurer;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.h2.Driver;
@@ -136,12 +137,12 @@ public class Application {
                 RebuildEnvironmentPostProcessor.getProperty("server.port", "8080"),
                 RebuildEnvironmentPostProcessor.getProperty("server.servlet.context-path", ""));
 
-        boolean success = false;
+        boolean started = false;
         try {
             if (Installer.isInstalled()) {
-                success = init();
+                started = init();
 
-                if (success) {
+                if (started) {
                     String infos = RebuildBanner.formatSimple(
                             "Rebuild (" + VER + ") start successfully in " + (System.currentTimeMillis() - time) + " ms.",
                             "License   : " + StringUtils.join(License.queryAuthority().values(), " | "),
@@ -159,10 +160,11 @@ public class Application {
             LOG.error(RebuildBanner.formatBanner("REBUILD STARTUP FILAED !!!"), ex);
 
         } finally {
-            if (!success) {
-                // 失败加载语言包
+            if (!started) {
+                // 某些资源未启动仍需初始化
                 try {
                     APPLICATION_CONTEXT.getBean(Language.class).init();
+                    APPLICATION_CONTEXT.getBean(RebuildWebConfigurer.class).init();
                 } catch (Exception ex) {
                     LOG.error(null, ex);
                 }

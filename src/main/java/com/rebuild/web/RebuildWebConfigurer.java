@@ -14,7 +14,6 @@ import com.rebuild.core.Initialization;
 import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
-import com.rebuild.core.support.i18n.Language;
 import com.rebuild.utils.AppUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -56,10 +56,7 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
 
     @Override
     public void init() {
-        if (thymeleafViewResolver == null) {
-            LOG.warn("[thymeleafViewResolver] is null");
-            return;
-        }
+        Assert.notNull(thymeleafViewResolver, "[thymeleafViewResolver] is null");
 
         // ServletContext 共享变量
         thymeleafViewResolver.addStaticVariable(WebConstants.ENV, Application.devMode() ? "dev" : "prodution");

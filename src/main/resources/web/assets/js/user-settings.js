@@ -65,7 +65,7 @@ $(document).ready(function () {
       })
 
       $('#logs tbody>tr').each(function () {
-        const $ip = $(this).find('td:eq(3)')
+        const $ip = $(this).find('td:eq(2)')
         const ip = $ip.text()
         $.get(`/commons/ip-location?ip=${ip}`, (res) => {
           if (res.error_code === 0 && res.data.country !== 'N') {

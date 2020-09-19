@@ -21,6 +21,7 @@ import com.rebuild.web.commons.LanguageControl;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.NamedThreadLocal;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,14 +41,14 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
 
     private static final Logger LOG = LoggerFactory.getLogger(RebuildWebInterceptor.class);
 
-    private static final String TIMEOUT_KEY = "ErrorHandler_TIMEOUT";
+    private static final ThreadLocal<Long> REQUEST_TIME = new NamedThreadLocal<>("REQUEST_TIME");
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         request.getSession(true);
 
-        request.setAttribute(TIMEOUT_KEY, System.currentTimeMillis());
+        REQUEST_TIME.set(System.currentTimeMillis());
 
         final String requestUri = request.getRequestURI();
         final boolean htmlRequest = AppUtils.isHtmlRequest(request);
@@ -67,7 +68,7 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
             String sidebarCollapsed = ServletUtils.readCookie(request, "rb.sidebarCollapsed");
             String sideCollapsedClazz = "false".equals(sidebarCollapsed) ? "" : "rb-collapsible-sidebar-collapsed";
             // Aside
-            if (!requestUri.contains("/admin/")) {
+            if (!(requestUri.contains("/admin/") || requestUri.contains("/setup/"))) {
                 String asideCollapsed = ServletUtils.readCookie(request, "rb.asideCollapsed");
                 if (!"false".equals(asideCollapsed)) sideCollapsedClazz += " rb-aside-collapsed";
             }
@@ -76,19 +77,21 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
 
         // 服务状态
         if (!Application.serversReady()) {
+            boolean gotError = requestUri.endsWith("/error") || requestUri.contains("/error/");
+            if (gotError) return false;
+            
             if (checkInstalled()) {
                 LOG.error("Server Unavailable : " + requestUri);
-                if (!(requestUri.endsWith("/error") || requestUri.contains("/error/"))) {
-                    sendRedirect(response, "/error/server-status", null);
-                    return false;
-                }
+                sendRedirect(response, "/error/server-status", null);
+                return false;
 
             } else if (!requestUri.contains("/setup/")) {
                 sendRedirect(response, "/setup/install", null);
                 return false;
-            }
 
-            return true;
+            } else {
+                return true;
+            }
         }
 
         // 用户验证
@@ -145,7 +148,9 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         }
 
         // 打印处理时间
-        Long time = (Long) request.getAttribute(TIMEOUT_KEY);
+        Long time = REQUEST_TIME.get();
+        REQUEST_TIME.remove();
+
         time = System.currentTimeMillis() - time;
         if (time > 1000) {
             LOG.warn("Method handle time {} ms. Request URL {} [ {} ]",
@@ -197,7 +202,9 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
      * @return
      */
     private boolean isIgnoreAuth(String requestUri) {
-        if (requestUri.contains("/user/") && !requestUri.contains("/user/admin")) return true;
+        if (requestUri.contains("/user/") && !requestUri.contains("/user/admin")) {
+            return true;
+        }
 
         requestUri = requestUri.replaceFirst(AppUtils.getContextPath(), "");
         return requestUri.length() < 3 || requestUri.startsWith("/t/") || requestUri.startsWith("/s/")

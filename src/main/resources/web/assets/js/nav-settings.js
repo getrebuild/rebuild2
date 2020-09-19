@@ -19,10 +19,10 @@ $(document).ready(function () {
 
   $('.J_menuEntity').change(function () {
     if (item_current_isNew === true) {
-      const icon = $('.J_menuEntity option:selected').data('icon')
-      $('.J_menuIcon .zmdi').attr('class', `zmdi zmdi-${icon}`)
-      const name = $('.J_menuEntity option:selected').text()
-      $('.J_menuName').val(name)
+      const $option = $('.J_menuEntity option:selected')
+      if (!$option.val()) return
+      $('.J_menuIcon .zmdi').attr('class', `zmdi zmdi-${$option.data('icon')}`)
+      $('.J_menuName').val($option.text())
     }
   })
 

@@ -7,11 +7,11 @@
 -- #1 database/user
 -- 首次使用请移除以下注释以创建数据库和用户
 /*
-CREATE DATABASE rebuild10 COLLATE utf8mb4_general_ci;
+CREATE DATABASE rebuild20 COLLATE utf8mb4_general_ci;
 CREATE USER 'rebuild'@'127.0.0.1' IDENTIFIED BY 'rebuild';
-GRANT ALL PRIVILEGES ON rebuild10.* TO 'rebuild'@'127.0.0.1';
+GRANT ALL PRIVILEGES ON rebuild20.* TO 'rebuild'@'127.0.0.1';
 FLUSH PRIVILEGES;
-USE rebuild10;
+USE rebuild20;
 */
 
 -- #2 schemas
