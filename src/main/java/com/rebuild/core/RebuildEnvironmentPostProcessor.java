@@ -44,9 +44,9 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication application) {
         try {
+            // LogbackLoggingSystem#beforeInitialize
             ((LoggerContext) StaticLoggerBinder.getSingleton().getLoggerFactory()).resetTurboFilterList();
         } catch (Exception ignored) {
-            // run 期间不打印日志为哪般
         }
 
         // 从安装文件

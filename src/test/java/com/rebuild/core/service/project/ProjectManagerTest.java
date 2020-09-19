@@ -46,13 +46,9 @@ public class ProjectManagerTest extends TestSupport {
             pc.setString("projectCode", USE_CODE);
             pc.setString("members", SIMPLE_USER + "," + UserService.ADMIN_USER);
 
-            Application.getSessionStore().set(UserService.ADMIN_USER);
-            try {
-                pc = pcs.createProject(pc, 1);
-                _LastSavedProject = pc.getPrimary();
-            } finally {
-                Application.getSessionStore().clean();
-            }
+            pc = pcs.createProject(pc, 1);
+            _LastSavedProject = pc.getPrimary();
+
         } else {
             _LastSavedProject = (ID) exists[0];
         }

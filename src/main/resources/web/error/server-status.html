@@ -65,7 +65,7 @@
         </tbody>
       </table>
     </div>
-    <div class="block">
+    <div class="block" th:if="${user != null}">
       <h5 class="text-bold">[[${bundle.lang('SystemInfo')}]]</h5>
       <table class="table table-bordered table-sm table-hover">
       <tbody>
@@ -88,6 +88,14 @@
         <tr>
           <th>Startup Time</th>
           <td>[[${T(com.rebuild.core.ServerStatus).getStartupTime()}]]</td>
+        </tr>
+        <tr>
+          <th>Data Directory</th>
+          <td>[[${T(com.rebuild.core.support.RebuildConfiguration).getFileOfData("/")}]]</td>
+        </tr>
+        <tr>
+          <th>Temp Directory</th>
+          <td>[[${T(com.rebuild.core.support.RebuildConfiguration).getFileOfTemp("/")}]]</td>
         </tr>
       </tbody>
       </table>

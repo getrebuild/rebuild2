@@ -18,8 +18,8 @@ public class CloseListener implements ApplicationListener<ContextClosedEvent> {
 
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {
-        TaskExecutors.shutdown();
+        LOG.warn("Rebuild Shutting down ...");
 
-        LOG.warn("Rebuild Shutting down");
+        TaskExecutors.shutdown();
     }
 }
