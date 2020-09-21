@@ -14,6 +14,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.utils.HttpUtils;
 import com.rebuild.utils.JSONUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.Locale;
 
@@ -76,7 +77,9 @@ public final class License {
      */
     public static boolean isCommercial() {
         JSONObject auth = siteApi("api/authority/query", true);
-        return auth != null && !auth.getString("authType").contains("开源");
+        String authType = StringUtils.defaultIfBlank(
+                auth == null ? null : auth.getString("authType"), "开源社区版");
+        return !(authType.contains("开源") || authType.contains("Open Source"));
     }
 
     /**

@@ -14,11 +14,12 @@
   <link rel="stylesheet" type="text/css" th:href="@{/assets/css/rb-base.css}" />
   <link rel="stylesheet" type="text/css" th:href="@{/assets/css/rb-page.css}" />
   <meta name="rb.env" th:content="${env}" />
+  <meta name="rb.commercial" th:content="${commercial}" />
+  <meta name="rb.locale" th:content="${locale}" />
   <meta name="rb.baseUrl" th:content="${baseUrl}" />
   <meta name="rb.appName" th:content="${appName}" />
   <meta name="rb.storageUrl" th:content="${storageUrl}" />
   <meta name="rb.fileSharable" th:content="${fileSharable}" />
-  <meta name="rb.locale" th:content="${locale}" />
   <meta name="rb.csrfToken" th:content="${csrfToken}" />
   <meta name="rb.accessToken" th:content="${accessToken}" />
   <th:block th:if="${user != null}">

@@ -270,21 +270,27 @@ public class UserService extends BaseServiceImpl {
         }
 
         Record record = EntityHelper.forUpdate(user, Application.getCurrentUser());
+        boolean changed = false;
         if (deptNew != null) {
             record.setID("deptId", deptNew);
+            changed = true;
         }
         if (roleNew != null) {
             record.setID("roleId", roleNew);
+            changed = true;
         }
         if (enableNew != null) {
             record.setBoolean("isDisabled", !enableNew);
+            changed = true;
         }
-        super.update(record);
 
-        // 附加角色
-        updateRoleAppends(user, roleAppends);
+        if (changed) {
+            super.update(record);
+        }
 
-        Application.getUserStore().refreshUser(user);
+        if (changed || updateRoleAppends(user, roleAppends)) {
+            Application.getUserStore().refreshUser(user);
+        }
 
         // 改变记录的所属部门
         if (deptOld != null) {
@@ -297,21 +303,22 @@ public class UserService extends BaseServiceImpl {
      *
      * @param user
      * @param roleAppends
+     * @return
      */
-    protected void updateRoleAppends(ID user, ID[] roleAppends) {
+    protected boolean updateRoleAppends(ID user, ID[] roleAppends) {
         Object[][] shown = Application.createQueryNoFilter(
                 "select memberId,roleId from RoleMember where userId = ?")
                 .setParameter(1, user)
                 .array();
         if (shown.length == 0 && (roleAppends == null || roleAppends.length == 0)) {
-            return;
+            return false;
         }
 
         if (roleAppends == null || roleAppends.length == 0) {
             for (Object[] o : shown) {
                 super.delete((ID) o[0]);
             }
-            return;
+            return true;
         }
 
         Map<ID, ID> shownMap = new HashMap<>();
@@ -332,6 +339,7 @@ public class UserService extends BaseServiceImpl {
         for (ID remove : shownMap.keySet()) {
             super.delete(remove);
         }
+        return true;
     }
 
     /**

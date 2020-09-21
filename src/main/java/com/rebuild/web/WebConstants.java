@@ -21,6 +21,11 @@ public class WebConstants {
     public static final String ENV = "env";
 
     /**
+     * 商业版
+     */
+    public static final String COMMERCIAL = "commercial";
+
+    /**
      * 基础 URL
      */
     public static final String BASE_URL = "baseUrl";

@@ -205,6 +205,9 @@ class DlgEnableUser extends RbModalHandler {
     }
     if (this._roleAppends) {
       data.roleAppends = this._roleAppends.val().join(',')
+      if (data.roleAppends && !rb.commercial) {
+        return RbHighbar.error($lang('FreeVerNotSupportted,AppendRoles'))
+      }
     }
 
     const $btns = $(this._btns).find('.btn').button('loading')
