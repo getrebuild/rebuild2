@@ -108,10 +108,10 @@
               </div>
             </div>
             <div class="splash-footer">
-              <div class="copyright">&copy; REBUILD</div>
+              <div class="copyright">&copy; [[${appName}]]</div>
             </div>
           </div>
-          <div class="copyright link" th:utext="${bundle.lang('RebuildRights')}"></div>
+          <div th:if="${commercial == 0}" class="copyright link" th:utext="${bundle.lang('RebuildRights')}"></div>
         </div>
       </div>
     </div>

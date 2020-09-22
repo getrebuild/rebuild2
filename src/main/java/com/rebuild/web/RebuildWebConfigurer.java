@@ -61,7 +61,7 @@ public class RebuildWebConfigurer implements WebMvcConfigurer, ErrorViewResolver
 
         // ServletContext 共享变量
         thymeleafViewResolver.addStaticVariable(WebConstants.ENV, Application.devMode() ? "dev" : "prodution");
-        thymeleafViewResolver.addStaticVariable(WebConstants.COMMERCIAL, License.isCommercial());
+        thymeleafViewResolver.addStaticVariable(WebConstants.COMMERCIAL, License.getCommercialType());
         thymeleafViewResolver.addStaticVariable(WebConstants.BASE_URL, AppUtils.getContextPath());
         thymeleafViewResolver.addStaticVariable(WebConstants.APP_NAME, RebuildConfiguration.get(ConfigurationItem.AppName));
         thymeleafViewResolver.addStaticVariable(WebConstants.STORAGE_URL, RebuildConfiguration.get(ConfigurationItem.StorageURL));

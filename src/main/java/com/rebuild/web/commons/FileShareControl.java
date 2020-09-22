@@ -80,11 +80,11 @@ public class FileShareControl extends BaseController {
     private String genPublicUrl(String fileUrl) {
         String publicUrl;
         if (QiniuCloud.instance().available()) {
-            publicUrl = QiniuCloud.instance().url(fileUrl, 60);
+            publicUrl = QiniuCloud.instance().url(fileUrl, 120);
         } else {
             // @see FileDownloader#download
             String e = CodecUtils.randomCode(40);
-            Application.getCommonsCache().put(e, "rb", 60);
+            Application.getCommonsCache().put(e, "rb", 120);
 
             publicUrl = "filex/access/" + fileUrl + "?e=" + e;
             publicUrl = RebuildConfiguration.getHomeUrl(publicUrl);

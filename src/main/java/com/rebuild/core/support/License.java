@@ -77,11 +77,17 @@ public final class License {
      *
      * @return
      */
-    public static boolean isCommercial() {
+    public static int getCommercialType() {
         JSONObject auth = siteApi("api/authority/query", true);
         String authType = StringUtils.defaultIfBlank(
-                auth == null ? null : auth.getString("authType"), "开源社区版");
-        return !(authType.contains("开源") || authType.contains("Open Source"));
+                auth == null ? null : auth.getString("authType"), "开源社区版").toUpperCase();
+        if (authType.contains("商业") || authType.contains("BUSINESS")) {
+            return 10;
+        } else if (authType.contains("集团") || authType.contains("GROUP") || authType.contains("OEM")) {
+            return 20;
+        } else {
+            return 0;
+        }
     }
 
     /**

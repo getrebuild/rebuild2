@@ -28,7 +28,7 @@
     <th:block th:replace="~{/_include/footer}" />
     <script type="text/babel">
       window.__PageConfig = {
-        publicUrl: '[[${publicUrl}]]',
+        publicUrl: '[[${publicUrl}]]'.replace('&amp;', '&'),
       }
       $(document).ready(function () {
         renderRbcomp(<RbPreview urls={[window.__PageConfig.publicUrl]} currentIndex="0" unclose="true" />)
