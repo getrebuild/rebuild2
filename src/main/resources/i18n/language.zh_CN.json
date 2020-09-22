@@ -640,7 +640,7 @@
   "PlsSetFilter": "请设置条件",
   "PlsSetApproverOrCc": "请为分支添加审批人或抄送人",
   "WhoCanStart": "谁可以发起这个审批",
-  "WhoCanApproval": "谁可以发起这个审批",
+  "WhoCanApproval": "由谁审批",
   "StartApproverSelf": "发起人自己",
   "StartApproverSpec": "指定审批人",
   "AllowSelfSelectYet": "同时允许自选",

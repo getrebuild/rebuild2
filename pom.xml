@@ -144,11 +144,13 @@
             <artifactId>aspectjweaver</artifactId>
             <version>1.9.5</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        -->
         <dependency>
             <groupId>com.github.devezhao</groupId>
             <artifactId>momentjava</artifactId>
