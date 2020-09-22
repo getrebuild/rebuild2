@@ -12,6 +12,7 @@ import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.alibaba.fastjson.JSON;
 import com.rebuild.core.Application;
+import com.rebuild.core.BootApplication;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.impl.DisplayType;
@@ -48,11 +49,11 @@ public class TestSupport {
         if (RebuildStarted) return;
         LOG.warn("TESTING Setup ...");
 
-        Application.debug();
+        BootApplication.main(new String[] { "-Drbdev=true" });
         RebuildStarted = true;
 
         try {
-            addTestEntities(true);
+            addTestEntities(false);
         } catch (Exception ex) {
             LOG.error("Add entities of test error!", ex);
             System.exit(-1);

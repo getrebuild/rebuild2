@@ -41,41 +41,25 @@ import com.rebuild.utils.codec.RbDateCodec;
 import com.rebuild.utils.codec.RbRecordCodec;
 import com.rebuild.web.OnlineSessionStore;
 import com.rebuild.web.RebuildWebConfigurer;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.h2.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.Banner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.jdbc.JdbcRepositoriesAutoConfiguration;
-import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 启动类/后台类入口
+ * 后台入口类
  *
  * @author zhaofang123@gmail.com
  * @since 05/18/2018
  */
-@SpringBootApplication(scanBasePackages = {"com.rebuild"}, exclude = {
-        DataSourceAutoConfiguration.class,
-        JdbcRepositoriesAutoConfiguration.class,
-        JdbcTemplateAutoConfiguration.class,
-        RedisAutoConfiguration.class,
-        CacheAutoConfiguration.class })
-@ImportResource("classpath:application-bean.xml")
-public class Application {
+public class Application implements ApplicationListener<ApplicationStartedEvent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
@@ -107,31 +91,23 @@ public class Application {
     }
 
     // SPRING
-    private static ConfigurableApplicationContext APPLICATION_CONTEXT;
+    private static ApplicationContext APPLICATION_CONTEXT;
 
     // 实体对应的服务类
     private static Map<Integer, ServiceSpec> ESS = null;
 
     private static boolean serversReady;
 
-    private static boolean debugMode = false;
+    protected Application() {
+    }
 
-    public static void main(String[] args) {
+    @Override
+    public void onApplicationEvent(ApplicationStartedEvent event) {
         if (APPLICATION_CONTEXT != null) throw new IllegalStateException("Rebuild already started");
 
+        APPLICATION_CONTEXT = event.getApplicationContext();
+
         long time = System.currentTimeMillis();
-
-        LOG.info("Initializing SpringBoot context ...");
-        SpringApplication spring = new SpringApplication(Application.class);
-        spring.setBannerMode(Banner.Mode.OFF);
-        // 不启动 WEB
-        if (debugMode) {
-            spring.setWebApplicationType(WebApplicationType.NONE);
-        }
-
-        spring.addListeners(new CloseListener());
-
-        APPLICATION_CONTEXT = spring.run(args);
 
         String localUrl = String.format("http://localhost:%s%s",
                 RebuildEnvironmentPostProcessor.getProperty("server.port", "8080"),
@@ -143,11 +119,11 @@ public class Application {
                 started = init();
 
                 if (started) {
-                    String infos = RebuildBanner.formatSimple(
+                    String banner = RebuildBanner.formatSimple(
                             "Rebuild (" + VER + ") start successfully in " + (System.currentTimeMillis() - time) + " ms.",
                             "License   : " + StringUtils.join(License.queryAuthority().values(), " | "),
                             "Local URL : " + localUrl);
-                    LOG.info(infos);
+                    LOG.info(banner);
                 }
 
             } else {
@@ -157,7 +133,7 @@ public class Application {
 
         } catch (Exception ex) {
             serversReady = false;
-            LOG.error(RebuildBanner.formatBanner("REBUILD STARTUP FILAED !!!"), ex);
+            LOG.error(RebuildBanner.formatBanner("REBUILD INITIALIZATION FILAED !!!"), ex);
 
         } finally {
             if (!started) {
@@ -166,7 +142,7 @@ public class Application {
                     APPLICATION_CONTEXT.getBean(Language.class).init();
                     APPLICATION_CONTEXT.getBean(RebuildWebConfigurer.class).init();
                 } catch (Exception ex) {
-                    LOG.error(null, ex);
+                    LOG.error("STARTUP FAILED", ex);
                 }
             }
         }
@@ -178,6 +154,7 @@ public class Application {
      * @throws Exception
      */
     public static boolean init() throws Exception {
+        if (serversReady) throw new IllegalStateException("Rebuild already started");
         LOG.info("Initializing Rebuild context ...");
 
         if (!(serversReady = ServerStatus.checkAll())) {
@@ -209,11 +186,11 @@ public class Application {
         // 实体对应的服务类
         ESS = new HashMap<>();
         for (Map.Entry<String, ServiceSpec> e : APPLICATION_CONTEXT.getBeansOfType(ServiceSpec.class).entrySet()) {
-            ServiceSpec ss = e.getValue();
-            if (ss.getEntityCode() > 0) {
-                ESS.put(ss.getEntityCode(), ss);
+            ServiceSpec s = e.getValue();
+            if (s.getEntityCode() > 0) {
+                ESS.put(s.getEntityCode(), s);
                 if (devMode()) {
-                    LOG.info("Service specification : " + ss.getClass().getName() + " for <" + ss.getEntityCode() + ">");
+                    LOG.info("Service specification : " + s.getClass().getName() + " for <" + s.getEntityCode() + ">");
                 }
             }
         }
@@ -223,25 +200,18 @@ public class Application {
             bean.init();
         }
 
-        APPLICATION_CONTEXT.registerShutdownHook();
-
         return true;
     }
 
-    public static void debug(String... args) {
-        debugMode = true;
-        Application.main(args);
-    }
-
     public static boolean devMode() {
-        return debugMode || BooleanUtils.toBoolean(System.getProperty("rbdev"));
+        return BootApplication.devMode();
     }
 
     public static boolean serversReady() {
         return serversReady && APPLICATION_CONTEXT != null;
     }
 
-    public static ConfigurableApplicationContext getApplicationContext() {
+    public static ApplicationContext getApplicationContext() {
         if (APPLICATION_CONTEXT == null) throw new IllegalStateException("Rebuild unstarted");
         return APPLICATION_CONTEXT;
     }

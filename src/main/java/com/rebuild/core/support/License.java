@@ -41,6 +41,8 @@ public final class License {
 
         SN = RebuildConfiguration.get(ConfigurationItem.SN, true);
         if (SN == null) {
+            if (!Application.serversReady()) return "SN-ERROR";
+
             try {
                 String apiUrl = String.format("https://getrebuild.com/api/authority/new?ver=%s&k=%s", Application.VER, OSA_KEY);
                 String result = HttpUtils.get(apiUrl);
