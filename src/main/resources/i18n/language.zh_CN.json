@@ -512,7 +512,7 @@
   "ThisDetailEntity": "这是一个明细实体",
   "ThisDetailEntityTips": "通过明细实体可以更好的组织业务关系。例如订单明细通常依附于订单，而非独立存在",
   "DataSource": "数据来源",
-  "ImportEntityTips1": "导入本实体将同时导入「%s」依赖实体。",
+  "ImportEntityTips1": "导入本实体将同时导入 **%s** 依赖实体。",
   "ImportEntityTips2": "你可在导入后进行适当调整。开始导入吗？",
   "BasicInfo": "基本信息",
   "FormLayout": "表单布局",
