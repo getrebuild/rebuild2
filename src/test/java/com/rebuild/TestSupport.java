@@ -49,11 +49,12 @@ public class TestSupport {
         if (RebuildStarted) return;
         LOG.warn("TESTING Setup ...");
 
-        BootApplication.main(new String[] { "-Drbdev=true" });
-        RebuildStarted = true;
-
         try {
+            BootApplication.main(new String[] { "-Drbdev=true" });
+            RebuildStarted = true;
+
             addTestEntities(false);
+
         } catch (Exception ex) {
             LOG.error("Add entities of test error!", ex);
             System.exit(-1);

@@ -33,9 +33,9 @@ import java.util.Properties;
  * @since 08/28/2020
  */
 @Component
-public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor, InstallState {
+public class BootEnvironmentPostProcessor implements EnvironmentPostProcessor, InstallState {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RebuildEnvironmentPostProcessor.class);
+    private static final Logger LOG = LoggerFactory.getLogger(BootEnvironmentPostProcessor.class);
 
     private static final String V2_PREFIX = "rebuild.";
 
@@ -43,6 +43,8 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
 
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication application) {
+        if (env == null) env = ENV_HOLD;
+
         try {
             // LogbackLoggingSystem#beforeInitialize
             ((LoggerContext) StaticLoggerBinder.getSingleton().getLoggerFactory()).resetTurboFilterList();
@@ -143,8 +145,9 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
      */
     public static String getProperty(String name, String defaultValue) {
         String value = null;
-        if (ENV_HOLD == null && ConfigurationItem.DataDirectory.name().equalsIgnoreCase(name)) {
+        if (ConfigurationItem.DataDirectory.name().equalsIgnoreCase(name)) {
             value = System.getProperty("DataDirectory");
+
         } else if (ENV_HOLD != null) {
             if (!(name.startsWith(V2_PREFIX) || name.contains("."))) {
                 name = V2_PREFIX + name;

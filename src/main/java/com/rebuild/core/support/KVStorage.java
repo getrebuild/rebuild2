@@ -10,7 +10,7 @@ package com.rebuild.core.support;
 import cn.devezhao.persist4j.Record;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
-import com.rebuild.core.RebuildEnvironmentPostProcessor;
+import com.rebuild.core.BootEnvironmentPostProcessor;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
 import org.apache.commons.lang.StringUtils;
@@ -96,7 +96,7 @@ public class KVStorage {
 
         // 2. 从配置文件/命令行加载
         if (value == null) {
-            value = RebuildEnvironmentPostProcessor.getProperty(key);
+            value = BootEnvironmentPostProcessor.getProperty(key);
         }
 
         // 3. 默认值

@@ -112,7 +112,7 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
         long time = System.currentTimeMillis();
 
         String localUrl = String.format("http://localhost:%s%s",
-                RebuildEnvironmentPostProcessor.getProperty("server.port", "18080"),
+                BootEnvironmentPostProcessor.getProperty("server.port", "18080"),
                 AppUtils.getContextPath());
 
         boolean started = false;

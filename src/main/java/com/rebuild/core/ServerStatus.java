@@ -114,9 +114,9 @@ public final class ServerStatus {
 
         try {
             Connection c = DriverManager.getConnection(
-                    RebuildEnvironmentPostProcessor.getProperty("db.url"),
-                    RebuildEnvironmentPostProcessor.getProperty("db.user"),
-                    RebuildEnvironmentPostProcessor.getProperty("db.passwd"));
+                    BootEnvironmentPostProcessor.getProperty("db.url"),
+                    BootEnvironmentPostProcessor.getProperty("db.user"),
+                    BootEnvironmentPostProcessor.getProperty("db.passwd"));
             SqlHelper.close(c);
         } catch (Exception ex) {
             return Status.error(name, ThrowableUtils.getRootCause(ex).getLocalizedMessage());

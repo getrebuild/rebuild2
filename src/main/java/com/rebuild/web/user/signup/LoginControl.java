@@ -96,7 +96,7 @@ public class LoginControl extends BaseController {
                 }
 
             } catch (Exception ex) {
-                LOG.error("Can't decode User from alt : " + alt, ex);
+                LOG.error("Cannot decode User from alt : " + alt, ex);
             }
 
             if (altUser != null && Application.getUserStore().existsUser(altUser)) {

@@ -363,7 +363,7 @@ class AdminConf extends DatabaseConf {
         <h3>{$lang('SetSome,SuperAdmin')}</h3>
         <form>
           <div className="form-group row pt-0">
-            <div className="col-sm-3 col-form-label text-sm-right">{$lang('f.User.password')}</div>
+            <div className="col-sm-3 col-form-label text-sm-right">{$lang('AdminPasswd')}</div>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" name="adminPasswd" value={this.state.adminPasswd || ''} onChange={this.handleValue} placeholder="admin" />
               <div className="form-text">

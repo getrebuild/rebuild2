@@ -32,3 +32,5 @@ spring:
   quartz:
     scheduler-name: rbScheduler
     startup-delay: 15s
+  main:
+    banner-mode: off

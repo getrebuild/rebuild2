@@ -11,7 +11,7 @@
             http://www.springframework.org/schema/aop
             http://www.springframework.org/schema/aop/spring-aop.xsd" default-lazy-init="true">
 
-    <bean name="mysql5DataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+    <bean name="datasource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
         <property name="url" value="${db.url}"/>
         <property name="username" value="${db.user}"/>
         <property name="password" value="${db.passwd}"/>
@@ -34,7 +34,7 @@
     <bean name="mysql5Dialect" class="cn.devezhao.persist4j.dialect.MySQL5Dialect"/>
 
     <bean class="cn.devezhao.persist4j.engine.PersistManagerFactoryImpl">
-        <constructor-arg index="0" ref="mysql5DataSource"/>
+        <constructor-arg index="0" ref="datasource"/>
         <constructor-arg index="1" ref="mysql5Dialect"/>
         <constructor-arg index="2">
             <bean class="com.rebuild.core.metadata.DynamicMetadataFactory">
@@ -64,7 +64,7 @@
     </bean>
 
     <bean name="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="mysql5DataSource"/>
+        <property name="dataSource" ref="datasource"/>
     </bean>
 
     <tx:advice id="txAdvice" transaction-manager="txManager">

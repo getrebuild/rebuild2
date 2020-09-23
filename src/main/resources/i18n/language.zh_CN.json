@@ -265,6 +265,7 @@
   "NoneAdmin": "非管理员用户",
   "AdminEmail": "管理员邮箱",
   "AdminEmailTips": "用于找回密码等重要操作，也可在安装完成后填写",
+  "AdminPasswd": "管理员密码",
   "FinishInstall": "完成安装",
   "AdminVerify": "管理员验证",
   "VerifyYourAdminIdentity": "需要验证你的管理员身份",

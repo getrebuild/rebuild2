@@ -8,6 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.cache;
 
 import cn.devezhao.commons.ThrowableUtils;
+import com.rebuild.core.support.setup.InstallState;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -25,7 +26,7 @@ import java.io.Serializable;
  * @author devezhao
  * @since 01/02/2019
  */
-public abstract class BaseCacheTemplate<V extends Serializable> implements CacheTemplate<V> {
+public abstract class BaseCacheTemplate<V extends Serializable> implements CacheTemplate<V>, InstallState {
 
     protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -44,7 +45,7 @@ public abstract class BaseCacheTemplate<V extends Serializable> implements Cache
      * @param keyPrefix
      */
     protected BaseCacheTemplate(JedisPool jedisPool, CacheManager backup, String keyPrefix) {
-        if (testJedisPool(jedisPool)) {
+        if (checkInstalled() && testJedisPool(jedisPool)) {
             this.delegate = new RedisDriver<>(jedisPool);
         } else {
             this.delegate = new EhcacheDriver<>(backup);
@@ -67,7 +68,7 @@ public abstract class BaseCacheTemplate<V extends Serializable> implements Cache
     @Override
     public void put(String key, String value, int seconds) {
         if (value == null) {
-            LOG.warn("Can't set `" + key + "` to null");
+            LOG.warn("Cannot set `" + key + "` to null");
             return;
         }
         delegate.put(unityKey(key), value, seconds);
@@ -86,7 +87,7 @@ public abstract class BaseCacheTemplate<V extends Serializable> implements Cache
     @Override
     public void putx(String key, V value, int seconds) {
         if (value == null) {
-            LOG.warn("Can't set `" + key + "` to null");
+            LOG.warn("Cannot set `" + key + "` to null");
             return;
         }
         delegate.putx(unityKey(key), value, seconds);

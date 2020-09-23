@@ -263,8 +263,9 @@
   "SuperAdmin": "Super Administrator",
   "DefaultPasswd": "Default username/password are both",
   "NoneAdmin": "Non-Administrator users",
-  "AdminEmail": "Administrator Email",
-  "AdminEmailTips": "Used to retrieve passwords and other important operations, but can also be completed after installation",
+  "AdminEmail": "Admin email",
+  "AdminEmailTips": "Used to retrieve password and other important operations, but can also be completed after installation",
+  "AdminPasswd": "Admin password",
   "FinishInstall": "Complete",
   "AdminVerify": "Administrator Verification",
   "VerifyYourAdminIdentity": "You need to verify your administrator identity",
@@ -1162,5 +1163,5 @@
   "f.approvalId": "Approval",
   "f.approvalState": "Approval state",
   "f.approvalStepNode": "Approval step",
-  "f.isDeleted": "Is deleted",
+  "f.isDeleted": "Is deleted"
 }

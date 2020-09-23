@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.support.setup;
 
 import cn.devezhao.commons.CalendarUtils;
-import com.rebuild.core.RebuildEnvironmentPostProcessor;
+import com.rebuild.core.BootEnvironmentPostProcessor;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.utils.FileFilterByLastModified;
@@ -38,9 +38,9 @@ public class DatabaseBackup {
      * @throws IOException
      */
     public File backup() throws IOException {
-        String url = RebuildEnvironmentPostProcessor.getProperty("db.url");
-        String user = RebuildEnvironmentPostProcessor.getProperty("db.user");
-        String passwd = RebuildEnvironmentPostProcessor.getProperty("db.passwd");
+        String url = BootEnvironmentPostProcessor.getProperty("db.url");
+        String user = BootEnvironmentPostProcessor.getProperty("db.user");
+        String passwd = BootEnvironmentPostProcessor.getProperty("db.passwd");
 
         url = url.split("\\?")[0].split("//")[1];
         String host = url.split(":")[0];

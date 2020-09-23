@@ -22,7 +22,7 @@ import java.util.List;
  *
  * @author devezhao
  * @see ConfigurationItem
- * @see com.rebuild.core.RebuildEnvironmentPostProcessor
+ * @see com.rebuild.core.BootEnvironmentPostProcessor
  * @since 10/14/2018
  */
 public class RebuildConfiguration extends KVStorage {
