@@ -8,8 +8,12 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.support.i18n;
 
 import cn.devezhao.commons.EncryptUtils;
+import cn.devezhao.persist4j.Entity;
+import cn.devezhao.persist4j.Field;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.rebuild.core.Application;
+import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.JSONable;
 import org.apache.commons.lang.ArrayUtils;
@@ -45,6 +49,9 @@ public class LanguageBundle implements JSONable {
     // Match `"{xx}"`
     private static final Pattern PATT_LANG_KEY = Pattern.compile("\"\\{([0-9a-zA-Z._]+)}\"");
 
+    protected static final String PREFIX_ENTITY = "e.";
+    protected static final String PREFIX_FIELD = "f.";
+
     private String locale;
     private JSONObject bundle;
     private String bundleHash;
@@ -69,6 +76,11 @@ public class LanguageBundle implements JSONable {
      * @return
      */
     private JSONObject merge(JSONObject bundle) {
+        if (Application.isReady()) {
+            appendMetadata(bundle);
+            appendDatabase(bundle);
+        }
+
         String bundleString = bundle.toJSONString();
 
         bundleString = BR_PATT.matcher(bundleString).replaceAll("<br/>");
@@ -99,6 +111,36 @@ public class LanguageBundle implements JSONable {
 
         this.bundleHash = EncryptUtils.toMD5Hex(bundleString);
         return JSON.parseObject(bundleString);
+    }
+
+    /**
+     * 元数据
+     * @param bundle
+     */
+    protected void appendMetadata(JSONObject bundle) {
+        for (Entity entity : MetadataHelper.getEntities()) {
+            bundle.put(PREFIX_ENTITY + entity.getName(), entity.getDescription());
+
+            for (Field field : entity.getFields()) {
+                if (!MetadataHelper.isCommonsField(field)) {
+                    bundle.put(PREFIX_FIELD + entity.getName() + "." + field.getName(), field.getDescription());
+                }
+            }
+        }
+    }
+
+    /**
+     * 数据库
+     * @param bundle
+     */
+    private void appendDatabase(JSONObject bundle) {
+        Object[][] langs = Application.createQueryNoFilter(
+                "select name,value from Language where locale = ?")
+                .setParameter(1, getLocale())
+                .array();
+        for (Object[] nv : langs) {
+            bundle.put((String) nv[0], nv[1]);
+        }
     }
 
     /**

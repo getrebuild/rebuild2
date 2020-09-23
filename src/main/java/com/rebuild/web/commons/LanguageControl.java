@@ -10,7 +10,6 @@ package com.rebuild.web.commons;
 import cn.devezhao.commons.CodecUtils;
 import cn.devezhao.commons.web.ServletUtils;
 import com.rebuild.core.Application;
-import com.rebuild.core.RebuildException;
 import com.rebuild.core.support.i18n.LanguageBundle;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.web.BaseController;
@@ -76,13 +75,7 @@ public class LanguageControl extends BaseController {
             locale = Application.getLanguage().getDefaultBundle().getLocale();
         }
 
-        if (Application.devMode()) {
-            try {
-                Application.getLanguage().init();
-            } catch (Exception ex) {
-                throw new RebuildException(ex);
-            }
-        }
+        if (Application.devMode()) Application.getLanguage().refresh();
 
         ServletUtils.setSessionAttribute(request, AppUtils.SK_LOCALE, locale);
         AppUtils.addCookie(response, CK_LOCALE, locale);

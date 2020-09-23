@@ -514,6 +514,16 @@ create table if not exists `smsend_log` (
   index IX0_smsend_log (`TYPE`, `SEND_TIME`, `SEND_RESULT`)
 )Engine=InnoDB;
 
+-- ************ Entity [Language] DDL ************
+create table if not exists `language` (
+  `LANG_ID`            char(20) not null,
+  `LOCALE`             varchar(10) not null comment 'Locale',
+  `NAME`               varchar(100) not null comment '语言名',
+  `VALUE`              varchar(300) not null comment '语言值',
+  primary key  (`LANG_ID`),
+  index IX0_language (`LOCALE`, `NAME`)
+)Engine=InnoDB;
+
 -- ************ Entity [Feeds] DDL ************
 create table if not exists `feeds` (
   `FEEDS_ID`           char(20) not null,
@@ -717,4 +727,4 @@ insert into `classification` (`DATA_ID`, `NAME`, `DESCRIPTION`, `OPEN_LEVEL`, `I
 
 -- DB Version (see `db-upgrade.sql`)
 insert into `system_config` (`CONFIG_ID`, `ITEM`, `VALUE`)
-  values ('021-9000000000000001', 'DBVer', 29);
+  values ('021-9000000000000001', 'DBVer', 30);

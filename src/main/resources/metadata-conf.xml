@@ -351,6 +351,14 @@
         <index field-list="type,sendTime,sendResult"/>
     </entity>
 
+    <entity name="Language" type-code="036" description="语言包" queryable="false" parent="false">
+        <field name="langId" type="primary"/>
+        <field name="locale" type="string" max-length="10" nullable="false" description="Locale"/>
+        <field name="name" type="string" max-length="100" nullable="false" description="语言名"/>
+        <field name="value" type="string" max-length="300" nullable="false" description="语言值"/>
+        <index field-list="locale,name"/>
+    </entity>
+
     <!-- 动态不涉及审计 -->
     <entity name="Feeds" type-code="040" description="动态" name-field="content" extra-attrs="{icon:'chart-donut'}">
         <field name="feedsId" type="primary"/>

@@ -19,6 +19,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.UserService;
+import com.rebuild.core.support.License;
 import com.rebuild.core.support.i18n.Language;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.RandomUtils;
@@ -90,7 +91,7 @@ public class Entity2Schema extends Field2Schema {
                 "select min(typeCode) from MetaEntity").unique();
         int typeCode = maxTypeCode == null || ObjectUtils.toInt(maxTypeCode[0]) == 0
                 ? 999 : (ObjectUtils.toInt(maxTypeCode[0]) - 1);
-        if (typeCode <= 900) {
+        if (typeCode <= (License.getCommercialType() == 0 ? 900 : 500)) {
             throw new MetadataException("Entity code exceeds system limit : " + typeCode);
         }
 

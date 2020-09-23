@@ -34,6 +34,12 @@ public class DynamicMetadataFactory extends ConfigurationMetadataFactory {
     }
 
     @Override
+    public synchronized void refresh(boolean initState) {
+        super.refresh(initState);
+        if (!initState && Application.isReady()) Application.getLanguage().refresh();
+    }
+
+    @Override
     protected Document readConfiguration(boolean initState) {
         Document config = super.readConfiguration(initState);
         if (!initState) {

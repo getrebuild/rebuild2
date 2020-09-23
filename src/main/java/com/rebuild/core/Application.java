@@ -91,12 +91,14 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
         SerializeConfig.getGlobalInstance().put(QueryedRecord.class, RbRecordCodec.instance);
     }
 
-    // SPRING
-    private static ApplicationContext _CONTEXT;
-    // 实体对应的服务类
-    private static Map<Integer, ServiceSpec> _ESS = null;
     // 服务正常启动
     private static boolean _READY;
+
+    // SPRING
+    private static ApplicationContext _CONTEXT;
+
+    // 实体对应的服务类
+    private static Map<Integer, ServiceSpec> _ESS;
 
     protected Application() {
     }

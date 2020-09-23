@@ -43,26 +43,25 @@ public class BootApplication extends SpringBootServletInitializer {
 
     private static boolean DEBUG = false;
 
-    static {
-        if (devMode()) System.setProperty("spring.profiles.active", "dev");
-    }
-
     // 独立 JAR 方式（需要修改 pom.xml）
     public static void main(String[] args) {
+        DEBUG = args.length > 0 && args[0].contains("rbdev=true");
+        if (devMode()) System.setProperty("spring.profiles.active", "dev");
+
         LOG.info("Initializing SpringBoot context ({}) ...", devMode() ? "dev" : "prodution");
         SpringApplication spring = new SpringApplication(BootApplication.class);
         spring.setBannerMode(Banner.Mode.OFF);
         spring.addListeners(new Application());
 
-        DEBUG = args.length > 0 && args[0].contains("rbdev=true");
         if (DEBUG) spring.setWebApplicationType(WebApplicationType.NONE);
-
         spring.run(args);
     }
 
     // 外置 TOMCAT
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        if (devMode()) System.setProperty("spring.profiles.active", "dev");
+
         LOG.info("Initializing SpringBoot context ({}) ...", devMode() ? "dev" : "prodution");
         SpringApplicationBuilder spring = builder.sources(BootApplication.class);
         spring.bannerMode(Banner.Mode.OFF);

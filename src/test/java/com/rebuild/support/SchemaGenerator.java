@@ -12,10 +12,10 @@ import cn.devezhao.persist4j.PersistManagerFactory;
 import cn.devezhao.persist4j.metadata.impl.ConfigurationMetadataFactory;
 import cn.devezhao.persist4j.util.support.Table;
 import com.rebuild.core.Application;
+import com.rebuild.core.BootApplication;
+import com.rebuild.core.metadata.EntityHelper;
 import org.dom4j.Element;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 
 /**
  * 根据 METADATA 生成表的创建语句
@@ -23,16 +23,16 @@ import org.springframework.context.ApplicationContext;
  * @author Zhao Fangfang
  * @since 0.2, 2014-4-10
  */
-@SpringBootTest
 public class SchemaGenerator {
 
     private static PersistManagerFactory PMF;
 
     public static void main(String[] args) {
-        ApplicationContext ctx = SpringApplication.run(Application.class);
-        PMF = ctx.getBean(PersistManagerFactory.class);
+        BootApplication.main(new String[] { "-Drbdev=true" });
+        PMF = Application.getPersistManagerFactory();
 
-        generate();
+//        generate();
+        generate(EntityHelper.Language);
 
         System.exit(0);
     }

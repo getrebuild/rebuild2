@@ -63,6 +63,19 @@ public class Language implements Initialization {
     }
 
     /**
+     * 刷新语言包
+     */
+    public void refresh() {
+        if (bundleMap.isEmpty()) return;
+
+        try {
+            this.init();
+        } catch (Exception e) {
+            LOG.error("Refresh language-bundle error", e);
+        }
+    }
+
+    /**
      * @param locale
      * @return
      * @see java.util.Locale
@@ -170,13 +183,13 @@ public class Language implements Initialization {
     public static String getLang(BaseMeta entityOrField) {
         String langKey;
         if (entityOrField instanceof Entity) {
-            langKey = "e." + entityOrField.getName();
+            langKey = LanguageBundle.PREFIX_ENTITY + entityOrField.getName();
         } else {
             Field field = (Field) entityOrField;
             if (MetadataHelper.isCommonsField(field)) {
-                langKey = "f." + field.getName();
+                langKey = LanguageBundle.PREFIX_FIELD + field.getName();
             } else {
-                langKey = "f." + field.getOwnEntity().getName() + "." + field.getName();
+                langKey = LanguageBundle.PREFIX_FIELD + field.getOwnEntity().getName() + "." + field.getName();
             }
         }
 

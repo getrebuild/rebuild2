@@ -1,6 +1,17 @@
 -- Database upgrade scripts for rebuild 1.x and 2.x
 -- Each upgraded starts with `-- #VERSION`
 
+-- #30 Language (v2.0)
+-- ************ Entity [Language] DDL ************
+create table if not exists `language` (
+  `LANG_ID`            char(20) not null,
+  `LOCALE`             varchar(10) not null comment 'Locale',
+  `NAME`               varchar(100) not null comment '语言名',
+  `VALUE`              varchar(300) not null comment '语言值',
+  primary key  (`LANG_ID`),
+  index IX0_language (`LOCALE`, `NAME`)
+)Engine=InnoDB;
+
 -- #29 (v2.0)
 -- Add commons fields
 alter table `project_config`
