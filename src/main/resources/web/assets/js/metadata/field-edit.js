@@ -69,7 +69,7 @@ $(document).ready(function () {
       })
     }
 
-    if ($('#fieldNullable').prop('checked') === false && $('#fieldCreatable').prop('checked') === false) {
+    if (!$('#fieldNullable').prop('disabled') && !$('#fieldNullable').prop('checked') && !$('#fieldCreatable').prop('checked')) {
       RbAlert.create($lang('SetNullAndCreateTips'), {
         confirm: function () {
           this.disabled(true)

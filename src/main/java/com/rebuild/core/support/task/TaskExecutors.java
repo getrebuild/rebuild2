@@ -112,8 +112,7 @@ public class TaskExecutors extends DistributedJobBean {
 
     @Scheduled(cron = "0 15,35,55 * * * ?")
     public void executeJob() {
-        if (isRunning()) return;
-        if (TASKS.isEmpty()) return;
+        if (isRunning() || TASKS.isEmpty()) return;
 
         LOG.info("{} task(s) in the queue", TASKS.size());
 

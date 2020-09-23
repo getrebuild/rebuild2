@@ -19,6 +19,7 @@ import cn.devezhao.persist4j.Field;
 import cn.devezhao.persist4j.Filter;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.core.Application;
+import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.privileges.bizz.*;
 import com.rebuild.core.service.NoRecordFoundException;
@@ -196,8 +197,12 @@ public class PrivilegesManager {
      * @return
      */
     public boolean allow(ID user, int entity, Permission action) {
-        // CRUD and PlainEntity
+        // PlainEntity: CRUD
         if (action.getMask() <= BizzPermission.READ.getMask() && MetadataHelper.isPlainEntity(entity)) {
+            return true;
+        }
+        // Feeds: R
+        if (entity == EntityHelper.Feeds && action == BizzPermission.READ) {
             return true;
         }
 

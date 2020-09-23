@@ -26,6 +26,8 @@ public class PerHourJob extends DistributedJobBean {
 
     @Scheduled(cron = "0 0 * * * ?")
     protected void executeJob() {
+        if (isRunning()) return;
+
         final int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
         if (hour == 0 && RebuildConfiguration.getBool((ConfigurationItem.DBBackupsEnable))) {
