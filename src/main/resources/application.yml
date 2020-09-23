@@ -27,7 +27,7 @@ spring:
     multipart.enabled: false
   thymeleaf:
     prefix: classpath:/web
-    cache: false
+    cache: true
     enable-spring-el-compiler: false
   quartz:
     scheduler-name: rbScheduler
