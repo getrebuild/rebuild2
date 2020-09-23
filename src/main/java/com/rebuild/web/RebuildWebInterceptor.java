@@ -76,7 +76,7 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
         }
 
         // 服务状态
-        if (!Application.serversReady()) {
+        if (!Application.isReady()) {
             boolean gotError = requestUri.endsWith("/error") || requestUri.contains("/error/");
 
             if (checkInstalled()) {
@@ -145,7 +145,7 @@ public class RebuildWebInterceptor extends HandlerInterceptorAdapter implements 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         // 清理用户
-        ID user = Application.serversReady() ? Application.getSessionStore().get(true) : null;
+        ID user = Application.isReady() ? Application.getSessionStore().get(true) : null;
         if (user != null) {
             Application.getSessionStore().clean();
         }

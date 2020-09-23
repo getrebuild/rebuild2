@@ -79,7 +79,7 @@ public class KVStorage {
     protected static String getValue(final String key, boolean noCache, Object defaultValue) {
         String value = null;
 
-        if (Application.serversReady()) {
+        if (Application.isReady()) {
             // 0. 从缓存
             value = Application.getCommonsCache().get(key);
             if (value != null && !noCache) {
@@ -104,7 +104,7 @@ public class KVStorage {
             value = defaultValue.toString();
         }
 
-        if (Application.serversReady()) {
+        if (Application.isReady()) {
             if (value == null) {
                 Application.getCommonsCache().evict(key);
             } else {

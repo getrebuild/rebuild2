@@ -41,7 +41,7 @@ public final class License {
 
         SN = RebuildConfiguration.get(ConfigurationItem.SN, true);
         if (SN == null) {
-            if (!Application.serversReady()) return "SN-ERROR";
+            if (!Application.isReady()) return "SN-ERROR";
 
             try {
                 String apiUrl = String.format("https://getrebuild.com/api/authority/new?ver=%s&k=%s", Application.VER, OSA_KEY);
@@ -64,7 +64,7 @@ public final class License {
                     Locale.getDefault().getCountry().substring(0, 2),
                     CodecUtils.randomCode(14).toUpperCase());
 
-            if (Application.serversReady()) {
+            if (Application.isReady()) {
                 RebuildConfiguration.set(ConfigurationItem.SN, SN);
             }
         }

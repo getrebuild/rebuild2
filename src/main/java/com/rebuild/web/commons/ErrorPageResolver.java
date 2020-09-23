@@ -42,7 +42,7 @@ public class ErrorPageResolver extends BaseController {
         boolean realtime = "1".equals(request.getParameter("check"));
 
         ModelAndView mv = createModelAndView("/error/server-status");
-        mv.getModel().put("ok", ServerStatus.isStatusOK() && Application.serversReady());
+        mv.getModel().put("ok", ServerStatus.isStatusOK() && Application.isReady());
         mv.getModel().put("status", ServerStatus.getLastStatus(realtime));
 
         mv.getModel().put("MemoryUsage", ServerStatus.getHeapMemoryUsed());

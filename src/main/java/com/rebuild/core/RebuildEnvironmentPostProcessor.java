@@ -146,6 +146,7 @@ public class RebuildEnvironmentPostProcessor implements EnvironmentPostProcessor
             if (!(name.startsWith(V2_PREFIX) || name.contains("."))) {
                 name = V2_PREFIX + name;
             }
+
             value = ENV_HOLD.getProperty(name);
         }
         return value == null ? defaultValue : value;

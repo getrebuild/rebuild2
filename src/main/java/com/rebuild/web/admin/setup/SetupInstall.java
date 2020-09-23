@@ -44,7 +44,7 @@ public class SetupInstall extends BaseController implements InstallState {
 
     @GetMapping("install")
     public ModelAndView index(HttpServletResponse response) throws IOException {
-        if (Application.serversReady() && !Application.devMode()) {
+        if (Application.isReady() && !Application.devMode()) {
             response.sendError(404);
             return null;
         }

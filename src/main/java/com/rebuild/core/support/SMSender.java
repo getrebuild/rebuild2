@@ -224,7 +224,7 @@ public class SMSender {
      * @param error
      */
     private static void createLog(String to, String content, int type, String sentid, String error) {
-        if (!Application.serversReady()) return;
+        if (!Application.isReady()) return;
 
         Record log = EntityHelper.forNew(EntityHelper.SmsendLog, UserService.SYSTEM_USER);
         log.setString("to", to);

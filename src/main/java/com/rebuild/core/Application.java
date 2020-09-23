@@ -35,6 +35,7 @@ import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.setup.Installer;
 import com.rebuild.core.support.setup.UpgradeDatabase;
+import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.JSONable;
 import com.rebuild.utils.RebuildBanner;
 import com.rebuild.utils.codec.RbDateCodec;
@@ -91,27 +92,26 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
     }
 
     // SPRING
-    private static ApplicationContext APPLICATION_CONTEXT;
-
+    private static ApplicationContext _CONTEXT;
     // 实体对应的服务类
-    private static Map<Integer, ServiceSpec> ESS = null;
-
-    private static boolean serversReady;
+    private static Map<Integer, ServiceSpec> _ESS = null;
+    // 服务正常启动
+    private static boolean _READY;
 
     protected Application() {
     }
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent event) {
-        if (APPLICATION_CONTEXT != null) throw new IllegalStateException("Rebuild already started");
+        if (_CONTEXT != null) throw new IllegalStateException("Rebuild already started");
 
-        APPLICATION_CONTEXT = event.getApplicationContext();
+        _CONTEXT = event.getApplicationContext();
 
         long time = System.currentTimeMillis();
 
         String localUrl = String.format("http://localhost:%s%s",
                 RebuildEnvironmentPostProcessor.getProperty("server.port", "18080"),
-                RebuildEnvironmentPostProcessor.getProperty("server.servlet.context-path", ""));
+                AppUtils.getContextPath());
 
         boolean started = false;
         try {
@@ -132,15 +132,15 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
             }
 
         } catch (Exception ex) {
-            serversReady = false;
+            _READY = false;
             LOG.error(RebuildBanner.formatBanner("REBUILD INITIALIZATION FILAED !!!"), ex);
 
         } finally {
             if (!started) {
                 // 某些资源未启动仍需初始化
                 try {
-                    APPLICATION_CONTEXT.getBean(Language.class).init();
-                    APPLICATION_CONTEXT.getBean(RebuildWebConfigurer.class).init();
+                    _CONTEXT.getBean(Language.class).init();
+                    _CONTEXT.getBean(RebuildWebConfigurer.class).init();
                 } catch (Exception ex) {
                     LOG.error("STARTUP FAILED", ex);
                 }
@@ -154,10 +154,10 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
      * @throws Exception
      */
     public static boolean init() throws Exception {
-        if (serversReady) throw new IllegalStateException("Rebuild already started");
-        LOG.info("Initializing Rebuild context ...");
+        if (_READY) throw new IllegalStateException("Rebuild already started");
+        LOG.info("Initializing Rebuild context use {} ...", _CONTEXT.getClass().getSimpleName());
 
-        if (!(serversReady = ServerStatus.checkAll())) {
+        if (!(_READY = ServerStatus.checkAll())) {
             LOG.error(RebuildBanner.formatBanner(
                     "REBUILD STARTUP FILAED DURING THE STATUS CHECK.", "PLEASE VIEW LOGS FOR MORE DETAILS."));
             return false;
@@ -181,14 +181,14 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
 
         // 加载自定义实体
         LOG.info("Loading customized/business entities ...");
-        ((DynamicMetadataFactory) APPLICATION_CONTEXT.getBean(PersistManagerFactory.class).getMetadataFactory()).refresh(false);
+        ((DynamicMetadataFactory) _CONTEXT.getBean(PersistManagerFactory.class).getMetadataFactory()).refresh(false);
 
         // 实体对应的服务类
-        ESS = new HashMap<>();
-        for (Map.Entry<String, ServiceSpec> e : APPLICATION_CONTEXT.getBeansOfType(ServiceSpec.class).entrySet()) {
+        _ESS = new HashMap<>();
+        for (Map.Entry<String, ServiceSpec> e : _CONTEXT.getBeansOfType(ServiceSpec.class).entrySet()) {
             ServiceSpec s = e.getValue();
             if (s.getEntityCode() > 0) {
-                ESS.put(s.getEntityCode(), s);
+                _ESS.put(s.getEntityCode(), s);
                 if (devMode()) {
                     LOG.info("Service specification : " + s.getClass().getName() + " for <" + s.getEntityCode() + ">");
                 }
@@ -196,7 +196,7 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
         }
 
         // 初始化业务组件
-        for (Initialization bean : APPLICATION_CONTEXT.getBeansOfType(Initialization.class).values()) {
+        for (Initialization bean : _CONTEXT.getBeansOfType(Initialization.class).values()) {
             bean.init();
         }
 
@@ -207,17 +207,17 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
         return BootApplication.devMode();
     }
 
-    public static boolean serversReady() {
-        return serversReady && APPLICATION_CONTEXT != null;
+    public static boolean isReady() {
+        return _READY && _CONTEXT != null;
     }
 
-    public static ApplicationContext getApplicationContext() {
-        if (APPLICATION_CONTEXT == null) throw new IllegalStateException("Rebuild unstarted");
-        return APPLICATION_CONTEXT;
+    public static ApplicationContext getContext() {
+        if (_CONTEXT == null) throw new IllegalStateException("Rebuild unstarted");
+        return _CONTEXT;
     }
 
     public static <T> T getBean(Class<T> beanClazz) {
-        return getApplicationContext().getBean(beanClazz);
+        return getContext().getBean(beanClazz);
     }
 
     public static Language getLanguage() {
@@ -273,8 +273,8 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
     }
 
     public static ServiceSpec getService(int entityCode) {
-        if (ESS != null && ESS.containsKey(entityCode)) {
-            return ESS.get(entityCode);
+        if (_ESS != null && _ESS.containsKey(entityCode)) {
+            return _ESS.get(entityCode);
         } else {
             return getGeneralEntityService();
         }
@@ -289,7 +289,7 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
     }
 
     public static GeneralEntityService getGeneralEntityService() {
-        return (GeneralEntityService) getApplicationContext().getBean("generalEntityService");
+        return (GeneralEntityService) getContext().getBean("generalEntityService");
     }
 
     public static CommonsService getCommonsService() {
