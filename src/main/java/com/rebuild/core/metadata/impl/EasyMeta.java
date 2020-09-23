@@ -202,7 +202,7 @@ public class EasyMeta implements BaseMeta {
     }
 
     /**
-     * 指定实体具有和业务实体一样的特性（除权限以外（指定实体无权限字段））
+     * 具有和业务实体一样的特性（除权限以外（因为无权限字段））
      *
      * @return
      */

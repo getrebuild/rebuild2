@@ -262,15 +262,6 @@ public class MetadataHelper {
     }
 
     /**
-     * @param entityCode
-     * @return
-     * @see EasyMeta#isPlainEntity()
-     */
-    public static boolean isPlainEntity(int entityCode) {
-        return EasyMeta.valueOf(entityCode).isPlainEntity();
-    }
-
-    /**
      * 实体是否具备权限字段（业务实体）
      *
      * @param entity
