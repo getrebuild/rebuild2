@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.jdbc.JdbcRepositoriesAutoConfiguration;
@@ -35,7 +34,7 @@ import org.springframework.context.annotation.ImportResource;
         JdbcRepositoriesAutoConfiguration.class,
         JdbcTemplateAutoConfiguration.class,
         RedisAutoConfiguration.class,
-        CacheAutoConfiguration.class })
+        CacheAutoConfiguration.class})
 @ImportResource("classpath:application-bean.xml")
 public class BootApplication extends SpringBootServletInitializer {
 
@@ -48,12 +47,9 @@ public class BootApplication extends SpringBootServletInitializer {
         DEBUG = args.length > 0 && args[0].contains("rbdev=true");
         if (devMode()) System.setProperty("spring.profiles.active", "dev");
 
-        LOG.info("Initializing SpringBoot context ({}) ...", devMode() ? "dev" : "prodution");
+        LOG.info("Initializing SpringBoot context {}...", devMode() ? "(dev) " : "");
         SpringApplication spring = new SpringApplication(BootApplication.class);
-        spring.setBannerMode(Banner.Mode.OFF);
         spring.addListeners(new Application());
-
-        if (DEBUG) spring.setWebApplicationType(WebApplicationType.NONE);
         spring.run(args);
     }
 
@@ -62,9 +58,8 @@ public class BootApplication extends SpringBootServletInitializer {
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         if (devMode()) System.setProperty("spring.profiles.active", "dev");
 
-        LOG.info("Initializing SpringBoot context ({}) ...", devMode() ? "dev" : "prodution");
+        LOG.info("Initializing SpringBoot context {}...", devMode() ? "(dev) " : "");
         SpringApplicationBuilder spring = builder.sources(BootApplication.class);
-        spring.bannerMode(Banner.Mode.OFF);
         spring.listeners(new Application());
         return spring;
     }

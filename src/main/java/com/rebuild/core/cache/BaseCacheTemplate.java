@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 package com.rebuild.core.cache;
 
 import cn.devezhao.commons.ThrowableUtils;
-import com.rebuild.core.support.setup.InstallState;
+import com.rebuild.core.BootConfiguration;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -26,7 +26,7 @@ import java.io.Serializable;
  * @author devezhao
  * @since 01/02/2019
  */
-public abstract class BaseCacheTemplate<V extends Serializable> implements CacheTemplate<V>, InstallState {
+public abstract class BaseCacheTemplate<V extends Serializable> implements CacheTemplate<V> {
 
     protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
@@ -35,9 +35,9 @@ public abstract class BaseCacheTemplate<V extends Serializable> implements Cache
      */
     private static final int TS_DEFAULT = 60 * 60 * 24 * 90;
 
-    final private CacheTemplate<V> delegate;
+    private CacheTemplate<V> delegate;
 
-    final private String keyPrefix;
+    private String keyPrefix;
 
     /**
      * @param jedisPool
@@ -45,7 +45,7 @@ public abstract class BaseCacheTemplate<V extends Serializable> implements Cache
      * @param keyPrefix
      */
     protected BaseCacheTemplate(JedisPool jedisPool, CacheManager backup, String keyPrefix) {
-        if (checkInstalled() && testJedisPool(jedisPool)) {
+        if (testJedisPool(jedisPool)) {
             this.delegate = new RedisDriver<>(jedisPool);
         } else {
             this.delegate = new EhcacheDriver<>(backup);
@@ -53,6 +53,18 @@ public abstract class BaseCacheTemplate<V extends Serializable> implements Cache
 
         String fix = StringUtils.defaultIfBlank(System.getProperty("cache.keyprefix"), "RB.");
         this.keyPrefix = fix + StringUtils.defaultIfBlank(keyPrefix, StringUtils.EMPTY);
+    }
+
+    /**
+     * @param jedisPool
+     * @return
+     */
+    public boolean refreshJedisPool(JedisPool jedisPool) {
+        if (testJedisPool(jedisPool)) {
+            this.delegate = new RedisDriver<>(jedisPool);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -106,6 +118,8 @@ public abstract class BaseCacheTemplate<V extends Serializable> implements Cache
     }
 
     private boolean testJedisPool(JedisPool jedisPool) {
+        if (jedisPool == BootConfiguration.USE_EHCACHE) return false;
+
         try {
             Jedis jedis = jedisPool.getResource();
             IOUtils.closeQuietly(jedis);

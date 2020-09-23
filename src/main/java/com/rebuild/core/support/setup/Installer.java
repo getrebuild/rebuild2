@@ -10,11 +10,13 @@ package com.rebuild.core.support.setup;
 import cn.devezhao.commons.EncryptUtils;
 import cn.devezhao.commons.sql.SqlBuilder;
 import cn.devezhao.commons.sql.builder.UpdateBuilder;
+import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
-import com.rebuild.core.RebuildEnvironmentPostProcessor;
+import com.rebuild.core.BootConfiguration;
+import com.rebuild.core.BootEnvironmentPostProcessor;
+import com.rebuild.core.cache.BaseCacheTemplate;
 import com.rebuild.core.cache.RedisDriver;
-import com.rebuild.core.support.License;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.utils.AES;
 import com.rebuild.utils.CommonsUtils;
@@ -25,7 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
+import javax.sql.DataSource;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -66,8 +70,6 @@ public class Installer implements InstallState {
 
     /**
      * 执行安装
-     *
-     * @throws Exception
      */
     public void install() throws Exception {
         this.installDatabase();
@@ -90,6 +92,9 @@ public class Installer implements InstallState {
             if (StringUtils.isNotBlank(cachePasswd)) {
                 installProps.put(CONF_PREFIX + CachePassword.name(), String.format("AES(%s)", AES.encrypt(cachePasswd)));
             }
+        } else {
+            // Use ehcache
+            installProps.put(CONF_PREFIX + CacheHost.name(), "0");
         }
 
         // Save install state (file)
@@ -98,26 +103,45 @@ public class Installer implements InstallState {
             FileUtils.deleteQuietly(dest);
             try (OutputStream os = new FileOutputStream(dest)) {
                 installProps.store(os, "INSTALL FILE FOR REBUILD (v2). DON'T DELETE OR MODIFY IT!!!");
-                LOG.warn("Stored install file : " + dest);
+                LOG.info("Saved installation file : " + dest);
             }
 
         } catch (IOException e) {
             throw new SetupException(e);
         }
 
-        // re-init
+        // Refresh
         try {
-            Application.init();
+            refresh();
         } catch (Exception ex) {
             FileUtils.deleteQuietly(dest);
             throw ex;
         }
 
-        // Gen SN
-        License.SN();
-
         // Clean cached
         clearAllCache();
+    }
+
+    /**
+     * 刷新配置
+     */
+    private void refresh() throws Exception {
+        // 新配置
+        Application.getBean(BootEnvironmentPostProcessor.class).postProcessEnvironment(null, null);
+
+        // 重配置数据源
+        DruidDataSource ds = (DruidDataSource) Application.getBean(DataSource.class);
+        ds.setUrl(BootEnvironmentPostProcessor.getProperty("db.url"));
+        ds.setUsername(BootEnvironmentPostProcessor.getProperty("db.user"));
+        ds.setPassword(BootEnvironmentPostProcessor.getProperty("db.passwd"));
+
+        // 重配置 REDIS
+        JedisPool pool = BootConfiguration.createJedisPoolInternal();
+        for (Object o : Application.getContext().getBeansOfType(BaseCacheTemplate.class).values()) {
+            if (!((BaseCacheTemplate<?>) o).refreshJedisPool(pool)) break;
+        }
+
+        Application.init();
     }
 
     /**
@@ -307,7 +331,7 @@ public class Installer implements InstallState {
      * @return
      */
     public static boolean isUseH2() {
-        String dbUrl = RebuildEnvironmentPostProcessor.getProperty("db.url");
+        String dbUrl = BootEnvironmentPostProcessor.getProperty("db.url");
         return dbUrl != null && dbUrl.startsWith("jdbc:h2:");
     }
 

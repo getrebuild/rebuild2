@@ -112,9 +112,10 @@ public final class ServerStatus {
         String name = "Database";
         if (Installer.isUseH2()) return Status.success(name + "/H2");
 
+        String url = BootEnvironmentPostProcessor.getProperty("db.url");
         try {
             Connection c = DriverManager.getConnection(
-                    BootEnvironmentPostProcessor.getProperty("db.url"),
+                    url,
                     BootEnvironmentPostProcessor.getProperty("db.user"),
                     BootEnvironmentPostProcessor.getProperty("db.passwd"));
             SqlHelper.close(c);

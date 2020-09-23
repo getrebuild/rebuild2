@@ -95,13 +95,10 @@ public class BootEnvironmentPostProcessor implements EnvironmentPostProcessor, I
             if (value != null) confPs.put(name, value);
         }
 
-        // 占位符必填项
+        // `application-bean.xml` 占位符必填
         if (env.getProperty("db.url") == null) confPs.put("db.url", "jdbc:mysql://127.0.0.1:3306/rebuild20");
         if (env.getProperty("db.user") == null) confPs.put("db.user", "rebuild");
         if (env.getProperty("db.passwd") == null) confPs.put("db.passwd", "rebuild");
-        if (env.getProperty("db.CacheHost") == null) confPs.put("db.CacheHost", "127.0.0.1");
-        if (env.getProperty("db.CachePort") == null) confPs.put("db.CachePort", "6379");
-        if (env.getProperty("db.CachePassword") == null) confPs.put("db.CachePassword", "");
 
         aesDecrypt(confPs);
         env.getPropertySources().addFirst(new PropertiesPropertySource(".configuration", confPs));
