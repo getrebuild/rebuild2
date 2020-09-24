@@ -10,7 +10,6 @@ package com.rebuild.core;
 import cn.devezhao.commons.*;
 import cn.devezhao.commons.runtime.MemoryInformation;
 import cn.devezhao.commons.runtime.MemoryInformationBean;
-import cn.devezhao.persist4j.util.SqlHelper;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.cache.CommonsCache;
@@ -43,6 +42,7 @@ public final class ServerStatus {
     private static final Logger LOG = LoggerFactory.getLogger(ServerStatus.class);
 
     public static final Date STARTUP_TIME = CalendarUtils.now();
+
     public static final String STARTUP_ONCE = CodecUtils.randomCode(40);
 
     private static long LastCheckTime = 0;
@@ -103,7 +103,7 @@ public final class ServerStatus {
                     url,
                     BootEnvironmentPostProcessor.getProperty("db.user"),
                     BootEnvironmentPostProcessor.getProperty("db.passwd"));
-            SqlHelper.close(c);
+            c.close();
         } catch (Exception ex) {
             return Status.error(name, ThrowableUtils.getRootCause(ex).getLocalizedMessage());
         }

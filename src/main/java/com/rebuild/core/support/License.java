@@ -41,7 +41,7 @@ public final class License {
         }
 
         if (!Application.isReady()) {
-            return "SN-SN-SN";
+            return "SN-000000-0000000000";
         }
 
         try {
@@ -108,7 +108,7 @@ public final class License {
                 return (JSONObject) o;
             }
         }
-        
+
         String apiUrl = "https://getrebuild.com/" + api;
         apiUrl += (api.contains("?") ? "&" : "?") + "k=" + OSA_KEY + "&sn=" + SN();
 

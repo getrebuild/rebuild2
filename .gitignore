@@ -27,6 +27,7 @@ hs_err_pid*
 /.settings/
 /.idea/
 *.iml
+**/rebel.xml
 
 # Bin
 /target/
