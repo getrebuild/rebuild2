@@ -61,9 +61,9 @@ public class SystemConfigurationControl extends BaseController {
         }
         mv.getModel().put("availableLangs", localesJson);
 
-        JSONObject authority = License.queryAuthority();
+        JSONObject auth = License.queryAuthority(false);
         mv.getModel().put("LicenseType",
-                authority.getString("authType") + " (" + authority.getString("authObject") + ")");
+                auth.getString("authType") + " (" + auth.getString("authObject") + ")");
         mv.getModel().put("Version", Application.VER);
 
         return mv;

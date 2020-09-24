@@ -14,7 +14,6 @@ import com.rebuild.core.Application;
 import com.rebuild.core.cache.CommonsCache;
 import com.rebuild.utils.HttpUtils;
 import com.rebuild.utils.JSONUtils;
-import org.apache.commons.lang.StringUtils;
 
 import java.util.Locale;
 
@@ -28,34 +27,38 @@ public final class License {
 
     private static final String OSA_KEY = "IjkMHgq94T7s7WkP";
 
+    private static String USE_SN;
+
     /**
-     * 授权码/SN
-     *
      * @return
      */
     public static String SN() {
-        String SN = RebuildConfiguration.get(ConfigurationItem.SN, false);
+        if (USE_SN != null) return USE_SN;
+        String SN = RebuildConfiguration.get(ConfigurationItem.SN, true);
         if (SN != null) {
+            USE_SN = SN;
             return SN;
         }
 
-        SN = RebuildConfiguration.get(ConfigurationItem.SN, true);
-        if (SN == null) {
-            if (!Application.isReady()) return "SN-ERROR";
+        if (!Application.isReady()) {
+            return "SN-SN-SN";
+        }
 
-            try {
-                String apiUrl = String.format("https://getrebuild.com/api/authority/new?ver=%s&k=%s", Application.VER, OSA_KEY);
-                String result = HttpUtils.get(apiUrl);
+        try {
+            String apiUrl = String.format("https://getrebuild.com/api/authority/new?ver=%s&k=%s", Application.VER, OSA_KEY);
+            String result = HttpUtils.get(apiUrl);
 
-                if (JSONUtils.wellFormat(result)) {
-                    JSONObject o = JSON.parseObject(result);
-                    SN = o.getString("sn");
+            if (JSONUtils.wellFormat(result)) {
+                JSONObject o = JSON.parseObject(result);
+                SN = o.getString("sn");
+
+                if (SN != null) {
                     RebuildConfiguration.set(ConfigurationItem.SN, SN);
                 }
-
-            } catch (Exception ignored) {
-                // UNCATCHABLE
             }
+
+        } catch (Exception ignored) {
+            // UNCATCHABLE
         }
 
         if (SN == null) {
@@ -63,46 +66,33 @@ public final class License {
                     Application.BUILD,
                     Locale.getDefault().getCountry().substring(0, 2),
                     CodecUtils.randomCode(14).toUpperCase());
-
-            if (Application.isReady()) {
-                RebuildConfiguration.set(ConfigurationItem.SN, SN);
-            }
+            RebuildConfiguration.set(ConfigurationItem.SN, SN);
         }
 
+        USE_SN = SN;
         return SN;
     }
 
     /**
-     * 是否商业授权
-     *
      * @return
      */
-    public static int getCommercialType() {
-        JSONObject auth = siteApi("api/authority/query", true);
-        String authType = StringUtils.defaultIfBlank(
-                auth == null ? null : auth.getString("authType"), "开源社区版").toUpperCase();
-        if (authType.contains("商业") || authType.contains("BUSINESS")) {
-            return 10;
-        } else if (authType.contains("集团") || authType.contains("GROUP") || authType.contains("OEM")) {
-            return 20;
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * 查询授权信息
-     *
-     * @return
-     */
-    public static JSONObject queryAuthority() {
-        JSONObject result = siteApi("api/authority/query", false);
-        if (result == null) {
-            result = JSONUtils.toJSONObject(
+    public static JSONObject queryAuthority(boolean useCache) {
+        JSONObject auth = siteApi("api/authority/query", useCache);
+        if (auth == null) {
+            auth = JSONUtils.toJSONObject(
                     new String[]{"sn", "authType", "authObject", "authExpires"},
                     new String[]{SN(), "开源社区版", "GitHub", "无"});
         }
-        return result;
+        return auth;
+    }
+
+    /**
+     * @return
+     */
+    public static int getCommercialType() {
+        JSONObject auth = queryAuthority(true);
+        Integer authType = auth.getInteger("authTypeInt");
+        return authType == null ? 0 : authType;
     }
 
     /**
@@ -118,9 +108,9 @@ public final class License {
                 return (JSONObject) o;
             }
         }
-
+        
         String apiUrl = "https://getrebuild.com/" + api;
-        apiUrl += (api.contains("\\?") ? "&" : "?") + "k=" + OSA_KEY + "&sn=" + SN();
+        apiUrl += (api.contains("?") ? "&" : "?") + "k=" + OSA_KEY + "&sn=" + SN();
 
         try {
             String result = HttpUtils.get(apiUrl);

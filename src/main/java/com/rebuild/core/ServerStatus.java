@@ -12,11 +12,14 @@ import cn.devezhao.commons.runtime.MemoryInformation;
 import cn.devezhao.commons.runtime.MemoryInformationBean;
 import cn.devezhao.persist4j.util.SqlHelper;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.cache.CommonsCache;
+import com.rebuild.core.support.License;
 import com.rebuild.core.support.setup.Installer;
 import com.rebuild.utils.JSONUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,14 +42,13 @@ public final class ServerStatus {
 
     private static final Logger LOG = LoggerFactory.getLogger(ServerStatus.class);
 
-    private static Date StartupTime;
+    public static final Date STARTUP_TIME = CalendarUtils.now();
+    public static final String STARTUP_ONCE = CodecUtils.randomCode(40);
 
     private static long LastCheckTime = 0;
     private static final List<Status> LAST_STATUS = new ArrayList<>();
 
     /**
-     * 服务状态
-     *
      * @param realtime
      * @return
      */
@@ -62,8 +64,6 @@ public final class ServerStatus {
     }
 
     /**
-     * 服务正常
-     *
      * @return
      */
     public static boolean isStatusOK() {
@@ -74,22 +74,9 @@ public final class ServerStatus {
     }
 
     /**
-     * 启动时间
-     *
-     * @return
-     */
-    public static Date getStartupTime() {
-        return StartupTime;
-    }
-
-    /**
-     * 系统状态检查
-     *
      * @return
      */
     static boolean checkAll() {
-        if (StartupTime == null) StartupTime = CalendarUtils.now();
-
         List<Status> last = new ArrayList<>();
         last.add(checkCreateFile());
         last.add(checkDatabase());
@@ -104,8 +91,6 @@ public final class ServerStatus {
     }
 
     /**
-     * 数据库连接
-     *
      * @return
      */
     static Status checkDatabase() {
@@ -126,8 +111,6 @@ public final class ServerStatus {
     }
 
     /**
-     * 文件权限/磁盘空间
-     *
      * @return
      */
     static Status checkCreateFile() {
@@ -152,8 +135,6 @@ public final class ServerStatus {
     }
 
     /**
-     * 缓存系统
-     *
      * @return
      */
     static Status checkCacheService() {
@@ -210,6 +191,16 @@ public final class ServerStatus {
     }
 
     // --
+
+    /**
+     * @return
+     */
+    public static String checkValidity() {
+        if (Application.devMode()) return null;
+        JSONObject echo = License.siteApi("api/authority/echo?once=" +  STARTUP_ONCE, true);
+        String error = echo == null ? null : echo.getString("error");
+        return StringUtils.defaultIfBlank(error, null);
+    }
 
     /**
      * 内存用量

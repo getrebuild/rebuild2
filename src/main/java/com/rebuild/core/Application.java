@@ -42,7 +42,6 @@ import com.rebuild.utils.codec.RbDateCodec;
 import com.rebuild.utils.codec.RbRecordCodec;
 import com.rebuild.web.OnlineSessionStore;
 import com.rebuild.web.RebuildWebConfigurer;
-import org.apache.commons.lang.StringUtils;
 import org.h2.Driver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,14 +122,14 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
                 if (started) {
                     String banner = RebuildBanner.formatSimple(
                             "Rebuild (" + VER + ") start successfully in " + (System.currentTimeMillis() - time) + " ms.",
-                            "License   : " + StringUtils.join(License.queryAuthority().values(), " | "),
-                            "Local URL : " + localUrl);
+                            "  License : " + License.queryAuthority(false).values(),
+                            "    Local : " + localUrl);
                     LOG.info(banner);
                 }
 
             } else {
                 LOG.warn(RebuildBanner.formatBanner(
-                        "REBUILD IS WAITING FOR INSTALL ...", "Install URL : " + localUrl + "/setup/install"));
+                        "REBUILD IS WAITING FOR INSTALL ...", "  Install : " + localUrl + "/setup/install"));
             }
 
         } catch (Exception ex) {
