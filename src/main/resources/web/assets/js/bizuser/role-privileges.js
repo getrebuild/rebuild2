@@ -12,7 +12,7 @@ RbForm.postAfter = function (data) {
 
 const roleId = window.__PageConfig.recordId
 $(document).ready(function () {
-  $('.J_new-role').click(() => RbFormModal.create({ title: $lang('NewSome,e.Role'), entity: 'Role', icon: 'lock' }))
+  $('.J_new-role').click(() => RbFormModal.create({ title: $lang('NewSome,Role'), entity: 'Role', icon: 'lock' }))
 
   if (roleId) {
     $('.J_save').attr('disabled', false).click(updatePrivileges)
@@ -86,7 +86,7 @@ const loadRoles = function () {
 
       $action.find('a.J_edit').click(() =>
         RbFormModal.create({
-          title: $lang('EditSome,e.Role'),
+          title: $lang('EditSome,Role'),
           entity: 'Role',
           icon: 'lock',
           id: _id,

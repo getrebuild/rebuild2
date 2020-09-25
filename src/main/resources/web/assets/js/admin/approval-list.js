@@ -64,7 +64,7 @@ class ApprovalList extends ConfigList {
 class ApprovalEdit extends ConfigFormDlg {
   constructor(props) {
     super(props)
-    this.subtitle = $lang('e.RobotApprovalConfig')
+    this.subtitle = $lang('ApprovalConfig')
   }
 
   renderFrom() {
@@ -87,7 +87,7 @@ class ApprovalEdit extends ConfigFormDlg {
           </div>
         )}
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.RobotApprovalConfig.name')}</label>
+          <label className="col-sm-3 col-form-label text-sm-right">{$lang('Name')}</label>
           <div className="col-sm-7">
             <input type="text" className="form-control form-control-sm" data-id="name" onChange={this.handleChange} value={this.state.name || ''} />
           </div>
@@ -117,7 +117,7 @@ class ApprovalEdit extends ConfigFormDlg {
   confirm = () => {
     const post = { name: this.state['name'] }
     if (!post.name) {
-      RbHighbar.create($lang('PlsInputSome,f.RobotApprovalConfig.name'))
+      RbHighbar.create($lang('PlsInputSome,Name'))
       return
     }
     if (!this.props.id) {

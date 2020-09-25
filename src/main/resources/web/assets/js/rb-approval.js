@@ -289,7 +289,7 @@ class ApprovalSubmitForm extends ApprovalUsersForm {
       <RbModal ref={(c) => (this._dlg = c)} title={$lang('SubmitApproval')} width="600" disposeOnHide={this.props.disposeOnHide === true}>
         <div className="form approval-form">
           <div className="form-group">
-            <label>{$lang('SelectSome,e.RobotApprovalConfig')}</label>
+            <label>{$lang('SelectSome,ApprovalConfig')}</label>
             <div className="approval-list">
               {!this.state.approvals && (
                 <p className="text-muted">
@@ -349,7 +349,7 @@ class ApprovalSubmitForm extends ApprovalUsersForm {
   }
 
   post() {
-    if (!this.state.useApproval) return RbHighbar.create($lang('PlsSelectSome,e.RobotApprovalConfig'))
+    if (!this.state.useApproval) return RbHighbar.create($lang('PlsSelectSome,ApprovalConfig'))
     const selectUsers = this.getSelectUsers()
     if (!selectUsers) return
 

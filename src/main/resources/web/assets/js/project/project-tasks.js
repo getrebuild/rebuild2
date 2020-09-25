@@ -195,7 +195,7 @@ class PlanBox extends React.Component {
             {(this.state.tasks || []).map((item) => {
               return <Task key={`task-${item.id}`} planid={this.props.id} $$$parent={this} {...item} />
             })}
-            {this.state.taskNum === 0 && <div className="no-tasks">{$lang('NoSome,e.ProjectTask')}</div>}
+            {this.state.taskNum === 0 && <div className="no-tasks">{$lang('NoSome,Task')}</div>}
           </div>
           {this.creatableTask &&
             (this.state.newMode ? (
@@ -216,13 +216,13 @@ class PlanBox extends React.Component {
                     />
                   </div>
                   <div>
-                    <label className="mb-1">{$lang('f.ProjectTask.executor')}</label>
+                    <label className="mb-1">{$lang('Executor')}</label>
                     <div>
                       <UserSelector hideDepartment={true} hideRole={true} hideTeam={true} multiple={false} ref={(c) => (this._executor = c)} />
                     </div>
                   </div>
                   <div>
-                    <label className="mb-1">{$lang('f.ProjectTask.deadline')}</label>
+                    <label className="mb-1">{$lang('Deadline')}</label>
                     <div>
                       <input type="text" className="form-control form-control-sm" ref={(c) => (this._deadline = c)} />
                     </div>
@@ -322,7 +322,7 @@ class PlanBox extends React.Component {
       metadata: { entity: 'ProjectTask' },
     }
 
-    if (!_data.taskName) return RbHighbar.create($lang('PlsInputSome,f.ProjectTask.taskName'))
+    if (!_data.taskName) return RbHighbar.create($lang('PlsInputSome,TaskName'))
     if (_data.deadline) _data.deadline += ':00'
 
     const $btn = $(this._btn).button('loading')
@@ -374,7 +374,7 @@ class Task extends React.Component {
               <div className="task-title text-wrap">{this.state.taskName}</div>
               {this.state.endTime && (
                 <div className="task-time">
-                  {$lang('f.ProjectTask.endTime')} <DateShow date={this.state.endTime} />
+                  {$lang('EndTime')} <DateShow date={this.state.endTime} />
                 </div>
               )}
               <div className="task-time">
@@ -383,13 +383,13 @@ class Task extends React.Component {
               {!this.state.endTime && this.state.deadline && (
                 <div className="task-time">
                   <span className={`badge badge-${$expired(this.state.deadline) ? 'danger' : 'primary'}`}>
-                    {$lang('f.ProjectTask.deadline')} <DateShow date={this.state.deadline} />
+                    {$lang('Deadline')} <DateShow date={this.state.deadline} />
                   </span>
                 </div>
               )}
               <div className="task-extras">
                 {this.state.executor && (
-                  <a className="avatar float-left" title={`${$lang('f.ProjectTask.executor')} ${this.state.executor[1]}`}>
+                  <a className="avatar float-left" title={`${$lang('Executor')} ${this.state.executor[1]}`}>
                     <img src={`${rb.baseUrl}/account/user-avatar/${this.state.executor[0]}`} />
                   </a>
                 )}

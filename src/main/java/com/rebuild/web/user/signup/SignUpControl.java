@@ -64,10 +64,10 @@ public class SignUpControl extends BaseController {
         String email = getParameterNotNull(request, "email");
 
         if (!RegexUtils.isEMail(email)) {
-            writeFailure(response, getLang(request, "SomeInvalid", "f.User.email"));
+            writeFailure(response, getLang(request, "SomeInvalid", "Email"));
             return;
         } else if (Application.getUserStore().existsEmail(email)) {
-            writeFailure(response, getLang(request, "SomeExists", "f.User.email"));
+            writeFailure(response, getLang(request, "SomeExists", "Email"));
             return;
         }
 

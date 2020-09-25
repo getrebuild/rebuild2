@@ -13,7 +13,7 @@ $(document).ready(function () {
     .click(function () {
       $.get(`/admin/bizuser/delete-checks?id=${userId}`, (res) => {
         if (res.data.hasMember === 0) {
-          RbAlert.create($lang('DeleteUserSafeConfirm'), $lang('DeleteSome,e.User'), {
+          RbAlert.create($lang('DeleteUserSafeConfirm'), $lang('DeleteSome,User'), {
             icon: 'alert-circle-o',
             type: 'danger',
             confirmText: $lang('Delete'),
@@ -110,7 +110,7 @@ const toggleDisabled = function (disabled, alert) {
   }
   $.post('/admin/bizuser/enable-user', JSON.stringify(data), (res) => {
     if (res.error_code === 0) {
-      RbHighbar.success($lang((disabled ? 'SomeDisabled' : 'SomeEnabled') + ',e.User'))
+      RbHighbar.success($lang((disabled ? 'SomeDisabled' : 'SomeEnabled') + ',User'))
       _reload(200)
     } else {
       RbHighbar.error(res.error_msg)
@@ -138,7 +138,7 @@ class DlgEnableUser extends RbModalHandler {
     super(props)
 
     if (props.enable) this._title = $lang('ActiveUser')
-    else this._title = $lang('ModifySome,' + (props.dept ? 'e.Department' : 'e.Role'))
+    else this._title = $lang('ModifySome,' + (props.dept ? 'Department' : 'Role'))
   }
 
   render() {
@@ -147,7 +147,7 @@ class DlgEnableUser extends RbModalHandler {
         <div className="form">
           {this.props.dept && (
             <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,f.User.deptId')}</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,f.owningDept')}</label>
               <div className="col-sm-7">
                 <UserSelector hideUser={true} hideRole={true} hideTeam={true} multiple={false} defaultValue={this.props.dept} ref={(c) => (this._deptNew = c)} />
               </div>
@@ -156,7 +156,7 @@ class DlgEnableUser extends RbModalHandler {
           {this.props.role && (
             <React.Fragment>
               <div className="form-group row">
-                <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,e.Role')}</label>
+                <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,Role')}</label>
                 <div className="col-sm-7">
                   <UserSelector hideUser={true} hideDepartment={true} hideTeam={true} multiple={false} defaultValue={this.props.role} ref={(c) => (this._roleNew = c)} />
                 </div>
@@ -195,12 +195,12 @@ class DlgEnableUser extends RbModalHandler {
     }
     if (this._deptNew) {
       const v = this._deptNew.val()
-      if (v.length === 0) return RbHighbar.create($lang('PlsSelectSome,e.Department'))
+      if (v.length === 0) return RbHighbar.create($lang('PlsSelectSome,Department'))
       data.dept = v[0]
     }
     if (this._roleNew) {
       const v = this._roleNew.val()
-      if (v.length === 0) return RbHighbar.create($lang('PlsSelectSome,e.Role'))
+      if (v.length === 0) return RbHighbar.create($lang('PlsSelectSome,Role'))
       data.role = v[0]
     }
     if (this._roleAppends) {
@@ -213,7 +213,7 @@ class DlgEnableUser extends RbModalHandler {
     const $btns = $(this._btns).find('.btn').button('loading')
     $.post('/admin/bizuser/enable-user', JSON.stringify(data), (res) => {
       if (res.error_code === 0) {
-        if (data.enable === true) RbHighbar.success($lang('SomeEnabled,e.User'))
+        if (data.enable === true) RbHighbar.success($lang('SomeEnabled,User'))
         _reload(data.enable ? 200 : 0)
       } else {
         $btns.button('reset')

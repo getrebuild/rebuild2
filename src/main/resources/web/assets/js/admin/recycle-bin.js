@@ -21,12 +21,12 @@ $(document).ready(() => {
 const ListConfig = {
   entity: 'RecycleBin',
   fields: [
-    { field: 'belongEntity', label: $lang('f.RecycleBin.belongEntity'), unsort: true },
-    { field: 'recordName', label: $lang('f.RecycleBin.recordName'), width: 300 },
-    { field: 'deletedOn', label: $lang('f.RecycleBin.deletedOn'), type: 'DATETIME' },
-    { field: 'deletedBy.fullName', label: $lang('f.RecycleBin.deletedBy') },
-    { field: 'channelWith', label: $lang('f.RecycleBin.channelWith'), unsort: true },
-    { field: 'recordId', label: $lang('f.RecycleBin.recordId'), unsort: true },
+    { field: 'belongEntity', label: $lang('BelongEntity'), unsort: true },
+    { field: 'recordName', label: $lang('RecordName'), width: 300 },
+    { field: 'deletedOn', label: $lang('DeletedOn'), type: 'DATETIME' },
+    { field: 'deletedBy.fullName', label: $lang('DeletedBy') },
+    { field: 'channelWith', label: $lang('DeleteChannel'), unsort: true },
+    { field: 'recordId', label: $lang('RecordId'), unsort: true },
   ],
 }
 

@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -176,6 +177,12 @@ public class LanguageBundle implements JSONable {
      * @return
      */
     public String getLang(String key, String... phKeys) {
+        if (key.contains(",")) {
+            String[] keyAndPhKeys = key.split(",");
+            key = keyAndPhKeys[0];
+            phKeys = Arrays.copyOfRange(keyAndPhKeys, 1, keyAndPhKeys.length);
+        }
+
         String lang = getLangBase(key);
         if (lang == null && parent != null) {
             LOG.warn("Missing lang-key [{}] for [{}], use default", key, getLocale());

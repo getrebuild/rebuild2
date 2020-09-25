@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
     <th:block th:replace="~{/_include/header}" />
-    <title>[[${bundle.lang('e.LoginLog')}]]</title>
+    <title>[[${bundle.lang('LoginLog')}]]</title>
   </head>
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-color-header" th:classappend="${sideCollapsedClazz}">
@@ -49,7 +49,7 @@
     <script>
       window.__PageConfig = {
         type: 'RecordList',
-        entity: ['LoginLog', $lang('e.LoginLog'), 'assignment-account'],
+        entity: ['LoginLog', $lang('LoginLog'), 'assignment-account'],
         listConfig: _$unth('[[${DataListConfig}]]'),
         advFilter: false,
       }

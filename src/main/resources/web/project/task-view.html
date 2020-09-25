@@ -5,12 +5,12 @@
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/view-page.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/feeds.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/project-tasks.css}" />
-    <title>[[${bundle.lang('e.ProjectTask')}]]</title>
+    <title>[[${bundle.lang('ProjectTask')}]]</title>
   </head>
   <body class="view-body" th:appendclass="${!isMember} ? 'readonly'">
     <div class="view-header">
       <i class="header-icon zmdi" th:appendclass="${'zmdi-' + projectIcon}"></i>
-      <h3 class="title">[[${bundle.lang('SomeView,e.ProjectTask')}]]</h3>
+      <h3 class="title">[[${bundle.lang('SomeView,Task')}]]</h3>
       <span>
         <a class="close J_close" th:title="${bundle.lang('Close')}"><i class="zmdi zmdi-close"></i></a>
         <a class="close sm J_reload" th:title="${bundle.lang('Refresh')}"><i class="zmdi zmdi-refresh"></i></a>

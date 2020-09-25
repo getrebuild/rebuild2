@@ -71,7 +71,7 @@ class TriggerList extends ConfigList {
 
   handleDelete(id) {
     const handle = super.handleDelete
-    RbAlert.create($lang('DeleteSomeConfirm,e.RobotTriggerConfig'), {
+    RbAlert.create($lang('DeleteSomeConfirm,Trigger'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {
@@ -85,7 +85,7 @@ class TriggerList extends ConfigList {
 class TriggerEdit extends ConfigFormDlg {
   constructor(props) {
     super(props)
-    this.subtitle = $lang('e.RobotTriggerConfig')
+    this.subtitle = $lang('Trigger')
   }
 
   renderFrom() {
@@ -94,7 +94,7 @@ class TriggerEdit extends ConfigFormDlg {
         {!this.props.id && (
           <React.Fragment>
             <div className="form-group row">
-              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,e.RobotTriggerConfig')}</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,Trigger')}</label>
               <div className="col-sm-7">
                 <select className="form-control form-control-sm" ref={(c) => (this._actionType = c)}>
                   {(this.state.actions || []).map((item) => {
@@ -125,7 +125,7 @@ class TriggerEdit extends ConfigFormDlg {
         )}
         <div className="form-group row">
           <label className="col-sm-3 col-form-label text-sm-right">
-            {$lang('f.RobotTriggerConfig.name')} ({$lang('Optional')})
+            {$lang('Name')} ({$lang('Optional')})
           </label>
           <div className="col-sm-7">
             <input type="text" className="form-control form-control-sm" data-id="name" onChange={this.handleChange} value={this.state.name || ''} placeholder={$lang('Unname')} />

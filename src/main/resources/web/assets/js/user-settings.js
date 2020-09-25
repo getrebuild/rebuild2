@@ -35,7 +35,7 @@ $(document).ready(function () {
       return
     }
     if (workphone && !$regex.isTel(workphone)) {
-      RbHighbar.create($lang('SomeNotFormatWell,f.User.workphone'))
+      RbHighbar.create($lang('SomeNotFormatWell,Workphone'))
       return
     }
 
@@ -149,10 +149,10 @@ class DlgChangeEmail extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={$lang('ModifySome,f.User.email')} ref="dlg" disposeOnHide={true}>
+      <RbModal title={$lang('ModifySome,Email')} ref="dlg" disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.User.email')}</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('email')}</label>
             <div className="col-sm-7">
               <input type="text" className="form-control form-control-sm" data-id="newEmail" onChange={this.handleChange} />
             </div>
@@ -185,8 +185,8 @@ class DlgChangeEmail extends RbFormHandler {
 
   sendVCode() {
     const s = this.state
-    if (!s.newEmail) return RbHighbar.create($lang('PlsInputSome,f.User.email'))
-    if (!$regex.isMail(s.newEmail)) return RbHighbar.create($lang('SomeNotFormatWell,f.User.email'))
+    if (!s.newEmail) return RbHighbar.create($lang('PlsInputSome,Email'))
+    if (!$regex.isMail(s.newEmail)) return RbHighbar.create($lang('SomeNotFormatWell,Email'))
 
     this.setState({ vcodeDisabled: true })
     $.post(`/settings/user/send-email-vcode?email=${$encode(s.newEmail)}`, (res) => {
@@ -211,8 +211,8 @@ class DlgChangeEmail extends RbFormHandler {
 
   post() {
     const s = this.state
-    if (!s.newEmail) return RbHighbar.create($lang('PlsInputSome,f.User.email'))
-    if (!$regex.isMail(s.newEmail)) return RbHighbar.create($lang('SomeNotFormatWell,f.User.email'))
+    if (!s.newEmail) return RbHighbar.create($lang('PlsInputSome,Email'))
+    if (!$regex.isMail(s.newEmail)) return RbHighbar.create($lang('SomeNotFormatWell,Email'))
     if (!s.newEmail || !s.vcode) return RbHighbar.create($lang('PlsInputSome,Vcode'))
 
     const $btns = $(this.refs['btns']).find('.btn').button('loading')

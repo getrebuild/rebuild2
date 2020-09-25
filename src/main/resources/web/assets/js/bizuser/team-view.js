@@ -16,7 +16,7 @@ class MemberAddDlg extends RbFormHandler {
       <RbModal ref={(c) => (this._dlg = c)} title={$lang('AddMember')} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,e.User')}</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('SelectSome,User')}</label>
             <div className="col-sm-7">
               <UserSelector ref={(c) => (this._UserSelector = c)} hideTeam={true} />
             </div>
@@ -35,7 +35,7 @@ class MemberAddDlg extends RbFormHandler {
 
   _post = () => {
     const users = this._UserSelector.val()
-    if (users.length < 1) return RbHighbar.create($lang('PlsSelectSome,e.User'))
+    if (users.length < 1) return RbHighbar.create($lang('PlsSelectSome,User'))
 
     this.disabled(true)
     $.post(`/admin/bizuser/team-members-add?team=${this.props.id}`, JSON.stringify(users), (res) => {
@@ -56,7 +56,7 @@ class MemberList extends React.Component {
       return (
         <div className="list-nodata">
           <span className="zmdi zmdi-info-outline"></span>
-          <p>{$lang('PlsAddSome,e.TeamMember')}</p>
+          <p>{$lang('PlsAddSome,TeamMember')}</p>
         </div>
       )
     return (
@@ -120,7 +120,7 @@ $(document).ready(() => {
   $('.J_delete')
     .off('click')
     .click(() => {
-      RbAlert.create($lang('DeleteTeamConfirm'), $lang('DeleteSome,e.Team'), {
+      RbAlert.create($lang('DeleteTeamConfirm'), $lang('DeleteSome,Team'), {
         type: 'danger',
         confirmText: $lang('Delete'),
         confirm: function () {

@@ -50,7 +50,7 @@ class ReportList extends ConfigList {
 
   handleDelete(id) {
     const handle = super.handleDelete
-    RbAlert.create($lang('DeleteSomeConfirm,e.DataReportConfig'), {
+    RbAlert.create($lang('DeleteSomeConfirm,ReportTemplate'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {
@@ -64,7 +64,7 @@ class ReportList extends ConfigList {
 class ReporEdit extends ConfigFormDlg {
   constructor(props) {
     super(props)
-    this.subtitle = $lang('e.DataReportConfig')
+    this.subtitle = $lang('ReportTemplate')
   }
 
   renderFrom() {
@@ -87,7 +87,7 @@ class ReporEdit extends ConfigFormDlg {
               </div>
             </div>
             <div className="form-group row pb-1">
-              <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.DataReportConfig.templateFile')}</label>
+              <label className="col-sm-3 col-form-label text-sm-right">{$lang('TemplateFile')}</label>
               <div className="col-sm-9">
                 <div className="float-left">
                   <div className="file-select">
@@ -111,7 +111,7 @@ class ReporEdit extends ConfigFormDlg {
           </React.Fragment>
         )}
         <div className="form-group row">
-          <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.DataReportConfig.name')}</label>
+          <label className="col-sm-3 col-form-label text-sm-right">{$lang('Name')}</label>
           <div className="col-sm-7">
             <input type="text" className="form-control form-control-sm" data-id="name" onChange={this.handleChange} value={this.state.name || ''} />
           </div>
@@ -188,7 +188,7 @@ class ReporEdit extends ConfigFormDlg {
   confirm = () => {
     const post = { name: this.state['name'] }
     if (!post.name) {
-      RbHighbar.create($lang('PlsInputSome,f.DataReportConfig.name'))
+      RbHighbar.create($lang('PlsInputSome,Name'))
       return
     }
     if (this.props.id) {

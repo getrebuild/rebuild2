@@ -44,7 +44,7 @@ class GridList extends React.Component {
             </div>
           )
         })}
-        {this.state.list && this.state.list.length === 0 && <div className="text-muted">{$lang('NoConf')}</div>}
+        {this.state.list && this.state.list.length === 0 && <div className="text-muted">{$lang('NoSome,Project')}</div>}
       </div>
     )
   }
@@ -66,7 +66,7 @@ class GridList extends React.Component {
         $.post(`/app/entity/record-delete?id=${projectId}`, (res) => {
           this.hide()
           if (res.error_code === 0) {
-            RbHighbar.success($lang('SomeDeleted,e.ProjectConfig'))
+            RbHighbar.success($lang('SomeDeleted,Project'))
             setTimeout(() => location.reload(), 500)
           } else RbHighbar.error(res.error_msg)
         })
@@ -80,7 +80,7 @@ class DlgEdit extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={`${$lang(this.props.id ? 'Modify' : 'Add')}${$lang('e.ProjectConfig')}`} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
+      <RbModal title={`${$lang(this.props.id ? 'Modify' : 'Add')}${$lang('Project')}`} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
             <label className="col-sm-3 col-form-label text-sm-right">{$lang('Icon')}</label>
@@ -91,7 +91,7 @@ class DlgEdit extends RbFormHandler {
             </div>
           </div>
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.ProjectConfig.projectName')}</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('ProjectName')}</label>
             <div className="col-sm-7">
               <input className="form-control form-control-sm" value={this.state.projectName || ''} data-id="projectName" onChange={this.handleChange} maxLength="60" />
             </div>
@@ -99,7 +99,7 @@ class DlgEdit extends RbFormHandler {
           {!this.props.id && (
             <React.Fragment>
               <div className="form-group row">
-                <label className="col-sm-3 col-form-label text-sm-right">{$lang('f.ProjectConfig.projectCode')}</label>
+                <label className="col-sm-3 col-form-label text-sm-right">{$lang('ProjectCode')}</label>
                 <div className="col-sm-7">
                   <input className="form-control form-control-sm " value={this.state.projectCode || ''} data-id="projectCode" onChange={this.handleChange} maxLength="6" />
                   <div className="form-text">{$lang('ProjectCodeTips')}</div>
@@ -141,7 +141,7 @@ class DlgEdit extends RbFormHandler {
   }
 
   save = () => {
-    if (!this.state.projectName) return RbHighbar.create($lang('PlsInputSome,f.ProjectConfig.projectName'))
+    if (!this.state.projectName) return RbHighbar.create($lang('PlsInputSome,ProjectName'))
     const _data = {
       projectName: this.state.projectName,
       iconName: this.state.iconName,

@@ -43,8 +43,8 @@ public class NavBuilder extends NavManager {
     private static final JSONArray NAVS_DEFAULT = JSONUtils.toJSONObjectArray(
             new String[]{"icon", "text", "type", "value"},
             new Object[][]{
-                    new Object[]{"chart-donut", "{e.Feeds}", "BUILTIN", NAV_FEEDS},
-                    new Object[]{"shape", "{e.ProjectConfig}", "BUILTIN", NAV_PROJECT},
+                    new Object[]{"chart-donut", "{Feeds}", "BUILTIN", NAV_FEEDS},
+                    new Object[]{"shape", "{Project}", "BUILTIN", NAV_PROJECT},
                     new Object[]{"folder", "{File}", "BUILTIN", NAV_FILEMRG}
             });
 

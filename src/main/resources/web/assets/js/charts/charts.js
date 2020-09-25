@@ -658,7 +658,7 @@ class ApprovalList extends BaseChart {
             <thead>
               <tr>
                 <th style={{ minWidth: 150 }}>{$lang('Submitter')}</th>
-                <th style={{ minWidth: 150 }}>{$lang('f.RobotApprovalStep.recordId')}</th>
+                <th style={{ minWidth: 150 }}>{$lang('RecordId')}</th>
                 <th width="90"></th>
               </tr>
             </thead>
@@ -765,7 +765,7 @@ class FeedsSchedule extends BaseChart {
             <thead>
               <tr>
                 <th>{$lang('ScheduleContent')}</th>
-                <th width="140">{$lang('f.Feeds.scheduleTime')}</th>
+                <th width="140">{$lang('ScheduleTime')}</th>
                 <th width="90"></th>
               </tr>
             </thead>

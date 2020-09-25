@@ -3,7 +3,7 @@
   <head>
     <th:block th:replace="~{/_include/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/triggers.css}" />
-    <title>[[${bundle.lang('e.RobotTriggerConfig')}]]</title>
+    <title>[[${bundle.lang('Trigger')}]]</title>
   </head>
   <body>
     <div class="rb-wrapper rb-fixed-sidebar rb-collapsible-sidebar rb-collapsible-sidebar-hide-logo rb-color-header" th:classappend="${sideCollapsedClazz}">
@@ -11,7 +11,7 @@
       <th:block th:replace="~{/_include/nav-left-admin(active='robot-trigger')}" />
       <div class="rb-content">
         <div class="page-head">
-          <div class="page-head-title">[[${bundle.lang('e.RobotTriggerConfig')}]]<span class="sub-title">[[${name ?: bundle.lang('Unname')}]]</span></div>
+          <div class="page-head-title">[[${bundle.lang('Trigger')}]]<span class="sub-title">[[${name ?: bundle.lang('Unname')}]]</span></div>
           <div class="clearfix"></div>
         </div>
         <div class="main-content container-fluid pt-0">

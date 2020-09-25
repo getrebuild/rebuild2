@@ -3,12 +3,12 @@
   <head>
     <th:block th:replace="~{/_include/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/css/view-page.css}" />
-    <title>[[${bundle.lang('SomeView,e.Team')}]]</title>
+    <title>[[${bundle.lang('SomeView,Team')}]]</title>
   </head>
   <body class="view-body">
     <div class="view-header">
       <i class="header-icon zmdi" th:classappend="${'zmdi-' + entityIcon}"></i>
-      <h3 class="title">[[${bundle.lang('SomeView,e.Team')}]]</h3>
+      <h3 class="title">[[${bundle.lang('SomeView,Team')}]]</h3>
       <span>
         <a class="close J_close"><i class="zmdi zmdi-close"></i></a>
         <a class="close sm J_reload"><i class="zmdi zmdi-refresh"></i></a>
@@ -19,7 +19,7 @@
         <div class="col-12 col-md-9">
           <div class="tab-container">
             <ul class="nav nav-tabs">
-              <li class="nav-item"><a class="nav-link active" href="#tab-rbview" data-toggle="tab">[[${bundle.lang('SomeInfo,e.Team')}]]</a></li>
+              <li class="nav-item"><a class="nav-link active" href="#tab-rbview" data-toggle="tab">[[${bundle.lang('SomeInfo,Team')}]]</a></li>
               <li class="nav-item"><a class="nav-link" href="#tab-members" data-toggle="tab">[[${bundle.lang('MemberList')}]]</a></li>
             </ul>
             <div class="tab-content">

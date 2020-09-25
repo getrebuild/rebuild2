@@ -287,7 +287,7 @@ var _loadMessages = function () {
       $('<span class="date">' + $fromNow(item[2]) + '</span>').appendTo(o)
     })
     _loadMessages__state = true
-    if (res.data.length === 0) $('<li class="text-center mt-4 mb-4 text-muted">' + $lang('NoSome,e.Notification') + '</li>').appendTo(dest)
+    if (res.data.length === 0) $('<li class="text-center mt-4 mb-4 text-muted">' + $lang('NoSome,Notification') + '</li>').appendTo(dest)
   })
 }
 var _showNotification = function () {

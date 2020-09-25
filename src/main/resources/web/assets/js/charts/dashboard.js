@@ -41,7 +41,7 @@ $(document).ready(function () {
 
     if (location.hash && location.hash.length > 20) {
       if (location.hash.substr(0, 5) === '#del=') {
-        RbHighbar.success($lang('SomeDeleted,e.DashboardConfig'))
+        RbHighbar.success($lang('SomeDeleted,Dashboard'))
         location.hash = ''
       } else {
         const high = $('#chart-' + location.hash.substr(1)).addClass('high')
@@ -316,7 +316,7 @@ class DlgDashSettings extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={$lang('SetSome,e.DashboardConfig')} ref="dlg">
+      <RbModal title={$lang('SetSome,Dashboard')} ref="dlg">
         <div className="form">
           <div className="form-group row">
             <label className="col-sm-3 col-form-label text-sm-right">{$lang('Name')}</label>
@@ -375,7 +375,7 @@ class DlgDashSettings extends RbFormHandler {
   }
 
   delete() {
-    RbAlert.create($lang('DeleteSomeConfirm,e.DashboardConfig'), {
+    RbAlert.create($lang('DeleteSomeConfirm,Dashboard'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {
@@ -398,7 +398,7 @@ class DlgDashAdd extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={$lang('AddSome,e.DashboardConfig')} ref="dlg">
+      <RbModal title={$lang('AddSome,Dashboard')} ref="dlg">
         <div className="form">
           <div className="form-group row">
             <label className="col-sm-3 col-form-label text-sm-right">{$lang('Name')}</label>

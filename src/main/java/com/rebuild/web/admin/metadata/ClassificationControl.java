@@ -49,7 +49,7 @@ public class ClassificationControl extends BaseController {
                 .setParameter(1, ID.valueOf(id))
                 .unique();
         if (data == null) {
-            resp.sendError(404, getLang(request, "SomeNotExists", "e.Classification"));
+            resp.sendError(404, getLang(request, "SomeNotExists", "Classification"));
             return null;
         }
 
@@ -77,7 +77,7 @@ public class ClassificationControl extends BaseController {
                 .unique();
 
         if (data == null) {
-            writeFailure(resp, getLang(request, "SomeNotExists", "e.Classification"));
+            writeFailure(resp, getLang(request, "SomeNotExists", "Classification"));
         } else {
             writeSuccess(resp, JSONUtils.toJSONObject("name", data[0]));
         }

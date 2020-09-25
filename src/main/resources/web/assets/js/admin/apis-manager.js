@@ -89,7 +89,7 @@ class DlgEdit extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={$lang('AddSome,e.RebuildApi')} ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang('AddSome,RebuildApi')} ref={(c) => (this._dlg = c)}>
         <div className="form">
           <div className="form-group row">
             <label className="col-sm-3 col-form-label text-sm-right">{$lang('BindApiUser')}</label>

@@ -67,7 +67,7 @@ class FeedsPost extends React.Component {
                 </a>
                 <a className="dropdown-item" onClick={this._selectScope} data-scope="GROUP" title={$lang('FeedsScopeGroup')}>
                   <i className="icon up-1 zmdi zmdi-accounts" />
-                  {$lang('e.Team')}
+                  {$lang('Team')}
                 </a>
               </div>
             </div>
@@ -191,7 +191,7 @@ class FeedsEditor extends React.Component {
                   multiple={false}
                   ref={(c) => (this._UserSelector = c)}
                   compToggle={
-                    <a title={`@${$lang('e.User')}`} data-toggle="dropdown">
+                    <a title={`@${$lang('User')}`} data-toggle="dropdown">
                       <i className="zmdi at-text">@</i>
                     </a>
                   }
@@ -620,7 +620,7 @@ class ScheduleOptions extends React.Component {
           <dd className="col-12 col-lg-9 mb-0" ref={(c) => (this._scheduleRemind = c)}>
             <label className="custom-control custom-checkbox custom-control-inline">
               <input className="custom-control-input" name="showOn" type="checkbox" value={1} disabled={this.props.readonly} />
-              <span className="custom-control-label">{$lang('e.Notification')}</span>
+              <span className="custom-control-label">{$lang('Notification')}</span>
             </label>
             <label className="custom-control custom-checkbox custom-control-inline" title={email}>
               <input className="custom-control-input" name="showOn" type="checkbox" value={2} disabled={this.props.readonly} />

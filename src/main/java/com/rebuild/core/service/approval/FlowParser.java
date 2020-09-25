@@ -124,7 +124,7 @@ public class FlowParser {
         if (nodeMap.containsKey(nodeId)) {
             return nodeMap.get(nodeId);
         }
-        throw new ApprovalException(Language.getLang("SomeInvalid", "f.RobotApprovalStep.node") + " : " + nodeId);
+        throw new ApprovalException(Language.getLang("SomeInvalid", "f.approvalStepNode") + " : " + nodeId);
     }
 
     /**

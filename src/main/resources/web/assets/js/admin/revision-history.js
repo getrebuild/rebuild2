@@ -21,12 +21,12 @@ $(document).ready(() => {
 const ListConfig = {
   entity: 'RevisionHistory',
   fields: [
-    { field: 'belongEntity', label: $lang('f.RevisionHistory.belongEntity'), unsort: true },
-    { field: 'revisionType', label: $lang('f.RevisionHistory.revisionType') },
-    { field: 'revisionOn', label: $lang('f.RevisionHistory.revisionOn'), type: 'DATETIME' },
-    { field: 'revisionBy.fullName', label: $lang('f.RevisionHistory.revisionBy') },
-    { field: 'channelWith', label: $lang('f.RevisionHistory.channelWith'), unsort: true },
-    { field: 'recordId', label: $lang('f.RevisionHistory.recordId'), unsort: true },
+    { field: 'belongEntity', label: $lang('BelongEntity'), unsort: true },
+    { field: 'revisionType', label: $lang('RevisionType') },
+    { field: 'revisionOn', label: $lang('RevisionOn'), type: 'DATETIME' },
+    { field: 'revisionBy.fullName', label: $lang('RevisionBy') },
+    { field: 'channelWith', label: $lang('RevisionChannel'), unsort: true },
+    { field: 'recordId', label: $lang('RecordId'), unsort: true },
   ],
 }
 

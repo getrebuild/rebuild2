@@ -60,7 +60,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-square-o" /> {$lang('f.ProjectTask.status')}
+            <i className="icon zmdi zmdi-square-o" /> {$lang('Status')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueStatus status={this.state.status} $$$parent={this} />
@@ -68,7 +68,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-account-o" /> {$lang('f.ProjectTask.executor')}
+            <i className="icon zmdi zmdi-account-o" /> {$lang('Executor')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueExecutor executor={this.state.executor} $$$parent={this} />
@@ -76,7 +76,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-time" /> {$lang('f.ProjectTask.deadline')}
+            <i className="icon zmdi zmdi-time" /> {$lang('Deadline')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueDeadline deadline={this.state.deadline} $$$parent={this} />
@@ -84,7 +84,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-comment-more" /> {$lang('f.ProjectTask.description')}
+            <i className="icon zmdi zmdi-comment-more" /> {$lang('Description')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueDescription description={this.state.description} $$$parent={this} />
@@ -92,7 +92,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-circle-o" /> {$lang('f.ProjectTask.priority')}
+            <i className="icon zmdi zmdi-circle-o" /> {$lang('Priority')}
           </label>
           <div className="col-12 col-sm-9">
             <ValuePriority priority={this.state.priority} $$$parent={this} />
@@ -100,7 +100,7 @@ class TaskForm extends React.Component {
         </div>
         <div className="form-group row">
           <label className="col-12 col-sm-3 col-form-label">
-            <i className="icon zmdi zmdi-attachment-alt zmdi-hc-rotate-45 mt-1" /> {$lang('f.ProjectTask.attachments')}
+            <i className="icon zmdi zmdi-attachment-alt zmdi-hc-rotate-45 mt-1" /> {$lang('Attachment')}
           </label>
           <div className="col-12 col-sm-9">
             <ValueAttachments attachments={this.state.attachments} $$$parent={this} />
@@ -125,7 +125,7 @@ class TaskForm extends React.Component {
 
   _handleDelete() {
     const that = this
-    RbAlert.create($lang('DeleteSomeConfirm,e.ProjectTask'), {
+    RbAlert.create($lang('DeleteSomeConfirm,Task'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {
@@ -133,7 +133,7 @@ class TaskForm extends React.Component {
         $.post(`/app/entity/record-delete?id=${that.props.id}`, (res) => {
           if (res.error_code === 0) {
             this.hide()
-            RbHighbar.success($lang('SomeDeleted,e.ProjectTask'))
+            RbHighbar.success($lang('SomeDeleted,Task'))
             __TaskViewer.refreshTask('DELETE')
             __TaskViewer.hide()
           } else RbHighbar.error(res.error_msg)
@@ -223,7 +223,7 @@ class ValueTaskName extends ValueComp {
   handleChange(e) {
     const value = e.target.value
     if (!value) {
-      RbHighbar.create($lang('SomeNotEmpty,f.ProjectTask.taskName'))
+      RbHighbar.create($lang('SomeNotEmpty,TaskName'))
       this._taskName.focus()
     } else {
       super.handleChange(e, () => this.setState({ editMode: false }))
@@ -290,7 +290,7 @@ class ValueExecutor extends ValueComp {
               }
               onSelectItem={(s) => this.handleChange(s)}
             />
-            <a className="close" onClick={() => this.handleChange(null)} title={$lang('RemoveSome,f.ProjectTask.executor')}>
+            <a className="close" onClick={() => this.handleChange(null)} title={$lang('RemoveSome,Executor')}>
               &times;
             </a>
           </div>
@@ -304,7 +304,7 @@ class ValueExecutor extends ValueComp {
               ref={(c) => (this._UserSelector = c)}
               compToggle={
                 <a className="tag-value arrow placeholder" data-toggle="dropdown">
-                  {$lang('SelectSome,f.ProjectTask.executor')}
+                  {$lang('SelectSome,Executor')}
                 </a>
               }
               onSelectItem={(s) => this.handleChange(s)}
@@ -339,7 +339,7 @@ class ValueDeadline extends ValueComp {
     return (
       <div className="form-control-plaintext" ref={(c) => (this._deadline = c)}>
         <a className={`tag-value arrow ${this.state.deadline ? 'plaintext' : 'placeholder'}`} name="deadline" title={this.state.deadline}>
-          {this._renderValue($lang('SelectSome,f.ProjectTask.deadline'))}
+          {this._renderValue($lang('SelectSome,Deadline'))}
         </a>
       </div>
     )
@@ -515,7 +515,7 @@ class ValueAttachments extends ValueComp {
   _deleteAttachment(item, e) {
     $stopEvent(e)
     const that = this
-    RbAlert.create($lang('DeleteSomeConfirm,f.ProjectTask.attachments'), {
+    RbAlert.create($lang('DeleteSomeConfirm,Attachment'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {
@@ -730,7 +730,7 @@ class TextEditor extends React.Component {
                     multiple={false}
                     ref={(c) => (this._UserSelector = c)}
                     compToggle={
-                      <a title={'@' + $lang('e.User')} data-toggle="dropdown">
+                      <a title={'@' + $lang('User')} data-toggle="dropdown">
                         <i className="zmdi at-text">@</i>
                       </a>
                     }

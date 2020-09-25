@@ -224,7 +224,7 @@ public class ProjectManager implements ConfigManager {
         for (ConfigBean e : getPlansOfProject(projectId)) {
             if (e.getID("id").equals(planId)) return e;
         }
-        throw new ConfigurationException(Language.getLang("SomeInvalid", "e.ProjectPlanConfig") + " : " + planId);
+        throw new ConfigurationException(Language.getLang("SomeInvalid", "ProjectPlan") + " : " + planId);
     }
 
     @Override

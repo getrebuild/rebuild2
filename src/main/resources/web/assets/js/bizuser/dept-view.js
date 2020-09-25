@@ -33,7 +33,7 @@ $(document).ready(function () {
       if (res.data.hasChild > 0) limits.push($lang('HasXSubdepts').replace('%d', res.data.hasChild))
 
       if (limits.length === 0) {
-        RbAlert.create($lang('DeleteDeptSafeConfirm'), $lang('DeleteSome,e.Department'), {
+        RbAlert.create($lang('DeleteDeptSafeConfirm'), $lang('DeleteSome,Department'), {
           icon: 'alert-circle-o',
           type: 'danger',
           confirmText: $lang('Delete'),

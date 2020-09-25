@@ -534,7 +534,7 @@ class StartNodeConfig extends RbFormHandler {
       users: this.state.users === 'SPEC' ? this._UserSelector.getSelected() : [this.state.users],
     }
     if (this.state.users === 'SPEC' && d.users.length === 0) {
-      RbHighbar.create($lang('PlsSelectSome,e.User'))
+      RbHighbar.create($lang('PlsSelectSome,User'))
       return
     }
     typeof this.props.call && this.props.call(d)

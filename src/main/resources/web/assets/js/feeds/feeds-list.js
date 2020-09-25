@@ -87,7 +87,7 @@ class FeedsList extends React.Component {
             <div className="list-nodata pt-8 pb-8">
               <i className="zmdi zmdi-chart-donut"></i>
               <p>
-                {$lang('NoSome,e.Feeds')}
+                {$lang('NoSome,Feeds')}
                 {this.state.tabType === 11 && (
                   <React.Fragment>
                     <br />
@@ -227,7 +227,7 @@ class FeedsList extends React.Component {
   _handleDelete(id) {
     event.preventDefault()
     const that = this
-    RbAlert.create($lang('DeleteSomeConfirm,e.Feeds'), {
+    RbAlert.create($lang('DeleteSomeConfirm,Feeds'), {
       type: 'danger',
       confirmText: $lang('Delete'),
       confirm: function () {
@@ -617,7 +617,7 @@ const ANN_OPTIONS = [
   [4, $lang('AnnouncementPos4')],
 ]
 const REM_OPTIONS = [
-  [1, $lang('e.Notification')],
+  [1, $lang('Notification')],
   [2, $lang('Mail')],
   [4, $lang('Sms')],
 ]

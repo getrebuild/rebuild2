@@ -68,7 +68,7 @@ class GridList extends React.Component {
         this.disabled(true)
         $.post(`/app/entity/record-delete?id=${dataId}`, (res) => {
           if (res.error_code === 0) {
-            RbHighbar.success($lang('SomeDeleted,e.Classification'))
+            RbHighbar.success($lang('SomeDeleted,Classification'))
             setTimeout(() => location.reload(), 500)
           } else {
             this.disabled(false)
@@ -88,10 +88,10 @@ class DlgEdit extends RbFormHandler {
 
   render() {
     return (
-      <RbModal title={$lang((this.props.id ? 'ModifySome' : 'AddSome') + ',e.Classification')} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
+      <RbModal title={$lang((this.props.id ? 'ModifySome' : 'AddSome') + ',Classification')} ref={(c) => (this._dlg = c)} disposeOnHide={true}>
         <div className="form">
           <div className="form-group row">
-            <label className="col-sm-3 col-form-label text-sm-right">{$lang('ClassDataName')}</label>
+            <label className="col-sm-3 col-form-label text-sm-right">{$lang('ClassificationName')}</label>
             <div className="col-sm-7">
               <input className="form-control form-control-sm" value={this.state.name || ''} data-id="name" onChange={this.handleChange} maxLength="40" />
             </div>
@@ -123,7 +123,7 @@ class DlgEdit extends RbFormHandler {
 
   save = (e) => {
     e.preventDefault()
-    if (!this.state.name) return RbHighbar.create($lang('PlsInputSome,ClassDataName'))
+    if (!this.state.name) return RbHighbar.create($lang('PlsInputSome,ClassificationName'))
 
     const data = {
       name: this.state.name,

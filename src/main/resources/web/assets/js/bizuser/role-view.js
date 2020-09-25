@@ -26,9 +26,9 @@ const deleteRole = function (id) {
 
   $.get(`/admin/bizuser/delete-checks?id=${id}`, function (res) {
     if (res.data.hasMember === 0) {
-      RbAlert.create($lang('DeleteRoleSafeConfirm'), $lang('DeleteSome,e.Role'), { ...alertExt, icon: 'alert-circle-o' })
+      RbAlert.create($lang('DeleteRoleSafeConfirm'), $lang('DeleteSome,Role'), { ...alertExt, icon: 'alert-circle-o' })
     } else {
-      RbAlert.create($lang('DeleteRoleUnSafeConfirm').replace('%d', res.data.hasMember), $lang('DeleteSome,e.Role'), { ...alertExt, html: true })
+      RbAlert.create($lang('DeleteRoleUnSafeConfirm').replace('%d', res.data.hasMember), $lang('DeleteSome,Role'), { ...alertExt, html: true })
     }
   })
 }

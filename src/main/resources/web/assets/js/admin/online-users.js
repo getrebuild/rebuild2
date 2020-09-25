@@ -17,7 +17,7 @@ class OnlineUserViewer extends RbModalHandler {
         <table className="table table-striped table-hover table-sm dialog-table">
           <thead>
             <tr>
-              <th style={{ minWidth: 150 }}>{$lang('e.User')}</th>
+              <th style={{ minWidth: 150 }}>{$lang('User')}</th>
               <th style={{ minWidth: 150 }}>{$lang('LastActive')}</th>
               <th width="90"></th>
             </tr>

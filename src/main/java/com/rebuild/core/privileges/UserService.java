@@ -132,7 +132,7 @@ public class UserService extends BaseServiceImpl {
         }
 
         if (record.hasValue("email") && Application.getUserStore().existsUser(record.getString("email"))) {
-            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "f.User.email"));
+            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "Email"));
         }
 
         if (record.getPrimary() == null && !record.hasValue("fullName")) {
@@ -154,11 +154,11 @@ public class UserService extends BaseServiceImpl {
      */
     private void checkLoginName(String loginName) throws DataSpecificationException {
         if (Application.getUserStore().existsUser(loginName)) {
-            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "f.User.loginName"));
+            throw new DataSpecificationException(Language.getLang("SomeDuplicate", "LoginName"));
         }
 
         if (!CommonsUtils.isPlainText(loginName) || BlackList.isBlack(loginName)) {
-            throw new DataSpecificationException(Language.getLang("SomeInvalid", "f.User.loginName"));
+            throw new DataSpecificationException(Language.getLang("SomeInvalid", "LoginName"));
         }
     }
 

@@ -405,10 +405,10 @@ class UserSelector extends React.Component {
 
     this._cached = {}
     this._useTabs = []
-    if (props.hideUser !== true) this._useTabs.push(['User', $lang('e.User')])
-    if (props.hideDepartment !== true) this._useTabs.push(['Department', $lang('e.Department')])
-    if (props.hideRole !== true) this._useTabs.push(['Role', $lang('e.Role')])
-    if (props.hideTeam !== true) this._useTabs.push(['Team', $lang('e.Team')])
+    if (props.hideUser !== true) this._useTabs.push(['User', $lang('User')])
+    if (props.hideDepartment !== true) this._useTabs.push(['Department', $lang('Department')])
+    if (props.hideRole !== true) this._useTabs.push(['Role', $lang('Role')])
+    if (props.hideTeam !== true) this._useTabs.push(['Team', $lang('Team')])
 
     // 默认显示
     this.state.tabType = this._useTabs[0][0]

@@ -49,7 +49,7 @@ public class RobotApprovalControl extends BaseController {
                 .setParameter(1, configId)
                 .unique();
         if (config == null) {
-            response.sendError(404, getLang(request, "SomeNotExists", "e.RobotApprovalConfig"));
+            response.sendError(404, getLang(request, "SomeNotExists", "ApprovalConfig"));
             return null;
         }
 

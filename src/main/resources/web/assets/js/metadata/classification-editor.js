@@ -326,7 +326,7 @@ class DlgImports extends RbModalHandler {
 
   render() {
     return (
-      <RbModal title={$lang('ImportSome,e.Classification')} ref={(c) => (this._dlg = c)}>
+      <RbModal title={$lang('ImportSome,Classification')} ref={(c) => (this._dlg = c)}>
         <div className="tab-container">
           <ul className="nav nav-tabs">
             <li className="nav-item">

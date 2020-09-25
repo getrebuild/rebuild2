@@ -24,7 +24,7 @@ $(document).ready(function () {
       RbHighbar.create('PlsSelectSome,RefEntity')
       return
     } else if (type === 'CLASSIFICATION' && !refClassification) {
-      RbHighbar.create('PlsSelectSome,e.Classification')
+      RbHighbar.create('PlsSelectSome,Classification')
       return
     } else if (type === 'STATE' && !stateClass) {
       RbHighbar.create('PlsInputSome,StateClass')
@@ -91,7 +91,7 @@ $(document).ready(function () {
               hasData = true
             }
           })
-          if (!hasData) $(`<option value="">${$lang('NoAnySome,e.Classification')}</option>`).appendTo('#refClassification')
+          if (!hasData) $(`<option value="">${$lang('NoAnySome,Classification')}</option>`).appendTo('#refClassification')
         })
       }
     } else if (dt === 'STATE') {

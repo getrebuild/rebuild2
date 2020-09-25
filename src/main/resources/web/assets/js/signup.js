@@ -8,7 +8,7 @@ See LICENSE and COMMERCIAL in the project root for license information.
 $(document).ready(function () {
   $('.J_vcode-btn').click(function () {
     const email = $val('#sEmail')
-    if (!email) return RbHighbar.create($lang('PlsInputSome,f.User.email'))
+    if (!email) return RbHighbar.create($lang('PlsInputSome,Email'))
 
     const $btn = $(this).button('loading')
     $.post('/user/signup-email-vcode?email=' + $encode(email), function (res) {
@@ -34,9 +34,9 @@ $(document).ready(function () {
       name = $val('#sName'),
       email = $val('#sEmail'),
       vcode = $val('#sVcode')
-    if (!fullName) return RbHighbar.create($lang('PlsInputSome,f.User.fullName'))
-    if (!name) return RbHighbar.create($lang('PlsInputSome,f.User.loginName'))
-    if (!email) return RbHighbar.create($lang('PlsInputSome,f.User.email'))
+    if (!fullName) return RbHighbar.create($lang('PlsInputSome,FullName'))
+    if (!name) return RbHighbar.create($lang('PlsInputSome,LoginName'))
+    if (!email) return RbHighbar.create($lang('PlsInputSome,Email'))
     if (!vcode) return RbHighbar.create($lang('PlsInputSome,EmailVcode'))
 
     const _data = {
