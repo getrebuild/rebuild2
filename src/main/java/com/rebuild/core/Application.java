@@ -122,14 +122,14 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
                 if (started) {
                     String banner = RebuildBanner.formatSimple(
                             "Rebuild (" + VER + ") start successfully in " + (System.currentTimeMillis() - time) + " ms.",
-                            "  License : " + License.queryAuthority(false).values(),
-                            "    Local : " + localUrl);
+                            "License : " + License.queryAuthority(false).values(),
+                            "Local   : " + localUrl);
                     LOG.info(banner);
                 }
 
             } else {
                 LOG.warn(RebuildBanner.formatBanner(
-                        "REBUILD IS WAITING FOR INSTALL ...", "  Install : " + localUrl + "/setup/install"));
+                        "REBUILD IS WAITING FOR INSTALL ...", "Install : " + localUrl + "/setup/install"));
             }
 
         } catch (Exception ex) {

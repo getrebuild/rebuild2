@@ -33,7 +33,7 @@ public class RebuildBanner {
      */
     public static String formatBanner(String... texts) {
         StringBuilder banner = new StringBuilder()
-                .append("\n").append(FLAG_LINE).append("\n\n");
+                .append("\n\n").append(FLAG_LINE).append("\n\n");
 
         for (String t : texts) {
             banner.append("  ").append(t).append("\n");
@@ -41,7 +41,7 @@ public class RebuildBanner {
 
         banner.append(COMMON_BANNER).append("\n");
 
-        return banner.append("\n").append(FLAG_LINE).toString();
+        return banner.append("\n").append(FLAG_LINE).append("\n").toString();
     }
 
     /**
