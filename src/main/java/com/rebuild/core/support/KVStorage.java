@@ -14,8 +14,6 @@ import com.rebuild.core.BootEnvironmentPostProcessor;
 import com.rebuild.core.metadata.EntityHelper;
 import com.rebuild.core.privileges.UserService;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * K/V 对存储
@@ -24,8 +22,6 @@ import org.slf4j.LoggerFactory;
  * @since 2019/11/22
  */
 public class KVStorage {
-
-    protected static final Logger LOG = LoggerFactory.getLogger(KVStorage.class);
 
     /**
      * 存储

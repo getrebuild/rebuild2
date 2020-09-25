@@ -12,6 +12,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import java.util.List;
  */
 public class RebuildConfiguration extends KVStorage {
 
+    private static final Logger LOG = LoggerFactory.getLogger(RebuildConfiguration.class);
+
     /**
      * 获取数据目录下的文件（或目录）
      *
@@ -40,7 +44,7 @@ public class RebuildConfiguration extends KVStorage {
 
         String d = get(ConfigurationItem.DataDirectory);
         File data = null;
-        if (d != null) {
+        if (StringUtils.isNotBlank(d)) {
             data = new File(d);
             if (!data.exists() && !data.mkdirs()) {
                 LOG.error("Cannot mkdirs for data : " + data);
