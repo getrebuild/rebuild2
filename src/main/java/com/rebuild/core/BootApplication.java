@@ -9,9 +9,9 @@ package com.rebuild.core;
 
 import com.rebuild.core.support.RebuildConfiguration;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.cache.CacheAutoConfiguration;
@@ -22,6 +22,9 @@ import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ImportResource;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
  * 启动类
@@ -42,7 +45,22 @@ public class BootApplication extends SpringBootServletInitializer {
 
     private static boolean DEBUG = false;
 
-    // 独立 JAR 方式（需要修改 pom.xml）
+    private static String CONTEXT_PATH = null;
+
+    public static String getContextPath() {
+        if (CONTEXT_PATH == null) {
+            // BOOT
+            CONTEXT_PATH = BootEnvironmentPostProcessor.getProperty("server.servlet.context-path", "");
+        }
+        return CONTEXT_PATH;
+    }
+
+    public static boolean devMode() {
+        return DEBUG || BooleanUtils.toBoolean(System.getProperty("rbdev"));
+    }
+
+    // ---------------------------------------- USE BOOT
+
     public static void main(String[] args) {
         DEBUG = args.length > 0 && args[0].contains("rbdev=true");
         if (devMode()) System.setProperty("spring.profiles.active", "dev");
@@ -53,7 +71,8 @@ public class BootApplication extends SpringBootServletInitializer {
         spring.run(args);
     }
 
-    // 外置 TOMCAT
+    // ---------------------------------------- USE TOMCAT
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         if (devMode()) System.setProperty("spring.profiles.active", "dev");
@@ -63,8 +82,10 @@ public class BootApplication extends SpringBootServletInitializer {
         spring.listeners(new Application());
         return spring;
     }
-
-    public static boolean devMode() {
-        return DEBUG || BooleanUtils.toBoolean(System.getProperty("rbdev"));
+    
+    @Override
+    public void onStartup(ServletContext servletContext) throws ServletException {
+        CONTEXT_PATH = StringUtils.defaultIfBlank(servletContext.getContextPath(), "");
+        super.onStartup(servletContext);
     }
 }

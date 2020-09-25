@@ -13,7 +13,7 @@ import cn.devezhao.commons.web.WebUtils;
 import cn.devezhao.persist4j.engine.ID;
 import com.rebuild.api.user.AuthTokenManager;
 import com.rebuild.core.Application;
-import com.rebuild.core.BootEnvironmentPostProcessor;
+import com.rebuild.core.BootApplication;
 import com.rebuild.core.privileges.bizz.User;
 import com.rebuild.core.service.DataSpecificationException;
 import com.rebuild.core.support.i18n.Language;
@@ -52,9 +52,10 @@ public class AppUtils {
 
     /**
      * @return
+     * @see BootApplication#getContextPath()
      */
     public static String getContextPath() {
-        return BootEnvironmentPostProcessor.getProperty("server.servlet.context-path", "");
+        return BootApplication.getContextPath();
     }
 
     /**
