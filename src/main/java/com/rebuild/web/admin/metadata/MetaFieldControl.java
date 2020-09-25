@@ -22,6 +22,7 @@ import com.rebuild.core.metadata.MetadataHelper;
 import com.rebuild.core.metadata.MetadataSorter;
 import com.rebuild.core.metadata.impl.*;
 import com.rebuild.core.privileges.UserHelper;
+import com.rebuild.core.support.i18n.Language;
 import com.rebuild.core.support.state.StateHelper;
 import com.rebuild.utils.JSONUtils;
 import com.rebuild.web.BaseController;
@@ -74,7 +75,7 @@ public class MetaFieldControl extends BaseController {
             map.put("fieldName", easyMeta.getName());
             map.put("fieldLabel", easyMeta.getLabel());
             map.put("comments", easyMeta.getComments());
-            map.put("displayType", easyMeta.getDisplayType().getDisplayName());
+            map.put("displayType", Language.getLang(easyMeta.getDisplayType()));
             map.put("nullable", field.isNullable());
             map.put("builtin", easyMeta.isBuiltin());
             map.put("creatable", field.isCreatable());

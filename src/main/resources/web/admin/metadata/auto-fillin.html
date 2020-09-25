@@ -4,7 +4,7 @@
     <th:block th:replace="~{/_include/header}" />
     <link rel="stylesheet" type="text/css" th:href="@{/assets/lib/widget/bootstrap-slider.min.css}" />
     <meta name="page-help" content="https://getrebuild.com/docs/admin/meta-entity#%E5%BC%95%E7%94%A8%E5%AD%97%E6%AE%B5%E5%9B%9E%E5%A1%AB" />
-    <title>[[${bundle.lang('SomeConf,FormFillback')}]]</title>
+    <title>[[${bundle.lang('FormFillback')}]]</title>
     <style type="text/css">
       .dataTables_wrapper .rb-datatable-header {
         position: static;
@@ -55,12 +55,12 @@
           </div>
         </aside>
         <div class="page-head">
-          <div class="page-head-title">[[${bundle.lang('SomeConf,FormFillback')}]]</div>
+          <div class="page-head-title">[[${bundle.lang('FormFillback')}]]</div>
         </div>
         <div class="main-content container-fluid pt-1">
           <ul class="nav nav-tabs nav-tabs-classic">
             <li class="nav-item"><a th:href="|../${fieldName}|" class="nav-link">[[${bundle.lang('FieldInfo')}]]</a></li>
-            <li class="nav-item"><a href="./auto-fillin" class="nav-link active">[[${bundle.lang('SomeConf,FormFillback')}]]</a></li>
+            <li class="nav-item"><a href="./auto-fillin" class="nav-link active">[[${bundle.lang('FormFillback')}]]</a></li>
           </ul>
           <div class="card">
             <div class="card-body">
@@ -94,7 +94,7 @@
                       <th:block th:replace="~{/_include/spinner}" />
                       <div class="list-nodata hide">
                         <span class="zmdi zmdi-info-outline"></span>
-                        <p>[[${bundle.lang('NoConf')}]]</p>
+                        <p>[[${bundle.lang('NoSome,FormFillback')}]]</p>
                       </div>
                     </div>
                   </div>

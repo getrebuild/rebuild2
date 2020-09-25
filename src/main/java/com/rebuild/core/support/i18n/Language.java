@@ -16,6 +16,7 @@ import com.rebuild.core.Application;
 import com.rebuild.core.Initialization;
 import com.rebuild.core.RebuildException;
 import com.rebuild.core.metadata.MetadataHelper;
+import com.rebuild.core.metadata.impl.DisplayType;
 import com.rebuild.core.support.ConfigurationItem;
 import com.rebuild.core.support.RebuildConfiguration;
 import com.rebuild.core.support.state.StateSpec;
@@ -204,7 +205,18 @@ public class Language implements Initialization {
      * @return
      */
     public static String getLang(StateSpec state) {
-        String langKey = "s." + state.getClass().getSimpleName() + "." + ((Enum<?>) state).name();
+        String langKey = LanguageBundle.PREFIX_STATE + state.getClass().getSimpleName() + "." + ((Enum<?>) state).name();
         return StringUtils.defaultIfBlank(getCurrentBundle().getLangBase(langKey), state.getName());
+    }
+
+    /**
+     * 字段类型语言
+     *
+     * @param type
+     * @return
+     */
+    public static String getLang(DisplayType type) {
+        String langKey = LanguageBundle.PREFIX_DISPLAY_TYPE + type.name();
+        return StringUtils.defaultIfBlank(getCurrentBundle().getLangBase(langKey), type.getDisplayName());
     }
 }

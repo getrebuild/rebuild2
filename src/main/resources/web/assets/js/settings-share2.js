@@ -147,7 +147,7 @@ class Share2Switch extends _ChangeHandler {
             )
           })}
         </ul>
-        {list.length === 0 && <p className="text-muted">{$lang('NoConf')}</p>}
+        {list.length === 0 && <p className="text-muted">{$lang('NoData')}</p>}
       </div>
     )
   }

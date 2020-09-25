@@ -53,6 +53,8 @@ public class LanguageBundle implements JSONable {
 
     protected static final String PREFIX_ENTITY = "e.";
     protected static final String PREFIX_FIELD = "f.";
+    protected static final String PREFIX_DISPLAY_TYPE = "t.";
+    protected static final String PREFIX_STATE = "s.";
 
     private String locale;
     private JSONObject bundle;

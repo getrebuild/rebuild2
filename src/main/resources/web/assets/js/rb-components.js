@@ -211,7 +211,7 @@ class RbAlert extends React.Component {
         <div className="modal-dialog modal-dialog-centered" style={styles}>
           <div className="modal-content">
             <div className="modal-header pb-0">
-              <button className="close" type="button" onClick={() => this.hide()}>
+              <button className="close" type="button" onClick={() => this.hide()} title={$lang('Close')}>
                 <span className="zmdi zmdi-close" />
               </button>
             </div>
@@ -311,7 +311,7 @@ class RbHighbar extends React.Component {
     return (
       <div ref={(c) => (this._rbhighbar = c)} className={`rbhighbar animated faster ${this.state.animatedClass}`}>
         <div className={`alert alert-dismissible alert-${this.props.type || 'warning'} mb-0`}>
-          <button className="close" type="button" onClick={this.close}>
+          <button className="close" type="button" onClick={this.close} title={$lang('Close')}>
             <i className="zmdi zmdi-close" />
           </button>
           <div className="icon">
@@ -371,7 +371,7 @@ function RbAlertBox(props) {
         <i className={`zmdi zmdi-${icon}`} />
       </div>
       <div className="message">
-        <a className="close" data-dismiss="alert" onClick={() => typeof props.onClose === 'function' && props.onClose()}>
+        <a className="close" data-dismiss="alert" onClick={() => typeof props.onClose === 'function' && props.onClose()} title={$lang('Close')}>
           <i className="zmdi zmdi-close" />
         </a>
         <p>{props.message || 'INMESSAGE'}</p>

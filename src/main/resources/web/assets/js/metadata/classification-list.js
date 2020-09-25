@@ -47,7 +47,7 @@ class GridList extends React.Component {
             </div>
           )
         })}
-        {(!this.state.list || this.state.list.length === 0) && <div className="text-muted">{$lang('NoConf')}</div>}
+        {(!this.state.list || this.state.list.length === 0) && <div className="text-muted">{$lang('NoSome,Classification')}</div>}
       </div>
     )
   }
