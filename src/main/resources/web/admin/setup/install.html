@@ -48,6 +48,9 @@
         margin-top: 20px;
         background-color: #eee;
       }
+      .copyright .license a {
+        color: #999;
+      }
     </style>
   </head>
   <body class="rb-splash-screen">
@@ -62,8 +65,11 @@
               </div>
             </div>
             <div class="copyright">
-              &copy; REBUILD ([[${Version}]]) · <a href="https://getrebuild.com/docs/admin/install" target="_blank" class="link">[[${bundle.lang('InstallGuide')}]]</a>
+              &copy; REBUILD ([[${Version}]])
               <div class="mt-1 license link" th:utext="${bundle.lang('RebuildRights')}"></div>
+              <div class="mt-2">
+                <a href="https://getrebuild.com/docs/admin/install" target="_blank" class="link">[[${bundle.lang('InstallGuide')}]]</a>
+              </div>
             </div>
           </div>
         </div>
