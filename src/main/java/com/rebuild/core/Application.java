@@ -156,7 +156,7 @@ public class Application implements ApplicationListener<ApplicationStartedEvent>
      */
     public static boolean init() throws Exception {
         if (_READY) throw new IllegalStateException("Rebuild already started");
-        LOG.info("Initializing Rebuild context use {} ...", _CONTEXT.getClass().getSimpleName());
+        LOG.info("Initializing Rebuild context [ {} ] ...", _CONTEXT.getClass().getSimpleName());
 
         if (!(_READY = ServerStatus.checkAll())) {
             LOG.error(RebuildBanner.formatBanner(
