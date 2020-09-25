@@ -14,6 +14,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rebuild.core.Application;
 import com.rebuild.core.metadata.MetadataHelper;
+import com.rebuild.core.support.License;
 import com.rebuild.utils.AppUtils;
 import com.rebuild.utils.JSONable;
 import org.apache.commons.lang.ArrayUtils;
@@ -78,7 +79,9 @@ public class LanguageBundle implements JSONable {
     private JSONObject merge(JSONObject bundle) {
         if (Application.isReady()) {
             appendMetadata(bundle);
-            appendDatabase(bundle);
+            if (License.getCommercialType() > 0) {
+                appendDatabase(bundle);
+            }
         }
 
         String bundleString = bundle.toJSONString();
